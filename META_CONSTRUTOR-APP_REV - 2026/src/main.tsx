@@ -4,7 +4,12 @@ import * as Sentry from "@sentry/react"
 import App from './App.tsx'
 import './index.css'
 import './lib/i18n'; // Import directly to execute side-effects
+import { initAnalytics } from './integrations/analytics'
 
+// Initialize Analytics (M9)
+initAnalytics()
+
+const queryClient = new QueryClient();
 // Inicialização do Sentry (Monitoramento)
 // Só ativa se DSN estiver presente (produção ou dev com env configurada)
 if (import.meta.env.VITE_SENTRY_DSN) {

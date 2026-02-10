@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { notifyObraChange } from '@/utils/notificationService';
 import { usePermissions } from './usePermissions';
 import { useRequireOrg } from '@/hooks/requireOrg';
+import { track } from '@/integrations/analytics';
 
 export interface CreateObraData {
   nome: string;
@@ -101,6 +102,15 @@ export const useObras = () => {
       // Enviar notificação
       await notifyObraChange(user.id, obraData.nome, 'created', data.id, orgId);
 
+      // M9: Analytics
+      track('product.obra_created', {
+        obra_id: data.id,
+        org_id: orgId,
+        user_id: user.id,
+        tipo: obraData.tipo,
+        localizacao: obraData.localizacao
+      });
+
       return data;
     },
     onSuccess: () => {
@@ -131,6 +141,13 @@ export const useObras = () => {
 
       // Enviar notificação
       await notifyObraChange(user.id, data.nome, 'updated', id, orgId);
+
+      // M9: Analytics
+      track('product.obra_updated', {
+        obra_id: id,
+        org_id: orgId,
+        fields_updated: Object.keys(updateData)
+      });
 
       return data;
     },
@@ -169,6 +186,12 @@ export const useObras = () => {
       // Enviar notificação
       if (obraData) {
         await notifyObraChange(user.id, obraData.nome, 'deleted', undefined, orgId);
+
+        // M9: Analytics
+        track('product.obra_deleted', {
+          obra_id: id,
+          org_id: orgId
+        });
       }
     },
     onSuccess: () => {

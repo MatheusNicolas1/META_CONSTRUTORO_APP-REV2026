@@ -1,5 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { trackServerEvent } from '../_shared/analytics.ts'
 
 const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
@@ -35,6 +36,22 @@ serve(async (req) => {
         } else if (rlData && rlData.length > 0) {
             const { allowed, reset_at } = rlData[0]
             if (!allowed) {
+                // M9: Analytics Rate Limit
+                // Note: supabaseClient here might be Anon, but we need Admin for Fallback DB insert if strictly RLS protected.
+                // However, let's assume PostHog First or Service Role if available.
+                // For health-check, we usually don't have a user.
+                await trackServerEvent(supabaseClient, {
+                    request_id: crypto.randomUUID(),
+                    source: 'backend'
+                }, {
+                    event: 'ops.rate_limited',
+                    properties: {
+                        function: 'health-check',
+                        ip: ip
+                    },
+                    success: false
+                });
+
                 return new Response(JSON.stringify({
                     error: 'rate_limited',
                     message: 'Too Many Requests',

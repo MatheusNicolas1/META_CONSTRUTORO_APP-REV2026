@@ -2,7 +2,9 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import Stripe from 'https://esm.sh/stripe@14.21.0?target=deno'
 import { writeAuditLog } from '../_shared/audit.ts'
+import { writeAuditLog } from '../_shared/audit.ts'
 import { logger } from '../_shared/logger.ts'
+import { trackServerEvent } from '../_shared/analytics.ts'
 
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
     apiVersion: '2023-10-16',
@@ -346,6 +348,22 @@ serve(async (req) => {
             status_code: 200
         })
 
+        // M9: Analytics Success
+        await trackServerEvent(supabaseAdmin, {
+            request_id: requestId,
+            source: 'backend',
+            org_id: null, // Webhook context doesn't always have org_id easily available at this scope unless extracted
+            user_id: null
+        }, {
+            event: 'ops.webhook_processed',
+            properties: {
+                stripe_event_id: event.id,
+                event_type: event.type,
+                latency_ms: latency
+            },
+            success: true
+        });
+
         return new Response(JSON.stringify({ received: true }), {
             headers: { 'Content-Type': 'application/json' },
             status: 200,
@@ -371,6 +389,24 @@ serve(async (req) => {
                 status: 429
             })
         }
+
+        const supabaseAdmin = createClient(
+            Deno.env.get('SUPABASE_URL') ?? '',
+            Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+        )
+        await trackServerEvent(supabaseAdmin, {
+            request_id: requestId,
+            source: 'backend'
+        }, {
+            event: 'ops.webhook_failed',
+            properties: {
+                error: error.message,
+                status_code: 400
+            },
+            success: false,
+            error: error.message
+        });
+
 
         logger.error(`Webhook error: ${error.message}`, {
             request_id: requestId,

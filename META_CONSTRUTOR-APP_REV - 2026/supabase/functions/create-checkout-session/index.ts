@@ -4,7 +4,9 @@ import { corsHeaders } from '../_shared/cors.ts'
 import { createScopedClient } from '../_shared/supabase-client.ts'
 import { requireAuth, requireOrgRole } from '../_shared/guards.ts'
 import { writeAuditLog } from '../_shared/audit.ts'
+import { writeAuditLog } from '../_shared/audit.ts'
 import { logger } from '../_shared/logger.ts'
+import { trackServerEvent } from '../_shared/analytics.ts'
 
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
   apiVersion: '2023-10-16',
@@ -29,6 +31,30 @@ serve(async (req) => {
     // Guard: Auth
     const user = await requireAuth(supabaseClient)
     user_id = user.id;
+
+    // Guard: Role (Admins Only)
+    try {
+      if (targetOrgId) {
+        await requireOrgRole(supabaseClient, targetOrgId, ['Administrador', 'Proprietário'])
+      }
+    } catch (e: any) {
+      // Fail-safe analytics for forbidden access
+      await trackServerEvent(supabaseClient, {
+        request_id: requestId,
+        source: 'backend',
+        org_id: targetOrgId,
+        user_id: user.id
+      }, {
+        event: 'ops.forbidden',
+        properties: {
+          endpoint: 'create-checkout-session',
+          error: e.message
+        },
+        success: false,
+        error: e.message
+      });
+      throw e;
+    }
 
     // M8.1: Rate Limit (10 req/60s per user)
     const { rateLimitOrThrow } = await import('../_shared/rate-limit.ts')
@@ -75,8 +101,6 @@ serve(async (req) => {
       }
     }
 
-    // M4 STEP 1: Require Admin or Owner role for the target org
-    await requireOrgRole(supabaseClient, targetOrgId, ['Administrador', 'Proprietário'])
 
     // Get user profile
     const { data: profile, error: profileError } = await supabaseClient
@@ -157,6 +181,20 @@ serve(async (req) => {
       request_id: requestId,
     });
 
+    // M9: Analytics
+    await trackServerEvent(supabaseClient, {
+      request_id: requestId,
+      org_id: targetOrgId,
+      user_id: user.id
+    }, {
+      event: 'ops.checkout_created',
+      properties: {
+        plan,
+        billing,
+        amount: priceId ? 'paid' : 'unknown'
+      }
+    });
+
     return new Response(
       JSON.stringify({ sessionId: session.id, url: session.url }),
       {
@@ -180,6 +218,23 @@ serve(async (req) => {
         request_id: requestId,
         retry_after_seconds: 60 // Simple heuristic
       };
+    }
+
+    // M9: Analytics Rate Limit & Errors
+    if (status === 429) {
+      await trackServerEvent(supabaseClient, {
+        request_id: requestId,
+        source: 'backend',
+        org_id: targetOrgId,
+        user_id: user_id
+      }, {
+        event: 'ops.rate_limited',
+        properties: {
+          function: 'create-checkout-session',
+          message: error.message
+        },
+        success: false
+      })
     }
 
     logger.error(error.message, {

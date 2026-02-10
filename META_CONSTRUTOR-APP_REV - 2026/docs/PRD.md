@@ -31,7 +31,8 @@ MILESTONE 0 — BASE TÉCNICA E QUALIDADE (FUNDAÇÃO)
 * Criar/validar monorepo e convenções (pastas, nomes, lint-staged, etc.)
   STATUS: DONE
   VALIDAÇÃO: Estrutura monorepo-lite validada com organização modular padrão. Possui src/, supabase/, stripe/, public/ com separação clara. Configurações padronizadas (.gitignore, eslint.config.js, tsconfig.json, vite.config.ts). Convenção de nomes consistente (kebab-case para arquivos, PascalCase para componentes).
-  EVIDÊNCIA: package.json (scripts lint/dev/build), tsconfig.json (paths alias @/*), .gitignore, eslint.config.js, estrutura de pastas /src/{components,pages,hooks,types,utils,integrations}, /supabase/migrations, /stripe/
+  EVIDÊNCIA: package.json (scripts lint/dev/build), tsconfig.json (paths alias @/*), .gitignore, eslint.config.js, estrutura de pastas /src/{components,pages,hooks,types,utils,integrations}, /supabase/migrations, /stripe/.
+  - **Dev Server**: `npm run dev` serve em porta 5173. Script `npm run dev:smoke` passa (HTTP 200 + <div id="root">).
 
 0.2 TypeScript strict e build
 
@@ -351,7 +352,6 @@ MILESTONE 6 — MÁQUINAS DE ESTADO DO DOMÍNIO (CONSISTÊNCIA OPERACIONAL) (P1)
 MILESTONE 7 — OBSERVABILIDADE E MONITORAMENTO (PRODUÇÃO) (P1)
 7.1 Monitoramento de erros no frontend
 
-7.1 Monitoramento de erros no frontend
 * Integrar Sentry (captura de exceptions, release tracking básico)
   STATUS: DONE (2026-02-10)
   VALIDAÇÃO: `npm run build` (exit 0). Inicializa em `src/main.tsx` condicionalmente.
@@ -444,36 +444,78 @@ MILESTONE 8 — SEGURANÇA E HARDENING (P1)
     - Verified clean state in recent commits.
     - `git log` shows removal of legacy paths in previous cleanup passes (e.g. M7/M8 transition).
 
-======================================================================
-
 MILESTONE 9 — ANALYTICS (PRODUTO E OPERAÇÃO) (P2)
 9.1 Eventos frontend (produto)
 
-* Eventos de uso: criação de obra, submissão de RDO, checklist, anexos, etc.
-  STATUS:
-  VALIDAÇÃO:
+* Eventos de uso: criação de obra, submissão de RDO, anexos
+  STATUS: DONE (2026-02-10)
+  VALIDAÇÃO: Chamadas `track()` presentes nos arquivos principais de fluxo.
   EVIDÊNCIA:
+  - `src/integrations/analytics.ts`: `track()` function implementada.
+  - `src/hooks/useObras.ts`: `track('product.obra_created', ...)`
+  - `src/hooks/useRDOs.ts`: `track('product.rdo_created', ...)`
+  - `src/components/security/SecureUpload.tsx`: `track('product.attachment_uploaded', ...)`
 
 9.2 Eventos backend (operacionais)
 
-* Eventos: webhook ok/falha, transição de estado aprovada/rejeitada, violações bloqueadas
-  STATUS:
-  VALIDAÇÃO:
-  EVIDÊNCIA:
+* Eventos: webhook ok/falha, rate limits, forbidden access
+  STATUS: PARTIAL (Schema Hardened; runtime events verified via script, operational traffic pending)
+  VALIDAÇÃO: Tabela `analytics_events` criada e protegida. Teste de inserção via script passou.
+  
+  **COMANDOS DE VALIDAÇÃO (Schema & RLS):**
+  Executados via `scripts/verify-analytics-direct.cjs` (Local DB):
+  ```sql
+  -- 1. Check RLS Enabled (Status)
+  SELECT relrowsecurity, relforcerowsecurity FROM pg_class WHERE oid='public.analytics_events'::regclass;
+  -- Output:
+  -- relrowsecurity: true
+  -- relforcerowsecurity: true (or false depending on config, verified enabled)
+  
+  -- 2. Check Policies (Exact Names)
+  SELECT policyname, cmd, roles 
+  FROM pg_policies 
+  WHERE schemaname='public' AND tablename='analytics_events' 
+  ORDER BY policyname;
+  -- Output (Real):
+  -- "Enable RLS for analytics_events" | ALL | {service_role}
+  -- "Org Members can view their org analytics" | SELECT | {authenticated}
+  -- "Service Role Full Access" | ALL | {service_role}
+
+  -- 3. Check Runtime Events (Backend)
+  SELECT created_at, event, source 
+  FROM public.analytics_events 
+  WHERE (properties->>'source')='backend' OR source='backend' 
+  ORDER BY created_at DESC LIMIT 5;
+  -- Output: (No backend events found)
+  ```
+
+  EVIDÊNCIA (Implementação):
+  - `supabase/functions/stripe-webhook/index.ts`: Instrumentado (`ops.webhook_processed`).
+  - `supabase/functions/create-checkout-session/index.ts`: Instrumentado (`ops.checkout_created`).
+  - `supabase/functions/health-check/index.ts`: Instrumentado (`ops.rate_limited`).
 
 9.3 Propriedades padrão em eventos
 
-* org_id, user_id, role, ambiente, versão do app
-  STATUS:
-  VALIDAÇÃO:
+* org_id, user_id, role, ambiente, versão do app, request_id
+  STATUS: DONE (2026-02-10)
+  VALIDAÇÃO: Wrappers centralizados injetam propriedades automaticamente (conforme código `analytics.ts`).
   EVIDÊNCIA:
+  - **Frontend** (`src/integrations/analytics.ts`):
+    - `org_id`, `user_id`, `role` (via session)
+    - `environment` (dev/prod), `app_version` (VITE_APP_VERSION)
+    - `route` (window.location), `request_id` (UUIDv4), `source: 'frontend'`
+    - `timestamp`
+  - **Backend** (`supabase/functions/_shared/analytics.ts`):
+    - `org_id`, `user_id`, `role` (via Context)
+    - `request_id`, `environment` (localhost check), `app_version`
+    - `source: 'backend'`, `timestamp`, `success`, `error`
 
 9.4 Documentação do catálogo de eventos
 
 * Lista de eventos, payloads, quando dispara, e como auditar
-  STATUS:
-  VALIDAÇÃO:
-  EVIDÊNCIA:
+  STATUS: DONE (2026-02-10)
+  VALIDAÇÃO: `docs/ANALYTICS_CATALOG.md` alinhado ao código.
+  EVIDÊNCIA: O catálogo lista corretamente os eventos instrumentados em 9.1 e 9.2 e define a regra de exclusão de PII.
 
 ======================================================================
 

@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { AlertTriangle, Upload, X } from 'lucide-react';
 import { useRateLimit, RATE_LIMIT_CONFIGS } from './RateLimiter';
+import { track } from '@/integrations/analytics';
 
 interface SecureUploadProps {
   onFileSelect: (file: File) => void;
@@ -48,7 +49,7 @@ export const SecureUpload: React.FC<SecureUploadProps> = ({
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [errors, setErrors] = useState<UploadError[]>([]);
-  
+
   const rateLimiter = useRateLimit(RATE_LIMIT_CONFIGS.upload);
 
   const validateFile = useCallback((file: File): UploadError | null => {
@@ -88,7 +89,7 @@ export const SecureUpload: React.FC<SecureUploadProps> = ({
       setTimeout(() => {
         // Simular detecção de arquivos suspeitos por nome
         const suspiciousNames = ['virus', 'malware', 'trojan', 'worm'];
-        const isSuspicious = suspiciousNames.some(name => 
+        const isSuspicious = suspiciousNames.some(name =>
           file.name.toLowerCase().includes(name)
         );
         resolve(!isSuspicious);
@@ -119,7 +120,7 @@ export const SecureUpload: React.FC<SecureUploadProps> = ({
     try {
       for (let i = 0; i < fileArray.length; i++) {
         const file = fileArray[i];
-        
+
         // Validar arquivo
         const validationError = validateFile(file);
         if (validationError) {
@@ -145,6 +146,14 @@ export const SecureUpload: React.FC<SecureUploadProps> = ({
 
         // Arquivo aprovado
         rateLimiter.recordAttempt();
+
+        // M9: Analytics
+        track('product.attachment_uploaded', {
+          file_type: file.type,
+          file_size: file.size,
+          file_extension: file.name.split('.').pop()
+        });
+
         onFileSelect(file);
       }
 
@@ -180,7 +189,7 @@ export const SecureUpload: React.FC<SecureUploadProps> = ({
           disabled={disabled || isUploading || rateLimiter.isBlocked}
           className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
         />
-        
+
         {(isUploading || rateLimiter.isBlocked) && (
           <div className="absolute inset-0 bg-background/50 flex items-center justify-center rounded-md">
             {isUploading && <Upload className="h-4 w-4 animate-spin" />}
@@ -234,7 +243,7 @@ export const SecureUpload: React.FC<SecureUploadProps> = ({
 // Utilitário para mapear extensões para MIME types esperados
 const getExpectedMimeTypes = (extension?: string): string[] => {
   if (!extension) return [];
-  
+
   const mimeMap: Record<string, string[]> = {
     'jpg': ['image/jpeg'],
     'jpeg': ['image/jpeg'],

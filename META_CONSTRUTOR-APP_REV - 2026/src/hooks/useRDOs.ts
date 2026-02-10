@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { notifyRDOChange } from '@/utils/notificationService';
 import { useRequireOrg } from '@/hooks/requireOrg';
+import { track } from '@/integrations/analytics';
 
 export interface CreateRDOData {
   obra_id: string;
@@ -90,6 +91,14 @@ export const useRDOs = () => {
       const obraName = data.obras?.nome || 'Obra';
       await notifyRDOChange(user.id, obraName, rdoData.data, 'created', data.id);
 
+      // M9: Analytics
+      track('product.rdo_created', {
+        rdo_id: data.id,
+        org_id: orgId,
+        obra_id: rdoData.obra_id,
+        data: rdoData.data
+      });
+
       return data;
     },
     onSuccess: () => {
@@ -153,6 +162,14 @@ export const useRDOs = () => {
       // Enviar notificação especial para aprovação
       const obraName = data.obras?.nome || 'Obra';
       await notifyRDOChange(user.id, obraName, data.data, 'submitted', id);
+
+      // M9: Analytics
+      track('product.rdo_submitted', {
+        rdo_id: id,
+        org_id: orgId,
+        obra_id: data.obra_id,
+        status_to: 'Aguardando aprovação'
+      });
 
       return data;
     },

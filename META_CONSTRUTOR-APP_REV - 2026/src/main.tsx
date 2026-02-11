@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import * as Sentry from "@sentry/react"
 import App from './App.tsx'
 import './index.css'
@@ -9,7 +10,13 @@ import { initAnalytics } from './integrations/analytics'
 // Initialize Analytics (M9)
 initAnalytics()
 
+console.log('Main.tsx loaded - Cache Buster FINAL');
+
+// Basic QueryClient for the root. 
+// Note: PerformanceOptimizedApp creates its own client with specific config, which will override this for its children.
+// This one ensures App wrapper has a context if needed.
 const queryClient = new QueryClient();
+
 // Inicialização do Sentry (Monitoramento)
 // Só ativa se DSN estiver presente (produção ou dev com env configurada)
 if (import.meta.env.VITE_SENTRY_DSN) {
@@ -32,6 +39,8 @@ if (import.meta.env.VITE_SENTRY_DSN) {
 // Render da aplicação com StrictMode
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
   </StrictMode>
 );

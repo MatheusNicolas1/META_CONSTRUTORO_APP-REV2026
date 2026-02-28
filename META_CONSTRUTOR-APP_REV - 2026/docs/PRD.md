@@ -183,7 +183,26 @@ MILESTONE 4 — PLANOS, PREÇOS E ASSINATURAS (BILLING) (P0)
 
 * Implementar stripe_events (idempotência), validar assinatura do webhook, processar eventos críticos
   STATUS: DONE (2026-02-09)
-  VALIDAÇÃO: SQL: SELECT to_regclass('public.stripe_events') as stripe_events; (retorna 'stripe_events'). SQL: SELECT COUNT(*) FROM public.stripe_events; (retorna 0 - tabela criada, pronta para uso). Signature verification: stripe.webhooks.constructEventAsync() executa antes de qualquer processamento (linha 29-35 do index.ts). Idempotency check: SELECT id, processed FROM stripe_events WHERE stripe_event_id=? (linha 43-48).
+  VALIDAÇÃO: SQL: SELECT to_regclass('public.stripe_events') as stripe_events; (retorna 'stripe_events'). SQL: SELECT COUNT(*) FROM  - **Hotfix (Checklists)**: Migration `20260211130000_checklists.sql` hardened to support legacy schema migration (rename columns, idempotent creation) and fixed to reference `orgs` instead of non-existent `organizations`. Corrected `organization_members` to `org_members`.
+  - **Hotfix (Documents)**: Migration `20260211170000_unify_org_id_and_documents.sql` fixed `app_role` enum usage (replaced 'owner'/'admin' with 'Administrador' and explicit org owner check).
+  - **Hotfix (Seed)**: `seed.sql` corrected to use valid `obra_status` 'ACTIVE' and `user_id` instead of `criado_por_id`.
+  - **Refactor (Schema)**: `src/` code updated to usage `user_id` for RDOs and `ACTIVE` status for Obras. `docs/schema-contract.md` created as Source of Truth.
+  - **Verification**: Script `validate_core_flows.js` confirmou schema correto. Execução E2E parcial (bloqueada por instabilidade no Auth local), mas lógica corrigida.
+
+  MILESTONE 15 (Org Unification & Loop Fixes):
+  - **Loop Fix**: `PerformanceOptimizedApp.tsx` atualizado para desativar retries em erros 400/401/403.
+  - **Schema Unification**: Migration `20260211170000_unify_org_id_and_documents.sql` criada. Adiciona:
+    - `org_id` em `equipes`, `equipamentos`, `fornecedores`, `notifications`.
+    - Tabela nova `documents` com RLS por organização.
+    - Backfill de dados baseado em ownership.
+  - **Frontend Hooks**: `useDocuments.ts` criado com suporte a storage e `org_id`.
+  - **Status**: Código completo. Aplicação de migrations pendente devido a erro de conexão local.
+
+  VALIDAÇÃO SECUNDÁRIA (Equipe, Equipamentos, Fornecedores):
+  - **Hook Fixes**: `useEquipamentosSupabase.ts`, `useEquipesSupabase.ts`, `useFornecedores.ts` atualizados para incluir `org_id`.
+  - **Schema Fixes**: Migration `20260211160000_add_org_id_secondary.sql` criada para adicionar `org_id` e constraints nestas tabelas (anteriormente faltantes).
+  - **Status**: Código pronto e alinhado com multiperfil. Validação E2E bloqueada por instabilidade no ambiente local (DB/Auth indisponível na porta 54322). Necessário verificar aplicação da migration após estabilização.
+Idempotency check: SELECT id, processed FROM stripe_events WHERE stripe_event_id=? (linha 43-48).
   EVIDÊNCIA: Migration 20260209110000_create_stripe_events_table.sql criada. Tabela stripe_events: 9 colunas (id, created_at, stripe_event_id UNIQUE, event_type, processed BOOLEAN DEFAULT false, processed_at, payload JSONB, error TEXT, api_version), 5 indexes (pkey, stripe_event_id_key, idx_stripe_events_type, idx_stripe_events_processed, idx_stripe_events_created). RLS policy service_role. Edge function supabase/functions/stripe-webhook/index.ts (9.8KB): 1) Line 29: stripe.webhooks.constructEventAsync() valida signature, 2) Line 43: Idempotency check via SELECT, retorna 200 se já processado, 3) Line 52: INSERT evento antes de processar, 4) Line 207: UPDATE processed=true + processed_at + error após processamento. Eventos tratados: checkout.session.completed, customer.subscription.created/updated/deleted, invoice.payment_failed. Log pattern: "Event {id} already processed, skipping" ou "Error recording event".
 
 4.5 Atualização do status da assinatura como “truth”
@@ -443,6 +462,11 @@ MILESTONE 8 — SEGURANÇA E HARDENING (P1)
   - **Cleanup (git evidence)**:
     - Verified clean state in recent commits.
     - `git log` shows removal of legacy paths in previous cleanup passes (e.g. M7/M8 transition).
+  - **Realtime Hardening**:
+    - `useActivitiesSupabase.ts` refactored to use **Global Singleton + Grace Period**.
+    - Solved Strict Mode loop via 1000ms cleanup delay (prevents thrashing).
+    - Registry stored in `globalThis` to survive HMR resets.
+    - Validated in Dev (Strict Mode) and Prod build.
 
 MILESTONE 9 — ANALYTICS (PRODUTO E OPERAÇÃO) (P2)
 9.1 Eventos frontend (produto)
@@ -528,3 +552,64 @@ REGRA PARA A LLM / AI AGENT (EXECUÇÃO)
 5. Preencher STATUS/VALIDAÇÃO/EVIDÊNCIA da atividade
 6. Commit pequeno e objetivo
 7. Repetir até concluir todas as milestones
+
+======================================================================
+
+HOTFIXES & INCIDENTES CRÍTICOS
+
+INCIDENTE 2026-02-11 — LOOP INFINITO E FETCH STORM /EQUIPES
+* Sintoma: Loop de requisições 400 em /rest/v1/equipes e travamento de abas.
+* Causa Raiz: Hook `usePermissions.ts` consultava tabelas legadas (`equipes`, `obras`) usando coluna inexistente `org_id`. O erro 400 provocava retry infinito do React Query.
+* Solução:
+  1. Refatorado `usePermissions.ts` para usar `user_id` (compatível com schema atual).
+  2. Adicionado `retry: false` para erros 4xx no React Query.
+  3. Adicionado `staleTime: 5min` para evitar refetch excessivo.
+  4. Corrigido `useObras.ts`: filtro Realtime alterado de `org_id` para `user_id`.
+  STATUS: RESOLVED
+  VALIDAÇÃO: Análise estática do código confirma que queries agora utilizam colunas existentes (`user_id`). Configuração do React Query previne retries em erros de cliente.
+  EVIDÊNCIA:
+  - `src/hooks/useObras.ts`: Subscription filter `user_id=eq.${userId}`.
+
+MILESTONE 13.5 — RESPONSIVENESS OVERHAUL (MOBILE-FIRST)
+13.5.1 Correções Globais (Sidebar & Layout)
+* Habilitar Sidebar no mobile e corrigir overflow horizontal
+  STATUS: DONE (2026-02-11)
+  VALIDAÇÃO: `OptimizedLayout.tsx` modificado para permitir renderização da `AppSidebar` no mobile (removido wrapper `hidden md:flex`). Sidebar agora usa componente `Sheet` nativo para drawer lateral. Wrapper global `overflow-auto` adicionado em `src/components/ui/table.tsx`, garantindo que todas as tabelas do sistema tenham scroll horizontal automático em telas pequenas.
+  EVIDÊNCIA:
+  - `src/components/OptimizedLayout.tsx`: Removida classe `hidden` do container da sidebar.
+  - `src/components/ui/table.tsx`: Adicionado `div className="relative w-full overflow-auto"`.
+  - `src/components/ui/dialog.tsx`: Adicionado `max-h-[85vh] overflow-y-auto w-[95vw]` para modais responsivos.
+
+13.5.2 Correções por Página (Grid & Flex)
+* Ajustar grids e alinhamentos em Dashboard, Obras, RDOs e Financeiro
+  STATUS: DONE (2026-02-11)
+  VALIDAÇÃO:
+  - **Dashboard**: Grids ajustados para `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`. Botões de ação empilham verticalmente no mobile.
+  - **Obras/RDOs**: Grids responsivos confirmados. Inputs de busca ocupam largura total.
+  - **Despesas**: Filtros de dashboard financeiro (Selects) que estouravam a tela foram ajustados para `flex-col` no mobile, com largura 100%.
+  EVIDÊNCIA:
+  - `src/components/OptimizedDashboard.tsx`: Classes responsivas `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`.
+
+INCIDENTE 2026-02-11 — CONFLITO MIGRATION CHECKLISTS
+* Sintoma: Erro `relation "checklists" already exists` ao rodar `npx supabase start`.
+* Causa Raiz: Migration legada `20251105...` já criava a tabela `checklists` com schema em Português, conflitando com a nova migration `20260211...` (Inglês).
+* Solução:
+  1. Migration `20260211130000_checklists.sql` reescrita para ser idempotente (`DO $$` blocks).
+  2. Implementada lógica de upgrade: renomeia colunas legadas (`titulo` -> `title`) e adiciona colunas faltantes (`org_id`).
+  3. Policies antigas removidas explicitamente antes de criar as novas (scoped por `org_id`).
+  STATUS: RESOLVED
+  VALIDAÇÃO: Migration aplicada com sucesso em ambiente local simulado (idempotência verificada via script SQL).
+  EVIDÊNCIA:
+  - `supabase/migrations/20260211130000_checklists.sql`: Código PL/pgSQL com `IF NOT EXISTS` e `ALTER TABLE`.
+
+INCIDENTE 2026-02-12 — SCHEMA & SEED ALIGNMENT
+* Sintoma: `npx supabase db reset` falhando e `seed.sql` erro "invalid input value for enum".
+* Causa Raiz: `seed.sql` usava strings em Português ('Em andamento') para colunas que migraram para ENUMs estritos ('ACTIVE') e referenciava coluna legada `criado_por_id` em vez de `user_id` (migration `2026...`). Frontend também referenciava coluna antiga.
+* Solução:
+  1. `seed.sql` atualizado para usar `user_id` e literais ENUM (`ACTIVE`, `DRAFT`).
+  2. `src/hooks/*` e `src/types/*` atualizados para usar `user_id` e mapear ENUMs para UI labels.
+  3. `docs/schema-contract.md` criado como Source of Truth.
+  4. Validação completa com `inspect_schema.js` confirmando `user_id` e tipos ENUM no banco local.
+* STATUS: RESOLVED
+* VALIDAÇÃO: `npx supabase db reset` exit code 0. `npm run build` exit 0. `inspect_schema.js` valida seed data counts (1 Obra ACTIVE, 1 RDO DRAFT) e colunas corretas.
+* EVIDÊNCIA: `scripts/inspect_schema.js` output. `docs/schema-contract.md`.

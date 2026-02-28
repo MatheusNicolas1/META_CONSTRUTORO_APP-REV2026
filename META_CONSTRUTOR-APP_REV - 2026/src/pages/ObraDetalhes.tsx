@@ -4,15 +4,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Building2, 
-  MapPin, 
-  User, 
-  Calendar, 
-  DollarSign, 
-  FileText, 
-  Users, 
-  Wrench, 
+import {
+  Building2,
+  MapPin,
+  User,
+  Calendar,
+  DollarSign,
+  FileText,
+  Users,
+  Wrench,
   TrendingUp,
   Upload,
   Image as ImageIcon,
@@ -22,113 +22,38 @@ import {
   AlertTriangle,
   PieChart
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SocialShare } from "@/components/SocialShare";
+import { useObraDetails } from "@/hooks/useObraDetails";
+import { useRDOsByObra } from "@/hooks/useRDOsByObra";
+import { FileText as FileTextIcon, Clock, CheckCircle, AlertCircle, Wrench as WrenchIcon } from "lucide-react";
 
 const ObraDetalhes = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("geral");
 
-  // Mock data - in real app, this would be fetched based on the ID
-  const obra = {
-    id: Number(id),
-    nome: "Residencial Vista Verde",
-    localizacao: "Bairro Jardim das Flores, São Paulo - SP",
-    responsavel: "Eng. João Silva",
-    cliente: "Construtora ABC Ltda",
-    orcamento: 2500000,
-    progresso: 75,
-    dataInicio: "2023-08-15",
-    previsaoTermino: "2024-03-15",
-    status: "Em andamento",
-    atividades: 45,
-    descricao: "Construção de residencial com 120 apartamentos, divididos em 4 torres de 15 andares cada.",
-    area: "12.500 m²",
-    equipes: [
-      { nome: "Equipe Estrutura", membros: 8, funcao: "Estrutura" },
-      { nome: "Equipe Alvenaria", membros: 6, funcao: "Alvenaria" },
-      { nome: "Equipe Elétrica", membros: 4, funcao: "Instalações" }
-    ],
-    equipamentos: [
-      { nome: "Betoneira B-400", status: "Ativo", categoria: "Concreto" },
-      { nome: "Grua Torre GTR-50", status: "Ativo", categoria: "Elevação" },
-      { nome: "Compressor AR-200", status: "Manutenção", categoria: "Pneumático" }
-    ],
-    rdos: [
-      { id: 1, data: "2024-01-15", atividades: "Concretagem laje 3º andar", observacoes: "Sem ocorrências" },
-      { id: 2, data: "2024-01-14", atividades: "Instalação elétrica 2º andar", observacoes: "Aguardando material" },
-    ],
-    financeiro: {
-      orcamentoTotal: 2500000,
-      valorExecutado: 1875000,
-      saldoRestante: 625000,
-      itensOrcamento: [
-        {
-          id: 1,
-          atividade: "Estrutura - Concreto",
-          valorPrevisto: 800000,
-          valorExecutado: 720000,
-          diferenca: -80000,
-          status: "Em conformidade",
-          percentualExecutado: 90
-        },
-        {
-          id: 2,
-          atividade: "Alvenaria",
-          valorPrevisto: 400000,
-          valorExecutado: 350000,
-          diferenca: -50000,
-          status: "Em conformidade",
-          percentualExecutado: 87.5
-        },
-        {
-          id: 3,
-          atividade: "Instalações Elétricas",
-          valorPrevisto: 300000,
-          valorExecutado: 340000,
-          diferenca: 40000,
-          status: "Ultrapassado",
-          percentualExecutado: 113.3
-        },
-        {
-          id: 4,
-          atividade: "Instalações Hidráulicas",
-          valorPrevisto: 250000,
-          valorExecutado: 200000,
-          diferenca: -50000,
-          status: "Em conformidade",
-          percentualExecutado: 80
-        },
-        {
-          id: 5,
-          atividade: "Acabamentos",
-          valorPrevisto: 500000,
-          valorExecutado: 150000,
-          diferenca: -350000,
-          status: "Em andamento",
-          percentualExecutado: 30
-        },
-        {
-          id: 6,
-          atividade: "Pintura",
-          valorPrevisto: 150000,
-          valorExecutado: 75000,
-          diferenca: -75000,
-          status: "Em andamento",
-          percentualExecutado: 50
-        },
-        {
-          id: 7,
-          atividade: "Paisagismo",
-          valorPrevisto: 100000,
-          valorExecutado: 40000,
-          diferenca: -60000,
-          status: "Em andamento",
-          percentualExecutado: 40
-        }
-      ]
-    }
-  };
+  const { data: obra, isLoading, error } = useObraDetails(id || '');
+  const { data: rdosReais = [], isLoading: rdosLoading } = useRDOsByObra(id);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (error || !obra) {
+    return (
+      <div className="flex h-screen items-center justify-center flex-col gap-4">
+        <h2 className="text-xl font-semibold">Erro ao carregar obra</h2>
+        <p className="text-muted-foreground">Não foi possível encontrar os detalhes desta obra.</p>
+        <Link to="/obras">
+          <Button variant="outline">Voltar para Obras</Button>
+        </Link>
+      </div>
+    );
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -167,7 +92,9 @@ const ObraDetalhes = () => {
     }
   };
 
-  const percentualOrcamentoExecutado = (obra.financeiro.valorExecutado / obra.financeiro.orcamentoTotal) * 100;
+  const percentualOrcamentoExecutado = obra && obra.financeiro && obra.financeiro.orcamentoTotal > 0
+    ? (obra.financeiro.valorExecutado / obra.financeiro.orcamentoTotal) * 100
+    : 0;
 
   return (
     <div className="responsive-spacing">
@@ -235,8 +162,8 @@ const ObraDetalhes = () => {
           </div>
           <div className="mt-4">
             <div className="w-full bg-secondary rounded-full h-3">
-              <div 
-                className="bg-construction-green h-3 rounded-full transition-all" 
+              <div
+                className="bg-construction-green h-3 rounded-full transition-all"
                 style={{ width: `${obra.progresso}%` }}
               />
             </div>
@@ -336,29 +263,67 @@ const ObraDetalhes = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {obra.rdos.map((rdo) => (
-                <div key={rdo.id} className="p-4 bg-muted rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium text-card-foreground">RDO #{rdo.id}</span>
-                    <span className="text-sm text-muted-foreground">{formatDate(rdo.data)}</span>
-                  </div>
-                  <p className="text-sm text-card-foreground mb-1">
-                    <strong>Atividades:</strong> {rdo.atividades}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    <strong>Observações:</strong> {rdo.observacoes}
-                  </p>
-                  <div className="flex justify-end space-x-2 mt-3">
-                    <Button size="sm" variant="outline">Ver Detalhes</Button>
-                    <Button size="sm" variant="outline">Editar</Button>
-                  </div>
+              {rdosLoading ? (
+                <div className="flex items-center gap-2 py-8 justify-center text-muted-foreground">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary" />
+                  <span>Carregando RDOs...</span>
                 </div>
-              ))}
-              {obra.rdos.length === 0 && (
+              ) : rdosReais.length === 0 ? (
                 <div className="text-center py-8">
                   <FileText className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
                   <p className="text-muted-foreground">Nenhum RDO cadastrado para esta obra</p>
+                  <Link to="/rdo" className="mt-3 inline-block">
+                    <Button size="sm" className="gradient-construction border-0">
+                      <FileText className="mr-2 h-4 w-4" />
+                      Criar primeiro RDO
+                    </Button>
+                  </Link>
                 </div>
+              ) : (
+                rdosReais.map((rdo) => {
+                  const statusMap: Record<string, { label: string; icon: React.ReactNode; cls: string }> = {
+                    aprovado: { label: 'Aprovado', icon: <CheckCircle className="h-4 w-4" />, cls: 'bg-construction-green text-white' },
+                    em_analise: { label: 'Em Análise', icon: <Clock className="h-4 w-4" />, cls: 'bg-construction-blue text-white' },
+                    rejeitado: { label: 'Rejeitado', icon: <AlertCircle className="h-4 w-4" />, cls: 'bg-destructive text-white' },
+                    rascunho: { label: 'Rascunho', icon: <FileTextIcon className="h-4 w-4" />, cls: 'bg-muted text-muted-foreground' },
+                  };
+                  const s = statusMap[rdo.status] ?? statusMap.rascunho;
+                  return (
+                    <div key={rdo.id} className="p-4 bg-muted/30 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <FileText className="h-4 w-4 text-construction-orange" />
+                            <span className="font-medium text-card-foreground">
+                              RDO — {new Date(rdo.data + 'T00:00:00').toLocaleDateString('pt-BR')}
+                            </span>
+                            <Badge className={s.cls}>
+                              <span className="flex items-center gap-1">{s.icon}{s.label}</span>
+                            </Badge>
+                          </div>
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground pl-6">
+                            {rdo.clima && <span>☁ {rdo.clima}</span>}
+                            <span>{rdo.totalAtividades} atividade{rdo.totalAtividades !== 1 ? 's' : ''}</span>
+                            {rdo.totalEquipamentos > 0 && (
+                              <span className="flex items-center gap-1">
+                                <WrenchIcon className="h-3 w-3" />
+                                {rdo.totalEquipamentos} equipamento{rdo.totalEquipamentos !== 1 ? 's' : ''}
+                              </span>
+                            )}
+                          </div>
+                          {rdo.observacoes && (
+                            <p className="text-xs text-muted-foreground pl-6 truncate max-w-xs">
+                              {rdo.observacoes}
+                            </p>
+                          )}
+                        </div>
+                        <Link to={`/rdo/${rdo.id}/visualizar`}>
+                          <Button size="sm" variant="outline">Ver Detalhes</Button>
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })
               )}
             </CardContent>
           </Card>
@@ -425,7 +390,7 @@ const ObraDetalhes = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-card border-border">
               <CardContent className="pt-6">
                 <div className="space-y-2">
@@ -439,7 +404,7 @@ const ObraDetalhes = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-card border-border">
               <CardContent className="pt-6">
                 <div className="space-y-2">
@@ -450,13 +415,13 @@ const ObraDetalhes = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-card border-border">
               <CardContent className="pt-6">
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">Custo por m²</p>
                   <span className="text-xl font-bold text-card-foreground">
-                    {formatCurrency(obra.financeiro.orcamentoTotal / parseFloat(obra.area.replace(/[^\d,]/g, '').replace(',', '.')) || 1)}
+                    {formatCurrency(obra.financeiro.orcamentoTotal / parseFloat((obra.area || '0').replace(/[^\d,]/g, '').replace(',', '.')) || 1)}
                   </span>
                 </div>
               </CardContent>
@@ -487,37 +452,36 @@ const ObraDetalhes = () => {
                     <span className="text-card-foreground font-medium">{obra.progresso}%</span>
                   </div>
                   <div className="w-full bg-secondary rounded-full h-3">
-                    <div 
-                      className="bg-construction-green h-3 rounded-full transition-all" 
+                    <div
+                      className="bg-construction-green h-3 rounded-full transition-all"
                       style={{ width: `${obra.progresso}%` }}
                     />
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Progresso Financeiro</span>
                     <span className="text-card-foreground font-medium">{percentualOrcamentoExecutado.toFixed(1)}%</span>
                   </div>
                   <div className="w-full bg-secondary rounded-full h-3">
-                    <div 
-                      className={`h-3 rounded-full transition-all ${
-                        percentualOrcamentoExecutado > obra.progresso + 5 
-                          ? 'bg-red-500' 
-                          : 'bg-construction-blue'
-                      }`}
+                    <div
+                      className={`h-3 rounded-full transition-all ${percentualOrcamentoExecutado > obra.progresso + 5
+                        ? 'bg-red-500'
+                        : 'bg-construction-blue'
+                        }`}
                       style={{ width: `${Math.min(percentualOrcamentoExecutado, 100)}%` }}
                     />
                   </div>
                 </div>
               </div>
-              
+
               {percentualOrcamentoExecutado > obra.progresso + 5 && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
                   <div className="flex items-center space-x-2">
                     <AlertTriangle className="h-4 w-4 text-red-500" />
                     <span className="text-sm text-red-700 font-medium">
-                      Alerta: Execução financeira está {(percentualOrcamentoExecutado - obra.progresso).toFixed(1)}% 
+                      Alerta: Execução financeira está {(percentualOrcamentoExecutado - obra.progresso).toFixed(1)}%
                       acima do progresso físico
                     </span>
                   </div>
@@ -569,9 +533,8 @@ const ObraDetalhes = () => {
                         <td className="p-3 text-sm text-card-foreground text-right">
                           {formatCurrency(item.valorExecutado)}
                         </td>
-                        <td className={`p-3 text-sm text-right font-medium ${
-                          item.diferenca >= 0 ? 'text-red-500' : 'text-construction-green'
-                        }`}>
+                        <td className={`p-3 text-sm text-right font-medium ${item.diferenca >= 0 ? 'text-red-500' : 'text-construction-green'
+                          }`}>
                           {item.diferenca >= 0 ? '+' : ''}{formatCurrency(item.diferenca)}
                         </td>
                         <td className="p-3 text-sm text-card-foreground text-right">

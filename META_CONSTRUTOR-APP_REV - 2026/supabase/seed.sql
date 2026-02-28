@@ -1,11 +1,7 @@
 -- ============================================================================
--- SEED DATA FOR LOCAL DEVELOPMENT
+-- SEED DATA FOR LOCAL DEVELOPMENT (FIXED ENUMS & IDEMPOTENCY & SCHEMA)
 -- ============================================================================
--- Creates a minimal reproducible environment with:
--- 1 Admin User (admin@local.test)
--- 1 Organization (Dev Corp)
--- 1 Project (Obra Exemplo)
--- 1 RDO, 1 Activity, 1 Expense linked to the org
+-- Source of Truth: docs/schema-contract.md
 -- ============================================================================
 
 -- Disable triggers to insert into auth.users and bypass some auto-logic
@@ -36,7 +32,7 @@ INSERT INTO auth.users (
   'authenticated',
   'authenticated',
   'admin@local.test',
-  '$2a$10$abcdefghijklmnopqrstuvwxyzABCDEF', -- Log in might fail without real hash, but ID exists
+  '$2a$10$abcdefghijklmnopqrstuvwxyzABCDEF',
   now(),
   now(),
   now(),
@@ -50,7 +46,7 @@ INSERT INTO auth.users (
   ''
 ) ON CONFLICT (id) DO NOTHING;
 
--- 2. Create Profile (Manual insert since triggers are off)
+-- 2. Create Profile
 INSERT INTO public.profiles (
   id,
   name,
@@ -106,12 +102,13 @@ INSERT INTO public.org_members (
 ) ON CONFLICT (org_id, user_id) DO NOTHING;
 
 -- 5. Create Obra
+-- Status: 'ACTIVE' (enum obra_status)
 INSERT INTO public.obras (
   id,
   nome,
   slug,
   org_id,
-  user_id,
+  created_by,
   status,
   localizacao,
   responsavel,
@@ -127,7 +124,7 @@ INSERT INTO public.obras (
   'obra-exemplo',
   '00000000-0000-0000-0000-000000000002',
   '00000000-0000-0000-0000-000000000001',
-  'Em andamento',
+  'ACTIVE'::obra_status,
   'Local de teste - Dev',
   'Dev Admin',
   'Cliente Teste',
@@ -136,9 +133,11 @@ INSERT INTO public.obras (
   (now() + interval '6 months')::date,
   now(),
   now()
-) ON CONFLICT (id) DO NOTHING;
+) ON CONFLICT (id) DO UPDATE SET status = 'ACTIVE'::obra_status;
 
 -- 6. Create RDO
+-- FIXED: 'criado_por_id' -> 'user_id' (Matches schema in 20260209231000_recreate_rdos.sql)
+-- Status: 'DRAFT' (enum rdo_status)
 INSERT INTO public.rdos (
   id,
   obra_id,
@@ -147,7 +146,7 @@ INSERT INTO public.rdos (
   periodo,
   clima,
   status,
-  criado_por_id,
+  created_by, -- Was user_id
   created_at,
   updated_at
 ) VALUES (
@@ -157,76 +156,30 @@ INSERT INTO public.rdos (
   now(),
   'Manhã',
   'Ensolarado',
-  'Em elaboração',
+  'DRAFT'::rdo_status,
   '00000000-0000-0000-0000-000000000001',
   now(),
   now()
 ) ON CONFLICT (id) DO NOTHING;
 
--- 7. Create Atividade
-INSERT INTO public.atividades (
-  id,
-  obra_id,
-  org_id,
-  user_id,
-  titulo,
-  data,
-  hora,
-  status,
-  created_at,
-  updated_at
-) VALUES (
-  '00000000-0000-0000-0000-000000000006',
-  '00000000-0000-0000-0000-000000000003',
-  '00000000-0000-0000-0000-000000000002',
-  '00000000-0000-0000-0000-000000000001',
-  'Atividade Seed',
-  now()::date,
-  '09:00'::time,
-  'agendada',
-  now(),
-  now()
-) ON CONFLICT (id) DO NOTHING;
+-- 7. Create Atividade (SKIP: Table does not exist in schema)
+-- If 'rdo_atividades' is intended, it needs 'rdo_id', etc. 
+-- For now, commenting out to pass seed.
 
--- 8. Create Expense
-INSERT INTO public.expenses (
-  id,
-  obra_id,
-  org_id,
-  user_submitting_id,
-  cost_category,
-  invoice_number,
-  supplier_name,
-  amount,
-  date_of_expense,
-  approval_status,
-  notes,
-  created_at,
-  updated_at
-) VALUES (
-  '00000000-0000-0000-0000-000000000007',
-  '00000000-0000-0000-0000-000000000003',
-  '00000000-0000-0000-0000-000000000002',
-  '00000000-0000-0000-0000-000000000001',
-  'Material',
-  'INV-SEED-001',
-  'Fornecedor Seed',
-  150.00,
-  now()::date,
-  'Pending Manager',
-  'Despesa Seed',
-  now(),
-  now()
-) ON CONFLICT (id) DO NOTHING;
+-- 8. Create Expense (SKIP: Table does not exist in schema)
 
 -- Restore triggers
 SET session_replication_role = 'origin';
 
 -- Log completion
-DO $$
-BEGIN
-  RAISE NOTICE 'Seed data applied successfully: Admin % | Org % | Obra %', 
-    '00000000-0000-0000-0000-000000000001',
-    '00000000-0000-0000-0000-000000000002',
-    '00000000-0000-0000-0000-000000000003';
-END $$;
+-- Seed finished
+
+-- 9. Create Storage Bucket (Idempotent)
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('documentos', 'documentos', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Policy for storage (Simplistic for dev: allow all)
+-- Note: In production, use proper RLS.
+-- CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING ( bucket_id = 'documentos' );
+-- CREATE POLICY "Auth Upload" ON storage.objects FOR INSERT WITH CHECK ( bucket_id = 'documentos' AND auth.role() = 'authenticated' );

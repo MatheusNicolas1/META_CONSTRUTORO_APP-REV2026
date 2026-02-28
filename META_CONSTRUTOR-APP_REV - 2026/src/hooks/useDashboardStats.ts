@@ -1,77 +1,103 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useRequireOrg } from '@/hooks/requireOrg';
+import { useAuth } from '@/components/auth/AuthContext';
 
 export const useDashboardStats = () => {
   const { orgId, isLoading: orgLoading } = useRequireOrg();
+  const { user, isAuthenticated } = useAuth();
 
   return useQuery({
     queryKey: ['dashboard-stats', orgId],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Usuário não autenticado');
+      if (!user?.id) throw new Error('Usuário não autenticado');
 
-      // Buscar obras do usuário
-      const { data: obras, error: obrasError } = await supabase
-        .from('obras')
-        .select('id, status')
-        .eq('org_id', orgId);
+      // Run all queries in parallel for speed
+      const [obrasResult, equipesResult, equipamentosResult, atividadesResult] = await Promise.all([
+        // 1. Obras da organização
+        supabase
+          .from('obras')
+          .select('id, status')
+          .eq('org_id', orgId!),
 
-      if (obrasError) throw obrasError;
+        // 2. Equipes ativas do usuário
+        supabase
+          .from('equipes')
+          .select('id, ativo')
+          .eq('user_id', user.id)
+          .eq('ativo', true),
 
-      // Buscar equipes do usuário
-      const { data: equipes, error: equipesError } = await supabase
-        .from('equipes')
-        .select('id, ativo')
-        .eq('org_id', orgId)
-        .eq('ativo', true);
+        // 3. Equipamentos operacionais do usuário
+        supabase
+          .from('equipamentos')
+          .select('id, status')
+          .eq('user_id', user.id)
+          .in('status', ['Operacional', 'Em uso']),
 
-      if (equipesError) throw equipesError;
+        // 4. Atividades pendentes do usuário
+        supabase
+          .from('atividades')
+          .select('id, status')
+          .eq('user_id', user.id)
+          .in('status', ['Pendente', 'Em andamento', 'agendada', 'em_andamento']),
+      ]);
 
-      // Buscar equipamentos do usuário
-      const { data: equipamentos, error: equipamentosError } = await supabase
-        .from('equipamentos')
-        .select('id, status')
-        .eq('org_id', orgId)
-        .in('status', ['Operacional', 'Em uso']);
+      // Handle errors gracefully — don't let one failing query break everything
+      if (obrasResult.error) console.error('[DashboardStats] Obras:', obrasResult.error);
+      if (equipesResult.error) console.error('[DashboardStats] Equipes:', equipesResult.error);
+      if (equipamentosResult.error) console.error('[DashboardStats] Equipamentos:', equipamentosResult.error);
+      if (atividadesResult.error) console.error('[DashboardStats] Atividades:', atividadesResult.error);
 
-      if (equipamentosError) throw equipamentosError;
+      const obras = obrasResult.data || [];
+      const equipes = equipesResult.data || [];
+      const equipamentos = equipamentosResult.data || [];
+      const atividades = atividadesResult.data || [];
 
-      // Buscar RDOs pendentes
-      const { data: rdos, error: rdosError } = await supabase
-        .from('rdos')
-        .select('id, status')
-        .eq('org_id', orgId)
-        .eq('status', 'Em elaboração');
+      // 5. RDOs pendentes (via obras da org)
+      const obraIds = obras.map(o => o.id);
+      let rdosCount = 0;
+      if (obraIds.length > 0) {
+        const { data: rdos, error: rdosError } = await supabase
+          .from('rdos')
+          .select('id')
+          .in('obra_id', obraIds)
+          .eq('status', 'DRAFT');
 
-      if (rdosError) throw rdosError;
+        if (rdosError) {
+          console.error('[DashboardStats] RDOs:', rdosError);
+        } else {
+          rdosCount = rdos?.length || 0;
+        }
+      }
 
       // Contar obras ativas
-      const obrasAtivas = obras?.filter(o =>
-        o.status === 'Em andamento' || o.status === 'Iniciando'
-      ).length || 0;
+      const obrasAtivas = obras.filter(o =>
+        o.status === 'ACTIVE' || o.status === 'Em andamento' || o.status === 'DRAFT'
+      ).length;
+
+      const totalPendentes = atividades.length + rdosCount;
 
       return {
         obrasAtivas,
         obrasAtivasDescricao: obrasAtivas === 0
           ? 'Nenhuma obra cadastrada'
           : `${obrasAtivas} obra${obrasAtivas > 1 ? 's' : ''} em andamento`,
-        equipesTrabalhando: equipes?.length || 0,
-        equipesDescricao: equipes?.length === 0
+        equipesTrabalhando: equipes.length,
+        equipesDescricao: equipes.length === 0
           ? 'Cadastre equipes nas obras'
           : `${equipes.length} equipe${equipes.length > 1 ? 's' : ''} ativa${equipes.length > 1 ? 's' : ''}`,
-        equipamentosAtivos: equipamentos?.length || 0,
-        equipamentosDescricao: equipamentos?.length === 0
+        equipamentosAtivos: equipamentos.length,
+        equipamentosDescricao: equipamentos.length === 0
           ? 'Nenhum equipamento cadastrado'
           : `${equipamentos.length} em operação`,
-        atividadesPendentes: rdos?.length || 0,
-        atividadesDescricao: rdos?.length === 0
+        atividadesPendentes: totalPendentes,
+        atividadesDescricao: totalPendentes === 0
           ? 'Nenhuma atividade pendente'
-          : `${rdos.length} RDO${rdos.length > 1 ? 's' : ''} em elaboração`
+          : `${atividades.length} atividade${atividades.length !== 1 ? 's' : ''} + ${rdosCount} RDO${rdosCount !== 1 ? 's' : ''}`
       };
     },
-    enabled: !orgLoading && !!orgId,
-    staleTime: 60 * 1000, // 1 minuto
+    enabled: !orgLoading && !!orgId && isAuthenticated && !!user?.id,
+    staleTime: 60 * 1000,
     refetchOnWindowFocus: true,
   });
 };

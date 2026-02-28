@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS public.plans (
   name TEXT NOT NULL,
   
   -- Preços (em centavos para evitar problemas de precisão)
-  monthly_price_cents INTEGER NOT NULL DEFAULT 0,
-  yearly_price_cents INTEGER NOT NULL DEFAULT 0,
+  monthly_price_cents INTEGER,
+  yearly_price_cents INTEGER,
   
   -- Stripe integration
   stripe_price_id_monthly TEXT,
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS public.plans (
   trial_days INTEGER DEFAULT 0,
   
   CONSTRAINT plans_slug_format CHECK (slug ~ '^[a-z0-9_-]+$'),
-  CONSTRAINT plans_prices_positive CHECK (monthly_price_cents >= 0 AND yearly_price_cents >= 0)
+  CONSTRAINT plans_prices_positive CHECK ((monthly_price_cents IS NULL OR monthly_price_cents >= 0) AND (yearly_price_cents IS NULL OR yearly_price_cents >= 0))
 );
 
 -- Índices
@@ -47,6 +47,7 @@ CREATE INDEX IF NOT EXISTS idx_plans_active ON public.plans(is_active);
 CREATE INDEX IF NOT EXISTS idx_plans_order ON public.plans(display_order);
 
 -- Trigger para updated_at
+DROP TRIGGER IF EXISTS update_plans_updated_at ON public.plans;
 CREATE TRIGGER update_plans_updated_at
   BEFORE UPDATE ON public.plans
   FOR EACH ROW
@@ -55,9 +56,14 @@ CREATE TRIGGER update_plans_updated_at
 -- RLS: leitura pública (qualquer um pode ver planos ativos)
 ALTER TABLE public.plans ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Plans são públicos para leitura"
-  ON public.plans FOR SELECT
-  USING (is_active = true);
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'plans' AND policyname = 'Plans são públicos para leitura') THEN
+        CREATE POLICY "Plans são públicos para leitura"
+          ON public.plans FOR SELECT
+          USING (is_active = true);
+    END IF;
+END $$;
 
 -- Seed: inserir planos existentes
 SET role TO postgres;
@@ -100,5 +106,4 @@ ON CONFLICT (slug) DO NOTHING;
 
 RESET role;
 
-COMMENT ON TABLE public.plans IS 'M4.1: Single source of truth para planos/preços';
-COMMENT ON COLUMN public.plans.monthly_price_cents IS 'Preço mensal em centavos (ex: 12990 = R$ 129,90)';
+

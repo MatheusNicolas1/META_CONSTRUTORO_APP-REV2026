@@ -3,15 +3,17 @@ import { Scale } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import SEO from '@/components/SEO';
+import { useNavigate } from 'react-router-dom';
 
 const LGPD = () => {
+  const navigate = useNavigate();
   return (
     <>
-      <SEO 
+      <SEO
         title="LGPD - Meta Construtor"
         description="Informações sobre conformidade com a Lei Geral de Proteção de Dados"
       />
-      
+
       <div className="min-h-screen bg-background">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center gap-3 mb-8">
@@ -22,7 +24,7 @@ const LGPD = () => {
           <Card className="mb-6">
             <CardContent className="p-8">
               <p className="text-lg text-muted-foreground leading-relaxed">
-                A Meta Construtor está em total conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018). 
+                A Meta Construtor está em total conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).
                 Este documento explica como cumprimos as exigências da LGPD e protegemos seus dados pessoais.
               </p>
             </CardContent>
@@ -56,32 +58,32 @@ const LGPD = () => {
                     <h3 className="font-semibold text-foreground mb-1">Confirmação e Acesso</h3>
                     <p className="text-sm text-muted-foreground">Confirmar se tratamos seus dados e acessá-los</p>
                   </div>
-                  
+
                   <div className="border-l-4 border-primary pl-4">
                     <h3 className="font-semibold text-foreground mb-1">Correção</h3>
                     <p className="text-sm text-muted-foreground">Corrigir dados incompletos, inexatos ou desatualizados</p>
                   </div>
-                  
+
                   <div className="border-l-4 border-primary pl-4">
                     <h3 className="font-semibold text-foreground mb-1">Anonimização, Bloqueio ou Eliminação</h3>
                     <p className="text-sm text-muted-foreground">Solicitar anonimização, bloqueio ou eliminação de dados desnecessários</p>
                   </div>
-                  
+
                   <div className="border-l-4 border-primary pl-4">
                     <h3 className="font-semibold text-foreground mb-1">Portabilidade</h3>
                     <p className="text-sm text-muted-foreground">Receber seus dados em formato estruturado</p>
                   </div>
-                  
+
                   <div className="border-l-4 border-primary pl-4">
                     <h3 className="font-semibold text-foreground mb-1">Informação sobre Compartilhamento</h3>
                     <p className="text-sm text-muted-foreground">Saber com quem compartilhamos seus dados</p>
                   </div>
-                  
+
                   <div className="border-l-4 border-primary pl-4">
                     <h3 className="font-semibold text-foreground mb-1">Revogação do Consentimento</h3>
                     <p className="text-sm text-muted-foreground">Revogar consentimento a qualquer momento</p>
                   </div>
-                  
+
                   <div className="border-l-4 border-primary pl-4">
                     <h3 className="font-semibold text-foreground mb-1">Oposição</h3>
                     <p className="text-sm text-muted-foreground">Se opor ao tratamento em casos específicos</p>
@@ -132,14 +134,29 @@ const LGPD = () => {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">8. Incidentes de Segurança</h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  Em caso de incidente de segurança que possa acarretar risco aos seus direitos e liberdades, notificaremos você e a Autoridade Nacional de Proteção de Dados (ANPD) conforme exigido pela lei.
+                <h2 className="text-2xl font-semibold mb-4">8. Retenção de Dados</h2>
+                <p className="text-muted-foreground mb-3">Seus dados são retidos conforme as seguintes regras:</p>
+                <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                  <li><strong>Conta ativa:</strong> Dados mantidos enquanto a conta existir e for utilizada</li>
+                  <li><strong>Exclusão de conta:</strong> Dados pessoais são removidos <strong>imediatamente</strong> e de forma irreversível no momento da solicitação</li>
+                  <li><strong>Logs de auditoria:</strong> Registros anonimizados de ações são mantidos por 12 meses para fins de segurança e conformidade</li>
+                  <li><strong>Dados financeiros:</strong> Mantidos pelo prazo legal de 5 anos conforme legislação tributária brasileira</li>
+                  <li><strong>Backups:</strong> Backups criptografados são eliminados automaticamente conforme o ciclo de rotação (máximo 30 dias)</li>
+                </ul>
+                <p className="text-muted-foreground mt-3">
+                  Não aplicamos período de retenção pós-exclusão para dados pessoais. A exclusão é imediata e definitiva.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">9. Encarregado de Proteção de Dados (DPO)</h2>
+                <h2 className="text-2xl font-semibold mb-4">9. Incidentes de Segurança</h2>
+                <p className="text-muted-foreground leading-relaxed">
+                  Em caso de incidente de segurança que possa acarretar risco aos seus direitos e liberdades, notificaremos você e a Autoridade Nacional de Proteção de Dados (ANPD) em até 72 horas, conforme exigido pela lei.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">10. Encarregado de Proteção de Dados (DPO)</h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   Designamos um Encarregado de Proteção de Dados para atuar como canal de comunicação entre a empresa, os titulares de dados e a ANPD.
                 </p>
@@ -155,26 +172,26 @@ const LGPD = () => {
               </section>
 
               <section>
-                <h2 className="text-2xl font-semibold mb-4">10. Atualização desta Página</h2>
+                <h2 className="text-2xl font-semibold mb-4">11. Atualização desta Página</h2>
                 <p className="text-muted-foreground leading-relaxed">
                   Esta página pode ser atualizada periodicamente para refletir mudanças em nossas práticas ou na legislação. A data da última atualização está indicada no final deste documento.
                 </p>
               </section>
 
               <div className="text-sm text-muted-foreground pt-6 border-t">
-                <p>Última atualização: Janeiro de 2024</p>
+                <p>Última atualização: Fevereiro de 2026</p>
               </div>
             </CardContent>
           </Card>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="outline">
-              Solicitar Meus Dados
+            <Button size="lg" variant="outline" onClick={() => navigate('/perfil?tab=seguranca')}>
+              Solicitar / Exportar Meus Dados
             </Button>
-            <Button size="lg" variant="outline">
+            <Button size="lg" variant="outline" onClick={() => window.location.href = 'mailto:dpo@metaconstrutor.com?subject=Solicitação LGPD'}>
               Falar com o DPO
             </Button>
-            <Button size="lg" variant="outline">
+            <Button size="lg" variant="destructive" onClick={() => navigate('/perfil?tab=seguranca')}>
               Excluir Meus Dados
             </Button>
           </div>

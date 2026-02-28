@@ -98,26 +98,26 @@ export function ActivityCalendar() {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const tomorrowString = tomorrow.toISOString().split('T')[0];
-      
+
       const tomorrowActivities = activities[tomorrowString] || [];
-      
+
       tomorrowActivities.forEach(activity => {
         if (!activity.notified && activity.status === 'agendada') {
           // Mark as notified
           const updatedActivities = { ...activities };
-          updatedActivities[tomorrowString] = updatedActivities[tomorrowString].map(a => 
+          updatedActivities[tomorrowString] = updatedActivities[tomorrowString].map(a =>
             a.id === activity.id ? { ...a, notified: true } : a
           );
           setActivities(updatedActivities);
           saveActivities(updatedActivities);
-          
+
           // Show notification
           toast({
             title: "Lembrete de Atividade",
             description: `${activity.title} - ${activity.obra} está programada para amanhã às ${activity.time}`,
             duration: 10000,
           });
-          
+
           // Browser notification if permission granted
           if (Notification.permission === 'granted') {
             new Notification('Lembrete de Atividade', {
@@ -137,7 +137,7 @@ export function ActivityCalendar() {
     // Check immediately and then every hour
     checkNotifications();
     const interval = setInterval(checkNotifications, 60 * 60 * 1000);
-    
+
     return () => clearInterval(interval);
   }, [activities, toast]);
 
@@ -174,7 +174,7 @@ export function ActivityCalendar() {
     }
 
     if (editingActivity) {
-      updatedActivities[selectedDateString] = updatedActivities[selectedDateString].map(a => 
+      updatedActivities[selectedDateString] = updatedActivities[selectedDateString].map(a =>
         a.id === editingActivity.id ? activity : a
       );
     } else {
@@ -183,7 +183,7 @@ export function ActivityCalendar() {
 
     setActivities(updatedActivities);
     saveActivities(updatedActivities);
-    
+
     toast({
       title: editingActivity ? "Atividade atualizada" : "Atividade criada",
       description: `${activity.title} foi ${editingActivity ? 'atualizada' : 'criada'} com sucesso`,
@@ -206,17 +206,17 @@ export function ActivityCalendar() {
 
   const handleDeleteActivity = (activityId: string) => {
     if (!selectedDateString) return;
-    
+
     const updatedActivities = { ...activities };
     updatedActivities[selectedDateString] = updatedActivities[selectedDateString].filter(a => a.id !== activityId);
-    
+
     if (updatedActivities[selectedDateString].length === 0) {
       delete updatedActivities[selectedDateString];
     }
-    
+
     setActivities(updatedActivities);
     saveActivities(updatedActivities);
-    
+
     toast({
       title: "Atividade excluída",
       description: "A atividade foi removida com sucesso",
@@ -255,15 +255,15 @@ export function ActivityCalendar() {
         <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-5">
           {/* Calendar - takes 2 columns on xl screens */}
           <div className="space-y-4 lg:col-span-1 xl:col-span-2">
-            <Calendar 
-              className="rounded-lg border border-border p-2" 
-              value={date} 
+            <Calendar
+              className="rounded-lg border border-border p-2"
+              value={date}
               onChange={handleDateSelect}
             />
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button 
-                  className="w-full gradient-construction border-0 hover:opacity-90 text-white font-medium" 
+                <Button
+                  className="w-full gradient-construction border-0 hover:opacity-90 text-white font-medium"
                   size="sm"
                   onClick={() => {
                     if (!date) {
@@ -292,7 +292,7 @@ export function ActivityCalendar() {
                       id="title"
                       placeholder="Ex: Concretagem da laje"
                       value={newActivity.title}
-                      onChange={(e) => setNewActivity({...newActivity, title: e.target.value})}
+                      onChange={(e) => setNewActivity({ ...newActivity, title: e.target.value })}
                     />
                   </div>
                   <div className="space-y-2">
@@ -301,7 +301,7 @@ export function ActivityCalendar() {
                       id="description"
                       placeholder="Descreva os detalhes da atividade..."
                       value={newActivity.description}
-                      onChange={(e) => setNewActivity({...newActivity, description: e.target.value})}
+                      onChange={(e) => setNewActivity({ ...newActivity, description: e.target.value })}
                       rows={3}
                     />
                   </div>
@@ -309,9 +309,9 @@ export function ActivityCalendar() {
                     <Label htmlFor="obra">Obra *</Label>
                     <Input
                       id="obra"
-                      placeholder="Ex: Residencial Vista Verde"
+                      placeholder="Ex: Obra A"
                       value={newActivity.obra}
-                      onChange={(e) => setNewActivity({...newActivity, obra: e.target.value})}
+                      onChange={(e) => setNewActivity({ ...newActivity, obra: e.target.value })}
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-2">
@@ -321,7 +321,7 @@ export function ActivityCalendar() {
                         id="time"
                         type="time"
                         value={newActivity.time}
-                        onChange={(e) => setNewActivity({...newActivity, time: e.target.value})}
+                        onChange={(e) => setNewActivity({ ...newActivity, time: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -330,7 +330,7 @@ export function ActivityCalendar() {
                         id="priority"
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         value={newActivity.priority}
-                        onChange={(e) => setNewActivity({...newActivity, priority: e.target.value as Activity['priority']})}
+                        onChange={(e) => setNewActivity({ ...newActivity, priority: e.target.value as Activity['priority'] })}
                       >
                         <option value="baixa">Baixa</option>
                         <option value="media">Média</option>
@@ -355,7 +355,7 @@ export function ActivityCalendar() {
           <div className="space-y-4 lg:col-span-1 xl:col-span-3">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <h4 className="text-sm md:text-base font-medium text-card-foreground">
-                {selectedDateString 
+                {selectedDateString
                   ? `Atividades - ${new Date(selectedDateString).toLocaleDateString('pt-BR')}`
                   : "Selecione uma data"
                 }
@@ -371,8 +371,8 @@ export function ActivityCalendar() {
               {selectedActivities.length > 0 ? (
                 <div className="grid gap-3 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-1">
                   {selectedActivities.map((activity) => (
-                    <div 
-                      key={activity.id} 
+                    <div
+                      key={activity.id}
                       className={`p-4 bg-card border rounded-lg border-l-4 ${getPriorityColor(activity.priority)} hover:shadow-md transition-shadow duration-200`}
                     >
                       <div className="space-y-3">
@@ -390,13 +390,13 @@ export function ActivityCalendar() {
                             {getStatusBadge(activity.status)}
                           </div>
                         </div>
-                        
+
                         {activity.description && (
                           <p className="text-xs md:text-sm text-muted-foreground line-clamp-2">
                             {activity.description}
                           </p>
                         )}
-                        
+
                         <div className="flex items-center justify-between">
                           <div className="flex items-center text-xs text-muted-foreground min-w-0 flex-1">
                             <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
@@ -408,7 +408,7 @@ export function ActivityCalendar() {
                               </Badge>
                             )}
                           </div>
-                          
+
                           <div className="flex items-center space-x-1 flex-shrink-0">
                             <Button
                               variant="ghost"
@@ -439,13 +439,13 @@ export function ActivityCalendar() {
                   <CalendarDays className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <div className="space-y-2">
                     <p className="text-sm md:text-base font-medium">
-                      {selectedDateString 
+                      {selectedDateString
                         ? "Nenhuma atividade agendada"
                         : "Selecione uma data"
                       }
                     </p>
                     <p className="text-xs md:text-sm opacity-75">
-                      {selectedDateString 
+                      {selectedDateString
                         ? "Clique em 'Nova Atividade' para criar uma atividade para esta data."
                         : "Clique em uma data no calendário para ver as atividades."
                       }

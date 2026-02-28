@@ -41,58 +41,7 @@ interface SearchResult {
   date?: Date;
 }
 
-const mockResults: SearchResult[] = [
-  {
-    id: "1",
-    title: "Residencial Vista Verde",
-    subtitle: "Eng. João Silva - 75% concluído",
-    category: "obra",
-    link: "/obras/1"
-  },
-  {
-    id: "2",
-    title: "RDO-2024-001",
-    subtitle: "Residencial Vista Verde - Aprovado",
-    category: "rdo",
-    link: "/rdo/1/visualizar",
-    date: new Date()
-  },
-  {
-    id: "3",
-    title: "Orçamento Analítico - Centro Norte",
-    subtitle: "R$ 2.450.000 - Em análise",
-    category: "orcamento",
-    link: "/orcamentos/1"
-  },
-  {
-    id: "4",
-    title: "Relatório Mensal - Dezembro 2024",
-    subtitle: "12 obras ativas - Gerado em 15/12/2024",
-    category: "relatorio",
-    link: "/relatorios/1"
-  },
-  {
-    id: "5",
-    title: "Projeto Arquitetônico.pdf",
-    subtitle: "Residencial Vista Verde - Anexado em 10/12/2024",
-    category: "documento",
-    link: "/documentos/1"
-  },
-  {
-    id: "6",
-    title: "Comercial Center Norte",
-    subtitle: "Eng. Maria Santos - 45% concluído",
-    category: "obra",
-    link: "/obras/2"
-  },
-  {
-    id: "7",
-    title: "Ponte Rio Azul",
-    subtitle: "Eng. Carlos Lima - 90% concluído",
-    category: "obra",
-    link: "/obras/3"
-  }
-];
+const searchResults: SearchResult[] = [];
 
 // Busca semântica com palavras relacionadas
 const semanticKeywords: { [key: string]: string[] } = {
@@ -192,7 +141,7 @@ export function GlobalSearch() {
   const handleSearch = (term: string) => {
     if (term.trim()) {
       const searchTerm = term.toLowerCase();
-      
+
       // Busca semântica - incluir palavras relacionadas
       const semanticMatches = Object.entries(semanticKeywords).some(([key, synonyms]) => {
         if (searchTerm.includes(key) || synonyms.some(synonym => searchTerm.includes(synonym))) {
@@ -200,26 +149,26 @@ export function GlobalSearch() {
         }
         return false;
       });
-      
-      const filtered = mockResults.filter(result => {
+
+      const filtered = searchResults.filter(result => {
         const titleMatch = result.title.toLowerCase().includes(searchTerm);
         const subtitleMatch = result.subtitle.toLowerCase().includes(searchTerm);
-        
+
         // Busca por palavras relacionadas
         const semanticMatch = Object.entries(semanticKeywords).some(([key, synonyms]) => {
           const keywordInSearch = searchTerm.includes(key) || synonyms.some(synonym => searchTerm.includes(synonym));
-          const keywordInResult = result.title.toLowerCase().includes(key) || 
-                                  result.subtitle.toLowerCase().includes(key) ||
-                                  synonyms.some(synonym => 
-                                    result.title.toLowerCase().includes(synonym) || 
-                                    result.subtitle.toLowerCase().includes(synonym)
-                                  );
+          const keywordInResult = result.title.toLowerCase().includes(key) ||
+            result.subtitle.toLowerCase().includes(key) ||
+            synonyms.some(synonym =>
+              result.title.toLowerCase().includes(synonym) ||
+              result.subtitle.toLowerCase().includes(synonym)
+            );
           return keywordInSearch && keywordInResult;
         });
-        
+
         return titleMatch || subtitleMatch || semanticMatch;
       });
-      
+
       setResults(filtered);
     } else {
       setResults([]);
@@ -296,8 +245,11 @@ export function GlobalSearch() {
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>Busca Global</DialogTitle>
+            <div className="sr-only">
+              Interface de busca global para obras, RDOs e documentos.
+            </div>
           </DialogHeader>
-          
+
           <div className="flex space-x-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -312,7 +264,7 @@ export function GlobalSearch() {
                 autoFocus
               />
             </div>
-            
+
             <Button
               variant={isListening ? "destructive" : "outline"}
               size="icon"
@@ -350,7 +302,7 @@ export function GlobalSearch() {
                           {getCategoryLabel(result.category)}
                         </Badge>
                       </div>
-                      
+
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm text-foreground truncate">
                           {result.title}
@@ -374,7 +326,7 @@ export function GlobalSearch() {
                 <p>Nenhum resultado encontrado para "{searchTerm}"</p>
               </div>
             )}
-            
+
             {!searchTerm && (
               <div className="text-center py-8 text-muted-foreground">
                 <Search className="mx-auto h-12 w-12 mb-4 opacity-50" />

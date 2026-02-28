@@ -187,7 +187,7 @@ export function ChecklistTemplates({ onSelectTemplate, selectedCategory }: Check
     }
   };
 
-  const filteredTemplates = selectedCategory 
+  const filteredTemplates = selectedCategory
     ? templates.filter(t => t.category === selectedCategory)
     : templates;
 
@@ -253,10 +253,10 @@ export function ChecklistTemplates({ onSelectTemplate, selectedCategory }: Check
               {previewTemplate?.name}
             </DialogTitle>
             <DialogDescription>
-              {previewTemplate?.description}
+              {previewTemplate?.description || "Visualização detalhada dos itens do checklist."}
             </DialogDescription>
           </DialogHeader>
-          
+
           <ScrollArea className="max-h-[60vh]">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -265,7 +265,7 @@ export function ChecklistTemplates({ onSelectTemplate, selectedCategory }: Check
                   {previewTemplate?.items.length} itens
                 </Badge>
               </div>
-              
+
               <div className="space-y-3">
                 {previewTemplate?.items.map((item, index) => (
                   <Card key={index} className="border-l-4 border-l-primary/30">
@@ -274,7 +274,7 @@ export function ChecklistTemplates({ onSelectTemplate, selectedCategory }: Check
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <h4 className="font-medium text-sm">{item.title}</h4>
-                            <Badge 
+                            <Badge
                               variant={getPriorityColor(item.priority) as any}
                               className="text-xs"
                             >
@@ -306,7 +306,7 @@ export function ChecklistTemplates({ onSelectTemplate, selectedCategory }: Check
               </div>
             </div>
           </ScrollArea>
-          
+
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={() => setPreviewTemplate(null)}>
               Fechar

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Mail, IdCard, Phone, Check, X } from 'lucide-react';
+import { Eye, EyeOff, Mail, User, Phone, Check, X } from 'lucide-react';
 import { parsePhoneNumber, isValidPhoneNumber } from 'libphonenumber-js';
 
 import { validatePasswordStrength, isPasswordValid } from '@/utils/passwordValidator';
@@ -106,7 +106,7 @@ const NameStep = ({
         <label className="text-sm font-medium text-muted-foreground">Nome completo</label>
         <GlassInputWrapper>
           <div className="relative">
-            <IdCard className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               name="name"
               type="text"
@@ -401,7 +401,7 @@ const PasswordStep = ({
             className="mt-1 h-4 w-4 rounded border border-border bg-transparent text-construction-orange focus:ring-2 focus:ring-construction-orange/20"
           />
           <span className="text-foreground/90">
-            Concordo com os <a href="#" className="text-construction-orange hover:underline">Termos de Uso</a> e <a href="#" className="text-construction-orange hover:underline">Política de Privacidade</a>
+            Concordo com os <a href="/legal/termos" target="_blank" rel="noopener noreferrer" className="text-construction-orange hover:underline">Termos de Uso</a> e <a href="/legal/privacidade" target="_blank" rel="noopener noreferrer" className="text-construction-orange hover:underline">Política de Privacidade</a>
           </span>
         </label>
       </div>
@@ -450,41 +450,12 @@ export const SignUpSteps: React.FC<SignUpStepsProps> = ({ onComplete }) => {
   const handleEmailNext = async () => {
     setIsValidating(true);
     try {
-      // Validar unicidade de email e telefone
-      const cleanPhone = formData.phone.replace(/\D/g, '');
-
-      const { data, error } = await supabase.rpc('check_user_duplicates', {
-        p_email: formData.email,
-        p_phone: cleanPhone,
-        p_cpf_cnpj: '' // Ainda não temos o documento nesta etapa
-      });
-
-      if (error) {
-        console.error('Erro ao verificar duplicados (continuando):', error);
-        // Não bloqueia o fluxo se houver erro técnico na validação, 
-        // deixa o Supabase Auth tratar na criação
-      } else {
-        // Type assertion para o retorno da função RPC
-        const result = data as { has_duplicate: boolean; duplicate_field: string | null } | null;
-
-        if (result?.has_duplicate) {
-          const field = result.duplicate_field;
-          if (field === 'email') {
-            toast.error('Este e-mail já está cadastrado. Use outro e-mail ou faça login.');
-            setIsValidating(false);
-            return;
-          } else if (field === 'phone') {
-            toast.error('Este telefone já está cadastrado. Use outro número ou faça login.');
-            setIsValidating(false);
-            return;
-          }
-        }
-      }
-
-      // Se passou na validação, avança para próxima etapa
+      // V1: Verificação de duplicidade removida daqui.
+      // O anon role não tem mais acesso à RPC check_user_duplicates.
+      // O Supabase Auth trata duplicidade de email nativamente.
+      await new Promise(resolve => setTimeout(resolve, 300));
       setCurrentStep(3);
-    } catch (error) {
-      console.error('Erro na validação:', error);
+    } catch (_error) {
       toast.error('Erro ao validar dados. Tente novamente.');
     } finally {
       setIsValidating(false);

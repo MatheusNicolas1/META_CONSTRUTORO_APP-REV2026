@@ -17,7 +17,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const rememberedEmail = localStorage.getItem('rememberedEmail') || "";
+  // V7: Removido rememberedEmail do localStorage (PII em plain text)
 
   const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,7 +27,6 @@ const Login = () => {
       const formData = new FormData(event.currentTarget);
       const emailOrPhone = formData.get('email') as string;
       const password = formData.get('password') as string;
-      const rememberMe = formData.get('rememberMe') === 'on';
 
       if (!emailOrPhone || !password) {
         toast({
@@ -40,12 +39,7 @@ const Login = () => {
 
       await signIn(emailOrPhone, password);
 
-      // Lógica do Manter-me conectado
-      if (rememberMe) {
-        localStorage.setItem('rememberedEmail', emailOrPhone);
-      } else {
-        localStorage.removeItem('rememberedEmail');
-      }
+      // V7: Não armazenamos email em localStorage (segurança)
 
       toast({
         title: "Login realizado com sucesso!",
@@ -57,9 +51,9 @@ const Login = () => {
         window.location.replace("/dashboard");
       }, 500);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Erro já é tratado no AuthContext com toast
-      console.error("Erro no login:", error);
+      // Log sanitizado: sem PII
     } finally {
       setIsLoading(false);
     }
@@ -78,10 +72,10 @@ const Login = () => {
 
       if (error) throw error;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Erro ao fazer login com Google",
-        description: error.message || "Tente novamente mais tarde.",
+        description: error instanceof Error ? error.message : "Tente novamente mais tarde.",
         variant: "destructive",
       });
       setIsLoading(false);
@@ -109,7 +103,7 @@ const Login = () => {
       <SEO
         title="Login | Meta Construtor"
         description="Acesse sua conta no Meta Construtor e gerencie suas obras com facilidade."
-        canonical={window.location.href}
+        canonical="https://metaconstrutor.com.br/login"
       />
       <SignInPage
         title={<span className="font-light text-foreground tracking-tighter">Bem-vindo</span>}
@@ -121,7 +115,7 @@ const Login = () => {
         onResetPassword={handleResetPassword}
         onCreateAccount={handleCreateAccount}
         isLoading={isLoading}
-        initialEmail={rememberedEmail}
+        initialEmail=""
       />
     </>
   );

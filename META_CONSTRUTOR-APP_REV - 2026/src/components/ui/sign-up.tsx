@@ -22,12 +22,20 @@ export interface Testimonial {
   text: string;
 }
 
+interface SignUpFormData {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+}
+
 interface SignUpPageProps {
   title?: React.ReactNode;
   description?: React.ReactNode;
   heroImageSrc?: string;
   testimonials?: Testimonial[];
-  onSignUp?: (data: any) => void;
+  onSignUp?: (data: SignUpFormData) => void;
   onGoogleSignIn?: () => void;
   onSignIn?: () => void;
 }

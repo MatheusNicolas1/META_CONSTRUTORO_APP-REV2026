@@ -38,7 +38,7 @@ class RoutePreloader {
       '/perfil': () => import('@/pages/Perfil'),
       '/feedback': () => import('@/pages/Feedback'),
       '/faq': () => import('@/pages/FAQ'),
-      '/seguranca': () => import('@/pages/Seguranca'),
+
     };
 
     const importFn = routeMap[routePath];
@@ -72,13 +72,13 @@ class RoutePreloader {
 
     // Preload de rotas relacionadas baseado na atual
     const relatedRoutes = this.getRelatedRoutes(currentRoute);
-    
+
     // Preload de rotas frequentes
     const frequentRoutes = this.getFrequentRoutes();
-    
+
     // Combinar e preload
     const routesToPreload = [...new Set([...relatedRoutes, ...frequentRoutes])];
-    
+
     // Preload em background com delay para não impactar performance
     setTimeout(() => {
       routesToPreload.forEach(route => {
@@ -126,7 +126,7 @@ class RoutePreloader {
       '/perfil': ['/configuracoes'],
       '/feedback': ['/faq'],
       '/faq': ['/feedback'],
-      '/seguranca': ['/configuracoes'],
+
     };
 
     return relatedRoutesMap[currentRoute] || [];
@@ -135,7 +135,7 @@ class RoutePreloader {
   private getFrequentRoutes(): string[] {
     // Rotas mais frequentemente acessadas (baseado no histórico)
     const routeFrequency: Record<string, number> = {};
-    
+
     this.navigationHistory.forEach(route => {
       routeFrequency[route] = (routeFrequency[route] || 0) + 1;
     });
@@ -150,8 +150,8 @@ class RoutePreloader {
   // Preload de rotas críticas na inicialização
   async preloadCriticalRoutes(): Promise<void> {
     const criticalRoutes = ['/dashboard', '/obras', '/rdo'];
-    
-    const promises = criticalRoutes.map(route => 
+
+    const promises = criticalRoutes.map(route =>
       this.preloadRoute(route).catch(() => {
         // Ignorar erros para não bloquear a inicialização
       })
@@ -216,7 +216,7 @@ export const initializeRoutePreloader = () => {
     requestIdleCallback(() => {
       const additionalRoutes = ['/atividades', '/checklist', '/equipamentos'];
       additionalRoutes.forEach(route => {
-        routePreloader.preloadRoute(route).catch(() => {});
+        routePreloader.preloadRoute(route).catch(() => { });
       });
     });
   }

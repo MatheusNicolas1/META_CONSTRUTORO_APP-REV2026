@@ -10,9 +10,9 @@ import { useToast } from "@/hooks/use-toast";
 import { eventManager } from "@/services/eventManager";
 import { integrationService } from "@/services/integrationService";
 import { IntegrationEvent } from "@/types/integration";
-import { 
-  Send, 
-  Zap, 
+import {
+  Send,
+  Zap,
   Loader2,
   CheckCircle,
   AlertCircle
@@ -64,7 +64,7 @@ export const EventTrigger = ({ onEventSent }: EventTriggerProps) => {
     }
 
     setIsLoading(true);
-    
+
     try {
       let eventData = {};
       try {
@@ -108,10 +108,10 @@ export const EventTrigger = ({ onEventSent }: EventTriggerProps) => {
 
   const handleDirectTest = async () => {
     setIsLoading(true);
-    
+
     try {
       let result;
-      
+
       switch (formData.testType) {
         case 'whatsapp':
           if (!formData.phoneNumber || !formData.message) {
@@ -119,20 +119,20 @@ export const EventTrigger = ({ onEventSent }: EventTriggerProps) => {
           }
           result = await integrationService.sendWhatsAppMessage(formData.phoneNumber, formData.message);
           break;
-          
+
         case 'gmail':
           if (!formData.emailRecipient || !formData.subject || !formData.message) {
             throw new Error('Destinatário, assunto e mensagem são obrigatórios');
           }
           result = await integrationService.sendEmail([formData.emailRecipient], formData.subject, formData.message);
           break;
-          
+
         case 'googledrive':
           // Create a mock file for testing
-          const mockFile = new File(['Test file content'], formData.fileName || 'test-file.txt', { type: 'text/plain' });
-          result = await integrationService.uploadToGoogleDrive(mockFile, '/MetaConstrutor/Test');
+          const testFile = new File(['Test file content'], formData.fileName || 'test-file.txt', { type: 'text/plain' });
+          result = await integrationService.uploadToGoogleDrive(testFile, '/MetaConstrutor/Uploads');
           break;
-          
+
         default:
           throw new Error('Tipo de teste não suportado');
       }
@@ -175,8 +175,8 @@ export const EventTrigger = ({ onEventSent }: EventTriggerProps) => {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="event-type">Tipo de Evento</Label>
-              <Select 
-                value={formData.event} 
+              <Select
+                value={formData.event}
                 onValueChange={(value: IntegrationEvent) => setFormData(prev => ({ ...prev, event: value }))}
               >
                 <SelectTrigger>
@@ -247,8 +247,8 @@ export const EventTrigger = ({ onEventSent }: EventTriggerProps) => {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label>Tipo de Teste</Label>
-            <Select 
-              value={formData.testType} 
+            <Select
+              value={formData.testType}
               onValueChange={(value: any) => setFormData(prev => ({ ...prev, testType: value }))}
             >
               <SelectTrigger>

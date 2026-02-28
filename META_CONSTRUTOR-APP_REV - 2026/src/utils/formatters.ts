@@ -29,20 +29,21 @@ export const formatProgress = (current: number, total: number): string => {
 export const formatDuration = (minutes: number): string => {
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
-  
+
   if (hours === 0) {
     return `${remainingMinutes}min`;
   }
-  
+
   if (remainingMinutes === 0) {
     return `${hours}h`;
   }
-  
+
   return `${hours}h ${remainingMinutes}min`;
 };
 
 export const getStatusColor = (status: string): string => {
   const statusColors: { [key: string]: string } = {
+    // Legacy / UI Labels
     'Ativo': 'text-construction-green',
     'Em andamento': 'text-construction-orange',
     'Concluída': 'text-construction-green',
@@ -55,14 +56,22 @@ export const getStatusColor = (status: string): string => {
     'Manutenção': 'text-construction-orange',
     'Disponível': 'text-construction-blue',
     'Operacional': 'text-construction-green',
-    'Parado': 'text-red-500'
+    'Parado': 'text-red-500',
+
+    // DB Enums (Strict)
+    'ACTIVE': 'text-construction-orange',
+    'DRAFT': 'text-construction-blue',
+    'ON_HOLD': 'text-yellow-500',
+    'COMPLETED': 'text-construction-green',
+    'CANCELED': 'text-red-500'
   };
-  
+
   return statusColors[status] || 'text-muted-foreground';
 };
 
 export const getStatusBadgeColor = (status: string): string => {
   const statusColors: { [key: string]: string } = {
+    // Legacy / UI Labels
     'Ativo': 'bg-construction-green text-white',
     'Em andamento': 'bg-construction-orange text-white',
     'Concluída': 'bg-construction-green text-white',
@@ -75,8 +84,32 @@ export const getStatusBadgeColor = (status: string): string => {
     'Manutenção': 'bg-construction-orange text-white',
     'Disponível': 'bg-construction-blue text-white',
     'Operacional': 'bg-construction-green text-white',
-    'Parado': 'bg-red-500 text-white'
+    'Parado': 'bg-red-500 text-white',
+
+    // DB Enums (Strict)
+    'ACTIVE': 'bg-construction-orange text-white',
+    'DRAFT': 'bg-construction-blue text-white',
+    'ON_HOLD': 'bg-yellow-500 text-white',
+    'COMPLETED': 'bg-construction-green text-white',
+    'CANCELED': 'bg-red-500 text-white',
+    'SUBMITTED': 'bg-construction-orange text-white',
+    'APPROVED': 'bg-construction-green text-white',
+    'REJECTED': 'bg-red-500 text-white'
   };
-  
+
   return statusColors[status] || 'bg-muted text-muted-foreground';
+};
+
+export const formatStatusLabel = (status: string): string => {
+  const statusLabels: { [key: string]: string } = {
+    'ACTIVE': 'Iniciando',
+    'DRAFT': 'Rascunho/Iniciando',
+    'ON_HOLD': 'Pausada',
+    'COMPLETED': 'Concluída',
+    'CANCELED': 'Cancelada',
+    'SUBMITTED': 'Aguardando aprovação',
+    'APPROVED': 'Aprovado',
+    'REJECTED': 'Rejeitado'
+  };
+  return statusLabels[status] || status;
 };

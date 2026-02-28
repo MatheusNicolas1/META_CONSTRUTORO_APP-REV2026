@@ -12,17 +12,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChecklistForm } from "@/components/checklist/ChecklistForm";
 import { DigitalSignatureComponent } from "@/components/checklist/DigitalSignature";
 import { Checklist as ChecklistType, ChecklistFormData, ChecklistFilters, ChecklistCategory, ChecklistStatus, DigitalSignature } from "@/types/checklist";
-import { CheckSquare, Search, Plus, Filter, Calendar as CalendarIcon, Download, FileCheck, Users, AlertCircle, Clock, X } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { CheckSquare, Search, Plus, Filter, Calendar as CalendarIcon, Download, FileCheck, Users, AlertCircle, Clock, X, Loader2, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
+import { useChecklist } from "@/hooks/useChecklist";
+import { useObras } from "@/hooks/useObras";
+import { useEquipesSupabase } from "@/hooks/useEquipesSupabase";
 
 const ChecklistPage = () => {
   const { toast } = useToast();
   const { navigate } = useNavigationTransition();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("active");
-  
+
   const [filters, setFilters] = useState<ChecklistFilters>({
     search: "",
     obra: "all",
@@ -32,225 +36,50 @@ const ChecklistPage = () => {
     dateRange: {}
   });
 
-  // Mock data - em produção virão do backend
-  const [checklists, setChecklists] = useState<ChecklistType[]>([
-    {
-      id: "checklist-1",
-      title: "Checklist de Segurança - Início de Obra",
-      category: "Segurança",
-      description: "Verificações obrigatórias antes do início dos trabalhos",
-      obra: { id: "obra-1", name: "Residencial Vista Verde" },
-      responsible: { id: "resp-1", name: "João Silva", email: "joao@example.com", role: "Engenheiro Civil" },
-      status: "Em Andamento",
-      dueDate: "2024-02-15",
-      createdAt: "2024-01-15T10:00:00Z",
-      updatedAt: "2024-01-16T14:30:00Z",
-      startedAt: "2024-01-16T08:00:00Z",
-      templateUsed: { id: "template-1", name: "Segurança no Início da Obra" },
-      progress: { total: 5, completed: 3, percentage: 60 },
-      items: [
-        {
-          id: "item-1",
-          title: "Verificar EPIs da equipe",
-          description: "Conferir se todos os trabalhadores possuem EPIs adequados",
-          priority: "Crítica",
-          status: "Concluído",
-          requiresAttachment: true,
-          isObligatory: true,
-          attachments: [],
-          completedAt: "2024-01-16T09:00:00Z",
-          completedBy: "João Silva"
-        },
-        {
-          id: "item-2",
-          title: "Inspeção de equipamentos de segurança",
-          priority: "Crítica",
-          status: "Concluído",
-          requiresAttachment: true,
-          isObligatory: true,
-          attachments: [],
-          completedAt: "2024-01-16T10:00:00Z",
-          completedBy: "João Silva"
-        },
-        {
-          id: "item-3",
-          title: "Verificar sinalização de segurança",
-          priority: "Alta",
-          status: "Concluído",
-          requiresAttachment: false,
-          isObligatory: true,
-          attachments: [],
-          completedAt: "2024-01-16T11:00:00Z",
-          completedBy: "João Silva"
-        },
-        {
-          id: "item-4",
-          title: "Teste de equipamentos elétricos",
-          priority: "Crítica",
-          status: "Em andamento",
-          requiresAttachment: true,
-          isObligatory: true,
-          attachments: []
-        },
-        {
-          id: "item-5",
-          title: "Verificar extintores de incêndio",
-          priority: "Média",
-          status: "Não iniciado",
-          requiresAttachment: false,
-          isObligatory: false,
-          attachments: []
-        }
-      ]
-    },
-    {
-      id: "checklist-2",
-      title: "Checklist de Qualidade - Concretagem",
-      category: "Qualidade",
-      obra: { id: "obra-2", name: "Comercial Center Norte" },
-      responsible: { id: "resp-2", name: "Maria Santos", email: "maria@example.com", role: "Técnica de Qualidade" },
-      status: "Concluído",
-      dueDate: "2024-01-20",
-      createdAt: "2024-01-14T08:00:00Z",
-      updatedAt: "2024-01-20T16:00:00Z",
-      startedAt: "2024-01-19T07:30:00Z",
-      completedAt: "2024-01-20T15:45:00Z",
-      progress: { total: 4, completed: 4, percentage: 100 },
-      signature: {
-        id: "sig-1",
-        signerName: "Maria Santos",
-        signerEmail: "maria@example.com",
-        signedAt: "2024-01-20T15:45:00Z",
-        signatureData: "data:image/png;base64,..."
-      },
-      items: [
-        {
-          id: "item-6",
-          title: "Verificar slump do concreto",
-          priority: "Crítica",
-          status: "Concluído",
-          requiresAttachment: true,
-          isObligatory: true,
-          attachments: [],
-          completedAt: "2024-01-20T08:00:00Z",
-          completedBy: "Maria Santos"
-        },
-        {
-          id: "item-7",
-          title: "Conferir armação da estrutura",
-          priority: "Crítica",
-          status: "Concluído",
-          requiresAttachment: true,
-          isObligatory: true,
-          attachments: [],
-          completedAt: "2024-01-20T10:00:00Z",
-          completedBy: "Maria Santos"
-        },
-        {
-          id: "item-8",
-          title: "Verificar nivelamento das formas",
-          priority: "Alta",
-          status: "Concluído",
-          requiresAttachment: false,
-          isObligatory: true,
-          attachments: [],
-          completedAt: "2024-01-20T12:00:00Z",
-          completedBy: "Maria Santos"
-        },
-        {
-          id: "item-9",
-          title: "Coletar amostras para ensaio",
-          priority: "Crítica",
-          status: "Concluído",
-          requiresAttachment: false,
-          isObligatory: true,
-          attachments: [],
-          completedAt: "2024-01-20T14:00:00Z",
-          completedBy: "Maria Santos"
-        }
-      ]
+  const { checklistsQuery, createChecklist, deleteChecklist } = useChecklist();
+
+  // Debounce filter changes if necessary, but for now direct passing is fine
+  const { data: checklists = [], isLoading } = checklistsQuery(filters);
+
+  const handleCreateChecklist = async (formData: ChecklistFormData) => {
+    try {
+      await createChecklist.mutateAsync(formData);
+      // Toast is handled in the hook
+    } catch (error) {
+      console.error("Error creating checklist:", error);
+      // Toast handled in hook
     }
-  ]);
-
-  const obras = [
-    { id: "obra-1", name: "Residencial Vista Verde" },
-    { id: "obra-2", name: "Comercial Center Norte" },
-    { id: "obra-3", name: "Ponte Rio Azul" },
-    { id: "obra-4", name: "Hospital Regional Sul" }
-  ];
-
-  const responsibles = [
-    { id: "resp-1", name: "João Silva" },
-    { id: "resp-2", name: "Maria Santos" },
-    { id: "resp-3", name: "Carlos Lima" },
-    { id: "resp-4", name: "Ana Costa" }
-  ];
-
-  const handleCreateChecklist = (formData: ChecklistFormData) => {
-    // Mock creation - em produção faria uma chamada à API
-    const newChecklist: ChecklistType = {
-      id: `checklist-${Date.now()}`,
-      title: formData.title,
-      category: formData.category as ChecklistCategory,
-      description: formData.description,
-      obra: obras.find(o => o.id === formData.obraId)!,
-      responsible: responsibles.find(r => r.id === formData.responsibleId)! as any,
-      status: "Rascunho",
-      dueDate: formData.dueDate,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      progress: { 
-        total: formData.items.length, 
-        completed: 0, 
-        percentage: 0 
-      },
-      items: formData.items,
-      templateUsed: formData.templateId ? { id: formData.templateId, name: "Template Usado" } : undefined
-    };
-
-    setChecklists(prev => [newChecklist, ...prev]);
-
-    toast({
-      title: "Checklist criado",
-      description: `O checklist "${formData.title}" foi criado com sucesso.`,
-    });
   };
 
   const handleSignChecklist = (checklistId: string, signature: DigitalSignature) => {
-    setChecklists(prev => prev.map(checklist => 
-      checklist.id === checklistId 
-        ? { 
-            ...checklist, 
-            signature, 
-            status: "Concluído" as ChecklistStatus,
-            completedAt: new Date().toISOString()
-          }
-        : checklist
-    ));
+    // Implementar assinatura real depois
+    console.log("Signing checklist", checklistId, signature);
+    toast({
+      title: "Funcionalidade em desenvolvimento",
+      description: "A assinatura digital será implementada em breve no backend."
+    });
   };
 
-  const filteredChecklists = checklists.filter(checklist => {
-    // Search filter
-    const matchesSearch = !filters.search || 
-      checklist.title.toLowerCase().includes(filters.search.toLowerCase()) ||
-      checklist.category?.toLowerCase().includes(filters.search.toLowerCase()) ||
-      checklist.responsible.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-      checklist.obra.name.toLowerCase().includes(filters.search.toLowerCase());
+  const handleDeleteChecklist = async (id: string) => {
+    try {
+      await deleteChecklist.mutateAsync(id);
+      toast({
+        title: "Checklist excluído",
+        description: "O checklist foi removido com sucesso."
+      });
+    } catch (error) {
+      console.error("Error deleting checklist:", error);
+      toast({
+        title: "Erro ao excluir",
+        description: "Não foi possível excluir o checklist.",
+        variant: "destructive"
+      });
+    }
+  };
 
-    // Category filter
-    const matchesCategory = filters.category === "all" || checklist.category === filters.category;
-
-    // Status filter
-    const matchesStatus = filters.status === "all" || checklist.status === filters.status;
-
-    // Obra filter
-    const matchesObra = !filters.obra || filters.obra === "all" || checklist.obra.id === filters.obra;
-
-    // Responsible filter
-    const matchesResponsible = !filters.responsible || filters.responsible === "all" || checklist.responsible.id === filters.responsible;
-
-    return matchesSearch && matchesCategory && matchesStatus && matchesObra && matchesResponsible;
-  });
+  // Data hooks for filters
+  const { obras } = useObras();
+  const { equipes } = useEquipesSupabase();
 
   const clearFilters = () => {
     setFilters({
@@ -263,14 +92,22 @@ const ChecklistPage = () => {
     });
   };
 
-  const hasActiveFilters = filters.search || (filters.obra && filters.obra !== "all") || filters.category !== "all" || 
-                          filters.status !== "all" || (filters.responsible && filters.responsible !== "all");
+  const hasActiveFilters = filters.search || (filters.obra && filters.obra !== "all") || filters.category !== "all" ||
+    filters.status !== "all" || (filters.responsible && filters.responsible !== "all");
 
-  const activeChecklists = filteredChecklists.filter(c => 
+  const activeChecklists = checklists.filter(c =>
     c.status === "Em Andamento" || c.status === "Rascunho" || c.status === "Pendente"
   );
-  const completedChecklists = filteredChecklists.filter(c => c.status === "Concluído");
-  const allChecklists = filteredChecklists;
+  const completedChecklists = checklists.filter(c => c.status === "Concluído");
+  const allChecklists = checklists;
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="responsive-spacing">
@@ -282,7 +119,7 @@ const ChecklistPage = () => {
               Gerencie listas de verificação para controle de qualidade e segurança
             </p>
           </div>
-          <Button 
+          <Button
             onClick={() => setIsFormOpen(true)}
             className="gradient-construction border-0 hover:opacity-90 w-full sm:w-auto sm:flex-shrink-0"
           >
@@ -324,9 +161,9 @@ const ChecklistPage = () => {
 
               <div className="space-y-2">
                 <Label>Categoria</Label>
-                <Select 
-                  value={filters.category} 
-                  onValueChange={(value: ChecklistCategory | "all") => 
+                <Select
+                  value={filters.category}
+                  onValueChange={(value: ChecklistCategory | "all") =>
                     setFilters({ ...filters, category: value })
                   }
                 >
@@ -346,9 +183,9 @@ const ChecklistPage = () => {
 
               <div className="space-y-2">
                 <Label>Status</Label>
-                <Select 
-                  value={filters.status} 
-                  onValueChange={(value: ChecklistStatus | "all") => 
+                <Select
+                  value={filters.status}
+                  onValueChange={(value: ChecklistStatus | "all") =>
                     setFilters({ ...filters, status: value })
                   }
                 >
@@ -368,8 +205,8 @@ const ChecklistPage = () => {
 
               <div className="space-y-2">
                 <Label>Obra</Label>
-                <Select 
-                  value={filters.obra} 
+                <Select
+                  value={filters.obra}
                   onValueChange={(value) => setFilters({ ...filters, obra: value })}
                 >
                   <SelectTrigger>
@@ -379,7 +216,7 @@ const ChecklistPage = () => {
                     <SelectItem value="all">Todas as obras</SelectItem>
                     {obras.map((obra) => (
                       <SelectItem key={obra.id} value={obra.id}>
-                        {obra.name}
+                        {obra.nome}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -388,8 +225,8 @@ const ChecklistPage = () => {
 
               <div className="space-y-2">
                 <Label>Responsável</Label>
-                <Select 
-                  value={filters.responsible} 
+                <Select
+                  value={filters.responsible}
                   onValueChange={(value) => setFilters({ ...filters, responsible: value })}
                 >
                   <SelectTrigger>
@@ -397,9 +234,9 @@ const ChecklistPage = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todos os responsáveis</SelectItem>
-                    {responsibles.map((responsible) => (
-                      <SelectItem key={responsible.id} value={responsible.id}>
-                        {responsible.name}
+                    {equipes.map((membro) => (
+                      <SelectItem key={membro.id} value={membro.id || "unknown"}>
+                        {membro.nome}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -424,7 +261,7 @@ const ChecklistPage = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="transition-all duration-300 hover:shadow-lg bg-card border-border">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
@@ -438,7 +275,7 @@ const ChecklistPage = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="transition-all duration-300 hover:shadow-lg bg-card border-border">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
@@ -452,7 +289,7 @@ const ChecklistPage = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="transition-all duration-300 hover:shadow-lg bg-card border-border">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
@@ -461,7 +298,7 @@ const ChecklistPage = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Responsáveis</p>
-                  <p className="text-2xl font-bold">{responsibles.length}</p>
+                  <p className="text-2xl font-bold">{equipes.length}</p>
                 </div>
               </div>
             </CardContent>
@@ -488,16 +325,17 @@ const ChecklistPage = () => {
           <TabsContent value="active" className="space-y-6">
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {activeChecklists.map((checklist) => (
-                <ChecklistCard 
-                  key={checklist.id} 
-                  checklist={checklist} 
+                <ChecklistCard
+                  key={checklist.id}
+                  checklist={checklist}
                   onSign={handleSignChecklist}
+                  onDelete={handleDeleteChecklist}
                 />
               ))}
             </div>
 
             {activeChecklists.length === 0 && (
-              <EmptyState 
+              <EmptyState
                 title="Nenhum checklist ativo"
                 description="Todos os checklists foram concluídos ou não há checklists criados."
               />
@@ -507,16 +345,17 @@ const ChecklistPage = () => {
           <TabsContent value="completed" className="space-y-6">
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {completedChecklists.map((checklist) => (
-                <ChecklistCard 
-                  key={checklist.id} 
-                  checklist={checklist} 
+                <ChecklistCard
+                  key={checklist.id}
+                  checklist={checklist}
                   onSign={handleSignChecklist}
+                  onDelete={handleDeleteChecklist}
                 />
               ))}
             </div>
 
             {completedChecklists.length === 0 && (
-              <EmptyState 
+              <EmptyState
                 title="Nenhum checklist concluído"
                 description="Complete seus primeiros checklists para vê-los aqui."
               />
@@ -526,16 +365,17 @@ const ChecklistPage = () => {
           <TabsContent value="all" className="space-y-6">
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {allChecklists.map((checklist) => (
-                <ChecklistCard 
-                  key={checklist.id} 
-                  checklist={checklist} 
+                <ChecklistCard
+                  key={checklist.id}
+                  checklist={checklist}
                   onSign={handleSignChecklist}
+                  onDelete={handleDeleteChecklist}
                 />
               ))}
             </div>
 
             {allChecklists.length === 0 && (
-              <EmptyState 
+              <EmptyState
                 title="Nenhum checklist encontrado"
                 description="Tente ajustar os filtros ou crie seu primeiro checklist."
               />
@@ -548,6 +388,7 @@ const ChecklistPage = () => {
           isOpen={isFormOpen}
           onClose={() => setIsFormOpen(false)}
           onSubmit={handleCreateChecklist}
+          isLoading={createChecklist.isPending}
         />
       </div>
     </div>
@@ -558,9 +399,10 @@ const ChecklistPage = () => {
 interface ChecklistCardProps {
   checklist: ChecklistType;
   onSign: (checklistId: string, signature: DigitalSignature) => void;
+  onDelete: (id: string) => void;
 }
 
-function ChecklistCard({ checklist, onSign }: ChecklistCardProps) {
+function ChecklistCard({ checklist, onSign, onDelete }: ChecklistCardProps) {
   const { navigate } = useNavigationTransition();
   const getStatusIcon = (status: ChecklistStatus) => {
     switch (status) {
@@ -622,8 +464,8 @@ function ChecklistCard({ checklist, onSign }: ChecklistCardProps) {
             <span>{checklist.progress.percentage}%</span>
           </div>
           <div className="w-full bg-muted rounded-full h-2">
-            <div 
-              className="bg-primary h-2 rounded-full" 
+            <div
+              className="bg-primary h-2 rounded-full"
               style={{ width: `${checklist.progress.percentage}%` }}
             />
           </div>
@@ -649,10 +491,10 @@ function ChecklistCard({ checklist, onSign }: ChecklistCardProps) {
 
         {/* Actions */}
         <div className="flex gap-2">
-          <Button 
+          <Button
             onClick={() => navigate(`/checklist/${checklist.id}`)}
-            variant="outline" 
-            size="sm" 
+            variant="outline"
+            size="sm"
             className="flex-1"
           >
             Visualizar
@@ -669,6 +511,28 @@ function ChecklistCard({ checklist, onSign }: ChecklistCardProps) {
               <Download className="h-4 w-4" />
             </Button>
           )}
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10">
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Excluir Checklist</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Tem certeza que deseja excluir o checklist "{checklist.title}"? Esta ação não pode ser desfeita.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={() => onDelete(checklist.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Excluir
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
 
         {/* Signature Info */}

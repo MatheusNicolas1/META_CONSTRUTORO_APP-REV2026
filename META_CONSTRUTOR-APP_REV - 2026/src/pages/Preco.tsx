@@ -4,170 +4,104 @@ import SEO from "@/components/SEO";
 import LandingNavigation from '@/components/landing/LandingNavigation';
 import { Pricing } from '@/components/ui/pricing';
 import FooterSection from '@/components/landing/FooterSection';
-import { PerformanceManager } from '@/components/PerformanceManager';
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-
-const demoPlans = [
-  {
-    name: "GRATUITO",
-    price: "0,00",
-    yearlyPrice: "0,00",
-    period: "por mês",
-    features: [
-      "7 Créditos RDO Gratuitos",
-      "1 crédito = 1 RDO criado",
-      "100% Grátis - Sem pegadinhas",
-      "1 usuário",
-      "1 obra",
-      "RDO digital completo",
-      "Suporte por email",
-      "Sem cartão de crédito",
-    ],
-    description: "Plataforma gratuita - teste sem limites de tempo!",
-    buttonText: "Começar Grátis Agora",
-    href: "/login",
-    isPopular: false,
-  },
-  {
-    name: "BÁSICO",
-    price: "129,90",
-    yearlyPrice: "103,92",
-    period: "por mês",
-    features: [
-      "Até 3 usuários",
-      "Armazenamento ilimitado",
-      "RDO digital completo",
-      "Relatórios básicos",
-      "Suporte por email",
-      "Backup automático",
-    ],
-    description: "Perfeito para pequenas construtoras",
-    buttonText: "Começar Agora",
-    href: "/checkout?plan=basic",
-    isPopular: false,
-  },
-  {
-    name: "PROFISSIONAL",
-    price: "199,90",
-    yearlyPrice: "159,92",
-    period: "por mês",
-    features: [
-      "Até 5 usuários",
-      "Obras ilimitadas",
-      "Relatórios avançados",
-      "Integrações WhatsApp",
-      "Suporte via chat 24h",
-      "Dashboard avançado",
-      "Controle de estoque",
-    ],
-    description: "Ideal para construtoras em crescimento",
-    buttonText: "Começar Agora",
-    href: "/checkout?plan=professional",
-    isPopular: true,
-  },
-  {
-    name: "MASTER",
-    price: "499,90",
-    yearlyPrice: "399,92",
-    period: "por mês",
-    features: [
-      "Até 15 usuários",
-      "Obras ilimitadas",
-      "Todas as funcionalidades do Profissional",
-      "API personalizada",
-      "Integração com ERP",
-      "Suporte prioritário (SLA 8h)",
-      "Treinamento dedicado",
-    ],
-    description: "Para construtoras estabelecidas",
-    buttonText: "Começar Agora",
-    href: "/checkout?plan=master",
-    isPopular: false,
-  },
-  {
-    name: "BUSINESS",
-    price: "Sob consulta",
-    yearlyPrice: "Sob consulta",
-    period: "",
-    features: [
-      "Usuários ilimitados",
-      "Integrações customizadas",
-      "SLA 24/7",
-      "Onboarding dedicado",
-      "Gerente de conta exclusivo",
-      "White label disponível",
-      "Múltiplas empresas",
-    ],
-    description: "Para grandes incorporadoras e construtoras",
-    buttonText: "Solicitar Proposta",
-    href: "/checkout?plan=business",
-    isPopular: false,
-  },
-];
+import { usePlans } from '@/hooks/usePlans';
+import { Skeleton } from '@/components/ui/skeleton';
+import { PricingHero } from '@/components/pricing/PricingHero';
+import { FaqSection } from '@/components/pricing/FaqSection';
+import { motion } from 'framer-motion';
 
 const Preco = () => {
+  const { data: plans, isLoading } = usePlans();
   const navigate = useNavigate();
 
+  // Transform database plans to UI pricing component format
+  const pricingPlans = plans
+    ? [...plans]
+      .sort((a, b) => {
+        const priority: Record<string, number> = {
+          'free': 1,
+          'gratuito': 1,
+          'basic': 2,
+          'basico': 2,
+          'professional': 3,
+          'profissional': 3,
+          'master': 4,
+          'business': 5
+        };
+        const priorityA = priority[a.slug.toLowerCase()] || 99;
+        const priorityB = priority[b.slug.toLowerCase()] || 99;
+        return priorityA - priorityB;
+      })
+      .map(plan => {
+        const isFree = plan.monthly_price_cents === 0 || plan.slug === 'gratuito';
+        const isBusiness = plan.slug === 'business';
+
+        const monthlyPriceValue = (plan.monthly_price_cents || 0) / 100;
+
+        // Cálculo do valor mensal com desconto de 20% para exibição no modo anual
+        // Se o banco já tiver o valor anual, usamos ele dividido por 12, caso contrário calculamos na hora
+        const yearlyPriceValue = plan.yearly_price_cents
+          ? (plan.yearly_price_cents / 12 / 100)
+          : (monthlyPriceValue * 0.8);
+
+        return {
+          name: plan.name.toUpperCase(),
+          price: isBusiness ? "Sob consulta" : monthlyPriceValue,
+          yearlyPrice: isBusiness ? "Sob consulta" : yearlyPriceValue,
+          period: isBusiness ? "" : "mês",
+          features: plan.features,
+          description: plan.description || "Para pequenas equipes",
+          buttonText: isBusiness ? "Falar com vendas" : (isFree ? "Começar Agora" : "Assinar Agora"),
+          href: (isBusiness || isFree) ? (isBusiness ? "/contato" : "/login") : `/checkout?plan=${plan.slug}`,
+          isPopular: plan.slug === 'profissional',
+        };
+      })
+    : [];
+
   return (
-    <PerformanceManager>
+    <div className="min-h-screen bg-background font-sans selection:bg-primary/10">
       <SEO
-        title="Preços - Meta Construtor | Planos e Valores"
-        description="Conheça nossos planos de preços. Desde R$ 129,90/mês. Sistema de créditos gratuito disponível. Escolha o plano ideal para sua construtora."
-        canonical={window.location.href}
+        title="Planos e Preços | Meta Construtor"
+        description="Escolha o plano ideal para sua construtora. Comece gratuitamente e escale conforme seu crescimento."
+        canonical="https://metaconstrutor.com.br/preco"
       />
 
-      <div className="min-h-screen bg-background">
-        <LandingNavigation />
+      <LandingNavigation />
 
-        <main className="pt-16 md:pt-20 overflow-x-hidden">
-          {/* Hero Section */}
-          <section className="py-8 md:py-10 bg-background w-full">
-            <div className="w-full max-w-6xl mx-auto px-6 lg:px-12 text-center">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground">
-                Comece Gratuitamente com 7 Créditos RDO
-              </h1>
-              <p className="text-base sm:text-lg text-muted-foreground mt-3 sm:mt-4 max-w-2xl mx-auto">
-                Sem cartão de crédito. Sem compromisso. 100% Gratuito para começar! Precisa de mais? Escolha um plano ilimitado.
-              </p>
-            </div>
-          </section>
+      <main>
+        <PricingHero />
 
-          {/* Pricing Cards */}
-          <section id="pricing" className="py-6 md:py-8 w-full">
-            <Pricing plans={demoPlans} />
-          </section>
+        <section id="pricing" className="py-12 md:py-24 relative bg-background">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-50" />
 
-          {/* CTA Section */}
-          <section className="py-10 md:py-12 bg-muted/30 w-full">
-            <div className="w-full max-w-6xl mx-auto px-6 lg:px-12 text-center">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-                Pronto para transformar sua gestão de obras?
-              </h2>
-              <p className="text-base md:text-lg text-muted-foreground mb-6">
-                Junte-se a centenas de construtoras que já otimizaram seus processos com o Meta Construtor.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <button
-                  onClick={() => navigate('/login')}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3.5 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
-                >
-                  Começar Gratuitamente
-                </button>
-                <button
-                  onClick={() => navigate('/contato')}
-                  className="border-2 border-border hover:border-primary hover:bg-muted text-foreground px-8 py-3.5 rounded-lg font-semibold transition-all duration-300"
-                >
-                  Falar com Especialista
-                </button>
+          {isLoading ? (
+            <div className="w-full max-w-6xl mx-auto px-6 lg:px-12 pt-12">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
+                {[1, 2, 3, 4, 5].map(i => (
+                  <Skeleton key={i} className="h-[600px] w-full rounded-2xl" />
+                ))}
               </div>
             </div>
-          </section>
-        </main>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <Pricing
+                plans={pricingPlans}
+              // Title and description removed here as they are covered by Hero, but we can keep them subtle if needed
+              />
+            </motion.div>
+          )}
+        </section>
 
-        <FooterSection />
-      </div>
-    </PerformanceManager>
+        <FaqSection />
+      </main>
+
+      <FooterSection />
+    </div>
   );
 };
 

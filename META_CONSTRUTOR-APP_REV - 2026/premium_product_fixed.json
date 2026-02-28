@@ -1,0 +1,22 @@
+﻿{
+  "id": "prod_TzIZ1YOK7HrpST",
+  "object": "product",
+  "active": true,
+  "attributes": [],
+  "created": 1771218256,
+  "default_price": null,
+  "description": "Para grandes empresas.",
+  "images": [],
+  "livemode": true,
+  "marketing_features": [],
+  "metadata": {},
+  "name": "Plano Premium - App Meta Construtor",
+  "package_dimensions": null,
+  "shippable": null,
+  "statement_descriptor": null,
+  "tax_code": null,
+  "type": "service",
+  "unit_label": null,
+  "updated": 1771218256,
+  "url": null
+}

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -15,21 +16,23 @@ import { RDOIssuesSection } from "./RDOIssuesSection";
 import { RDOObservationsSection } from "./RDOObservationsSection";
 import { RDOAttachmentsSection } from "./RDOAttachmentsSection";
 import { RDOWorkPeriodSection } from "./RDOWorkPeriodSection";
+import { RDOTeamSection } from "./RDOTeamSection"; // Imported
 import { toastEnhanced } from "@/components/ToastEnhanced";
 
 interface RDONewFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: CreateRDOData) => void;
+  onSubmit: (data: CreateRDOData) => Promise<void>;
   isEditing?: boolean;
+  initialData?: any;
 }
 
-export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false }: RDONewFormProps) {
+export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false, initialData }: RDONewFormProps) {
   const form = useForm<RDOFormData>({
     resolver: zodResolver(rdoSchema),
     defaultValues: {
       data: new Date().toISOString().split('T')[0],
-      obraId: 0,
+      obraId: "",
       periodo: 'Manhã',
       clima: '',
       equipeOciosa: false,
@@ -38,7 +41,7 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false }: RDO
       atividadesExtras: [],
       equipesPresentes: [],
       equipamentosUtilizados: [],
-      equipamentosQuebrados: [] as any[],
+      equipamentosQuebrados: [],
       acidentes: [],
       materiaisFalta: [],
       estoqueMateriais: [],
@@ -46,7 +49,50 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false }: RDO
     },
   });
 
-  const handleSubmit = (data: RDOFormData) => {
+  // Populate form when opening in edit mode
+  useEffect(() => {
+    if (isOpen && initialData) {
+      form.reset({
+        data: initialData.data,
+        obraId: initialData.obraId,
+        periodo: initialData.periodo,
+        clima: initialData.clima,
+        equipeOciosa: initialData.equipeOciosa,
+        tempoOcioso: initialData.tempoOcioso || 0,
+        atividadesRealizadas: initialData.atividadesRealizadas || [],
+        atividadesExtras: initialData.atividadesExtras || [], // Map if needed
+        equipesPresentes: initialData.equipesPresentes || [],
+        equipamentosUtilizados: initialData.equipamentosUtilizados || [],
+        equipamentosQuebrados: initialData.equipamentosQuebrados || [],
+        acidentes: initialData.acidentes || [],
+        materiaisFalta: initialData.materiaisFalta || [],
+        estoqueMateriais: initialData.estoqueMateriais || [],
+        observacoes: initialData.observacoes || '',
+        // Files logic is trickier as we can't repopulate File objects from URLs easily
+        // We might need to handle existing files display separately in the form
+      });
+    } else if (isOpen && !initialData) {
+      form.reset({
+        data: new Date().toISOString().split('T')[0],
+        obraId: "",
+        periodo: 'Manhã',
+        clima: '',
+        equipeOciosa: false,
+        tempoOcioso: 0,
+        atividadesRealizadas: [],
+        atividadesExtras: [],
+        equipesPresentes: [],
+        equipamentosUtilizados: [],
+        equipamentosQuebrados: [],
+        acidentes: [],
+        materiaisFalta: [],
+        estoqueMateriais: [],
+        observacoes: '',
+      });
+    }
+  }, [isOpen, initialData, form]);
+
+  const handleSubmit = async (data: RDOFormData) => {
     try {
       // Convert form data to CreateRDOData format
       const createData: CreateRDOData = {
@@ -56,18 +102,21 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false }: RDO
         clima: data.clima,
         equipeOciosa: data.equipeOciosa,
         tempoOcioso: data.equipeOciosa ? data.tempoOcioso : undefined,
-        atividadesRealizadas: data.atividadesRealizadas,
-        atividadesExtras: data.atividadesExtras,
-        equipesPresentes: data.equipesPresentes,
-        equipamentosUtilizados: data.equipamentosUtilizados,
-        equipamentosQuebrados: data.equipamentosQuebrados,
-        acidentes: data.acidentes,
-        materiaisFalta: data.materiaisFalta,
-        estoqueMateriais: data.estoqueMateriais,
+        atividadesRealizadas: data.atividadesRealizadas as any,
+        atividadesExtras: data.atividadesExtras as any,
+        equipesPresentes: data.equipesPresentes as any,
+        equipamentosUtilizados: data.equipamentosUtilizados as any,
+        equipamentosQuebrados: data.equipamentosQuebrados as any,
+        acidentes: data.acidentes as any,
+        materiaisFalta: data.materiaisFalta as any,
+        estoqueMateriais: data.estoqueMateriais as any,
         observacoes: data.observacoes,
+        files: data.files,
       };
 
-      onSubmit(createData);
+      // Aguarda o save no banco ANTES de fechar/resetar
+      await onSubmit(createData);
+
       toastEnhanced.success("RDO salvo com sucesso!", "O relatório foi criado e está disponível para aprovação.");
       form.reset();
       onClose();
@@ -109,6 +158,9 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false }: RDO
                   {/* Períodos de Trabalho */}
                   <RDOWorkPeriodSection form={form} />
 
+                  {/* Equipes */}
+                  <RDOTeamSection form={form} />
+
                   {/* Atividades */}
                   <RDOActivitiesSection form={form} />
 
@@ -124,9 +176,6 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false }: RDO
                   {/* Anexos */}
                   <RDOAttachmentsSection form={form} />
 
-                  {/* TODO: Adicionar outras seções restantes */}
-                  {/* <RDOSafetySection form={form} /> */}
-                  {/* <RDOMaterialsSection form={form} /> */}
                 </div>
               </ScrollArea>
             </div>
@@ -138,16 +187,16 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false }: RDO
               <Button type="button" variant="outline" onClick={handleClose} className="w-full sm:w-auto">
                 Cancelar
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="gradient-construction border-0 hover:opacity-90 w-full sm:w-auto"
                 disabled={form.formState.isSubmitting}
               >
                 <Save className="h-4 w-4 mr-2" />
-                {form.formState.isSubmitting 
-                  ? "Salvando..." 
-                  : isEditing 
-                    ? "Atualizar RDO" 
+                {form.formState.isSubmitting
+                  ? "Salvando..."
+                  : isEditing
+                    ? "Atualizar RDO"
                     : "Salvar RDO"
                 }
               </Button>

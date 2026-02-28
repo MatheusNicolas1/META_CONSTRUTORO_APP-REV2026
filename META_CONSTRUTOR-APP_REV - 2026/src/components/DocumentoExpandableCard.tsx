@@ -19,35 +19,22 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useExpandable } from "@/hooks/use-expandable";
-
-interface Documento {
-  id: number;
-  nome: string;
-  tipo: string;
-  obra: string;
-  arquivo: string;
-  tamanho: string;
-  dataUpload: string;
-  autor: string;
-  versao: string;
-  status: string;
-  descricao: string;
-}
+import { Documento } from "@/hooks/useDocuments";
 
 interface DocumentoExpandableCardProps {
   documento: Documento;
   onEdit: (documento: Documento) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
   onDownload: (documento: Documento) => void;
   onView: (documento: Documento) => void;
 }
 
-export function DocumentoExpandableCard({ 
-  documento, 
-  onEdit, 
-  onDelete, 
-  onDownload, 
-  onView 
+export function DocumentoExpandableCard({
+  documento,
+  onEdit,
+  onDelete,
+  onDownload,
+  onView
 }: DocumentoExpandableCardProps) {
   const { isExpanded, toggleExpand, animatedHeight } = useExpandable();
   const contentRef = useRef<HTMLDivElement>(null);
@@ -59,20 +46,8 @@ export function DocumentoExpandableCard({
   }, [isExpanded, animatedHeight]);
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Aprovado":
-      case "Válido":
-      case "Atualizado":
-        return "bg-construction-green text-white";
-      case "Em Revisão":
-        return "bg-construction-orange text-white";
-      case "Em Elaboração":
-        return "bg-construction-blue text-white";
-      case "Vencido":
-        return "bg-red-500 text-white";
-      default:
-        return "bg-muted text-muted-foreground";
-    }
+    // Status not currently in DB schema, default to valid
+    return "bg-construction-green text-white";
   };
 
   const getTipoColor = (tipo: string) => {
@@ -93,7 +68,24 @@ export function DocumentoExpandableCard({
   };
 
   const formatDate = (dateString: string) => {
+    if (!dateString) return "-";
     return new Date(dateString).toLocaleDateString('pt-BR');
+  };
+
+  const formatFileSize = (bytes: number | null) => {
+    if (!bytes) return "N/A";
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const getFileName = (url: string) => {
+    try {
+      return url.split('/').pop()?.split('?')[0] || "Arquivo";
+    } catch {
+      return "Arquivo";
+    }
   };
 
   return (
@@ -112,36 +104,34 @@ export function DocumentoExpandableCard({
                 </h3>
               </div>
             </div>
-            
+
             <div className="flex flex-wrap gap-2">
-              <Badge className={getTipoColor(documento.tipo)} variant="secondary">
-                {documento.tipo}
+              <Badge className={getTipoColor(documento.categoria)} variant="secondary">
+                {documento.categoria}
               </Badge>
-              <Badge className={getStatusColor(documento.status)}>
-                {documento.status}
-              </Badge>
+              {/* Status not yet in DB, maybe add later */}
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground">
               <div className="flex items-center space-x-1">
                 <Building2 className="h-3 w-3 flex-shrink-0" />
-                <span className="truncate text-xs">{documento.obra}</span>
+                <span className="truncate text-xs">{documento.obra?.nome || "Geral"}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <User className="h-3 w-3 flex-shrink-0" />
-                <span className="truncate text-xs">{documento.autor}</span>
+                <span className="truncate text-xs">ID: {documento.uploaded_by.substring(0, 8)}...</span>
               </div>
               <div className="flex items-center space-x-1">
                 <Calendar className="h-3 w-3 flex-shrink-0" />
-                <span className="truncate text-xs">{formatDate(documento.dataUpload)}</span>
+                <span className="truncate text-xs">{formatDate(documento.created_at)}</span>
               </div>
             </div>
           </div>
-          
+
           <div className="flex gap-1 overflow-x-auto pb-1">
-            <Button 
-              size="sm" 
-              variant="outline" 
+            <Button
+              size="sm"
+              variant="outline"
               onClick={(e) => {
                 e.stopPropagation();
                 onDownload(documento);
@@ -151,9 +141,9 @@ export function DocumentoExpandableCard({
             >
               <Download className="h-3 w-3" />
             </Button>
-            <Button 
-              size="sm" 
-              variant="outline" 
+            <Button
+              size="sm"
+              variant="outline"
               onClick={(e) => {
                 e.stopPropagation();
                 onView(documento);
@@ -163,9 +153,9 @@ export function DocumentoExpandableCard({
             >
               <Eye className="h-3 w-3" />
             </Button>
-            <Button 
-              size="sm" 
-              variant="outline" 
+            <Button
+              size="sm"
+              variant="outline"
               onClick={(e) => {
                 e.stopPropagation();
                 onEdit(documento);
@@ -175,9 +165,9 @@ export function DocumentoExpandableCard({
             >
               <Edit className="h-3 w-3" />
             </Button>
-            <Button 
-              size="sm" 
-              variant="outline" 
+            <Button
+              size="sm"
+              variant="outline"
               onClick={(e) => {
                 e.stopPropagation();
                 onDelete(documento.id);
@@ -209,12 +199,12 @@ export function DocumentoExpandableCard({
                   {/* Document Details */}
                   <div className="grid grid-cols-2 gap-4 p-4 bg-muted/20 rounded-lg">
                     <div>
-                      <p className="text-sm font-medium text-card-foreground">Versão</p>
-                      <p className="text-sm text-construction-blue">{documento.versao}</p>
+                      <p className="text-sm font-medium text-card-foreground">Tipo</p>
+                      <p className="text-sm text-construction-blue">{documento.tipo}</p>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-card-foreground">Tamanho</p>
-                      <p className="text-sm text-construction-green">{documento.tamanho}</p>
+                      <p className="text-sm text-construction-green">{formatFileSize(documento.tamanho)}</p>
                     </div>
                   </div>
 
@@ -224,15 +214,17 @@ export function DocumentoExpandableCard({
                     <div className="space-y-2">
                       <div className="flex items-center text-sm text-muted-foreground">
                         <FileType className="mr-2 h-4 w-4" />
-                        {documento.arquivo}
+                        <a href={documento.url} target="_blank" rel="noopener noreferrer" className="hover:underline truncate max-w-[200px]">
+                          {getFileName(documento.url)}
+                        </a>
                       </div>
                       <div className="flex items-center text-sm text-muted-foreground">
                         <User className="mr-2 h-4 w-4" />
-                        Criado por: {documento.autor}
+                        Enviado por: {documento.uploaded_by}
                       </div>
                       <div className="flex items-center text-sm text-muted-foreground">
                         <Calendar className="mr-2 h-4 w-4" />
-                        Upload em: {formatDate(documento.dataUpload)}
+                        Upload em: {formatDate(documento.created_at)}
                       </div>
                     </div>
                   </div>
@@ -241,7 +233,7 @@ export function DocumentoExpandableCard({
                   <div className="space-y-2">
                     <h4 className="font-medium text-card-foreground">Obra Vinculada:</h4>
                     <p className="text-sm text-construction-orange bg-muted/20 p-3 rounded-lg">
-                      {documento.obra}
+                      {documento.obra?.nome || "Geral"}
                     </p>
                   </div>
 

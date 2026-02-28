@@ -2,7 +2,6 @@ import React, { useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar,
-  User,
   Building2,
   FileText,
   Edit,
@@ -10,11 +9,14 @@ import {
   Users,
   Wrench,
   ClipboardList,
+  ChevronDown,
+  CloudSun,
+  Download,
 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Card,
   CardContent,
-  CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,10 +27,11 @@ import { SocialShare } from "@/components/SocialShare";
 interface RDOExpandableCardProps {
   rdo: RDO;
   onEdit: (rdo: RDO) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: number | string) => void;
+  onDownload: (rdo: RDO) => void;
 }
 
-export function RDOExpandableCard({ rdo, onEdit, onDelete }: RDOExpandableCardProps) {
+export function RDOExpandableCard({ rdo, onEdit, onDelete, onDownload }: RDOExpandableCardProps) {
   const { isExpanded, toggleExpand, animatedHeight } = useExpandable();
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -39,123 +42,147 @@ export function RDOExpandableCard({ rdo, onEdit, onDelete }: RDOExpandableCardPr
   }, [isExpanded, animatedHeight]);
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+    try {
+      return new Date(dateString).toLocaleDateString('pt-BR');
+    } catch {
+      return dateString;
+    }
+  };
+
+  const getStatusBadge = (status?: string) => {
+    if (!status) return <Badge variant="outline" className="text-[10px] px-1.5 py-0">N/A</Badge>;
+
+    const s = status.toLowerCase();
+    if (s.includes('aprovado') || s === 'approved')
+      return <Badge className="bg-emerald-600 text-white text-[10px] px-1.5 py-0">Aprovado</Badge>;
+    if (s.includes('rejeitado') || s === 'rejected')
+      return <Badge variant="destructive" className="text-[10px] px-1.5 py-0">Rejeitado</Badge>;
+    if (s.includes('aguardando') || s === 'submitted' || s.includes('analise'))
+      return <Badge className="bg-blue-600 text-white text-[10px] px-1.5 py-0">Em Análise</Badge>;
+    if (s.includes('elabor') || s === 'draft')
+      return <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-amber-500 text-amber-600">Rascunho</Badge>;
+    return <Badge variant="outline" className="text-[10px] px-1.5 py-0">Pendente</Badge>;
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Concluída":
-        return "bg-construction-green text-white";
+        return "bg-emerald-600 text-white";
       case "Em Andamento":
-        return "bg-construction-orange text-white";
+        return "bg-amber-500 text-white";
       case "Iniciada":
-        return "bg-construction-blue text-white";
+        return "bg-blue-600 text-white";
       default:
         return "bg-muted text-muted-foreground";
     }
   };
 
-  const getStatusBadge = (status?: string) => {
-    if (!status) return <Badge variant="outline">Status N/A</Badge>;
-    
-    switch (status) {
-      case "aprovado":
-        return <Badge className="bg-construction-green text-white">Aprovado</Badge>;
-      case "rejeitado":
-        return <Badge variant="destructive">Rejeitado</Badge>;
-      case "em_analise":
-        return <Badge className="bg-construction-blue text-white">Em Análise</Badge>;
-      default:
-        return <Badge variant="outline">Pendente</Badge>;
-    }
-  };
-
-  // Determine status based on activities completion
-  const getOverallStatus = () => {
-    if (rdo.atividadesRealizadas.length === 0) return "pendente";
-    const completedActivities = rdo.atividadesRealizadas.filter(a => a.status === "Concluída").length;
-    const totalActivities = rdo.atividadesRealizadas.length;
-    
-    if (completedActivities === totalActivities) return "aprovado";
-    if (completedActivities > 0) return "em_analise";
-    return "pendente";
-  };
+  const rdoLabel = rdo.numero
+    ? String(rdo.numero).padStart(3, '0')
+    : (typeof rdo.id === 'string' ? rdo.id.slice(0, 8) : rdo.id);
 
   return (
     <Card
-      className="w-full cursor-pointer transition-all duration-300 hover:shadow-lg bg-card border-border"
+      className="w-full cursor-pointer transition-all duration-200 hover:shadow-md bg-card border-border overflow-hidden"
       onClick={toggleExpand}
     >
-      <CardHeader className="space-y-3 pb-4">
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start w-full gap-3">
-          <div className="space-y-2 flex-1 min-w-0">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <FileText className="h-4 w-4 text-construction-orange flex-shrink-0" />
-                <h3 className="text-lg font-semibold text-card-foreground truncate">
-                  RDO #{rdo.id}
-                </h3>
-              </div>
-              {getStatusBadge(getOverallStatus())}
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-sm text-muted-foreground">
-              <div className="flex items-center space-x-1">
-                <Calendar className="h-3 w-3 flex-shrink-0" />
-                <span className="truncate">{formatDate(rdo.data)} - {rdo.periodo}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Building2 className="h-3 w-3 flex-shrink-0" />
-                <span className="truncate">{rdo.obraNome}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <User className="h-3 w-3 flex-shrink-0" />
-                <span className="truncate">
-                  {rdo.equipesPresentes.length > 0 ? rdo.equipesPresentes[0].nome : "Sem responsável"}
-                </span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="flex flex-row justify-end lg:flex-col lg:space-y-1 space-x-1 lg:space-x-0">
-            <div onClick={(e) => e.stopPropagation()}>
-              <SocialShare
-                title={`RDO #${rdo.id} - ${rdo.obraNome}`}
-                text={`📋 RDO #${rdo.id}\n\n🏗️ Obra: ${rdo.obraNome}\n📅 Data: ${formatDate(rdo.data)}\n☀️ Clima: ${rdo.clima}\n\n✅ ${rdo.atividadesRealizadas.length} atividades realizadas\n👷 ${rdo.equipesPresentes.length} equipes presentes\n\n#MetaConstrutor #RDO #Construcao`}
-                rdoId={rdo.id.toString()}
-                obraId={rdo.obraId.toString()}
-              />
-            </div>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              onClick={(e) => {
-                e.stopPropagation();
-                onEdit(rdo);
-              }}
-              className="h-8 px-3 touch-safe"
-              title="Editar RDO"
-            >
-              <Edit className="h-3 w-3 mr-1" />
-              <span className="hidden sm:inline text-xs">Editar</span>
-            </Button>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(rdo.id);
-              }}
-              className="h-8 px-3 touch-safe text-destructive hover:text-destructive"
-              title="Excluir RDO"
-            >
-              <Trash2 className="h-3 w-3 mr-1" />
-              <span className="hidden sm:inline text-xs">Excluir</span>
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
+      {/* ── HEADER COMPACTO ── */}
+      <div className="p-3 sm:p-4">
+        {/* Linha 1: Título + Status + Ações */}
+        <div className="flex items-center gap-2 min-w-0">
+          {/* Ícone + Título */}
+          <FileText className="h-4 w-4 text-construction-orange flex-shrink-0" />
+          <span className="text-sm font-semibold text-card-foreground truncate">
+            RDO #{rdoLabel}
+          </span>
 
+          {/* Status Badge */}
+          {getStatusBadge(rdo.status)}
+
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* Ações (inline, compacto) */}
+          <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDownload(rdo);
+                    }}
+                    className="h-7 w-7"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Baixar arquivo</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <SocialShare
+              title={`RDO #${rdo.id} - ${rdo.obraNome}`}
+              text={`📋 RDO #${rdo.id}\n🏗️ ${rdo.obraNome}\n📅 ${formatDate(rdo.data)}\n☀️ ${rdo.clima}`}
+              rdoId={rdo.id.toString()}
+              obraId={rdo.obraId.toString()}
+              compact={true}
+            />
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => onEdit(rdo)}
+              className="h-7 w-7"
+              title="Editar"
+            >
+              <Edit className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => onDelete(rdo.id)}
+              className="h-7 w-7 text-destructive hover:text-destructive"
+              title="Excluir"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+
+          {/* Seta de Expandir */}
+          <motion.div
+            animate={{ rotate: isExpanded ? 180 : 0 }}
+            transition={{ duration: 0.2 }}
+            className="flex-shrink-0"
+          >
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          </motion.div>
+        </div>
+
+        {/* Linha 2: Meta-info compacta */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2 text-xs text-muted-foreground">
+          <span className="inline-flex items-center gap-1">
+            <Calendar className="h-3 w-3 flex-shrink-0" />
+            {formatDate(rdo.data)}
+            {rdo.periodo && <span className="text-muted-foreground/70">· {rdo.periodo}</span>}
+          </span>
+          <span className="inline-flex items-center gap-1 truncate max-w-[180px] sm:max-w-none">
+            <Building2 className="h-3 w-3 flex-shrink-0" />
+            <span className="truncate">{rdo.obraNome}</span>
+          </span>
+          {rdo.clima && (
+            <span className="inline-flex items-center gap-1">
+              <CloudSun className="h-3 w-3 flex-shrink-0" />
+              {rdo.clima}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* ── CONTEÚDO EXPANSÍVEL ── */}
       <motion.div
         style={{ height: animatedHeight }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -168,87 +195,80 @@ export function RDOExpandableCard({ rdo, onEdit, onDelete }: RDOExpandableCardPr
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="px-6 pb-6"
               >
-                <CardContent className="p-0 space-y-4">
-                  {/* Summary Stats */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-muted/20 rounded-lg">
+                <CardContent className="px-3 sm:px-4 pb-3 sm:pb-4 pt-0 space-y-3">
+                  {/* Stats Compactos */}
+                  <div className="grid grid-cols-4 gap-2 p-2 sm:p-3 bg-muted/30 rounded-lg">
                     <div className="text-center">
-                      <div className="flex flex-col items-center mb-1">
-                        <ClipboardList className="h-4 w-4 text-construction-blue mb-1" />
-                        <span className="text-xs font-medium text-card-foreground">Atividades</span>
-                      </div>
-                      <p className="text-lg font-bold text-construction-blue">{rdo.atividadesRealizadas.length}</p>
+                      <ClipboardList className="h-3.5 w-3.5 text-blue-500 mx-auto mb-0.5" />
+                      <p className="text-base font-bold text-blue-500 leading-none">{rdo.atividadesRealizadas.length}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">Atividades</p>
                     </div>
                     <div className="text-center">
-                      <div className="flex flex-col items-center mb-1">
-                        <Users className="h-4 w-4 text-construction-green mb-1" />
-                        <span className="text-xs font-medium text-card-foreground">Equipes</span>
-                      </div>
-                      <p className="text-lg font-bold text-construction-green">{rdo.equipesPresentes.length}</p>
+                      <Users className="h-3.5 w-3.5 text-emerald-500 mx-auto mb-0.5" />
+                      <p className="text-base font-bold text-emerald-500 leading-none">{rdo.equipesPresentes.length}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">Equipes</p>
                     </div>
                     <div className="text-center">
-                      <div className="flex flex-col items-center mb-1">
-                        <Wrench className="h-4 w-4 text-construction-orange mb-1" />
-                        <span className="text-xs font-medium text-card-foreground">Equipamentos</span>
-                      </div>
-                      <p className="text-lg font-bold text-construction-orange">{rdo.equipamentosUtilizados.length}</p>
+                      <Wrench className="h-3.5 w-3.5 text-amber-500 mx-auto mb-0.5" />
+                      <p className="text-base font-bold text-amber-500 leading-none">{rdo.equipamentosUtilizados.length}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">Equip.</p>
                     </div>
                     <div className="text-center">
-                      <div className="flex flex-col items-center mb-1">
-                        <span className="text-xs font-medium text-card-foreground">Clima</span>
-                      </div>
-                      <p className="text-sm font-medium text-muted-foreground">{rdo.clima}</p>
+                      <CloudSun className="h-3.5 w-3.5 text-muted-foreground mx-auto mb-0.5" />
+                      <p className="text-xs font-medium text-muted-foreground leading-tight mt-0.5">{rdo.clima || '—'}</p>
                     </div>
                   </div>
 
-                  {/* Activities */}
+                  {/* Atividades */}
                   {rdo.atividadesRealizadas.length > 0 && (
                     <div>
-                      <h4 className="font-medium text-card-foreground mb-2">Atividades Realizadas:</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {rdo.atividadesRealizadas.map((atividade, index) => (
-                          <Badge key={index} className={getStatusColor(atividade.status)}>
-                            {atividade.nome} - {atividade.quantidade}{atividade.unidadeMedida}
+                      <h4 className="text-xs font-semibold text-card-foreground mb-1.5">Atividades Realizadas</h4>
+                      <div className="flex flex-wrap gap-1.5">
+                        {rdo.atividadesRealizadas.map((a, i) => (
+                          <Badge key={i} className={`${getStatusColor(a.status)} text-[10px] px-1.5 py-0`}>
+                            {a.nome} · {a.quantidade}{a.unidadeMedida}
                           </Badge>
                         ))}
                       </div>
                     </div>
                   )}
 
-                  {/* Teams */}
+                  {/* Equipes */}
                   {rdo.equipesPresentes.length > 0 && (
                     <div>
-                      <h4 className="font-medium text-card-foreground mb-2">Equipes Presentes:</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {rdo.equipesPresentes.map((equipe, index) => (
-                          <Badge key={index} variant="outline">
-                            {equipe.nome} ({equipe.horasTrabalho}h)
+                      <h4 className="text-xs font-semibold text-card-foreground mb-1.5">Equipes Presentes</h4>
+                      <div className="flex flex-wrap gap-1.5">
+                        {rdo.equipesPresentes.map((e, i) => (
+                          <Badge key={i} variant="outline" className="text-[10px] px-1.5 py-0">
+                            {e.nome} · {e.horasTrabalho}h
                           </Badge>
                         ))}
                       </div>
                     </div>
                   )}
 
-                  {/* Equipment */}
+                  {/* Equipamentos */}
                   {rdo.equipamentosUtilizados.length > 0 && (
                     <div>
-                      <h4 className="font-medium text-card-foreground mb-2">Equipamentos Utilizados:</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {rdo.equipamentosUtilizados.map((equipamento, index) => (
-                          <Badge key={index} variant="secondary">
-                            {equipamento.nome} ({equipamento.horasUso}h)
+                      <h4 className="text-xs font-semibold text-card-foreground mb-1.5">Equipamentos</h4>
+                      <div className="flex flex-wrap gap-1.5">
+                        {rdo.equipamentosUtilizados.map((eq, i) => (
+                          <Badge key={i} variant="secondary" className="text-[10px] px-1.5 py-0">
+                            {eq.nome} · {eq.horasUso}h
                           </Badge>
                         ))}
                       </div>
                     </div>
                   )}
 
-                  {/* Observations */}
+                  {/* Observações */}
                   {rdo.observacoes && (
                     <div>
-                      <h4 className="font-medium text-card-foreground mb-2">Observações:</h4>
-                      <p className="text-muted-foreground bg-muted/20 p-3 rounded-lg text-sm">{rdo.observacoes}</p>
+                      <h4 className="text-xs font-semibold text-card-foreground mb-1">Observações</h4>
+                      <p className="text-xs text-muted-foreground bg-muted/20 p-2 rounded-md leading-relaxed break-words">
+                        {rdo.observacoes}
+                      </p>
                     </div>
                   )}
                 </CardContent>

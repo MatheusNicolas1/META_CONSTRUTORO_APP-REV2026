@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useRequireOrg } from '@/hooks/requireOrg';
 import { useAuthUserId } from './useAuthUserId';
 
 export interface CreateFornecedorData {
@@ -18,6 +19,7 @@ export interface CreateFornecedorData {
 export const useFornecedores = () => {
   const queryClient = useQueryClient();
   const { userId, isLoading: userLoading } = useAuthUserId();
+  const { orgId } = useRequireOrg();
 
   const fornecedoresQuery = useQuery({
     queryKey: ['fornecedores', userId],
@@ -28,7 +30,7 @@ export const useFornecedores = () => {
       const { data, error } = await supabase
         .from('fornecedores')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('created_by', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -46,7 +48,8 @@ export const useFornecedores = () => {
         .from('fornecedores')
         .insert({
           ...fornecedorData,
-          user_id: user.id,
+          created_by: user.id,
+          org_id: orgId,
           ativo: fornecedorData.ativo ?? true,
         })
         .select()

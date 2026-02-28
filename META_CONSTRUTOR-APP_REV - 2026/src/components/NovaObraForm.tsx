@@ -6,10 +6,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { OrcamentoAnalitico } from "./OrcamentoAnalitico";
+import { OrcamentoAnalitico, AtividadeOrcamento } from "./OrcamentoAnalitico";
 import { DocumentosObra } from "./DocumentosObra";
 import { useObras } from "@/hooks/useObras";
-import { Loader2 } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { CalendarIcon, Loader2 } from "lucide-react";
 
 interface NovaObraFormProps {
   isOpen: boolean;
@@ -18,25 +23,26 @@ interface NovaObraFormProps {
 
 export const NovaObraForm = ({ isOpen, onClose }: NovaObraFormProps) => {
   const { createObra } = useObras();
+  const [atividadesOrcamento, setAtividadesOrcamento] = useState<AtividadeOrcamento[]>([]);
   const [formData, setFormData] = useState({
     nome: "",
     cliente: "",
     localizacao: "",
     responsavel: "",
     tipo: "",
-    dataInicio: "",
-    previsaoTermino: "",
+    dataInicio: undefined as Date | undefined,
+    previsaoTermino: undefined as Date | undefined,
     observacoes: ""
   });
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async () => {
-    if (!formData.nome || !formData.cliente || !formData.localizacao || 
-        !formData.responsavel || !formData.tipo || !formData.dataInicio || 
-        !formData.previsaoTermino) {
+    if (!formData.nome || !formData.cliente || !formData.localizacao ||
+      !formData.responsavel || !formData.tipo || !formData.dataInicio ||
+      !formData.previsaoTermino) {
       return;
     }
 
@@ -46,19 +52,21 @@ export const NovaObraForm = ({ isOpen, onClose }: NovaObraFormProps) => {
       localizacao: formData.localizacao,
       responsavel: formData.responsavel,
       tipo: formData.tipo,
-      data_inicio: formData.dataInicio,
-      previsao_termino: formData.previsaoTermino,
+      data_inicio: formData.dataInicio ? format(formData.dataInicio, 'yyyy-MM-dd') : '',
+      previsao_termino: formData.previsaoTermino ? format(formData.previsaoTermino, 'yyyy-MM-dd') : '',
       observacoes: formData.observacoes || undefined,
+      atividades: atividadesOrcamento,
     }, {
       onSuccess: () => {
+        setAtividadesOrcamento([]);
         setFormData({
           nome: "",
           cliente: "",
           localizacao: "",
           responsavel: "",
           tipo: "",
-          dataInicio: "",
-          previsaoTermino: "",
+          dataInicio: undefined,
+          previsaoTermino: undefined,
           observacoes: ""
         });
         onClose();
@@ -75,7 +83,7 @@ export const NovaObraForm = ({ isOpen, onClose }: NovaObraFormProps) => {
             Preencha as informações da nova obra
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="flex-1 overflow-hidden">
           <Tabs defaultValue="basico" className="h-full flex flex-col">
             <div className="px-4 sm:px-6 pt-4 flex-shrink-0">
@@ -85,15 +93,15 @@ export const NovaObraForm = ({ isOpen, onClose }: NovaObraFormProps) => {
                 <TabsTrigger value="documentos" className="text-xs sm:text-sm px-2 sm:px-3">Documentos</TabsTrigger>
               </TabsList>
             </div>
-            
+
             <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
               <TabsContent value="basico" className="space-y-4 sm:space-y-6 mt-0">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="nome" className="text-sm font-medium text-card-foreground">Nome da Obra *</Label>
-                    <Input 
-                      id="nome" 
-                      placeholder="Ex: Residencial Vista Verde"
+                    <Input
+                      id="nome"
+                      placeholder="Ex: Obra A"
                       value={formData.nome}
                       onChange={(e) => handleInputChange("nome", e.target.value)}
                       className="h-9 sm:h-10"
@@ -101,8 +109,8 @@ export const NovaObraForm = ({ isOpen, onClose }: NovaObraFormProps) => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="cliente" className="text-sm font-medium text-card-foreground">Cliente *</Label>
-                    <Input 
-                      id="cliente" 
+                    <Input
+                      id="cliente"
                       placeholder="Nome do cliente"
                       value={formData.cliente}
                       onChange={(e) => handleInputChange("cliente", e.target.value)}
@@ -110,23 +118,23 @@ export const NovaObraForm = ({ isOpen, onClose }: NovaObraFormProps) => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="localizacao" className="text-sm font-medium text-card-foreground">Localização *</Label>
-                  <Input 
-                    id="localizacao" 
+                  <Input
+                    id="localizacao"
                     placeholder="Endereço completo da obra"
                     value={formData.localizacao}
                     onChange={(e) => handleInputChange("localizacao", e.target.value)}
                     className="h-9 sm:h-10"
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="responsavel" className="text-sm font-medium text-card-foreground">Responsável Técnico *</Label>
-                    <Input 
-                      id="responsavel" 
+                    <Input
+                      id="responsavel"
                       placeholder="Nome do engenheiro responsável"
                       value={formData.responsavel}
                       onChange={(e) => handleInputChange("responsavel", e.target.value)}
@@ -149,34 +157,67 @@ export const NovaObraForm = ({ isOpen, onClose }: NovaObraFormProps) => {
                     </Select>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
                   <div className="space-y-2">
                     <Label htmlFor="dataInicio" className="text-sm font-medium text-card-foreground">Data de Início *</Label>
-                    <Input 
-                      id="dataInicio" 
-                      type="date"
-                      value={formData.dataInicio}
-                      onChange={(e) => handleInputChange("dataInicio", e.target.value)}
-                      className="h-9 sm:h-10"
-                    />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full justify-start text-left font-normal h-9 sm:h-10",
+                            !formData.dataInicio && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {formData.dataInicio ? format(formData.dataInicio, "PPP", { locale: ptBR }) : <span>Selecione a data</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={formData.dataInicio}
+                          onSelect={(date) => handleInputChange("dataInicio", date)}
+                          initialFocus
+                          locale={ptBR}
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="previsaoTermino" className="text-sm font-medium text-card-foreground">Previsão de Término *</Label>
-                    <Input 
-                      id="previsaoTermino" 
-                      type="date"
-                      value={formData.previsaoTermino}
-                      onChange={(e) => handleInputChange("previsaoTermino", e.target.value)}
-                      className="h-9 sm:h-10"
-                    />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full justify-start text-left font-normal h-9 sm:h-10",
+                            !formData.previsaoTermino && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {formData.previsaoTermino ? format(formData.previsaoTermino, "PPP", { locale: ptBR }) : <span>Selecione a data</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={formData.previsaoTermino}
+                          onSelect={(date) => handleInputChange("previsaoTermino", date)}
+                          initialFocus
+                          locale={ptBR}
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="observacoes" className="text-sm font-medium text-card-foreground">Observações</Label>
-                  <Textarea 
-                    id="observacoes" 
+                  <Textarea
+                    id="observacoes"
                     placeholder="Observações adicionais sobre a obra"
                     value={formData.observacoes}
                     onChange={(e) => handleInputChange("observacoes", e.target.value)}
@@ -184,29 +225,32 @@ export const NovaObraForm = ({ isOpen, onClose }: NovaObraFormProps) => {
                   />
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="orcamento" className="mt-0">
-                <OrcamentoAnalitico />
+                <OrcamentoAnalitico
+                  atividades={atividadesOrcamento}
+                  onAtividadesChange={setAtividadesOrcamento}
+                />
               </TabsContent>
-              
+
               <TabsContent value="documentos" className="mt-0">
                 <DocumentosObra />
               </TabsContent>
             </div>
           </Tabs>
         </div>
-        
+
         <div className="flex flex-col sm:flex-row justify-end gap-3 p-4 sm:p-6 pt-3 sm:pt-4 border-t bg-muted/20 flex-shrink-0">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={onClose}
             className="w-full sm:w-auto order-2 sm:order-1 h-9 sm:h-10"
             disabled={createObra.isPending}
           >
             Cancelar
           </Button>
-          <Button 
-            className="gradient-construction border-0 w-full sm:w-auto order-1 sm:order-2 h-9 sm:h-10" 
+          <Button
+            className="gradient-construction border-0 w-full sm:w-auto order-1 sm:order-2 h-9 sm:h-10"
             onClick={handleSubmit}
             disabled={createObra.isPending}
           >

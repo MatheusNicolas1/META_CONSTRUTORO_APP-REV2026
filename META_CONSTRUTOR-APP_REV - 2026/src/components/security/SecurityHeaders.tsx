@@ -70,14 +70,16 @@ const buildCSP = (nonce: string): string => {
 
   const policies = [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' ${isDevelopment ? "'unsafe-eval'" : ''}`.trim(),
+    `script-src 'self' 'nonce-${nonce}' https://js.stripe.com ${isDevelopment ? "'unsafe-eval'" : ''}`.trim(),
     "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
     "font-src 'self' fonts.gstatic.com data:",
     "img-src 'self' data: blob: https:",
+    "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
     [
       "connect-src",
       "'self'",
-      // Supabase project (REST, Auth, Realtime)
+      "https://api.stripe.com",
+      "https://maps.googleapis.com",
       // Supabase project (REST, Auth, Realtime)
       import.meta.env.VITE_SUPABASE_URL || "https://bgdvlhttyjeuprrfxgun.supabase.co",
       (import.meta.env.VITE_SUPABASE_URL ? import.meta.env.VITE_SUPABASE_URL.replace('https://', 'wss://') : "wss://bgdvlhttyjeuprrfxgun.supabase.co"),

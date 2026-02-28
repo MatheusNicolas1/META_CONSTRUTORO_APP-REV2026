@@ -35,25 +35,25 @@ const DashboardPreview = () => {
   return (
     <section className="py-20 bg-gradient-to-br from-background via-background to-muted/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             Veja como funciona na prática
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Uma plataforma completa e intuitiva que revoluciona a gestão de obras. 
+            Uma plataforma completa e intuitiva que revoluciona a gestão de obras.
             Explore o dashboard e descubra todas as funcionalidades.
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          
+
           {/* Left - Dashboard Preview */}
           <div className="relative order-2 lg:order-1">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50">
-              
-              {/* Browser mockup header */}
+
+              {/* Browser preview header */}
               <div className="flex items-center gap-2 px-4 py-3 bg-muted border-b border-border">
                 <div className="flex gap-2">
                   <div className="w-3 h-3 rounded-full bg-red-500"></div>
@@ -66,19 +66,19 @@ const DashboardPreview = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Dashboard Image */}
               <div className="aspect-[16/10] relative overflow-hidden bg-background">
-                <img 
-                  src={dashboardPreview} 
+                <img
+                  src={dashboardPreview}
                   alt="Dashboard do Meta Construtor - Interface completa de gestão de obras"
                   className="w-full h-full object-cover"
                 />
-                
+
                 {/* Interactive overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-all duration-300 cursor-pointer flex items-center justify-center group">
                   <div className="bg-background/95 backdrop-blur-sm rounded-lg p-4 transform scale-95 group-hover:scale-100 transition-transform duration-300">
-                    <Button 
+                    <Button
                       onClick={() => navigate('/login')}
                       className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
                     >
@@ -98,13 +98,13 @@ const DashboardPreview = () => {
           {/* Right - Features */}
           <div className="order-1 lg:order-2">
             <div className="space-y-8">
-              
+
               <div className="space-y-4">
                 <h3 className="text-2xl font-bold text-foreground">
                   Tudo que você precisa em um só lugar
                 </h3>
                 <p className="text-muted-foreground">
-                  Nossa plataforma integra todas as ferramentas essenciais para uma gestão 
+                  Nossa plataforma integra todas as ferramentas essenciais para uma gestão
                   eficiente de obras, desde o planejamento até a entrega final.
                 </p>
               </div>
@@ -131,7 +131,7 @@ const DashboardPreview = () => {
               {/* CTA */}
               <div className="pt-6">
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button 
+                  <Button
                     size="lg"
                     onClick={() => navigate('/login')}
                     className="bg-primary hover:bg-primary/90 text-primary-foreground"
@@ -139,8 +139,8 @@ const DashboardPreview = () => {
                     Começar Gratuitamente
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
-                  
-                  <Button 
+
+                  <Button
                     size="lg"
                     variant="outline"
                     onClick={() => navigate('/institucional')}

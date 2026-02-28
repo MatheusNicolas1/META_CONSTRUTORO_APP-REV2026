@@ -26,7 +26,13 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 3 * 60 * 1000, // 3 minutes
       gcTime: 8 * 60 * 1000, // 8 minutes
-      retry: 2,
+      retry: (failureCount, error) => {
+        // Don't retry on client errors (4xx)
+        if (error instanceof Error && (error as any).status >= 400 && (error as any).status < 500) {
+          return false;
+        }
+        return failureCount < 2;
+      },
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
@@ -40,7 +46,7 @@ const queryClient = new QueryClient({
 });
 
 import Index from '@/pages/Index';
-import Preco from '@/pages/Preco';
+
 import Login from '@/pages/Login';
 import Logout from '@/pages/Logout';
 import RecuperarSenha from '@/pages/RecuperarSenha';
@@ -73,6 +79,12 @@ const ObraDetalhes = lazy(() =>
 
 const RDO = lazy(() =>
   import('@/pages/RDO').then(module => ({
+    default: module.default
+  }))
+);
+
+const RDONovoPage = lazy(() =>
+  import('@/pages/RDONovoPage').then(module => ({
     default: module.default
   }))
 );
@@ -287,6 +299,13 @@ const Notificacoes = lazy(() =>
   }))
 );
 
+const Preco = lazy(() =>
+  import('@/pages/Preco').then(module => ({
+    default: module.default
+  }))
+);
+
+
 // Módulo de comunidade removido - substituído por compartilhamento social integrado
 
 // React Query configured inline for better module resolution
@@ -340,9 +359,9 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/mfa" element={<MFA />} />
                       <Route path="/renovar-sessao" element={<RenovarSessao />} />
                       <Route path="/home" element={<Index />} />
-                      <Route path="/preco" element={<Preco />} />
                       <Route path="/sobre" element={<SafeSuspense><Sobre /></SafeSuspense>} />
                       <Route path="/contato" element={<SafeSuspense><Contato /></SafeSuspense>} />
+                      <Route path="/preco" element={<SafeSuspense><Preco /></SafeSuspense>} />
                       {/* Rotas públicas do rodapé */}
                       <Route path="/atualizacoes" element={<SafeSuspense><Atualizacoes /></SafeSuspense>} />
                       <Route path="/carreiras" element={<SafeSuspense><Carreiras /></SafeSuspense>} />
@@ -367,8 +386,9 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/obras/:id/editar" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Obras /></ProtectedPage>} />
                       {/* RDO */}
                       <Route path="/rdo" element={<ProtectedPage><RDO /></ProtectedPage>} />
+                      <Route path="/rdo/novo" element={<ProtectedPage><RDONovoPage /></ProtectedPage>} />
                       <Route path="/rdo/:id/visualizar" element={<ProtectedPage><RDOVisualizar /></ProtectedPage>} />
-                      <Route path="/rdo/:id/editar" element={<ProtectedPage><RDO /></ProtectedPage>} />
+                      <Route path="/rdo/:id/editar" element={<ProtectedPage><RDONovoPage /></ProtectedPage>} />
                       {/* Atividades */}
                       <Route path="/atividades" element={<ProtectedPage><Atividades /></ProtectedPage>} />
                       {/* Checklist */}
@@ -409,7 +429,7 @@ export const PerformanceOptimizedApp = memo(() => (
                       {/* Segurança */}
                       <Route path="/seguranca" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Seguranca /></ProtectedPage>} />
                       {/* Painel Administrativo */}
-                      <Route path="/admin/dashboard" element={<ProtectedPage roles={["Administrador"]}><AdminDashboard /></ProtectedPage>} />
+                      <Route path="/admin/dashboard" element={<ProtectedPage roles={["Presidente"]}><AdminDashboard /></ProtectedPage>} />
                       {/* Perfil Público e Configurações */}
                       <Route path="/perfil/:slug" element={<PerfilPublico />} />
                       <Route path="/configurar-perfil" element={<ProtectedPage><ConfigurarPerfil /></ProtectedPage>} />

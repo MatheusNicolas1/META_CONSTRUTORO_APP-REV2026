@@ -12,15 +12,15 @@ import AdminManagers from "@/components/admin/AdminManagers";
 import AdminHeatmap from "@/components/admin/AdminHeatmap";
 
 const AdminDashboard = () => {
-  const { user, roles, loading } = useAuth();
+  const { user, loading, hasRole } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Verificar se o usuário está autenticado e tem role de Administrador
-    if (!loading && (!user || !roles.includes('Administrador'))) {
+    // Verificar se o usuário está autenticado e tem role de Administrador (ou superior)
+    if (!loading && (!user || !hasRole('Administrador'))) {
       navigate('/dashboard');
     }
-  }, [user, roles, loading, navigate]);
+  }, [user, loading, navigate, hasRole]);
 
   if (loading) {
     return (
@@ -30,7 +30,7 @@ const AdminDashboard = () => {
     );
   }
 
-  if (!roles.includes('Administrador')) {
+  if (!hasRole('Administrador')) {
     return null;
   }
 

@@ -26,13 +26,13 @@ const StatCard = memo(({ stat }: { stat: any }) => (
 StatCard.displayName = "StatCard";
 
 // Componentes lazy-loaded
-const RecentRDOs = React.lazy(() => 
+const RecentRDOs = React.lazy(() =>
   import("@/components/RecentRDOs").then(module => ({ default: module.RecentRDOs }))
 );
-const RecentObras = React.lazy(() => 
+const RecentObras = React.lazy(() =>
   import("@/components/RecentObras").then(module => ({ default: module.RecentObras }))
 );
-const ActivityCalendarModern = React.lazy(() => 
+const ActivityCalendarModern = React.lazy(() =>
   import("@/components/ActivityCalendarModern").then(module => ({ default: module.ActivityCalendarModern }))
 );
 
@@ -95,52 +95,49 @@ const OptimizedDashboard = memo(() => {
           </div>
         </div>
 
-      {/* Stats Cards com renderização otimizada */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
-        {isLoading ? (
-          <>
-            {[1, 2, 3, 4].map((i) => (
-              <Card key={i} className="bg-card border-border">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-4 w-4 rounded" />
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-8 w-12 mb-1" />
-                  <Skeleton className="h-3 w-32" />
-                </CardContent>
-              </Card>
-            ))}
-          </>
-        ) : (
-          statsConfig.map((stat) => (
-            <StatCard key={stat.title} stat={stat} />
-          ))
-        )}
-      </div>
+        {/* Stats Cards com renderização otimizada */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
+          {isLoading ? (
+            <>
+              {[1, 2, 3, 4].map((i) => (
+                <Card key={i} className="bg-card border-border">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-4 w-4 rounded" />
+                  </CardHeader>
+                  <CardContent>
+                    <Skeleton className="h-8 w-12 mb-1" />
+                    <Skeleton className="h-3 w-32" />
+                  </CardContent>
+                </Card>
+              ))}
+            </>
+          ) : (
+            statsConfig.map((stat) => (
+              <StatCard key={stat.title} stat={stat} />
+            ))
+          )}
+        </div>
 
-
-      {/* Componentes lazy-loaded com Suspense */}
-      <React.Suspense fallback={
-        <div className="h-64 bg-card rounded-lg border border-border animate-pulse" />
-      }>
-        <ActivityCalendarModern />
-      </React.Suspense>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6 pb-20 lg:pb-6">
-        <React.Suspense fallback={
-          <div className="h-96 bg-card rounded-lg border border-border animate-pulse" />
-        }>
-          <RecentRDOs />
+        {/* Activity Heatmap */}
+        <React.Suspense fallback={<div className="h-64 rounded-xl border bg-card/50" />}>
+          <ActivityCalendarModern />
         </React.Suspense>
 
-        <React.Suspense fallback={
-          <div className="h-96 bg-card rounded-lg border border-border animate-pulse" />
-        }>
-          <RecentObras />
-        </React.Suspense>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6 pb-20 lg:pb-6">
+          <React.Suspense fallback={
+            <div className="h-96 bg-card rounded-lg border border-border animate-pulse" />
+          }>
+            <RecentRDOs />
+          </React.Suspense>
+
+          <React.Suspense fallback={
+            <div className="h-96 bg-card rounded-lg border border-border animate-pulse" />
+          }>
+            <RecentObras />
+          </React.Suspense>
+        </div>
       </div>
-    </div>
     </>
   );
 });

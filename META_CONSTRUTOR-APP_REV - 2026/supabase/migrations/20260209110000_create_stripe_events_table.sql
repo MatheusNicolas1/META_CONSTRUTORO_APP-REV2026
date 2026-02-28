@@ -38,12 +38,15 @@ CREATE INDEX IF NOT EXISTS idx_stripe_events_created ON public.stripe_events(cre
 ALTER TABLE public.stripe_events ENABLE ROW LEVEL SECURITY;
 
 -- Policy: service_role pode tudo (webhooks)
-CREATE POLICY "Service role can manage stripe events"
-  ON public.stripe_events FOR ALL
-  TO service_role
-  USING (true)
-  WITH CHECK (true);
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'stripe_events' AND policyname = 'Service role can manage stripe events') THEN
+        CREATE POLICY "Service role can manage stripe events"
+          ON public.stripe_events FOR ALL
+          TO service_role
+          USING (true)
+          WITH CHECK (true);
+    END IF;
+END $$;
 
-COMMENT ON TABLE public.stripe_events IS 'M4.4: Idempotency table para Stripe webhooks';
-COMMENT ON COLUMN public.stripe_events.stripe_event_id IS 'ID do evento Stripe (evt_xxxxx) - garante idempotência';
-COMMENT ON COLUMN public.stripe_events.processed IS 'Flag se evento já foi processado';
+

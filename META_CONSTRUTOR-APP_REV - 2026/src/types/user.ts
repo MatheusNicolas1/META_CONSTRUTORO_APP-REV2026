@@ -1,5 +1,5 @@
 // Tipos para sistema de usuários e permissões
-export type UserRole = 'Administrador' | 'Gerente' | 'Colaborador';
+export type UserRole = 'Presidente' | 'Administrador' | 'Gerente' | 'Colaborador';
 
 export interface User {
   id: string;
@@ -22,6 +22,14 @@ export interface UserPermissions {
 
 // Mapeamento de permissões por cargo
 export const rolePermissions: Record<UserRole, UserPermissions> = {
+  Presidente: {
+    canCreateRDO: true,
+    canApproveRDO: true,
+    canExportRDO: true,
+    canDeleteRDO: true,
+    canViewAllRDOs: true,
+    canManageFeedbacks: true,
+  },
   Administrador: {
     canCreateRDO: true,
     canApproveRDO: true,

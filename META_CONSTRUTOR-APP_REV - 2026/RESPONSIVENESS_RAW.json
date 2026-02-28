@@ -1,0 +1,282 @@
+{
+  "fixedWidths": [
+    {
+      "file": "src\\components\\ActivityCalendar.tsx",
+      "matches": [
+        "w-[425px]"
+      ]
+    },
+    {
+      "file": "src\\components\\ActivityCalendarModern.tsx",
+      "matches": [
+        "w-[425px]"
+      ]
+    },
+    {
+      "file": "src\\components\\admin\\AdminHeatmap.tsx",
+      "matches": [
+        "w-[180px]",
+        "w-[180px]"
+      ]
+    },
+    {
+      "file": "src\\components\\admin\\AdminUsers.tsx",
+      "matches": [
+        "w-[50px]"
+      ]
+    },
+    {
+      "file": "src\\components\\DatePicker.tsx",
+      "matches": [
+        "w-[280px]"
+      ]
+    },
+    {
+      "file": "src\\components\\DocumentoExpandableCard.tsx",
+      "matches": [
+        "w-[200px]"
+      ]
+    },
+    {
+      "file": "src\\components\\landing\\DashboardPreviewMockup.tsx",
+      "matches": [
+        "w-[850px]",
+        "w-[220px]"
+      ]
+    },
+    {
+      "file": "src\\components\\landing\\HeroSection.tsx",
+      "matches": [
+        "w-[800px]",
+        "w-[600px]"
+      ]
+    },
+    {
+      "file": "src\\components\\landing\\HeroSectionNew.tsx",
+      "matches": [
+        "w-[800px]",
+        "w-[600px]",
+        "w-[1400px]"
+      ]
+    },
+    {
+      "file": "src\\components\\NotificationPanel.tsx",
+      "matches": [
+        "w-[400px]"
+      ]
+    },
+    {
+      "file": "src\\components\\NovaAtividadeModal.tsx",
+      "matches": [
+        "w-[600px]"
+      ]
+    },
+    {
+      "file": "src\\components\\NovaObraForm.tsx",
+      "matches": [
+        "w-[900px]"
+      ]
+    },
+    {
+      "file": "src\\components\\rdo\\RDONewForm.tsx",
+      "matches": [
+        "w-[900px]"
+      ]
+    },
+    {
+      "file": "src\\components\\RDOForm.tsx",
+      "matches": [
+        "w-[900px]"
+      ]
+    },
+    {
+      "file": "src\\components\\RDOFormEnhanced.tsx",
+      "matches": [
+        "w-[1200px]"
+      ]
+    },
+    {
+      "file": "src\\components\\ui\\animated-login.tsx",
+      "matches": [
+        "w-[3px]",
+        "w-[3px]",
+        "w-[5px]",
+        "w-[8px]",
+        "w-[8px]",
+        "w-[5px]"
+      ]
+    },
+    {
+      "file": "src\\components\\ui\\auto-scroll-testimonials.tsx",
+      "matches": [
+        "w-[140px]",
+        "w-[200px]",
+        "w-[140px]",
+        "w-[200px]"
+      ]
+    },
+    {
+      "file": "src\\components\\ui\\date-picker.tsx",
+      "matches": [
+        "w-[280px]"
+      ]
+    },
+    {
+      "file": "src\\components\\ui\\drawer.tsx",
+      "matches": [
+        "w-[100px]"
+      ]
+    },
+    {
+      "file": "src\\components\\ui\\fluid-menu.tsx",
+      "matches": [
+        "w-[64px]"
+      ]
+    },
+    {
+      "file": "src\\components\\ui\\hero-modern.tsx",
+      "matches": [
+        "w-[600px]"
+      ]
+    },
+    {
+      "file": "src\\components\\ui\\separator.tsx",
+      "matches": [
+        "w-[1px]"
+      ]
+    },
+    {
+      "file": "src\\components\\ui\\sidebar.tsx",
+      "matches": [
+        "w-[2px]"
+      ]
+    },
+    {
+      "file": "src\\components\\ui\\toast.tsx",
+      "matches": [
+        "w-[420px]"
+      ]
+    },
+    {
+      "file": "src\\components\\UserProfile.tsx",
+      "matches": [
+        "w-[120px]",
+        "w-[120px]"
+      ]
+    },
+    {
+      "file": "src\\index.css",
+      "matches": [
+        "w-[44px]",
+        "w-[200px]",
+        "w-[44px]",
+        "w-[32px]"
+      ]
+    },
+    {
+      "file": "src\\pages\\Despesas.tsx",
+      "matches": [
+        "w-[200px]",
+        "w-[180px]"
+      ]
+    },
+    {
+      "file": "src\\pages\\Documentos.tsx",
+      "matches": [
+        "w-[600px]"
+      ]
+    },
+    {
+      "file": "src\\pages\\Equipamentos.tsx",
+      "matches": [
+        "w-[500px]"
+      ]
+    },
+    {
+      "file": "src\\pages\\Equipes.tsx",
+      "matches": [
+        "w-[500px]"
+      ]
+    },
+    {
+      "file": "src\\pages\\Feedback.tsx",
+      "matches": [
+        "w-[200px]"
+      ]
+    },
+    {
+      "file": "src\\pages\\Fornecedores.tsx",
+      "matches": [
+        "w-[600px]"
+      ]
+    },
+    {
+      "file": "src\\pages\\RecuperarEmail.tsx",
+      "matches": [
+        "w-[3px]",
+        "w-[3px]",
+        "w-[5px]",
+        "w-[8px]",
+        "w-[8px]",
+        "w-[5px]"
+      ]
+    },
+    {
+      "file": "src\\pages\\RecuperarSenha.tsx",
+      "matches": [
+        "w-[3px]",
+        "w-[3px]",
+        "w-[5px]",
+        "w-[8px]",
+        "w-[8px]",
+        "w-[5px]"
+      ]
+    },
+    {
+      "file": "src\\pages\\RedefinirSenha.tsx",
+      "matches": [
+        "w-[3px]",
+        "w-[3px]",
+        "w-[5px]",
+        "w-[8px]",
+        "w-[8px]",
+        "w-[5px]"
+      ]
+    }
+  ],
+  "overflows": [],
+  "potentialIssues": [
+    {
+      "file": "src\\App.css",
+      "issue": "Possible missing overflow-x-hidden restriction"
+    },
+    {
+      "file": "src\\App.tsx",
+      "issue": "Possible missing overflow-x-hidden restriction"
+    },
+    {
+      "file": "src\\components\\AppSidebar.tsx",
+      "issue": "Possible missing overflow-x-hidden restriction"
+    },
+    {
+      "file": "src\\components\\ExpenseApprovalDialog.tsx",
+      "issue": "Possible missing overflow-x-hidden restriction"
+    },
+    {
+      "file": "src\\components\\integrations\\WhatsAppConfigCard.tsx",
+      "issue": "Possible missing overflow-x-hidden restriction"
+    },
+    {
+      "file": "src\\components\\PerformanceOptimizedApp.tsx",
+      "issue": "Possible missing overflow-x-hidden restriction"
+    },
+    {
+      "file": "src\\components\\rdo\\RDOApprovalSection.tsx",
+      "issue": "Possible missing overflow-x-hidden restriction"
+    },
+    {
+      "file": "src\\index.css",
+      "issue": "Possible missing overflow-x-hidden restriction"
+    }
+  ]
+}

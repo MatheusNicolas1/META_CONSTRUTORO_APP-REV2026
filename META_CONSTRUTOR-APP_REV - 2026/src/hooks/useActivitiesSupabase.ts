@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/components/auth/AuthContext';
 import { notifyActivityChange } from '@/utils/notificationService';
 import { useRequireOrg } from '@/hooks/requireOrg';
+import { RealtimeChannel } from '@supabase/supabase-js';
 
 export interface Activity {
   id: string;
@@ -31,56 +32,260 @@ export interface Activity {
   priority?: 'baixa' | 'media' | 'alta';
 }
 
-export function useActivitiesSupabase() {
+// Global Singleton Registry (stored in globalThis to survive HMR/React Refresh)
+const REGISTRY_KEY = '__meta_activities_realtime_registry__';
+type RegistryEntry = {
+  channel: RealtimeChannel;
+  refCount: number;
+  cleanupTimeout: number | null; // window.setTimeout returns number
+  status: 'CONNECTING' | 'SUBSCRIBED' | 'ERROR';
+};
+
+const getRegistry = (): Map<string, RegistryEntry> => {
+  if (!(globalThis as any)[REGISTRY_KEY]) {
+    (globalThis as any)[REGISTRY_KEY] = new Map<string, RegistryEntry>();
+  }
+  return (globalThis as any)[REGISTRY_KEY];
+};
+
+export function useActivitiesSupabase(filters?: { obraId?: string }) {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
   const { orgId, isLoading: orgLoading } = useRequireOrg();
 
+  // Refs for component stability
+  const isMountedRef = useRef(true);
+  const loadActivitiesRef = useRef<(() => Promise<void>) | null>(null);
+
+  // Track mount status
+  useEffect(() => {
+    isMountedRef.current = true;
+    console.log(`[useActivitiesSupabase] Mounted. OrgId: ${orgId}, Auth: ${isAuthenticated}`);
+    console.log(`[useActivitiesSupabase] Mounted. OrgId: ${orgId}, Auth: ${isAuthenticated}, ObraFilter: ${filters?.obraId}`);
+    setActivities([]); // Clear activities on org switch to prevent bleeding
+    return () => {
+      isMountedRef.current = false;
+      console.log(`[useActivitiesSupabase] Unmounted.`);
+    };
+  }, [orgId, isAuthenticated]);
+
   // Carregar atividades do Supabase
   const loadActivities = useCallback(async () => {
-    if (!isAuthenticated || !user?.id || orgLoading || !orgId) {
-      setActivities([]);
-      setIsLoading(false);
+    // Prevent load if auth not ready or not mounted
+    if (!isAuthenticated || !user?.id) {
+      if (isMountedRef.current) {
+        setActivities([]);
+        setIsLoading(false);
+      }
       return;
     }
 
+    // Checking mount ref before state updates
+    if (!isMountedRef.current) return;
+
     try {
       setIsLoading(true);
-      const { data, error } = await supabase
+      let query = supabase
         .from('atividades')
         .select('*')
-        .eq('org_id', orgId)
+        .eq('user_id', user.id);
+
+      if (filters?.obraId) {
+        query = query.eq('obra_id', filters.obraId);
+      }
+
+      const { data, error } = await query
         .order('data', { ascending: true })
         .order('hora', { ascending: true })
         .limit(50);
 
       if (error) throw error;
 
-      // Cast the data to Activity type
-      const typedData = (data || []).map(item => ({
-        ...item,
-        status: item.status as Activity['status'],
-        prioridade: item.prioridade as Activity['prioridade'],
-      })) as Activity[];
+      if (isMountedRef.current) {
+        // Cast the data to Activity type
+        const typedData = (data || []).map(item => ({
+          ...item,
+          status: item.status as Activity['status'],
+          prioridade: item.prioridade as Activity['prioridade'],
+        })) as Activity[];
 
-      setActivities(typedData);
-    } catch (error) {
-      console.error('Error loading activities:', error);
-      toast({
-        title: 'Erro ao carregar atividades',
-        description: 'Não foi possível carregar as atividades do servidor.',
-        variant: 'destructive',
-      });
+        setActivities(typedData);
+      }
+    } catch (error: any) {
+      // Suppress AbortError — it's normal during React re-renders / StrictMode
+      const isAbortError =
+        error?.name === 'AbortError' ||
+        error?.message?.includes('aborted') ||
+        error?.message?.includes('signal');
+
+      if (isAbortError) {
+        console.log('[useActivitiesSupabase] Request aborted (normal during re-renders)');
+      } else {
+        console.error('Error loading activities:', error);
+        if (isMountedRef.current) {
+          toast({
+            title: 'Erro ao carregar atividades',
+            description: 'Não foi possível carregar as atividades do servidor.',
+            variant: 'destructive',
+          });
+        }
+      }
     } finally {
-      setIsLoading(false);
+      if (isMountedRef.current) {
+        setIsLoading(false);
+      }
     }
-  }, [isAuthenticated, user?.id, orgId, orgLoading, toast]);
+  }, [isAuthenticated, user?.id, toast, filters?.obraId]);
+
+  // Keep loadActivities ref updated
+  useEffect(() => {
+    loadActivitiesRef.current = loadActivities;
+  }, [loadActivities]);
+
+  // Debounced reload helper
+  const reloadTimeoutRef = useRef<number | null>(null);
+  const debouncedReload = useCallback(() => {
+    if (reloadTimeoutRef.current) {
+      window.clearTimeout(reloadTimeoutRef.current);
+    }
+
+    reloadTimeoutRef.current = window.setTimeout(() => {
+      console.log('[Realtime] Debounced reload triggering...');
+      if (loadActivitiesRef.current && isMountedRef.current) {
+        loadActivitiesRef.current();
+      }
+      reloadTimeoutRef.current = null;
+    }, 1000);
+  }, []);
+
+  // Initial load effect (respecting orgLoading)
+  useEffect(() => {
+    if (!orgLoading && isAuthenticated && user?.id) {
+      loadActivities();
+    }
+  }, [orgLoading, isAuthenticated, user?.id, loadActivities, filters?.obraId]);
+
+  // --------------------------------------------------------------------------
+  // ROBUST REALTIME SUBSCRIPTION (Global Singleton + Grace Period)
+  // --------------------------------------------------------------------------
+  useEffect(() => {
+    // 1. Validate preconditions
+    if (!isAuthenticated || !user?.id || !orgId || orgLoading) {
+      return;
+    }
+
+    const registry = getRegistry();
+    // Unique key dependent ONLY on user and org
+    const channelKey = `atividades-realtime-${orgId}-${user.id}`;
+
+    let didSubscribe = false;
+
+    const setup = () => {
+      let entry = registry.get(channelKey);
+
+      if (!entry) {
+        console.log(`[Realtime] Creating NEW channel: ${channelKey}`);
+
+        // Setup new channel
+        const channel = supabase.channel(channelKey)
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'atividades',
+              filter: `user_id=eq.${user.id}`
+            },
+            (payload) => {
+              console.log('[Realtime] Change detected:', payload.eventType);
+              // Broadcast event to ALL hooks
+              window.dispatchEvent(new CustomEvent(`activities-changed-${channelKey}`));
+            }
+          )
+          .subscribe((status) => {
+            const currentEntry = registry.get(channelKey);
+            if (!currentEntry) return;
+
+            if (status === 'SUBSCRIBED') {
+              console.log(`[Realtime] Subscribed: ${channelKey}`);
+              currentEntry.status = 'SUBSCRIBED';
+            } else if (status === 'CHANNEL_ERROR') {
+              console.error(`[Realtime] Error: ${channelKey}`);
+              currentEntry.status = 'ERROR';
+              // Optional: Implement backoff retry here if needed
+            } else if (status === 'TIMED_OUT') {
+              console.error(`[Realtime] Timed out: ${channelKey}`);
+              currentEntry.status = 'ERROR';
+            }
+          });
+
+        entry = {
+          channel,
+          refCount: 0,
+          cleanupTimeout: null,
+          status: 'CONNECTING'
+        };
+        registry.set(channelKey, entry);
+      } else {
+        console.log(`[Realtime] Reusing channel: ${channelKey} (Status: ${entry.status})`);
+      }
+
+      // CANCEL any pending cleanup (The Grace Period logic)
+      if (entry.cleanupTimeout) {
+        console.log(`[Realtime] Canceling pending cleanup for ${channelKey}. Resurrecting.`);
+        window.clearTimeout(entry.cleanupTimeout);
+        entry.cleanupTimeout = null;
+      }
+
+      // Increment refCount
+      entry.refCount++;
+      didSubscribe = true;
+      console.log(`[Realtime] RefCount incremented: ${channelKey} -> ${entry.refCount}`);
+    };
+
+    setup();
+
+    // Setup local event listener
+    const handleRemoteChange = () => debouncedReload();
+    window.addEventListener(`activities-changed-${channelKey}`, handleRemoteChange);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener(`activities-changed-${channelKey}`, handleRemoteChange);
+
+      if (didSubscribe) {
+        const entry = registry.get(channelKey);
+        if (entry) {
+          entry.refCount--;
+          console.log(`[Realtime] RefCount decremented: ${channelKey} -> ${entry.refCount}`);
+
+          if (entry.refCount <= 0) {
+            // GRACE PERIOD: Don't remove immediately! Wait 1000ms.
+            // If another component mounts (or StrictMode remounts) within this time, 
+            // the cleanup will be canceled.
+            console.log(`[Realtime] RefCount is 0. Scheduling cleanup in 1000ms...`);
+
+            entry.cleanupTimeout = window.setTimeout(() => {
+              // Double check refCount is STILL 0
+              if (entry.refCount <= 0) {
+                console.log(`[Realtime] Grace period over. Removing channel: ${channelKey}`);
+                supabase.removeChannel(entry.channel);
+                registry.delete(channelKey);
+              } else {
+                console.log(`[Realtime] Cleanup aborted! RefCount recovered to ${entry.refCount}`);
+              }
+            }, 1000);
+          }
+        }
+      }
+    };
+  }, [isAuthenticated, user?.id, orgId, orgLoading, debouncedReload]);
 
   // Salvar ou atualizar atividade
   const saveActivity = useCallback(async (activity: Partial<Activity>) => {
-    if (!isAuthenticated || !user?.id || !orgId) {
+    if (!isAuthenticated || !user?.id) {
       toast({
         title: 'Erro',
         description: 'Você precisa estar logado para criar atividades.',
@@ -92,7 +297,6 @@ export function useActivitiesSupabase() {
     try {
       // Normalizar dados para o formato do banco
       const activityData = {
-        org_id: orgId,
         user_id: user.id,
         obra_id: activity.obra_id || null,
         titulo: activity.titulo || activity.title || '',
@@ -112,27 +316,20 @@ export function useActivitiesSupabase() {
       const isUpdate = activity.id && !activity.id.toString().match(/^\d+$/);
 
       if (isUpdate) {
-        // Atualizar atividade existente
         const { data, error } = await supabase
           .from('atividades')
           .update(activityData)
           .eq('id', activity.id)
-          .eq('org_id', orgId)
+          .eq('user_id', user.id)
           .select()
           .single();
 
         if (error) throw error;
         result = data;
 
-        // Enviar notificação de atualização
         await notifyActivityChange(user.id, activityData.titulo, 'updated', activityData.obra_id || undefined);
-
-        toast({
-          title: 'Atividade atualizada',
-          description: `${activityData.titulo} foi atualizada com sucesso.`,
-        });
+        toast({ title: 'Atividade atualizada', description: `${activityData.titulo} foi atualizada com sucesso.` });
       } else {
-        // Criar nova atividade
         const { data, error } = await supabase
           .from('atividades')
           .insert(activityData)
@@ -142,16 +339,10 @@ export function useActivitiesSupabase() {
         if (error) throw error;
         result = data;
 
-        // Enviar notificação de criação
         await notifyActivityChange(user.id, activityData.titulo, 'created', activityData.obra_id || undefined);
-
-        toast({
-          title: 'Atividade criada',
-          description: `${activityData.titulo} foi criada com sucesso.`,
-        });
+        toast({ title: 'Atividade criada', description: `${activityData.titulo} foi criada com sucesso.` });
       }
 
-      // Recarregar atividades
       await loadActivities();
       return result;
     } catch (error) {
@@ -163,35 +354,27 @@ export function useActivitiesSupabase() {
       });
       return null;
     }
-  }, [isAuthenticated, user?.id, orgId, toast, loadActivities]);
+  }, [isAuthenticated, user?.id, toast, loadActivities]);
 
   // Deletar atividade
   const deleteActivity = useCallback(async (activityId: string) => {
-    if (!isAuthenticated || !user?.id || !orgId) return;
+    if (!isAuthenticated || !user?.id) return;
 
     try {
-      // Buscar dados da atividade antes de deletar
       const activityToDelete = activities.find(a => a.id === activityId);
-
       const { error } = await supabase
         .from('atividades')
         .delete()
         .eq('id', activityId)
-        .eq('org_id', orgId);
+        .eq('user_id', user.id);
 
       if (error) throw error;
 
-      // Enviar notificação de deleção
       if (activityToDelete) {
         await notifyActivityChange(user.id, activityToDelete.titulo, 'deleted', activityToDelete.obra_id);
       }
 
-      toast({
-        title: 'Atividade excluída',
-        description: 'A atividade foi removida com sucesso.',
-      });
-
-      // Recarregar atividades
+      toast({ title: 'Atividade excluída', description: 'A atividade foi removida com sucesso.' });
       await loadActivities();
     } catch (error) {
       console.error('Error deleting activity:', error);
@@ -201,19 +384,17 @@ export function useActivitiesSupabase() {
         variant: 'destructive',
       });
     }
-  }, [isAuthenticated, user?.id, activities, orgId, toast, loadActivities]);
+  }, [isAuthenticated, user?.id, activities, toast, loadActivities]);
 
-  // Obter atividades para uma data específica
+  // Helpers
   const getActivitiesForDate = useCallback((date: string): Activity[] => {
     return activities.filter(a => a.data === date);
   }, [activities]);
 
-  // Verificar se há atividades em uma data
   const hasActivitiesOnDate = useCallback((date: string): boolean => {
     return activities.some(a => a.data === date);
   }, [activities]);
 
-  // Agrupar atividades por data (para compatibilidade com o código existente)
   const activitiesByDate = useCallback((): Record<string, Activity[]> => {
     return activities.reduce((acc, activity) => {
       const date = activity.data;
@@ -224,36 +405,6 @@ export function useActivitiesSupabase() {
       return acc;
     }, {} as Record<string, Activity[]>);
   }, [activities]);
-
-  // Carregar atividades ao montar
-  useEffect(() => {
-    loadActivities();
-  }, [loadActivities]);
-
-  // Real-time subscription
-  useEffect(() => {
-    if (!isAuthenticated || !user?.id || !orgId) return;
-
-    const channel = supabase
-      .channel(`atividades-realtime-${orgId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'atividades',
-          filter: `org_id=eq.${orgId}`
-        },
-        () => {
-          loadActivities();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [isAuthenticated, user?.id, orgId, loadActivities]);
 
   return {
     activities: activitiesByDate(),

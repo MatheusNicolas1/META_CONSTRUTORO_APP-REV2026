@@ -25,7 +25,7 @@ export async function sendNotification({
       message,
       type,
       route
-    });
+    } as any);
 
     if (error) {
       console.error('Error sending notification:', error);
@@ -56,7 +56,7 @@ export async function sendNotificationToMultiple(
 
   try {
     if (notifications.length > 0) {
-      await supabase.from('notifications').insert(notifications);
+      await supabase.from('notifications').insert(notifications as any);
     }
   } catch (error) {
     console.error('Error sending notifications:', error);
@@ -162,7 +162,7 @@ export async function notifyRDOChange(
   const { title, verb } = actionTexts[action];
   const formattedDate = new Date(rdoDate).toLocaleDateString('pt-BR');
   const message = `RDO de ${formattedDate} da obra "${obraName}" ${verb}.`;
-  const route = rdoId ? `/rdo/${rdoId}` : '/rdo';
+  const route = rdoId ? `/rdo/${rdoId}/visualizar` : '/rdo';
 
   // Notificar o próprio usuário
   await sendNotification({

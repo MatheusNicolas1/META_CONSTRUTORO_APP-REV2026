@@ -25,7 +25,7 @@ const HeroSection = () => {
               <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
               Sistema de Gestão Completo
             </div>
-            
+
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6">
               Gerencie suas{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
@@ -33,19 +33,19 @@ const HeroSection = () => {
               </span>{' '}
               com inteligência
             </h1>
-            
+
             <p className="text-lg text-muted-foreground mb-4 max-w-xl lg:max-w-none">
-              Plataforma completa para controle de obras, RDO digital, gestão de equipes, 
+              Plataforma completa para controle de obras, RDO digital, gestão de equipes,
               checklists e relatórios. Simplifique sua gestão e aumente a produtividade.
             </p>
-            
+
             <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 text-green-700 dark:text-green-400 px-4 py-2 rounded-lg text-sm font-medium mb-8">
               <span className="text-lg">🎉</span>
               <span><strong>100% Gratuito</strong> - Comece com 7 Créditos RDO</span>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button 
+              <Button
                 size="lg"
                 onClick={() => navigate('/login')}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground px-8"
@@ -53,9 +53,9 @@ const HeroSection = () => {
                 Começar Gratuitamente
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              
-              <Button 
-                size="lg" 
+
+              <Button
+                size="lg"
                 variant="outline"
                 onClick={() => navigate('/login')}
                 className="border-border hover:bg-muted"
@@ -85,7 +85,7 @@ const HeroSection = () => {
           {/* Right Column - Dashboard Preview */}
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50 bg-background/95 backdrop-blur-sm">
-              {/* Browser mockup header */}
+              {/* Browser preview header */}
               <div className="flex items-center gap-2 px-4 py-3 bg-muted border-b border-border">
                 <div className="flex gap-2">
                   <div className="w-3 h-3 rounded-full bg-red-500"></div>
@@ -98,18 +98,18 @@ const HeroSection = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Dashboard Image */}
               <div className="aspect-[16/10] relative overflow-hidden">
-                <img 
-                  src={dashboardPreview} 
+                <img
+                  src={dashboardPreview}
                   alt="Preview do Dashboard Meta Construtor"
                   className="w-full h-full object-cover"
                 />
-                
+
                 {/* Overlay with hover effect */}
                 <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-pointer flex items-center justify-center">
-                  <Button 
+                  <Button
                     onClick={() => navigate('/login')}
                     className="bg-primary/90 hover:bg-primary backdrop-blur-sm"
                   >

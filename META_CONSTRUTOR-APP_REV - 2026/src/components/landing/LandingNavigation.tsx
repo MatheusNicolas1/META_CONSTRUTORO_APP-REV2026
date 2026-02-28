@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import Logo from '@/components/Logo';
 
 const menuItems = [
-  { name: 'Apresentação', href: '/' },
+  { name: 'Apresentação', href: '/home' },
   { name: 'Preço', href: '/preco' },
   { name: 'Sobre', href: '/sobre' },
   { name: 'Contato', href: '/contato' },
@@ -17,6 +17,7 @@ const LandingNavigation = () => {
   const [menuState, setMenuState] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { navigateToFreePlan } = usePricingNavigation();
 
   useEffect(() => {
@@ -36,6 +37,14 @@ const LandingNavigation = () => {
     }, 100);
   };
 
+  // Check if current path matches menu item
+  const isActive = (href: string) => {
+    if (href === '/home') {
+      return location.pathname === '/' || location.pathname === '/home';
+    }
+    return location.pathname === href;
+  };
+
   return (
     <header>
       <nav
@@ -43,7 +52,7 @@ const LandingNavigation = () => {
         className="fixed z-50 w-full px-2 group"
       >
         <div className={cn(
-          'mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12', 
+          'mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12',
           isScrolled && 'bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5'
         )}>
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
@@ -75,9 +84,17 @@ const LandingNavigation = () => {
                   <li key={index}>
                     <button
                       onClick={() => handleNavigation(item.href)}
-                      className="text-muted-foreground hover:text-accent-foreground block duration-150"
+                      className={cn(
+                        "block duration-150 relative",
+                        isActive(item.href)
+                          ? "text-primary font-medium"
+                          : "text-muted-foreground hover:text-accent-foreground"
+                      )}
                     >
                       <span>{item.name}</span>
+                      {isActive(item.href) && (
+                        <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full" />
+                      )}
                     </button>
                   </li>
                 ))}
@@ -93,7 +110,12 @@ const LandingNavigation = () => {
                     <li key={index}>
                       <button
                         onClick={() => handleNavigation(item.href)}
-                        className="text-muted-foreground hover:text-accent-foreground block duration-150"
+                        className={cn(
+                          "block duration-150",
+                          isActive(item.href)
+                            ? "text-primary font-medium"
+                            : "text-muted-foreground hover:text-accent-foreground"
+                        )}
                       >
                         <span>{item.name}</span>
                       </button>
@@ -112,7 +134,7 @@ const LandingNavigation = () => {
                 >
                   <span>Login</span>
                 </Button>
-                <Button 
+                <Button
                   size="sm"
                   onClick={() => navigate('/login')}
                   className={cn(isScrolled && 'hidden', 'touch-manipulation h-10 sm:h-9')}
@@ -121,7 +143,7 @@ const LandingNavigation = () => {
                 </Button>
                 <Button
                   size="sm"
-                  onClick={navigateToFreePlan}
+                  onClick={() => navigate('/login')}
                   className={cn(isScrolled ? 'inline-flex' : 'hidden', 'touch-manipulation h-10 sm:h-9')}
                 >
                   <span>Começar</span>

@@ -6,9 +6,9 @@ import { UserRole, getUserPermissions, UserPermissions } from '@/types/user';
 export const useUserPermissions = () => {
   // Mock - substituir pela integração real com Supabase
   const currentUser = {
-    id: 'mock-user-id',
-    name: 'Usuário Mock',
-    email: 'usuario@mock.com',
+    id: 'user-123',
+    name: 'Usuário Teste',
+    email: 'usuario@teste.com',
     role: 'Colaborador' as UserRole, // Alterar conforme necessário para testes
   };
 

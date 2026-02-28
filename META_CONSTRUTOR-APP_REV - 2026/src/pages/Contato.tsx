@@ -5,10 +5,10 @@ import LandingNavigation from '@/components/landing/LandingNavigation';
 import FooterSection from '@/components/landing/FooterSection';
 
 const ExpandableChatDemo = lazy(() => import('@/components/chat/ExpandableChatDemo').then(m => ({ default: m.ExpandableChatDemo })));
-import { 
-  Mail, 
-  MessageSquare, 
-  MapPin, 
+import {
+  Mail,
+  MessageSquare,
+  MapPin,
   Clock,
   MessageCircle,
   Send,
@@ -77,7 +77,7 @@ const Contato = () => {
     // Aqui você implementaria o envio real do formulário
     console.log('Dados do formulário:', formData);
     setIsSubmitted(true);
-    
+
     // Reset form after 3 seconds
     setTimeout(() => {
       setIsSubmitted(false);
@@ -94,15 +94,15 @@ const Contato = () => {
 
   return (
     <>
-      <SEO 
+      <SEO
         title="Contato - Meta Construtor | Fale Conosco"
         description="Entre em contato com a equipe do Meta Construtor. Suporte técnico, demonstrações, dúvidas sobre preços e parcerias. Estamos aqui para ajudar!"
-        canonical={window.location.href}
+        canonical="https://metaconstrutor.com.br/contato"
       />
-      
+
       <div className="min-h-screen bg-background">
         <LandingNavigation />
-        
+
         <main className="pt-16 md:pt-20 w-full">
           {/* Hero Section */}
           <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-primary/5 via-background to-muted/20 w-full">
@@ -111,7 +111,7 @@ const Contato = () => {
                 Fale Conosco
               </h1>
               <p className="text-xl text-muted-foreground">
-                Estamos aqui para ajudar! Entre em contato conosco através dos canais abaixo 
+                Estamos aqui para ajudar! Entre em contato conosco através dos canais abaixo
                 ou preencha o formulário e responderemos o mais rápido possível.
               </p>
             </div>
@@ -122,7 +122,7 @@ const Contato = () => {
             <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
                 {contactInfo.map((info, index) => (
-                  <div 
+                  <div
                     key={index}
                     className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 hover:scale-105 text-center"
                   >
@@ -175,7 +175,7 @@ const Contato = () => {
                           placeholder="Seu nome completo"
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
                           Email *
@@ -208,7 +208,7 @@ const Contato = () => {
                           placeholder="Nome da sua empresa"
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2">
                           Telefone
@@ -281,18 +281,18 @@ const Contato = () => {
                       Mensagem Enviada com Sucesso!
                     </h3>
                     <p className="text-muted-foreground mb-6">
-                      Recebemos sua mensagem e nossa equipe entrará em contato em breve. 
+                      Recebemos sua mensagem e nossa equipe entrará em contato em breve.
                       Obrigado pelo interesse no Meta Construtor!
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                      <button 
-                        onClick={() => navigate('/checkout?plan=free')}
+                      <button
+                        onClick={() => navigate('/login')}
                         className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 rounded-lg font-medium transition-colors"
                       >
                         Começar Teste Gratuito
                       </button>
-                      <button 
-                        onClick={() => navigate('/home')}
+                      <button
+                        onClick={() => navigate('/')}
                         className="border border-border hover:bg-muted text-foreground px-6 py-2 rounded-lg font-medium transition-colors"
                       >
                         Voltar ao Início
@@ -342,7 +342,7 @@ const Contato = () => {
                   <p className="text-muted-foreground mb-4">
                     Fale conosco diretamente pelo WhatsApp
                   </p>
-                  <button 
+                  <button
                     onClick={() => window.open('https://wa.me/5575992205734', '_blank')}
                     className="text-green-600 hover:underline font-medium"
                   >
@@ -360,7 +360,7 @@ const Contato = () => {
                   <p className="text-muted-foreground mb-4">
                     Envie um email diretamente para nossa equipe de suporte
                   </p>
-                  <button 
+                  <button
                     onClick={() => window.location.href = 'mailto:suporte@metaconstrutor.com'}
                     className="text-purple-600 hover:underline font-medium"
                   >
@@ -371,7 +371,7 @@ const Contato = () => {
             </div>
           </section>
         </main>
-        
+
         <FooterSection />
         <Suspense fallback={null}>
           <ExpandableChatDemo />

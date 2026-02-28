@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { DatePicker } from "./DatePicker";
 import { RDO, CreateRDOData, AtividadeRDO, EquipeRDO, EquipamentoRDO } from "@/types/rdo";
-import { Plus, Trash2, Upload, FileText } from "lucide-react";
+import { Plus, Trash2, Upload, FileText, X, Loader2 } from "lucide-react";
+import { useObras } from "@/hooks/useObras";
+import { useEquipesSupabase } from "@/hooks/useEquipesSupabase";
+import { useEquipamentosSupabase } from "@/hooks/useEquipamentosSupabase";
+import { Badge } from "@/components/ui/badge";
 
 interface RDOFormProps {
   isOpen: boolean;
@@ -27,38 +29,32 @@ export function RDOForm({ isOpen, onClose, onSubmit, rdo, isEditing = false }: R
   const [selectedObra, setSelectedObra] = useState<string>(
     rdo ? rdo.obraId.toString() : ""
   );
+  const [periodo, setPeriodo] = useState<string>(rdo?.periodo || "Manhã");
+  const [clima, setClima] = useState<string>(rdo?.clima || "Ensolarado");
   const [observacoes, setObservacoes] = useState(rdo?.observacoes || "");
   const [atividades, setAtividades] = useState<AtividadeRDO[]>(rdo?.atividadesRealizadas || []);
   const [equipes, setEquipes] = useState<EquipeRDO[]>(rdo?.equipesPresentes || []);
   const [equipamentos, setEquipamentos] = useState<EquipamentoRDO[]>(rdo?.equipamentosUtilizados || []);
+  const [files, setFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Mock data - in real app, these would be fetched based on selected obra
-  const obras = [
-    { id: 1, nome: "Residencial Vista Verde" },
-    { id: 2, nome: "Comercial Center Norte" },
-    { id: 3, nome: "Ponte Rio Azul" },
-    { id: 4, nome: "Hospital Regional Sul" }
-  ];
+  // Dados reais do Supabase
+  const { obras: obrasData, isLoading: isLoadingObras } = useObras();
+  const { equipes: equipesReais, isLoading: isLoadingEquipes } = useEquipesSupabase();
+  const { equipamentos: equipamentosReais, isLoading: isLoadingEquipamentos } = useEquipamentosSupabase();
 
+  const obras = (obrasData as any[])?.map((o: any) => ({ id: o.id, nome: o.nome })) || [];
+
+  // Atividades ainda são estáticas (sem tabela de templates no banco)
   const atividadesDisponiveis = [
-    { id: 1, nome: "Escavação de Fundação", categoria: "Terraplanagem", unidadeMedida: "m³" },
-    { id: 2, nome: "Concretagem de Laje", categoria: "Estrutura", unidadeMedida: "m²" },
-    { id: 3, nome: "Instalação Elétrica", categoria: "Instalações", unidadeMedida: "m" },
-    { id: 4, nome: "Alvenaria de Vedação", categoria: "Alvenaria", unidadeMedida: "m²" }
-  ];
-
-  const equipesDisponiveis = [
-    { id: 1, nome: "João Silva", funcao: "Engenheiro Civil" },
-    { id: 2, nome: "Maria Santos", funcao: "Mestre de Obras" },
-    { id: 3, nome: "Carlos Lima", funcao: "Eletricista" },
-    { id: 4, nome: "Ana Costa", funcao: "Pedreiro" }
-  ];
-
-  const equipamentosDisponiveis = [
-    { id: 1, nome: "Betoneira B-400", categoria: "Concreto" },
-    { id: 2, nome: "Grua Torre GTR-50", categoria: "Elevação" },
-    { id: 3, nome: "Compressor AR-200", categoria: "Pneumático" },
-    { id: 4, nome: "Escavadeira CAT-320", categoria: "Terraplanagem" }
+    { id: "1", nome: "Escavação de Fundação", categoria: "Terraplanagem", unidadeMedida: "m³" },
+    { id: "2", nome: "Concretagem de Laje", categoria: "Estrutura", unidadeMedida: "m²" },
+    { id: "3", nome: "Instalação Elétrica", categoria: "Instalações", unidadeMedida: "m" },
+    { id: "4", nome: "Alvenaria de Vedação", categoria: "Alvenaria", unidadeMedida: "m²" },
+    { id: "5", nome: "Revestimento Cerâmico", categoria: "Acabamento", unidadeMedida: "m²" },
+    { id: "6", nome: "Pintura Interna", categoria: "Acabamento", unidadeMedida: "m²" },
+    { id: "7", nome: "Instalação Hidráulica", categoria: "Instalações", unidadeMedida: "m" },
+    { id: "8", nome: "Impermeabilização", categoria: "Estrutura", unidadeMedida: "m²" },
   ];
 
   const handleSubmit = () => {
@@ -66,30 +62,30 @@ export function RDOForm({ isOpen, onClose, onSubmit, rdo, isEditing = false }: R
       alert("Por favor, preencha a data e selecione uma obra");
       return;
     }
-
     const data: CreateRDOData = {
       data: selectedDate.toISOString().split('T')[0],
-      obraId: parseInt(selectedObra),
-      periodo: 'Manhã',
-      clima: 'Ensolarado',
+      obraId: selectedObra,
+      periodo: periodo as any,
+      clima,
       equipeOciosa: false,
       atividadesRealizadas: atividades.map(({ id, ...rest }) => rest),
       atividadesExtras: [],
-      equipesPresentes: equipes.map(({ id, ...rest }) => rest),
-      equipamentosUtilizados: equipamentos.map(({ id, ...rest }) => rest),
+      equipesPresentes: equipes,
+      equipamentosUtilizados: equipamentos,
       equipamentosQuebrados: [],
       acidentes: [],
       materiaisFalta: [],
       estoqueMateriais: [],
-      observacoes
+      observacoes,
+      files,
     };
-
     onSubmit(data);
     onClose();
   };
 
+  /* ── Atividades ── */
   const adicionarAtividade = (atividadeId: string) => {
-    const atividade = atividadesDisponiveis.find(a => a.id.toString() === atividadeId);
+    const atividade = atividadesDisponiveis.find(a => a.id === atividadeId);
     if (atividade && !atividades.find(a => a.nome === atividade.nome)) {
       setAtividades([...atividades, {
         id: atividade.id,
@@ -103,42 +99,50 @@ export function RDOForm({ isOpen, onClose, onSubmit, rdo, isEditing = false }: R
     }
   };
 
-  const removerAtividade = (index: number) => {
-    setAtividades(atividades.filter((_, i) => i !== index));
-  };
-
+  /* ── Equipes (dados reais) ── */
   const adicionarEquipe = (equipeId: string) => {
-    const equipe = equipesDisponiveis.find(e => e.id.toString() === equipeId);
-    if (equipe && !equipes.find(e => e.nome === equipe.nome)) {
+    const equipe = (equipesReais as any[]).find((e: any) => e.id === equipeId);
+    if (equipe && !equipes.find(e => e.id === equipe.id)) {
       setEquipes([...equipes, {
         id: equipe.id,
         nome: equipe.nome,
-        funcao: equipe.funcao,
+        funcao: equipe.funcao || 'Colaborador',
         horasTrabalho: 8,
         presente: true
       }]);
     }
   };
 
-  const removerEquipe = (index: number) => {
-    setEquipes(equipes.filter((_, i) => i !== index));
-  };
-
+  /* ── Equipamentos (dados reais) ── */
   const adicionarEquipamento = (equipamentoId: string) => {
-    const equipamento = equipamentosDisponiveis.find(e => e.id.toString() === equipamentoId);
-    if (equipamento && !equipamentos.find(e => e.nome === equipamento.nome)) {
+    const equipamento = (equipamentosReais as any[]).find((e: any) => e.id === equipamentoId);
+    if (equipamento && !equipamentos.find(e => e.id === equipamento.id)) {
       setEquipamentos([...equipamentos, {
         id: equipamento.id,
         nome: equipamento.nome,
-        categoria: equipamento.categoria,
+        categoria: equipamento.categoria || 'Geral',
         horasUso: 8,
         status: 'Operacional'
       }]);
     }
   };
 
-  const removerEquipamento = (index: number) => {
-    setEquipamentos(equipamentos.filter((_, i) => i !== index));
+  /* ── Upload de Arquivos ── */
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const novosArquivos = Array.from(e.target.files || []);
+    setFiles(prev => [...prev, ...novosArquivos]);
+    // Reset input para permitir selecionar o mesmo arquivo novamente
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const removerArquivo = (index: number) => {
+    setFiles(files.filter((_, i) => i !== index));
+  };
+
+  const formatarTamanho = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   return (
@@ -154,10 +158,10 @@ export function RDOForm({ isOpen, onClose, onSubmit, rdo, isEditing = false }: R
         </DialogHeader>
 
         <div className="grid gap-6 py-4">
-          {/* Data e Obra */}
+          {/* Data / Obra / Período / Clima */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Data do Relatório</Label>
+              <Label>Data do Relatório <span className="text-red-500">*</span></Label>
               <DatePicker
                 date={selectedDate}
                 onDateChange={setSelectedDate}
@@ -169,13 +173,35 @@ export function RDOForm({ isOpen, onClose, onSubmit, rdo, isEditing = false }: R
               <Label>Obra <span className="text-red-500">*</span></Label>
               <Select value={selectedObra} onValueChange={setSelectedObra}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione a obra" />
+                  <SelectValue placeholder={isLoadingObras ? "Carregando..." : "Selecione a obra"} />
                 </SelectTrigger>
                 <SelectContent>
                   {obras.map((obra) => (
                     <SelectItem key={obra.id} value={obra.id.toString()}>
                       {obra.nome}
                     </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Período</Label>
+              <Select value={periodo} onValueChange={setPeriodo}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {["Manhã", "Tarde", "Noite", "Integral", "Meio período", "Turno noturno", "Turno estendido"].map(p => (
+                    <SelectItem key={p} value={p}>{p}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Condição Climática</Label>
+              <Select value={clima} onValueChange={setClima}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {["Ensolarado", "Nublado", "Chuvoso", "Parcialmente nublado", "Ventoso", "Tempestade"].map(c => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -189,21 +215,19 @@ export function RDOForm({ isOpen, onClose, onSubmit, rdo, isEditing = false }: R
               <CardDescription>Selecione as atividades executadas no dia</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex gap-2">
-                <Select onValueChange={adicionarAtividade}>
-                  <SelectTrigger className="flex-1">
-                    <SelectValue placeholder="Adicionar atividade" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {atividadesDisponiveis.map((atividade) => (
-                      <SelectItem key={atividade.id} value={atividade.id.toString()}>
-                        {atividade.nome} ({atividade.categoria})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
+              <Select onValueChange={adicionarAtividade}>
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="Adicionar atividade" />
+                </SelectTrigger>
+                <SelectContent>
+                  {atividadesDisponiveis.map((atividade) => (
+                    <SelectItem key={atividade.id} value={atividade.id}>
+                      {atividade.nome} ({atividade.categoria})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
               {atividades.map((atividade, index) => (
                 <div key={index} className="flex items-center gap-4 p-3 bg-card rounded-lg border">
                   <div className="flex-1">
@@ -230,16 +254,14 @@ export function RDOForm({ isOpen, onClose, onSubmit, rdo, isEditing = false }: R
                         setAtividades(newAtividades);
                       }}
                     >
-                      <SelectTrigger className="w-32">
-                        <SelectValue />
-                      </SelectTrigger>
+                      <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Iniciada">Iniciada</SelectItem>
                         <SelectItem value="Em Andamento">Em Andamento</SelectItem>
                         <SelectItem value="Concluída">Concluída</SelectItem>
                       </SelectContent>
                     </Select>
-                    <Button variant="outline" size="sm" onClick={() => removerAtividade(index)}>
+                    <Button variant="outline" size="sm" onClick={() => setAtividades(atividades.filter((_, i) => i !== index))}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -248,26 +270,33 @@ export function RDOForm({ isOpen, onClose, onSubmit, rdo, isEditing = false }: R
             </CardContent>
           </Card>
 
-          {/* Equipes Presentes */}
+          {/* Equipes Presentes — dados reais */}
           <Card className="bg-muted/20 border-border">
             <CardHeader>
               <CardTitle className="text-lg text-card-foreground">Equipes Presentes</CardTitle>
-              <CardDescription>Registre a presença das equipes</CardDescription>
+              <CardDescription>
+                Colaboradores cadastrados em Equipes
+                {isLoadingEquipes && <Loader2 className="inline ml-2 h-3 w-3 animate-spin" />}
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Select onValueChange={adicionarEquipe}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Adicionar membro da equipe" />
-                </SelectTrigger>
-                <SelectContent>
-                  {equipesDisponiveis.map((equipe) => (
-                    <SelectItem key={equipe.id} value={equipe.id.toString()}>
-                      {equipe.nome} - {equipe.funcao}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
+              {(equipesReais as any[]).length === 0 && !isLoadingEquipes ? (
+                <p className="text-sm text-muted-foreground">Nenhuma equipe cadastrada. Cadastre em <strong>Equipes</strong>.</p>
+              ) : (
+                <Select onValueChange={adicionarEquipe}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Adicionar membro da equipe" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(equipesReais as any[]).map((equipe: any) => (
+                      <SelectItem key={equipe.id} value={equipe.id}>
+                        {equipe.nome} — {equipe.funcao}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+
               {equipes.map((equipe, index) => (
                 <div key={index} className="flex items-center gap-4 p-3 bg-card rounded-lg border">
                   <div className="flex-1">
@@ -286,7 +315,7 @@ export function RDOForm({ isOpen, onClose, onSubmit, rdo, isEditing = false }: R
                         setEquipes(newEquipes);
                       }}
                     />
-                    <Button variant="outline" size="sm" onClick={() => removerEquipe(index)}>
+                    <Button variant="outline" size="sm" onClick={() => setEquipes(equipes.filter((_, i) => i !== index))}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -295,26 +324,33 @@ export function RDOForm({ isOpen, onClose, onSubmit, rdo, isEditing = false }: R
             </CardContent>
           </Card>
 
-          {/* Equipamentos Utilizados */}
+          {/* Equipamentos — dados reais */}
           <Card className="bg-muted/20 border-border">
             <CardHeader>
               <CardTitle className="text-lg text-card-foreground">Equipamentos Utilizados</CardTitle>
-              <CardDescription>Registre os equipamentos em uso</CardDescription>
+              <CardDescription>
+                Equipamentos cadastrados
+                {isLoadingEquipamentos && <Loader2 className="inline ml-2 h-3 w-3 animate-spin" />}
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Select onValueChange={adicionarEquipamento}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Adicionar equipamento" />
-                </SelectTrigger>
-                <SelectContent>
-                  {equipamentosDisponiveis.map((equipamento) => (
-                    <SelectItem key={equipamento.id} value={equipamento.id.toString()}>
-                      {equipamento.nome} ({equipamento.categoria})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
+              {(equipamentosReais as any[]).length === 0 && !isLoadingEquipamentos ? (
+                <p className="text-sm text-muted-foreground">Nenhum equipamento cadastrado. Cadastre em <strong>Equipamentos</strong>.</p>
+              ) : (
+                <Select onValueChange={adicionarEquipamento}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Adicionar equipamento" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(equipamentosReais as any[]).map((eq: any) => (
+                      <SelectItem key={eq.id} value={eq.id}>
+                        {eq.nome} ({eq.categoria || 'Geral'})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+
               {equipamentos.map((equipamento, index) => (
                 <div key={index} className="flex items-center gap-4 p-3 bg-card rounded-lg border">
                   <div className="flex-1">
@@ -341,16 +377,14 @@ export function RDOForm({ isOpen, onClose, onSubmit, rdo, isEditing = false }: R
                         setEquipamentos(newEquipamentos);
                       }}
                     >
-                      <SelectTrigger className="w-32">
-                        <SelectValue />
-                      </SelectTrigger>
+                      <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Operacional">Operacional</SelectItem>
                         <SelectItem value="Manutenção">Manutenção</SelectItem>
                         <SelectItem value="Parado">Parado</SelectItem>
                       </SelectContent>
                     </Select>
-                    <Button variant="outline" size="sm" onClick={() => removerEquipamento(index)}>
+                    <Button variant="outline" size="sm" onClick={() => setEquipamentos(equipamentos.filter((_, i) => i !== index))}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -359,35 +393,62 @@ export function RDOForm({ isOpen, onClose, onSubmit, rdo, isEditing = false }: R
             </CardContent>
           </Card>
 
-          {/* Upload de Arquivos */}
+          {/* Upload de Arquivos — funcional */}
           <Card className="bg-muted/20 border-border">
             <CardHeader>
               <CardTitle className="text-lg text-card-foreground">Anexos</CardTitle>
-              <CardDescription>Faça upload de imagens e documentos relacionados ao RDO</CardDescription>
+              <CardDescription>Imagens e documentos relacionados ao RDO</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Imagens da Obra</Label>
-                  <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-construction-orange/50 transition-colors">
-                    <Upload className="mx-auto h-6 w-6 mb-2 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground mb-2">Arraste imagens aqui</p>
-                    <Button variant="outline" size="sm">
-                      Selecionar Imagens
-                    </Button>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Documentos</Label>
-                  <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-construction-orange/50 transition-colors">
-                    <FileText className="mx-auto h-6 w-6 mb-2 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground mb-2">Arraste documentos aqui</p>
-                    <Button variant="outline" size="sm">
-                      Selecionar Documentos
-                    </Button>
-                  </div>
-                </div>
+              {/* Input file oculto */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                multiple
+                accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
+                onChange={handleFileChange}
+              />
+
+              <div
+                className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors cursor-pointer"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="mx-auto h-8 w-8 mb-2 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground mb-2">
+                  Clique ou arraste arquivos aqui
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Imagens (JPG, PNG), PDF, Excel, Word
+                </p>
+                <Button variant="outline" size="sm" className="mt-3" type="button">
+                  <Plus className="h-4 w-4 mr-1" /> Selecionar Arquivos
+                </Button>
               </div>
+
+              {/* Lista de arquivos selecionados */}
+              {files.length > 0 && (
+                <div className="space-y-2">
+                  {files.map((file, index) => (
+                    <div key={index} className="flex items-center gap-3 p-2 bg-card rounded-lg border">
+                      <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{file.name}</p>
+                        <p className="text-xs text-muted-foreground">{formatarTamanho(file.size)}</p>
+                      </div>
+                      <Badge variant="outline" className="text-xs">
+                        {file.type.includes('image') ? 'Imagem' : file.name.split('.').pop()?.toUpperCase()}
+                      </Badge>
+                      <Button variant="ghost" size="sm" onClick={() => removerArquivo(index)}>
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  <p className="text-xs text-muted-foreground">
+                    {files.length} arquivo(s) selecionado(s) — serão enviados ao salvar
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -404,9 +465,7 @@ export function RDOForm({ isOpen, onClose, onSubmit, rdo, isEditing = false }: R
         </div>
 
         <div className="flex justify-end space-x-2">
-          <Button variant="outline" onClick={onClose}>
-            Cancelar
-          </Button>
+          <Button variant="outline" onClick={onClose}>Cancelar</Button>
           <Button className="gradient-construction border-0" onClick={handleSubmit}>
             {isEditing ? "Atualizar RDO" : "Salvar RDO"}
           </Button>

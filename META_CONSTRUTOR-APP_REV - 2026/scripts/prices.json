@@ -1,0 +1,18 @@
+{
+  "basic": {
+    "year": "price_1T1HSsCHfNdO9jxN0oT7lsgq",
+    "month": "price_1T1HSsCHfNdO9jxNJyBqYUW1"
+  },
+  "professional": {
+    "year": "price_1T1HStCHfNdO9jxN2BtTrfpS",
+    "month": "price_1T1HSsCHfNdO9jxNDtPicSaZ"
+  },
+  "master": {
+    "year": "price_1T1HStCHfNdO9jxNpT8KUqLV",
+    "month": "price_1T1HStCHfNdO9jxNsjxKYfjw"
+  },
+  "premium": {
+    "year": "price_1T1HSuCHfNdO9jxNYdWIg3ia",
+    "month": "price_1T1HSuCHfNdO9jxNZXGzFFC2"
+  }
+}

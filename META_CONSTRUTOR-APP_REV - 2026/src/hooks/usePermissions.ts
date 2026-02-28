@@ -14,32 +14,44 @@ export const usePermissions = () => {
 
   // Buscar contagem atual de obras
   const { data: obrasCount = 0, isLoading: isObrasLoading } = useQuery({
-    queryKey: ['obras-count', orgId],
+    queryKey: ['obras-count', user?.id], // Stable key based on user
     queryFn: async () => {
-      if (!user?.id || !orgId) return 0;
+      if (!user?.id) return 0;
       const { count, error } = await supabase
         .from('obras')
         .select('*', { count: 'exact', head: true })
-        .eq('org_id', orgId);
+        .eq('user_id', user.id); // Fixed: table uses user_id, not org_id
       if (error) throw error;
       return count || 0;
     },
-    enabled: !!user?.id && !orgLoading && !!orgId,
+    enabled: !!user?.id, // Only depends on user
+    retry: (failureCount, error: any) => {
+      if (error?.status >= 400 && error?.status < 500) return false;
+      return failureCount < 2;
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false
   });
 
   // Buscar contagem atual de membros da equipe
   const { data: equipeCount = 0, isLoading: isEquipeLoading } = useQuery({
-    queryKey: ['equipe-count', orgId],
+    queryKey: ['equipe-count', user?.id], // Stable key based on user
     queryFn: async () => {
-      if (!user?.id || !orgId) return 0;
+      if (!user?.id) return 0;
       const { count, error } = await supabase
         .from('equipes')
         .select('*', { count: 'exact', head: true })
-        .eq('org_id', orgId);
+        .eq('user_id', user.id); // Fixed: table uses user_id, not org_id
       if (error) throw error;
       return count || 0;
     },
-    enabled: !!user?.id && !orgLoading && !!orgId,
+    enabled: !!user?.id, // Only depends on user
+    retry: (failureCount, error: any) => {
+      if (error?.status >= 400 && error?.status < 500) return false;
+      return failureCount < 2;
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false
   });
 
   const userRole = roles[0] || 'Colaborador';
@@ -76,31 +88,34 @@ export const usePermissions = () => {
     },
   }), [basePermissions, user?.id]);
 
-  const isAdmin = roles.includes('Administrador');
-  const isManager = roles.includes('Gerente');
+  const isPresidente = roles.includes('Presidente');
+  const isAdmin = roles.includes('Administrador') || isPresidente;
+  const isManager = roles.includes('Gerente') || isAdmin;
 
   const obraPermissions = useMemo(() => {
-    const isAtLimit = !limits.unlimitedObras && obrasCount >= limits.maxObras;
+    // Presidente sempre pode criar, mesmo no plano Free
+    const isAtLimit = !isPresidente && !limits.unlimitedObras && obrasCount >= limits.maxObras;
     return {
       canCreate: (isAdmin || isManager) && !isAtLimit,
       canEdit: isAdmin || isManager,
       canDelete: isAdmin,
       isAtLimit,
-      maxObras: limits.maxObras,
+      maxObras: isPresidente ? 999999 : limits.maxObras,
     };
-  }, [roles, limits, obrasCount, isAdmin, isManager]);
+  }, [roles, limits, obrasCount, isAdmin, isManager, isPresidente]);
 
   const equipePermissions = useMemo(() => {
-    const isAtLimit = !limits.unlimitedUsers && equipeCount >= limits.maxUsers;
+    // Presidente sempre pode criar
+    const isAtLimit = !isPresidente && !limits.unlimitedUsers && equipeCount >= limits.maxUsers;
     return {
       canCreate: (isAdmin || isManager) && !isAtLimit,
       canEdit: isAdmin || isManager,
       canManageColaboradores: isAdmin || isManager,
       canDeleteColaboradores: isAdmin,
       isAtLimit,
-      maxUsers: limits.maxUsers,
+      maxUsers: isPresidente ? 999999 : limits.maxUsers,
     };
-  }, [roles, limits, equipeCount, isAdmin, isManager]);
+  }, [roles, limits, equipeCount, isAdmin, isManager, isPresidente]);
 
   const relatorioPermissions = useMemo(() => ({
     canView: basePermissions.canViewAllRDOs,
@@ -132,8 +147,9 @@ export const useRole = () => {
   const { roles } = useAuth();
 
   return useMemo(() => ({
-    isAdmin: roles.includes('Administrador'),
-    isGerente: roles.includes('Gerente'),
+    isPresidente: roles.includes('Presidente'),
+    isAdmin: roles.includes('Administrador') || roles.includes('Presidente'),
+    isGerente: roles.includes('Gerente') || roles.includes('Administrador') || roles.includes('Presidente'),
     isColaborador: roles.includes('Colaborador'),
     role: roles[0] || 'Colaborador' as UserRole,
   }), [roles]);

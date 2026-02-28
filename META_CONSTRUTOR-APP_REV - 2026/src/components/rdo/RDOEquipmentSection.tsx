@@ -11,19 +11,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { RDOFormData } from "@/schemas/rdoSchema";
+import { useEquipamentosSupabase } from "@/hooks/useEquipamentosSupabase";
 
 interface RDOEquipmentSectionProps {
   form: UseFormReturn<RDOFormData>;
 }
-
-const equipamentosDisponiveis = [
-  { id: 1, nome: "Betoneira B-400", categoria: "Concreto" },
-  { id: 2, nome: "Grua Torre GTR-50", categoria: "Elevação" },
-  { id: 3, nome: "Compressor AR-200", categoria: "Pneumático" },
-  { id: 4, nome: "Escavadeira CAT-320", categoria: "Terraplanagem" },
-  { id: 5, nome: "Retroescavadeira JCB", categoria: "Terraplanagem" },
-  { id: 6, nome: "Furadeira Industrial", categoria: "Perfuração" },
-];
 
 const getStatusIcon = (status: string) => {
   switch (status) {
@@ -53,6 +45,7 @@ const getStatusColor = (status: string) => {
 
 export function RDOEquipmentSection({ form }: RDOEquipmentSectionProps) {
   const [isEquipamentosOpen, setIsEquipamentosOpen] = useState(false);
+  const { equipamentos, isLoading } = useEquipamentosSupabase();
 
   const {
     fields: equipamentosFields,
@@ -65,9 +58,10 @@ export function RDOEquipmentSection({ form }: RDOEquipmentSectionProps) {
   });
 
   const adicionarEquipamento = (equipamentoId: string) => {
-    const equipamento = equipamentosDisponiveis.find(e => e.id.toString() === equipamentoId);
+    const equipamento = equipamentos.find(e => e.id === equipamentoId); // ID is UUID string directly
     if (equipamento && !equipamentosFields.find(e => e.nome === equipamento.nome)) {
       appendEquipamento({
+        id: equipamento.id,
         nome: equipamento.nome,
         categoria: equipamento.categoria,
         horasUso: 8,
@@ -76,8 +70,6 @@ export function RDOEquipmentSection({ form }: RDOEquipmentSectionProps) {
       });
     }
   };
-
-  // Função removida - problemas agora são tratados em RDOIssuesSection
 
   return (
     <div className="space-y-4">
@@ -102,20 +94,20 @@ export function RDOEquipmentSection({ form }: RDOEquipmentSectionProps) {
               </CardTitle>
             </CardHeader>
           </CollapsibleTrigger>
-          
+
           <CollapsibleContent>
             <CardContent className="space-y-4">
               {/* Adicionar Equipamento */}
               <div className="flex gap-2">
                 <Select onValueChange={adicionarEquipamento}>
                   <SelectTrigger className="flex-1">
-                    <SelectValue placeholder="Adicionar equipamento utilizado" />
+                    <SelectValue placeholder={isLoading ? "Carregando..." : "Adicionar equipamento utilizado"} />
                   </SelectTrigger>
                   <SelectContent>
-                    {equipamentosDisponiveis
+                    {equipamentos
                       .filter(equipamento => !equipamentosFields.find(e => e.nome === equipamento.nome))
                       .map((equipamento) => (
-                        <SelectItem key={equipamento.id} value={equipamento.id.toString()}>
+                        <SelectItem key={equipamento.id} value={equipamento.id}>
                           <div className="flex flex-col">
                             <span className="font-medium">{equipamento.nome}</span>
                             <span className="text-sm text-muted-foreground">{equipamento.categoria}</span>
@@ -138,9 +130,9 @@ export function RDOEquipmentSection({ form }: RDOEquipmentSectionProps) {
                           <Badge variant="outline" className="text-xs">{equipamento.categoria}</Badge>
                         </div>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => removeEquipamento(index)}
                         className="text-destructive hover:text-destructive"
                       >

@@ -2,17 +2,18 @@
 export type RDOStatus = 'Em elaboração' | 'Aguardando aprovação' | 'Aprovado' | 'Rejeitado';
 
 export interface RDO {
-  id: number | string;
+  id: string; // UUID
   data: string;
-  obraId: number | string;
+  obraId: string;
   obraNome: string;
-  periodo: 'Manhã' | 'Tarde' | 'Noite';
+  periodo: 'Manhã' | 'Tarde' | 'Noite' | 'Integral' | 'Meio período' | 'Turno noturno' | 'Turno estendido' | 'Personalizado' | 'Múltiplos';
   clima: string;
   equipeOciosa: boolean;
   tempoOcioso?: number; // em horas
 
   // Campos de controle e aprovação
   status: RDOStatus;
+  numero?: number;
   criadoPorId: string;
   criadoPorNome: string;
   aprovadoPorId?: string;
@@ -35,7 +36,7 @@ export interface RDO {
 }
 
 export interface AtividadeRDO {
-  id: number;
+  id: string;
   nome: string;
   categoria: string;
   quantidade: number;
@@ -46,7 +47,7 @@ export interface AtividadeRDO {
 }
 
 export interface AtividadeExtraRDO {
-  id: number;
+  id: string;
   nome: string;
   descricao: string;
   categoria: string;
@@ -57,7 +58,7 @@ export interface AtividadeExtraRDO {
 }
 
 export interface EquipeRDO {
-  id: number;
+  id: string;
   nome: string;
   funcao: string;
   horasTrabalho: number;
@@ -66,7 +67,7 @@ export interface EquipeRDO {
 }
 
 export interface EquipamentoRDO {
-  id: number;
+  id: string;
   nome: string;
   categoria: string;
   horasUso: number;
@@ -75,17 +76,21 @@ export interface EquipamentoRDO {
 }
 
 export interface EquipamentoQuebradoRDO {
-  id: number;
+  id: string;
   nome: string;
   categoria: string;
   descricaoProblema: string;
   causouOciosidade: boolean;
   horasParada?: number;
   impactoProducao: string;
+  issueType: 'equipment' | 'occurrence';
+  tipoOcorrencia?: string;
+  envolvidos?: string[];
+  acoesTomadas?: string;
 }
 
 export interface AcidenteRDO {
-  id: number;
+  id: string;
   descricao: string;
   gravidade: 'Leve' | 'Moderado' | 'Grave';
   colaboradoresEnvolvidos: string[];
@@ -95,7 +100,7 @@ export interface AcidenteRDO {
 }
 
 export interface MaterialFaltaRDO {
-  id: number;
+  id: string;
   nome: string;
   categoria: string;
   quantidadeNecessaria: number;
@@ -105,7 +110,7 @@ export interface MaterialFaltaRDO {
 }
 
 export interface EstoqueMaterialRDO {
-  id: number;
+  id: string;
   nome: string;
   categoria: string;
   quantidadeAtual: number;
@@ -133,28 +138,22 @@ export interface DocumentoRDO {
 
 export interface CreateRDOData {
   data: string;
-  obraId: number;
-  periodo: 'Manhã' | 'Tarde' | 'Noite';
+  obraId: string;
+  periodo: 'Manhã' | 'Tarde' | 'Noite' | 'Integral' | 'Meio período' | 'Turno noturno' | 'Turno estendido' | 'Personalizado' | 'Múltiplos';
   clima: string;
   equipeOciosa: boolean;
   tempoOcioso?: number;
   atividadesRealizadas: Omit<AtividadeRDO, 'id'>[];
   atividadesExtras: Omit<AtividadeExtraRDO, 'id'>[];
-  equipesPresentes: Omit<EquipeRDO, 'id'>[];
-  equipamentosUtilizados: Omit<EquipamentoRDO, 'id'>[];
+  equipesPresentes: EquipeRDO[];
+  equipamentosUtilizados: EquipamentoRDO[];
   equipamentosQuebrados: Omit<EquipamentoQuebradoRDO, 'id'>[];
   acidentes: Omit<AcidenteRDO, 'id'>[];
   materiaisFalta: Omit<MaterialFaltaRDO, 'id'>[];
   estoqueMateriais: Omit<EstoqueMaterialRDO, 'id'>[];
   observacoes: string;
-  // Anexos para futura implementação
-  anexos?: Array<{
-    id: string;
-    name: string;
-    type: 'image' | 'document';
-    url: string;
-    size: number;
-  }>;
+  // Anexos (unified)
+  files?: File[];
 }
 
 // Interfaces para aprovação e rejeição

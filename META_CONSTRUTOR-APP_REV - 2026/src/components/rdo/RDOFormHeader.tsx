@@ -22,16 +22,16 @@ const climaOptions = [
   { value: "Tempestade", label: "Tempestade", icon: CloudSnow, color: "text-blue-700" },
 ];
 
-const obras = [
-  { id: 1, nome: "Residencial Vista Verde" },
-  { id: 2, nome: "Comercial Center Norte" },
-  { id: 3, nome: "Ponte Rio Azul" },
-  { id: 4, nome: "Hospital Regional Sul" }
-];
+import { useObras } from "@/hooks/useObras";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Mock removed
+
 
 export function RDOFormHeader({ form }: RDOFormHeaderProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [equipeOciosa, setEquipeOciosa] = useState(false);
+  const { obras, isLoading: isLoadingObras } = useObras();
 
   return (
     <Card className="bg-card border-border">
@@ -79,18 +79,22 @@ export function RDOFormHeader({ form }: RDOFormHeaderProps) {
                   <Building2 className="h-4 w-4" />
                   Obra *
                 </FormLabel>
-                <Select onValueChange={(value) => field.onChange(parseInt(value))} value={field.value?.toString()}>
+                <Select onValueChange={field.onChange} value={field.value?.toString()}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione a obra" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {obras.map((obra) => (
-                      <SelectItem key={obra.id} value={obra.id.toString()}>
-                        {obra.nome}
-                      </SelectItem>
-                    ))}
+                    {isLoadingObras ? (
+                      <div className="p-2 text-sm text-muted-foreground">Carregando obras...</div>
+                    ) : (
+                      obras.map((obra) => (
+                        <SelectItem key={obra.id} value={obra.id.toString()}>
+                          {obra.nome}
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
                 <FormMessage />

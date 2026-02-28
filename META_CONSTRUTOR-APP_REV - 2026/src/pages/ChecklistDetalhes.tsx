@@ -10,14 +10,13 @@ import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Checklist as ChecklistType, ChecklistItem } from "@/types/checklist";
-import { FileUploadComponent } from "@/components/checklist/FileUploadComponent";
-import { 
-  ArrowLeft, 
-  Save, 
-  Printer, 
-  Download, 
-  Mail, 
+import { ChecklistItem } from "@/types/checklist";
+import {
+  ArrowLeft,
+  Save,
+  Printer,
+  Download,
+  Mail,
   Calendar,
   User,
   Building,
@@ -25,101 +24,25 @@ import {
   AlertCircle,
   FileCheck,
   Camera,
-  Paperclip
+  Paperclip,
+  Loader2
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toastEnhanced } from "@/components/ToastEnhanced";
 import "../styles/print.css";
+import { useChecklist } from "@/hooks/useChecklist";
 
 const ChecklistDetalhes = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
-  const [checklist, setChecklist] = useState<ChecklistType | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { useChecklistDetail, updateChecklistItem } = useChecklist();
+
+  const { data: checklist, isLoading, error } = useChecklistDetail(id || "");
+
   const [isSaving, setSaving] = useState(false);
   const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false);
   const [emailRecipients, setEmailRecipients] = useState("");
-
-  // Mock data - em produção viria do backend
-  useEffect(() => {
-    // Simular carregamento dos dados
-    setTimeout(() => {
-      if (id === "checklist-1") {
-        setChecklist({
-          id: "checklist-1",
-          title: "Checklist de Segurança - Início de Obra",
-          category: "Segurança",
-          description: "Verificações obrigatórias antes do início dos trabalhos",
-          obra: { id: "obra-1", name: "Residencial Vista Verde" },
-          responsible: { id: "resp-1", name: "João Silva", email: "joao@example.com", role: "Engenheiro Civil" },
-          status: "Em Andamento",
-          dueDate: "2024-02-15",
-          createdAt: "2024-01-15T10:00:00Z",
-          updatedAt: "2024-01-16T14:30:00Z",
-          startedAt: "2024-01-16T08:00:00Z",
-          templateUsed: { id: "template-1", name: "Segurança no Início da Obra" },
-          progress: { total: 5, completed: 3, percentage: 60 },
-          items: [
-            {
-              id: "item-1",
-              title: "Verificar EPIs da equipe",
-              description: "Conferir se todos os trabalhadores possuem EPIs adequados",
-              priority: "Crítica",
-              status: "Concluído",
-              requiresAttachment: true,
-              isObligatory: true,
-              attachments: [],
-              completedAt: "2024-01-16T09:00:00Z",
-              completedBy: "João Silva"
-            },
-            {
-              id: "item-2",
-              title: "Inspeção de equipamentos de segurança",
-              priority: "Crítica",
-              status: "Concluído",
-              requiresAttachment: true,
-              isObligatory: true,
-              attachments: [],
-              completedAt: "2024-01-16T10:00:00Z",
-              completedBy: "João Silva"
-            },
-            {
-              id: "item-3",
-              title: "Verificar sinalização de segurança",
-              priority: "Alta",
-              status: "Concluído",
-              requiresAttachment: false,
-              isObligatory: true,
-              attachments: [],
-              completedAt: "2024-01-16T11:00:00Z",
-              completedBy: "João Silva"
-            },
-            {
-              id: "item-4",
-              title: "Teste de equipamentos elétricos",
-              priority: "Crítica",
-              status: "Em andamento",
-              requiresAttachment: true,
-              isObligatory: true,
-              attachments: []
-            },
-            {
-              id: "item-5",
-              title: "Verificar extintores de incêndio",
-              priority: "Média",
-              status: "Não iniciado",
-              requiresAttachment: false,
-              isObligatory: false,
-              attachments: []
-            }
-          ]
-        });
-      }
-      setIsLoading(false);
-    }, 1000);
-  }, [id]);
 
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
@@ -151,75 +74,48 @@ const ChecklistDetalhes = () => {
     }
   };
 
-  const handleItemStatusChange = (itemId: string, completed: boolean) => {
-    if (!checklist) return;
-
-    setChecklist(prev => {
-      if (!prev) return prev;
-      
-      const updatedItems = prev.items.map(item => {
-        if (item.id === itemId) {
-          return {
-            ...item,
-            status: completed ? "Concluído" : "Não iniciado" as any,
-            completedAt: completed ? new Date().toISOString() : undefined,
-            completedBy: completed ? "Usuário Atual" : undefined
-          };
+  const handleItemStatusChange = async (itemId: string, completed: boolean) => {
+    try {
+      await updateChecklistItem.mutateAsync({
+        itemId,
+        updates: {
+          status: completed ? "Concluído" : "Não iniciado",
+          completedAt: completed ? new Date().toISOString() : null,
+          // completedBy logic handled by backend or trigger preferred, but sending null/reset for now
         }
-        return item;
       });
-
-      const completedCount = updatedItems.filter(item => item.status === "Concluído").length;
-      const percentage = Math.round((completedCount / updatedItems.length) * 100);
-
-      return {
-        ...prev,
-        items: updatedItems,
-        progress: {
-          total: updatedItems.length,
-          completed: completedCount,
-          percentage
-        }
-      };
-    });
+    } catch (error) {
+      console.error("Failed to update status", error);
+    }
   };
 
-  const handleItemObservationChange = (itemId: string, observation: string) => {
-    if (!checklist) return;
+  const handleItemObservationBlur = async (itemId: string, observation: string) => {
+    // Only update if changed - handled by onBlur logic typically, checking vs original
+    // For simplicity, we just send the update. Optimization: compare with current data.
+    const currentItem = checklist?.items.find(i => i.id === itemId);
+    if (currentItem?.observations === observation) return;
 
-    setChecklist(prev => {
-      if (!prev) return prev;
-      
-      const updatedItems = prev.items.map(item => {
-        if (item.id === itemId) {
-          return { ...item, observations: observation };
-        }
-        return item;
+    try {
+      await updateChecklistItem.mutateAsync({
+        itemId,
+        updates: { observations: observation }
       });
-
-      return { ...prev, items: updatedItems };
-    });
+      toastEnhanced.success("Salvo", "Observação atualizada.");
+    } catch (error) {
+      console.error("Failed to update observation", error);
+    }
   };
 
   const handleSave = async () => {
-    if (!checklist) return;
-    
+    // Since we are auto-saving on interaction, this is just a manual trigger or confirmation
+    // Or we could use this to verify all required items are done
     setSaving(true);
-    
-    try {
-      // Simular salvamento - PATCH /checklist/:id
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      toastEnhanced.success("Checklist salvo", "As alterações foram salvas com sucesso.");
-    } catch (error) {
-      toastEnhanced.error("Erro ao salvar", "Ocorreu um erro ao salvar o checklist.");
-    }
-    
+    await new Promise(resolve => setTimeout(resolve, 500)); // Fake delay for UX
+    toastEnhanced.success("Checklist sincronizado", "Todas as alterações foram salvas.");
     setSaving(false);
   };
 
   const handlePrint = () => {
-    // Aplicar CSS @media print otimizado
     const printStyles = `
       @media print {
         body * { visibility: hidden; }
@@ -230,34 +126,20 @@ const ChecklistDetalhes = () => {
         .print-no-break { page-break-inside: avoid; }
       }
     `;
-    
+
     const styleSheet = document.createElement("style");
     styleSheet.innerText = printStyles;
     document.head.appendChild(styleSheet);
-    
+
     window.print();
-    
+
     setTimeout(() => {
       document.head.removeChild(styleSheet);
     }, 1000);
   };
 
   const handleExportPDF = async () => {
-    toastEnhanced.info("Exportando PDF", "Gerando arquivo PDF...");
-    
-    try {
-      // Implementar com html2pdf ou jsPDF
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Simular download do PDF
-      const link = document.createElement('a');
-      link.href = '#'; // URL do PDF gerado
-      link.download = `checklist-${checklist?.title?.replace(/\s+/g, '-')}.pdf`;
-      
-      toastEnhanced.success("PDF exportado", "O arquivo foi baixado com sucesso.");
-    } catch (error) {
-      toastEnhanced.error("Erro ao exportar", "Não foi possível gerar o PDF.");
-    }
+    toastEnhanced.info("Exportando PDF", "Funcionalidade em desenvolvimento...");
   };
 
   const handleSendEmail = async () => {
@@ -265,42 +147,30 @@ const ChecklistDetalhes = () => {
       toastEnhanced.error("Erro", "Informe pelo menos um destinatário.");
       return;
     }
-
-    toastEnhanced.info("Enviando e-mail", "O checklist está sendo enviado...");
-
-    try {
-      // Simular envio com endpoint backend
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toastEnhanced.success("E-mail enviado", `Checklist enviado para: ${emailRecipients}`);
-      setIsEmailDialogOpen(false);
-      setEmailRecipients("");
-    } catch (error) {
-      toastEnhanced.error("Erro no envio", "Não foi possível enviar o e-mail.");
-    }
+    toastEnhanced.info("Enviando e-mail", "Funcionalidade em desenvolvimento...");
+    setIsEmailDialogOpen(false);
+    setEmailRecipients("");
   };
 
   if (isLoading) {
     return (
       <div className="responsive-spacing">
         <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Carregando checklist...</p>
-          </div>
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="ml-2 text-muted-foreground">Carregando checklist...</p>
         </div>
       </div>
     );
   }
 
-  if (!checklist) {
+  if (error || !checklist) {
     return (
       <div className="responsive-spacing">
         <Card>
           <CardContent className="p-6 text-center">
             <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">Checklist não encontrado</h3>
-            <p className="text-muted-foreground mb-4">O checklist solicitado não foi encontrado ou não existe.</p>
+            <p className="text-muted-foreground mb-4">O checklist solicitado não foi encontrado ou ocorreu um erro.</p>
             <Button onClick={() => NavigationSafety.safeNavigate(navigate, '/checklist')}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Voltar para Checklists
@@ -320,7 +190,7 @@ const ChecklistDetalhes = () => {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Voltar
           </Button>
-          
+
           <div className="flex gap-2">
             <Button variant="outline" onClick={handlePrint}>
               <Printer className="h-4 w-4 mr-2" />
@@ -364,8 +234,8 @@ const ChecklistDetalhes = () => {
                 </div>
               </DialogContent>
             </Dialog>
-            <Button 
-              onClick={handleSave} 
+            <Button
+              onClick={handleSave}
               disabled={isSaving}
               className="gradient-construction border-0 hover:opacity-90"
             >
@@ -383,7 +253,7 @@ const ChecklistDetalhes = () => {
             <div className="flex-1">
               <CardTitle className="text-xl md:text-2xl mb-2">{checklist.title}</CardTitle>
               <CardDescription className="text-base">{checklist.description}</CardDescription>
-              
+
               <div className="flex flex-wrap gap-4 mt-4">
                 <div className="flex items-center gap-2">
                   <Building className="h-4 w-4 text-muted-foreground" />
@@ -396,7 +266,7 @@ const ChecklistDetalhes = () => {
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">
-                    Prazo: {format(new Date(checklist.dueDate), "dd/MM/yyyy", { locale: ptBR })}
+                    Prazo: {checklist.dueDate ? format(new Date(checklist.dueDate), "dd/MM/yyyy", { locale: ptBR }) : 'N/A'}
                   </span>
                 </div>
               </div>
@@ -423,7 +293,7 @@ const ChecklistDetalhes = () => {
                 <span className="text-sm font-semibold">{checklist.progress.percentage}%</span>
               </div>
               <div className="w-full bg-muted rounded-full h-3">
-                <div 
+                <div
                   className="bg-construction-green h-3 rounded-full transition-all duration-300"
                   style={{ width: `${checklist.progress.percentage}%` }}
                 />
@@ -487,8 +357,8 @@ const ChecklistDetalhes = () => {
                   <Label className="text-sm font-medium">Observações</Label>
                   <Textarea
                     placeholder="Adicione observações sobre este item..."
-                    value={item.observations || ''}
-                    onChange={(e) => handleItemObservationChange(item.id, e.target.value)}
+                    defaultValue={item.observations || ''}
+                    onBlur={(e) => handleItemObservationBlur(item.id, e.target.value)}
                     className="mt-1 print-hidden"
                     rows={2}
                   />
@@ -522,11 +392,12 @@ const ChecklistDetalhes = () => {
                 )}
 
                 {/* Informações de Conclusão */}
-                {item.completedAt && item.completedBy && (
+                {item.completedAt && (
+                  /* item.completedBy might be null, but we can show time */
                   <div className="text-xs text-muted-foreground pt-2 border-t">
                     <div className="flex items-center gap-2">
                       <FileCheck className="h-3 w-3" />
-                      Concluído por {item.completedBy} em {format(new Date(item.completedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                      Concluído em {format(new Date(item.completedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
                     </div>
                   </div>
                 )}

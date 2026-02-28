@@ -15,8 +15,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 interface PricingPlan {
   name: string;
-  price: string;
-  yearlyPrice: string;
+  price: number | string;
+  yearlyPrice: number | string;
   period: string;
   features: string[];
   description: string;
@@ -284,11 +284,12 @@ export function Pricing({
                             <span className="text-5xl font-bold tracking-tight text-foreground">
                               <NumberFlow
                                 value={
-                                  plan.price === "0,00"
-                                    ? 0
-                                    : isMonthly
-                                      ? Number(plan.price.replace(',', '.'))
-                                      : Number(plan.yearlyPrice.replace(',', '.'))
+                                  (() => {
+                                    const val = isMonthly ? plan.price : plan.yearlyPrice;
+                                    if (typeof val === 'number') return val;
+                                    // Se for string, remove pontos de milhar e troca vírgula por ponto
+                                    return Number(String(val).replace(/\./g, '').replace(',', '.'));
+                                  })()
                                 }
                                 format={{ minimumFractionDigits: 2, maximumFractionDigits: 2, style: 'decimal' }}
                                 locales="pt-BR"

@@ -31,46 +31,82 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [roles, setRoles] = useState<UserRole[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Carregar dados do usuário (SEM buscar roles - OrgContext fará isso)
+  // Carregar dados do usuário
   const loadUserData = useCallback(async (authUser: AuthUser) => {
     try {
-      // Buscar perfil
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", authUser.id)
-        .single();
+      // Buscar perfil E role global em paralelo
+      const [profileResult, roleResult] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", authUser.id)
+          .maybeSingle(),
+        supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", authUser.id)
+          .maybeSingle(),
+      ]);
 
-      if (profileError) throw profileError;
+      // Profile may not exist yet for new users — that's OK
+      if (profileResult.error) {
+        console.warn("Erro ao buscar perfil (pode ser novo usuário):", profileResult.error.message);
+      }
+      const profile = profileResult.data;
 
-      // NÃO buscar roles aqui - OrgContext já faz isso via org_members
-      // Role será atualizado pelo OrgContext através de updateRoles()
+      const globalRole = roleResult.data?.role as UserRole | undefined;
+
+      // Se tiver role global, usa ele. Se não, começa com Colaborador esperando o OrgContext
+      const initialRole: UserRole = globalRole || "Colaborador";
 
       setUser({
         id: authUser.id,
         name: profile?.name || authUser.email || "Usuário",
         email: authUser.email || "",
-        role: "Colaborador", // Default - será atualizado pelo OrgContext
+        role: initialRole,
         avatar_url: profile?.avatar_url || "",
         createdAt: authUser.created_at,
         updatedAt: profile?.updated_at || authUser.created_at,
       });
 
-      // Roles default enquanto OrgContext carrega
-      setRoles(["Colaborador"]);
+      // Se for Presidente, define logo
+      setRoles([initialRole]);
+
     } catch (error) {
       console.error("Erro ao carregar dados do usuário:", error);
-      setUser(null);
-      setRoles([]);
+      // Fallback: create basic user from auth data so app doesn't get stuck
+      setUser({
+        id: authUser.id,
+        name: authUser.email || "Usuário",
+        email: authUser.email || "",
+        role: "Colaborador",
+        avatar_url: "",
+        createdAt: authUser.created_at,
+        updatedAt: authUser.created_at,
+      });
+      setRoles(["Colaborador"]);
     }
   }, []);
 
   // Método para OrgContext atualizar roles
   const updateRoles = useCallback((newRoles: UserRole[]) => {
-    setRoles(newRoles);
+    setRoles(prevRoles => {
+      // PROTEÇÃO: Se o usuário já é Presidente (Global), não rebaixa
+      if (prevRoles.includes('Presidente')) {
+        return ['Presidente'];
+      }
+      return newRoles;
+    });
+
     // Atualizar também o role principal do user
     setUser((prev) => {
       if (!prev) return null;
+
+      // Mesma proteção para o objeto user
+      if (prev.role === 'Presidente') {
+        return prev;
+      }
+
       return {
         ...prev,
         role: newRoles[0] || "Colaborador",
@@ -80,36 +116,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Configurar listener de autenticação
   useEffect(() => {
-    // Listener para mudanças de autenticação (deve ser síncrono)
+    let initialLoadDone = false;
+
+    // Listener para mudanças de autenticação (signin, signout, token refresh)
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, newSession) => {
       setSession(newSession);
 
       if (newSession?.user) {
-        // Evitar deadlock: chamar Supabase fora do callback, de forma assíncrona
-        setTimeout(() => {
-          loadUserData(newSession.user).catch((error) => {
-            console.error("Erro ao carregar dados do usuário no onAuthStateChange:", error);
-          });
-        }, 0);
+        // Para eventos subsequentes (após o load inicial), carregar dados
+        if (initialLoadDone) {
+          loadUserData(newSession.user)
+            .catch((error) => {
+              console.error("Erro ao carregar dados do usuário no onAuthStateChange:", error);
+            })
+            .finally(() => setLoading(false));
+        }
+        // Para o evento INITIAL_SESSION, o getSession abaixo já cuida
       } else {
         setUser(null);
         setRoles([]);
+        setLoading(false);
       }
-
-      setLoading(false);
     });
 
-    // Verificar sessão existente
-    supabase.auth.getSession().then(({ data: { session: existingSession } }) => {
+    // Verificar sessão existente — AWAIT loadUserData antes de setar loading=false
+    supabase.auth.getSession().then(async ({ data: { session: existingSession } }) => {
       setSession(existingSession);
       if (existingSession?.user) {
-        loadUserData(existingSession.user).catch((error) => {
+        await loadUserData(existingSession.user).catch((error) => {
           console.error("Erro ao carregar dados do usuário na sessão existente:", error);
         });
       }
       setLoading(false);
+      initialLoadDone = true;
     });
 
     return () => subscription.unsubscribe();
@@ -155,8 +196,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         toast.success("Login realizado com sucesso!");
         navigate("/dashboard");
       }
-    } catch (error) {
-      console.error("Erro no login:", error);
+    } catch (error: unknown) {
+      // Log sanitizado: sem PII
       throw error;
     }
   }, [navigate]);
@@ -177,12 +218,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [navigate]);
 
-  const hasRole = useCallback((role: UserRole) => {
-    return roles.includes(role);
+  // Hierarquia de permissões
+  const roleHierarchy: Record<UserRole, number> = {
+    'Presidente': 4,
+    'Administrador': 3,
+    'Gerente': 2,
+    'Colaborador': 1
+  };
+
+  const hasRole = useCallback((requiredRole: UserRole) => {
+    // Se o usuário tem o role exato ou superior
+    const userMaxLevel = Math.max(...roles.map(r => roleHierarchy[r] || 0));
+    const requiredLevel = roleHierarchy[requiredRole] || 0;
+    return userMaxLevel >= requiredLevel;
   }, [roles]);
 
-  const hasAnyRole = useCallback((rolesList: UserRole[]) => {
-    return rolesList.some(role => roles.includes(role));
+  const hasAnyRole = useCallback((allowedRoles: UserRole[]) => {
+    // Se o usuário tem algum dos roles permitidos ou um superior a qualquer um deles
+    // Simplificação: Se user é Presidente, tem acesso a tudo.
+    if (roles.includes('Presidente')) return true;
+
+    // Verificação hierárquica normal
+    const userMaxLevel = Math.max(...roles.map(r => roleHierarchy[r] || 0));
+
+    // Verifica se o nível do usuário satisfaz pelo menos um dos roles permitidos
+    return allowedRoles.some(role => userMaxLevel >= (roleHierarchy[role] || 0));
   }, [roles]);
 
   const refreshSession = useCallback(async () => {

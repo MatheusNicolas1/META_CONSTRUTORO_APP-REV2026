@@ -28,8 +28,8 @@ export function useEquipamentos() {
       const { data, error } = await supabase
         .from('equipamentos')
         .select('*')
-        .eq('org_id', orgId)
-        .eq('user_id', user.id)
+
+        .eq('created_by', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -39,45 +39,20 @@ export function useEquipamentos() {
   });
 
   const searchEquipamentos = useCallback(
-    async (query: string) => {
-      if (!orgId || !userId) return [];
-
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user?.id) return [];
-
-      const { data, error } = await supabase
-        .from('equipamentos')
-        .select('*')
-        .eq('org_id', orgId)
-        .eq('user_id', user.id)
-        .ilike('nome', `%${query}%`)
-        .limit(10);
-
-      if (error) throw error;
-      return data || [];
+    (query: string) => {
+      if (!query) return [];
+      return equipamentos.filter(e =>
+        e.nome.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, 10);
     },
-    [orgId, userId]
+    [equipamentos]
   );
 
   const getEquipamentoById = useCallback(
-    async (id: string) => {
-      if (!orgId || !userId) return null;
-
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user?.id) return null;
-
-      const { data, error } = await supabase
-        .from('equipamentos')
-        .select('*')
-        .eq('id', id)
-        .eq('org_id', orgId)
-        .eq('user_id', user.id)
-        .single();
-
-      if (error) throw error;
-      return data;
+    (id: string) => {
+      return equipamentos.find(e => e.id === id) || null;
     },
-    [orgId, userId]
+    [equipamentos]
   );
 
   return {

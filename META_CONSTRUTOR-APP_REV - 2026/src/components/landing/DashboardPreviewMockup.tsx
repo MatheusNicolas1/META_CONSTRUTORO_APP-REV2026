@@ -122,7 +122,7 @@ export const DashboardPreviewMockup = () => {
                                             <div className="relative">
                                                 <select className="w-full bg-[#05111D] border border-[#1f2e42] rounded-md py-1.5 pl-2 pr-6 text-[10px] text-gray-300 focus:outline-none appearance-none" disabled>
                                                     <option>Todas as obras</option>
-                                                    <option>Residencial Alpha</option>
+                                                    <option>Obra Modelo</option>
                                                 </select>
                                                 <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 w-3.5 h-3.5 pointer-events-none" />
                                             </div>

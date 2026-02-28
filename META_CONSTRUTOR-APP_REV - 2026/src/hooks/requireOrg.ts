@@ -19,7 +19,9 @@ export const useRequireOrg = (): RequireOrgResult => {
     }
 
     if (!activeOrgId || !activeRole) {
-        throw new Error('Usuário sem organização ativa');
+        // ERROR HANDLED: Instead of crashing the app, we return a fallback state.
+        // This allows the UI to handle "No Organization" scenarios (e.g. Onboarding or Empty State)
+        return { orgId: '', role: 'Colaborador', isLoading: false };
     }
 
     return { orgId: activeOrgId, role: activeRole, isLoading: false };

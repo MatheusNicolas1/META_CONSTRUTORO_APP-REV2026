@@ -1,0 +1,3349 @@
+{
+  "timestamp": "2026-02-13T03:12:14.605Z",
+  "database": {
+    "tables": {
+      "profiles": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "email",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "avatar_url",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "phone",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "referral_code",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "hide_signature",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "referral_bonus_days",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "NO"
+        },
+        {
+          "name": "bio",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "company",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "position",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "is_public",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "YES"
+        },
+        {
+          "name": "slug",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "username",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "website",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "followers_count",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "YES"
+        },
+        {
+          "name": "following_count",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "YES"
+        },
+        {
+          "name": "posts_count",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "YES"
+        },
+        {
+          "name": "has_seen_onboarding",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "YES"
+        },
+        {
+          "name": "cpf_cnpj",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "plan_type",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        }
+      ],
+      "user_roles": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "role",
+          "type": "USER-DEFINED",
+          "udt": "app_role",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "obras": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "nome",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "localizacao",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "responsavel",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "cliente",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "tipo",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "progresso",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "NO"
+        },
+        {
+          "name": "data_inicio",
+          "type": "date",
+          "udt": "date",
+          "nullable": "NO"
+        },
+        {
+          "name": "previsao_termino",
+          "type": "date",
+          "udt": "date",
+          "nullable": "NO"
+        },
+        {
+          "name": "status",
+          "type": "USER-DEFINED",
+          "udt": "obra_status",
+          "nullable": "NO"
+        },
+        {
+          "name": "descricao",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "area",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "categoria",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "prioridade",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "observacoes",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "is_public",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "slug",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "cover_image_url",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "activated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "on_hold_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "canceled_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "deleted_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "deleted_by",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        }
+      ],
+      "equipes": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "nome",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "funcao",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "telefone",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "email",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "ativo",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        }
+      ],
+      "rdo_atividades": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "rdo_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "nome",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "categoria",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "quantidade",
+          "type": "numeric",
+          "udt": "numeric",
+          "nullable": "NO"
+        },
+        {
+          "name": "unidade_medida",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "percentual_concluido",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "NO"
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "observacoes",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "is_extra",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "justificativa",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "rdo_equipes": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "rdo_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "equipe_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "horas_trabalho",
+          "type": "numeric",
+          "udt": "numeric",
+          "nullable": "NO"
+        },
+        {
+          "name": "presente",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "horas_ociosas",
+          "type": "numeric",
+          "udt": "numeric",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "checklists": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "categoria",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "obra_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "responsible_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "due_date",
+          "type": "date",
+          "udt": "date",
+          "nullable": "YES"
+        },
+        {
+          "name": "template_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "progresso_total",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "YES"
+        },
+        {
+          "name": "progresso_completo",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "YES"
+        },
+        {
+          "name": "started_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "signature_data",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "signature_name",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "signature_email",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "signed_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        }
+      ],
+      "equipamentos": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "nome",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "categoria",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "observacoes",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        }
+      ],
+      "fornecedores": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "nome",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "categoria",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "contato",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "email",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "telefone",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "endereco",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "cnpj",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "observacoes",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "ativo",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        }
+      ],
+      "rdo_equipamentos": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "rdo_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "equipamento_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "horas_uso",
+          "type": "numeric",
+          "udt": "numeric",
+          "nullable": "NO"
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "observacoes",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "descricao_problema",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "causou_ociosidade",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "YES"
+        },
+        {
+          "name": "horas_parada",
+          "type": "numeric",
+          "udt": "numeric",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "documentos": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "nome",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "tipo",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "categoria",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "url",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "tamanho",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "YES"
+        },
+        {
+          "name": "obra_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "rdo_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "checklist_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "checklist_item_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "descricao",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "uploaded_by",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "checklist_items": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "checklist_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "priority",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "requires_attachment",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "is_obligatory",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "observations",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "completed_by",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "order",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "YES"
+        }
+      ],
+      "referrals": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "referrer_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "new_user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "bonus_granted",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "bonus_type",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        }
+      ],
+      "achievements": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "icon_url",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "achievement_type",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "comments": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "post_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "content",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "likes": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "post_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "follows": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "follower_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "following_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "posts": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "content",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "category",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "likes_count",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "NO"
+        },
+        {
+          "name": "comments_count",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "media_url",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "location",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "media_type",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        }
+      ],
+      "notifications": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "message",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "route",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "type",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "is_read",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        }
+      ],
+      "social_shares": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "post_url",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "platform",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "obra_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "rdo_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "user_credits": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "plan_type",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "credits_balance",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "NO"
+        },
+        {
+          "name": "total_shared",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "NO"
+        },
+        {
+          "name": "last_shared_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "welcome_messages": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "message",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "shown",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "signature_access_log": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "checklist_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "accessed_by",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "access_type",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "accessed_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "ip_address",
+          "type": "inet",
+          "udt": "inet",
+          "nullable": "YES"
+        },
+        {
+          "name": "user_agent",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        }
+      ],
+      "user_settings": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "theme",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "primary_color",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "font_size",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "language",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "email_notifications",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "push_notifications",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "weekly_reports",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "deadline_alerts",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "budget_notifications",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "notification_start_time",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "notification_end_time",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "two_factor_enabled",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "biometric_login",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "session_timeout",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "min_password_length",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "NO"
+        },
+        {
+          "name": "password_expiry_days",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "NO"
+        },
+        {
+          "name": "backup_frequency",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "auto_backup",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "cloud_sync",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "admin_audit_logs": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "admin_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "action",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "target_user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "details",
+          "type": "jsonb",
+          "udt": "jsonb",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "user_activity": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "event_name",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "event_data",
+          "type": "jsonb",
+          "udt": "jsonb",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        }
+      ],
+      "expenses": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_submitting_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "obra_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "cost_category",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "invoice_number",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "supplier_name",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "amount",
+          "type": "numeric",
+          "udt": "numeric",
+          "nullable": "NO"
+        },
+        {
+          "name": "date_of_expense",
+          "type": "date",
+          "udt": "date",
+          "nullable": "NO"
+        },
+        {
+          "name": "invoice_file_url",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "component_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "team_member_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "approval_status",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "manager_approver_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "manager_approved_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "general_manager_approver_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "general_manager_approved_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "rejection_reason",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "notes",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "deleted_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "deleted_by",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        }
+      ],
+      "atividades": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "obra_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "titulo",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "descricao",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "data",
+          "type": "date",
+          "udt": "date",
+          "nullable": "NO"
+        },
+        {
+          "name": "hora",
+          "type": "time without time zone",
+          "udt": "time",
+          "nullable": "NO"
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "prioridade",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "categoria",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "unidade_medida",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "quantidade_prevista",
+          "type": "numeric",
+          "udt": "numeric",
+          "nullable": "YES"
+        },
+        {
+          "name": "responsavel",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "notificado",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        }
+      ],
+      "coupons": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "code",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "discount_percentage",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "YES"
+        },
+        {
+          "name": "valid_until",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "is_active",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "usage_limit",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "YES"
+        },
+        {
+          "name": "times_used",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "discount_type",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "discount_value",
+          "type": "numeric",
+          "udt": "numeric",
+          "nullable": "YES"
+        }
+      ],
+      "orgs": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "slug",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "owner_user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        }
+      ],
+      "org_members": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "role",
+          "type": "USER-DEFINED",
+          "udt": "app_role",
+          "nullable": "NO"
+        },
+        {
+          "name": "status",
+          "type": "USER-DEFINED",
+          "udt": "org_member_status",
+          "nullable": "NO"
+        },
+        {
+          "name": "invited_by",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "invited_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "joined_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        }
+      ],
+      "plans": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "slug",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "monthly_price_cents",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "YES"
+        },
+        {
+          "name": "yearly_price_cents",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "YES"
+        },
+        {
+          "name": "stripe_price_id_monthly",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "stripe_price_id_yearly",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "features",
+          "type": "jsonb",
+          "udt": "jsonb",
+          "nullable": "NO"
+        },
+        {
+          "name": "is_active",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "is_popular",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "display_order",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "NO"
+        },
+        {
+          "name": "max_users",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "YES"
+        },
+        {
+          "name": "max_obras",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "YES"
+        },
+        {
+          "name": "trial_days",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "YES"
+        }
+      ],
+      "user_interactions": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "interaction_type",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "target_id",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "metadata",
+          "type": "jsonb",
+          "udt": "jsonb",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        }
+      ],
+      "stripe_events": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "stripe_event_id",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "event_type",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "processed",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "NO"
+        },
+        {
+          "name": "processed_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "payload",
+          "type": "jsonb",
+          "udt": "jsonb",
+          "nullable": "NO"
+        },
+        {
+          "name": "error",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "api_version",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        }
+      ],
+      "subscriptions": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "plan_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "stripe_subscription_id",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "stripe_customer_id",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "status",
+          "type": "USER-DEFINED",
+          "udt": "subscription_status",
+          "nullable": "NO"
+        },
+        {
+          "name": "current_period_start",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "current_period_end",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "trial_end",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "canceled_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "billing_cycle",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "metadata",
+          "type": "jsonb",
+          "udt": "jsonb",
+          "nullable": "YES"
+        }
+      ],
+      "audit_logs": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "actor_user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "action",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "entity",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "entity_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "metadata",
+          "type": "jsonb",
+          "udt": "jsonb",
+          "nullable": "NO"
+        },
+        {
+          "name": "request_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "ip",
+          "type": "inet",
+          "udt": "inet",
+          "nullable": "YES"
+        },
+        {
+          "name": "user_agent",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        }
+      ],
+      "quality_checklists": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "obra_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "quality_items": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "checklist_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "status",
+          "type": "USER-DEFINED",
+          "udt": "quality_item_status",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "rate_limits": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "key",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "window_seconds",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "NO"
+        },
+        {
+          "name": "max_requests",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "NO"
+        },
+        {
+          "name": "count",
+          "type": "integer",
+          "udt": "int4",
+          "nullable": "NO"
+        },
+        {
+          "name": "window_start",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "last_request_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        }
+      ],
+      "rdos": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "obra_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "data",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "periodo",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "clima",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "equipe_ociosa",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "YES"
+        },
+        {
+          "name": "status",
+          "type": "USER-DEFINED",
+          "udt": "rdo_status",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "NO"
+        },
+        {
+          "name": "observacoes",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        }
+      ],
+      "analytics_events": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "event",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "source",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "properties",
+          "type": "jsonb",
+          "udt": "jsonb",
+          "nullable": "YES"
+        },
+        {
+          "name": "environment",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "request_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "success",
+          "type": "boolean",
+          "udt": "bool",
+          "nullable": "YES"
+        },
+        {
+          "name": "error",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        }
+      ],
+      "documents": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "org_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "NO"
+        },
+        {
+          "name": "obra_id",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "category",
+          "type": "USER-DEFINED",
+          "udt": "document_type",
+          "nullable": "NO"
+        },
+        {
+          "name": "file_url",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "file_path",
+          "type": "text",
+          "udt": "text",
+          "nullable": "NO"
+        },
+        {
+          "name": "file_type",
+          "type": "text",
+          "udt": "text",
+          "nullable": "YES"
+        },
+        {
+          "name": "file_size",
+          "type": "bigint",
+          "udt": "int8",
+          "nullable": "YES"
+        },
+        {
+          "name": "uploaded_by",
+          "type": "uuid",
+          "udt": "uuid",
+          "nullable": "YES"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "udt": "timestamptz",
+          "nullable": "YES"
+        }
+      ]
+    },
+    "enums": {
+      "aal_level": [
+        "aal1",
+        "aal2",
+        "aal3"
+      ],
+      "action": [
+        "INSERT",
+        "UPDATE",
+        "DELETE",
+        "TRUNCATE",
+        "ERROR"
+      ],
+      "app_role": [
+        "Administrador",
+        "Gerente",
+        "Colaborador"
+      ],
+      "buckettype": [
+        "STANDARD",
+        "ANALYTICS",
+        "VECTOR"
+      ],
+      "checklist_category": [
+        "Segurança",
+        "Qualidade",
+        "Equipamentos",
+        "Documentação",
+        "Outros"
+      ],
+      "checklist_item_priority": [
+        "Baixa",
+        "Média",
+        "Alta",
+        "Crítica"
+      ],
+      "checklist_item_status": [
+        "Não iniciado",
+        "Em andamento",
+        "Concluído",
+        "Não aplicável"
+      ],
+      "checklist_status": [
+        "Rascunho",
+        "Em Andamento",
+        "Concluído",
+        "Pendente",
+        "Cancelado"
+      ],
+      "code_challenge_method": [
+        "s256",
+        "plain"
+      ],
+      "document_type": [
+        "projeto",
+        "licenca",
+        "relatorio",
+        "memorial",
+        "cronograma",
+        "contrato",
+        "certificado",
+        "laudo",
+        "outros"
+      ],
+      "equality_op": [
+        "eq",
+        "neq",
+        "lt",
+        "lte",
+        "gt",
+        "gte",
+        "in"
+      ],
+      "factor_status": [
+        "unverified",
+        "verified"
+      ],
+      "factor_type": [
+        "totp",
+        "webauthn",
+        "phone"
+      ],
+      "oauth_authorization_status": [
+        "pending",
+        "approved",
+        "denied",
+        "expired"
+      ],
+      "oauth_client_type": [
+        "public",
+        "confidential"
+      ],
+      "oauth_registration_type": [
+        "dynamic",
+        "manual"
+      ],
+      "oauth_response_type": [
+        "code"
+      ],
+      "obra_status": [
+        "DRAFT",
+        "ACTIVE",
+        "ON_HOLD",
+        "COMPLETED",
+        "CANCELED"
+      ],
+      "one_time_token_type": [
+        "confirmation_token",
+        "reauthentication_token",
+        "recovery_token",
+        "email_change_token_new",
+        "email_change_token_current",
+        "phone_change_token"
+      ],
+      "org_member_status": [
+        "active",
+        "invited",
+        "inactive"
+      ],
+      "quality_item_status": [
+        "PENDING",
+        "PASSED",
+        "FAILED",
+        "REWORK_REQUESTED",
+        "REWORK_DONE"
+      ],
+      "rdo_status": [
+        "DRAFT",
+        "SUBMITTED",
+        "APPROVED",
+        "REJECTED"
+      ],
+      "subscription_status": [
+        "active",
+        "trialing",
+        "past_due",
+        "canceled",
+        "unpaid",
+        "incomplete",
+        "incomplete_expired",
+        "paused"
+      ]
+    }
+  },
+  "codebase": {
+    "migrations": [
+      "20251105175340_.sql",
+      "20251106143827_.sql",
+      "20251106143905_.sql",
+      "20251106184544_.sql",
+      "20251106195442_.sql",
+      "20251106232056_.sql",
+      "20251107125105_.sql",
+      "20251107125841_.sql",
+      "20251107193701_.sql",
+      "20251108005932_.sql",
+      "20251108010736_.sql",
+      "20251110011541_.sql",
+      "20251110022713_.sql",
+      "20251110031509_.sql",
+      "20251110120656_.sql",
+      "20251115231736_.sql",
+      "20251115231857_.sql",
+      "20251116131642_.sql",
+      "20251116131907_.sql",
+      "20251117145503_.sql",
+      "20251117145718_.sql",
+      "20251119153018_.sql",
+      "20251119154116_.sql",
+      "20251119155523_.sql",
+      "20251119155959_.sql",
+      "20251120190802_.sql",
+      "20251124175145_.sql",
+      "20251124175258_.sql",
+      "20251125120616_.sql",
+      "20251130192339_.sql",
+      "20251212121852_.sql",
+      "20260206120000_create_orgs_table.sql",
+      "20260206130000_create_org_members_table.sql",
+      "20260206130500_upgrade_orgs_select_policy.sql",
+      "20260206140000_add_org_id_to_domain.sql",
+      "20260206150000_essential_constraints.sql",
+      "20260206160000_update_handle_new_user.sql",
+      "20260206170000_rbac_helpers.sql",
+      "20260206180000_enable_rls_domain.sql",
+      "20260206183000_rls_isolation.sql",
+      "20260206190000_rls_roles.sql",
+      "20260207120000_harden_rls_policies.sql",
+      "20260207202446_remote_commit.sql",
+      "20260208210000_add_missing_user_tables.sql",
+      "20260208211000_add_missing_profile_columns.sql",
+      "20260208212000_fix_user_roles_constraint.sql",
+      "20260208220000_create_plans_table.sql",
+      "20260208230000_create_subscriptions_table.sql",
+      "20260209110000_create_stripe_events_table.sql",
+      "20260209150000_enforce_plan_limits_triggers.sql",
+      "20260209180000_create_audit_logs.sql",
+      "20260209181000_audit_org_members_triggers.sql",
+      "20260209182000_get_audit_logs_function.sql",
+      "20260209183000_audit_domain_triggers.sql",
+      "20260209190000_obras_status_state_machine.sql",
+      "20260209210000_fix_obras_status_type.sql",
+      "20260209220000_obras_status_timestamps.sql",
+      "20260209230000_rdos_status_state_machine.sql",
+      "20260209231000_recreate_rdos.sql",
+      "20260209240000_quality_state_machine.sql",
+      "20260210000000_harden_m6_states.sql",
+      "20260210120000_create_stripe_events_monitor_view.sql",
+      "20260210130000_create_rate_limits.sql",
+      "20260210140000_soft_delete.sql",
+      "20260210160000_analytics_events.sql",
+      "20260210170000_harden_analytics.sql",
+      "20260210173000_reload_schema_func.sql",
+      "20260211130000_checklists.sql",
+      "20260211150000_fix_rdos_schema.sql",
+      "20260211160000_add_org_id_secondary.sql",
+      "20260211170000_unify_org_id_and_documents.sql"
+    ],
+    "hooks": [
+      {
+        "file": "requireOrg.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useOrg } from '@/contexts/OrgContext';\r\n\r\ninterface RequireOrgResult {\r\n    orgId: string;\r\n    role: 'Administrador' | 'Gerente' | 'Colaborador';\r\n    isLoading: boolean;\r\n}\r\n\r\n/**\r\n * Hook "
+      },
+      {
+        "file": "use-auto-scroll.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useCallback, useEffect, useRef, useState } from \"react\";\r\n\r\ninterface ScrollState {\r\n  isAtBottom: boolean;\r\n  autoScrollEnabled: boolean;\r\n}\r\n\r\ninterface UseAutoScrollOptions {\r\n  offset?: n"
+      },
+      {
+        "file": "use-expandable.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useState, useCallback } from \"react\";\r\nimport { useSpring } from \"framer-motion\";\r\n\r\nexport function useExpandable(initialState = false) {\r\n  const [isExpanded, setIsExpanded] = useState(init"
+      },
+      {
+        "file": "use-media-query.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useState, useEffect } from \"react\";\r\n\r\nexport function useMediaQuery(query: string): boolean {\r\n  const [matches, setMatches] = useState<boolean>(false);\r\n\r\n  useEffect(() => {\r\n    const med"
+      },
+      {
+        "file": "use-mobile.tsx",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import * as React from \"react\"\r\n\r\nconst MOBILE_BREAKPOINT = 768\r\n\r\nexport function useIsMobile() {\r\n  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)\r\n\r\n  React.useEffec"
+      },
+      {
+        "file": "use-toast.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import * as React from \"react\"\r\n\r\nimport type {\r\n  ToastActionElement,\r\n  ToastProps,\r\n} from \"@/components/ui/toast\"\r\n\r\nconst TOAST_LIMIT = 1\r\nconst TOAST_REMOVE_DELAY = 1000000\r\n\r\ntype ToasterToast "
+      },
+      {
+        "file": "useActivities.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useState, useEffect, useCallback } from 'react';\r\nimport { useToast } from '@/hooks/use-toast';\r\n\r\nexport interface Activity {\r\n  id: string;\r\n  title: string;\r\n  description: string;\r\n  obra"
+      },
+      {
+        "file": "useActivitiesSupabase.ts",
+        "usesUserId": true,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useState, useEffect, useCallback, useRef } from 'react';\r\nimport { supabase } from '@/integrations/supabase/client';\r\nimport { useToast } from '@/hooks/use-toast';\r\nimport { useAuth } from '@"
+      },
+      {
+        "file": "useAuthUserId.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useQuery } from '@tanstack/react-query';\r\nimport { supabase } from '@/integrations/supabase/client';\r\n\r\n/**\r\n * Centralized hook for getting the current authenticated user's ID.\r\n * Uses a lo"
+      },
+      {
+        "file": "useChecklist.ts",
+        "usesUserId": true,
+        "usesOrgId": true,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useQuery, useMutation, useQueryClient } from \"@tanstack/react-query\";\r\nimport { supabase } from \"@/integrations/supabase/client\";\r\nimport { useToast } from \"@/hooks/use-toast\";\r\nimport { Chec"
+      },
+      {
+        "file": "useCountUp.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useEffect, useRef, useState } from 'react';\r\n\r\ninterface UseCountUpOptions {\r\n  end: number;\r\n  duration?: number;\r\n  start?: number;\r\n  decimals?: number;\r\n}\r\n\r\nexport const useCountUp = ({ "
+      },
+      {
+        "file": "useDashboardStats.ts",
+        "usesUserId": true,
+        "usesOrgId": true,
+        "usesCriadoPor": true,
+        "usesStatusEnum": true,
+        "rawContentSnippet": "import { useQuery } from '@tanstack/react-query';\r\nimport { supabase } from '@/integrations/supabase/client';\r\nimport { useRequireOrg } from '@/hooks/requireOrg';\r\n\r\nexport const useDashboardStats = ("
+      },
+      {
+        "file": "useDataCache.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useQuery, useQueryClient } from '@tanstack/react-query';\r\nimport { cacheManager } from '@/utils/cacheManager';\r\nimport { useCallback } from 'react';\r\n\r\n// Hook para cache otimizado de dados\r\n"
+      },
+      {
+        "file": "useDocuments.ts",
+        "usesUserId": false,
+        "usesOrgId": true,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';\r\nimport { supabase } from '@/integrations/supabase/client';\r\nimport { useRequireOrg } from '@/hooks/requireOrg';\r\nimport "
+      },
+      {
+        "file": "useEquipamentos.ts",
+        "usesUserId": true,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useQuery } from '@tanstack/react-query';\r\nimport { useCallback } from 'react';\r\nimport { supabase } from '@/integrations/supabase/client';\r\nimport { useRequireOrg } from '@/hooks/requireOrg';"
+      },
+      {
+        "file": "useEquipamentosSupabase.ts",
+        "usesUserId": true,
+        "usesOrgId": true,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';\r\nimport { supabase } from '@/integrations/supabase/client';\r\nimport { toast } from 'sonner';\r\nimport { useRequireOrg } fr"
+      },
+      {
+        "file": "useEquipesSupabase.ts",
+        "usesUserId": true,
+        "usesOrgId": true,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';\r\nimport { supabase } from '@/integrations/supabase/client';\r\nimport { toast } from 'sonner';\r\nimport { usePermissions } f"
+      },
+      {
+        "file": "useExpenses.ts",
+        "usesUserId": true,
+        "usesOrgId": true,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';\r\nimport { supabase } from '@/integrations/supabase/client';\r\nimport type { Expense, CreateExpenseData, ApproveExpenseData"
+      },
+      {
+        "file": "useFornecedores.ts",
+        "usesUserId": true,
+        "usesOrgId": true,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';\r\nimport { supabase } from '@/integrations/supabase/client';\r\nimport { toast } from 'sonner';\r\nimport { useRequireOrg } fr"
+      },
+      {
+        "file": "useImageOptimization.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useState, useEffect, useRef } from 'react';\r\n\r\ninterface ImageOptimizationOptions {\r\n  lazy?: boolean;\r\n  quality?: number;\r\n  format?: 'webp' | 'avif' | 'original';\r\n  placeholder?: string;\r"
+      },
+      {
+        "file": "useInstantCallback.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useCallback, useMemo, useRef } from 'react';\r\nimport { debounce, throttle } from '@/utils/performanceOptimizations';\r\n\r\n// Hook para callbacks instantâneos sem delays\r\nexport const useInstant"
+      },
+      {
+        "file": "useIntegrations.ts",
+        "usesUserId": true,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useState, useEffect } from 'react';\r\nimport { supabase } from '@/integrations/supabase/client';\r\nimport {\r\n  Integration,\r\n  IntegrationConfig,\r\n  IntegrationLog,\r\n  IntegrationStatus,\r\n  Web"
+      },
+      {
+        "file": "useLocalStorage.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useState, useEffect } from 'react';\r\n\r\nexport function useLocalStorage<T>(key: string, initialValue: T) {\r\n  // Get from local storage then parse stored json or return initialValue\r\n  const ["
+      },
+      {
+        "file": "useNavigationTransition.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useNavigate } from 'react-router-dom';\r\nimport { startTransition, useCallback } from 'react';\r\n\r\n/**\r\n * Hook personalizado que envolve todas as navegações em startTransition\r\n * para evitar "
+      },
+      {
+        "file": "useObras.ts",
+        "usesUserId": true,
+        "usesOrgId": true,
+        "usesCriadoPor": false,
+        "usesStatusEnum": true,
+        "rawContentSnippet": "import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';\r\nimport { useEffect } from 'react';\r\nimport { supabase } from '@/integrations/supabase/client';\r\nimport { toast } from 's"
+      },
+      {
+        "file": "useOptimizedCallback.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useCallback, useRef } from 'react';\r\n\r\n// Hook para otimizar callbacks com debounce automático\r\nexport const useOptimizedCallback = <T extends (...args: any[]) => any>(\r\n  callback: T,\r\n  dep"
+      },
+      {
+        "file": "useOptimizedQuery.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useQuery, UseQueryOptions, QueryKey } from '@tanstack/react-query';\r\nimport { smartCache } from '@/utils/performanceOptimizations';\r\n\r\ninterface OptimizedQueryOptions<T> extends Omit<UseQuery"
+      },
+      {
+        "file": "usePerformanceMonitor.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useEffect, useState } from 'react';\r\nimport { useLocalStorage } from './useLocalStorage';\r\n\r\ninterface PerformanceMetric {\r\n  name: string;\r\n  value: number;\r\n  timestamp: number;\r\n  url: str"
+      },
+      {
+        "file": "usePerformanceOptimization.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useEffect, useState, useCallback, useMemo } from 'react';\r\n\r\ninterface PerformanceMetrics {\r\n  memoryUsage: number;\r\n  connectionType: string;\r\n  isSlowConnection: boolean;\r\n  devicePixelRati"
+      },
+      {
+        "file": "usePermissions.ts",
+        "usesUserId": true,
+        "usesOrgId": true,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useMemo } from 'react';\r\nimport { useAuth } from '@/components/auth/AuthContext';\r\nimport type { UserRole } from '@/types/user';\r\nimport { getUserPermissions } from '@/types/user';\r\nimport { "
+      },
+      {
+        "file": "usePlanLimits.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useQuery } from \"@tanstack/react-query\";\r\nimport { supabase } from \"@/integrations/supabase/client\";\r\nimport { getPlanLimits } from \"../utils/planLimits\";\r\n\r\nexport const usePlanLimits = () ="
+      },
+      {
+        "file": "usePricingNavigation.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useNavigate } from 'react-router-dom';\r\nimport { useCallback } from 'react';\r\n\r\n/**\r\n * Hook personalizado para navegação direcionada à página de preços\r\n */\r\nexport const usePricingNavigatio"
+      },
+      {
+        "file": "useRDOs.ts",
+        "usesUserId": true,
+        "usesOrgId": true,
+        "usesCriadoPor": false,
+        "usesStatusEnum": true,
+        "rawContentSnippet": "import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';\r\nimport { useEffect } from 'react';\r\nimport { supabase } from '@/integrations/supabase/client';\r\nimport { toast } from 's"
+      },
+      {
+        "file": "useRecentObras.ts",
+        "usesUserId": true,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useQuery } from '@tanstack/react-query';\r\nimport { supabase } from '@/integrations/supabase/client';\r\nimport { useRequireOrg } from '@/hooks/requireOrg';\r\n\r\nexport const useRecentObras = () ="
+      },
+      {
+        "file": "useRecentRDOs.ts",
+        "usesUserId": true,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useQuery } from '@tanstack/react-query';\r\nimport { supabase } from '@/integrations/supabase/client';\r\nimport { useRequireOrg } from '@/hooks/requireOrg';\r\n\r\nexport const useRecentRDOs = () =>"
+      },
+      {
+        "file": "useReferralTracking.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useEffect } from \"react\";\r\nimport { useSearchParams } from \"react-router-dom\";\r\n\r\nexport const useReferralTracking = () => {\r\n  const [searchParams] = useSearchParams();\r\n\r\n  useEffect(() => "
+      },
+      {
+        "file": "useSignUp.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useState } from 'react';\r\nimport { supabase } from '@/integrations/supabase/client';\r\nimport { toast } from 'sonner';\r\n\r\ninterface SignUpData {\r\n  name: string;\r\n  email: string;\r\n  phone: st"
+      },
+      {
+        "file": "useUserInteraction.ts",
+        "usesUserId": true,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "\r\nimport { useLocation } from 'react-router-dom';\r\nimport { useEffect } from 'react';\r\nimport { supabase } from '@/integrations/supabase/client';\r\n\r\nexport const useUserInteraction = () => {\r\n    cons"
+      },
+      {
+        "file": "useUserPermissions.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useMemo } from 'react';\r\nimport { UserRole, getUserPermissions, UserPermissions } from '@/types/user';\r\n\r\n// Hook para gerenciar permissões do usuário\r\n// TODO: Integrar com Supabase para obt"
+      },
+      {
+        "file": "useVirtualScroll.ts",
+        "usesUserId": false,
+        "usesOrgId": false,
+        "usesCriadoPor": false,
+        "usesStatusEnum": false,
+        "rawContentSnippet": "import { useState, useEffect, useMemo } from 'react';\r\n\r\ninterface UseVirtualScrollProps {\r\n  items: any[];\r\n  itemHeight: number;\r\n  containerHeight: number;\r\n  overscan?: number;\r\n}\r\n\r\nexport const "
+      }
+    ]
+  }
+}

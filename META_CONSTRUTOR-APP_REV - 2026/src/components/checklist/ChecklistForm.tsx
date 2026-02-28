@@ -12,21 +12,27 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ChecklistFormData, ChecklistCategory, ChecklistTemplate, ChecklistItem } from "@/types/checklist";
 import { ChecklistTemplates } from "./ChecklistTemplates";
 import { ChecklistItemManager } from "./ChecklistItemManager";
-import { CalendarIcon, Save, X, FileText, Plus } from "lucide-react";
+import { CalendarIcon, Save, X, FileText, Plus, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useObras } from "@/hooks/useObras";
+import { useEquipesSupabase } from "@/hooks/useEquipesSupabase";
 
 interface ChecklistFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: ChecklistFormData) => void;
+  onSubmit: (data: ChecklistFormData) => Promise<void>;
   initialData?: Partial<ChecklistFormData>;
+  isLoading?: boolean;
 }
 
-export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: ChecklistFormProps) {
+export function ChecklistForm({ isOpen, onClose, onSubmit, initialData, isLoading = false }: ChecklistFormProps) {
   const { toast } = useToast();
+  const { obras } = useObras();
+  const { equipes } = useEquipesSupabase(); // Use real teams for responsibles
+
   const [activeTab, setActiveTab] = useState("basic");
   const [formData, setFormData] = useState<ChecklistFormData>({
     title: "",
@@ -39,24 +45,9 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
     items: []
   });
 
-  // Mock data - em produção virão do backend
-  const obras = [
-    { id: "obra-1", name: "Residencial Vista Verde" },
-    { id: "obra-2", name: "Comercial Center Norte" },
-    { id: "obra-3", name: "Ponte Rio Azul" },
-    { id: "obra-4", name: "Hospital Regional Sul" }
-  ];
-
-  const responsibles = [
-    { id: "resp-1", name: "João Silva", email: "joao@example.com", role: "Engenheiro Civil" },
-    { id: "resp-2", name: "Maria Santos", email: "maria@example.com", role: "Técnica de Segurança" },
-    { id: "resp-3", name: "Carlos Lima", email: "carlos@example.com", role: "Mestre de Obras" },
-    { id: "resp-4", name: "Ana Costa", email: "ana@example.com", role: "Engenheira de Qualidade" }
-  ];
-
   useEffect(() => {
     if (initialData) {
-      setFormData({ ...formData, ...initialData });
+      setFormData(prev => ({ ...prev, ...initialData }));
     }
   }, [initialData]);
 
@@ -79,7 +70,7 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
     onClose();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Validation
     if (!formData.title.trim()) {
       toast({
@@ -135,14 +126,14 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
       return;
     }
 
-    onSubmit(formData);
+    await onSubmit(formData);
     handleClose();
   };
 
   const handleTemplateSelect = (template: ChecklistTemplate) => {
     const templateItems: ChecklistItem[] = template.items.map(item => ({
       ...item,
-      id: `item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Temp ID
       status: "Não iniciado" as const,
       attachments: []
     }));
@@ -163,19 +154,19 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
   };
 
   const isFormValid = () => {
-    return formData.title.trim() && 
-           formData.category && 
-           formData.obraId && 
-           formData.responsibleId && 
-           formData.dueDate && 
-           formData.items.length > 0;
+    return formData.title.trim() &&
+      formData.category &&
+      formData.obraId &&
+      formData.responsibleId &&
+      formData.dueDate &&
+      formData.items.length > 0;
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-6xl max-h-[95vh] flex flex-col">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+      <DialogContent className="max-w-6xl max-h-[95vh] flex flex-col bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-foreground">
             <Plus className="h-5 w-5" />
             Criar Novo Checklist
           </DialogTitle>
@@ -191,9 +182,9 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
             <TabsTrigger value="items">Itens do Checklist</TabsTrigger>
           </TabsList>
 
-          <div className="flex-1 overflow-y-auto mt-4 min-h-0">
+          <div className="flex-1 overflow-y-auto mt-4 min-h-0 pr-2">
             <TabsContent value="basic" className="space-y-6">
-              <Card>
+              <Card className="border-border">
                 <CardHeader>
                   <CardTitle className="text-lg">Informações Básicas</CardTitle>
                   <CardDescription>
@@ -214,9 +205,9 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="category">Categoria *</Label>
-                      <Select 
-                        value={formData.category} 
-                        onValueChange={(value: ChecklistCategory) => 
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value: ChecklistCategory) =>
                           setFormData({ ...formData, category: value })
                         }
                       >
@@ -235,8 +226,8 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
 
                     <div className="space-y-2">
                       <Label htmlFor="obra">Obra *</Label>
-                      <Select 
-                        value={formData.obraId} 
+                      <Select
+                        value={formData.obraId}
                         onValueChange={(value) => setFormData({ ...formData, obraId: value })}
                       >
                         <SelectTrigger>
@@ -245,7 +236,7 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
                         <SelectContent>
                           {obras.map((obra) => (
                             <SelectItem key={obra.id} value={obra.id}>
-                              {obra.name}
+                              {obra.nome}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -256,17 +247,17 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="responsible">Responsável *</Label>
-                      <Select 
-                        value={formData.responsibleId} 
+                      <Select
+                        value={formData.responsibleId}
                         onValueChange={(value) => setFormData({ ...formData, responsibleId: value })}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione o responsável" />
                         </SelectTrigger>
                         <SelectContent>
-                          {responsibles.map((responsible) => (
-                            <SelectItem key={responsible.id} value={responsible.id}>
-                              {responsible.name} - {responsible.role}
+                          {equipes.map((membro) => ( // Use real members from useEquipes
+                            <SelectItem key={membro.id} value={membro.id || "unknown"}>
+                              {membro.nome} - {membro.funcao}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -285,7 +276,7 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {formData.dueDate 
+                            {formData.dueDate
                               ? format(new Date(formData.dueDate), "PPP", { locale: ptBR })
                               : "Selecione a data"
                             }
@@ -295,10 +286,10 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
                           <Calendar
                             mode="single"
                             selected={formData.dueDate ? new Date(formData.dueDate) : undefined}
-                            onSelect={(date) => 
-                              setFormData({ 
-                                ...formData, 
-                                dueDate: date ? date.toISOString().split('T')[0] : "" 
+                            onSelect={(date) =>
+                              setFormData({
+                                ...formData,
+                                dueDate: date ? date.toISOString().split('T')[0] : ""
                               })
                             }
                             disabled={(date) => date < new Date()}
@@ -325,7 +316,7 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
             </TabsContent>
 
             <TabsContent value="template" className="space-y-6">
-              <Card>
+              <Card className="border-border">
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <FileText className="h-5 w-5" />
@@ -336,7 +327,7 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <ChecklistTemplates 
+                  <ChecklistTemplates
                     onSelectTemplate={handleTemplateSelect}
                     selectedCategory={formData.category || undefined}
                   />
@@ -353,10 +344,10 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
           </div>
         </Tabs>
 
-        <div className="flex justify-between pt-4 border-t bg-background flex-shrink-0">
+        <div className="flex justify-between pt-4 border-t bg-card border-border flex-shrink-0">
           <div className="flex gap-2">
             {activeTab === "basic" && (
-              <Button 
+              <Button
                 variant="outline"
                 onClick={() => setActiveTab("template")}
               >
@@ -365,13 +356,13 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
             )}
             {activeTab === "template" && (
               <>
-                <Button 
+                <Button
                   variant="outline"
                   onClick={() => setActiveTab("basic")}
                 >
                   Voltar
                 </Button>
-                <Button 
+                <Button
                   variant="outline"
                   onClick={() => setActiveTab("items")}
                 >
@@ -380,7 +371,7 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
               </>
             )}
             {activeTab === "items" && (
-              <Button 
+              <Button
                 variant="outline"
                 onClick={() => setActiveTab("template")}
               >
@@ -390,16 +381,26 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData }: Checkl
           </div>
 
           <div className="flex gap-2">
-            <Button variant="outline" onClick={handleClose}>
+            <Button variant="outline" onClick={handleClose} disabled={isLoading}>
               <X className="h-4 w-4 mr-2" />
               Cancelar
             </Button>
-            <Button 
+            <Button
               onClick={handleSubmit}
-              disabled={!isFormValid()}
+              disabled={!isFormValid() || isLoading}
+              className="gradient-construction"
             >
-              <Save className="h-4 w-4 mr-2" />
-              Criar Checklist
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Salvando...
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  Criar Checklist
+                </>
+              )}
             </Button>
           </div>
         </div>

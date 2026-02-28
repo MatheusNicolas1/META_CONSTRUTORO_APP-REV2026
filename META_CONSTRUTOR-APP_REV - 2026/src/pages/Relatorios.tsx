@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DatePicker } from "@/components/DatePicker";
 import { Badge } from "@/components/ui/badge";
 import { RDOReportSection } from "@/components/reports/RDOReportSection";
-import { RDO } from "@/types/rdo";
+
 import {
   BarChart3,
   TrendingUp,
@@ -29,6 +29,11 @@ import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 import { useEquipesSupabase } from "@/hooks/useEquipesSupabase";
 import { useEquipamentosSupabase } from "@/hooks/useEquipamentosSupabase";
+import { RDOSupabase } from "@/types/supabase-rdo";
+import { RDO, RDOStatus } from "@/types/rdo";
+import { useDownload } from "@/hooks/useDownload";
+import { generateStandardFilename } from "@/utils/downloadHelper";
+import { Loader2 } from "lucide-react";
 
 const Relatorios = () => {
   const [selectedObra, setSelectedObra] = useState("all");
@@ -40,6 +45,7 @@ const Relatorios = () => {
   const { rdos: rdosData, isLoading: isLoadingRDOs } = useRDOs();
   const { equipes: equipesData } = useEquipesSupabase();
   const { equipamentos: equipamentosData } = useEquipamentosSupabase();
+  const { isLoading: isDownloading, startDownload } = useDownload();
 
   // Filter RDOs based on selection
   const filteredRDOs = rdosData?.filter(rdo => {
@@ -65,15 +71,16 @@ const Relatorios = () => {
   // Adapt Supabase RDO data to component interface
   // Note: The useRDOs hook returns a simpler structure than the detailed RDO interface
   // We map what we can and provide defaults for the rest to avoid crashes
-  const mappedRDOs: RDO[] = filteredRDOs.map(rdo => ({
+
+  const mappedRDOs: RDO[] = filteredRDOs.map((rdo: RDOSupabase) => ({
     id: rdo.id,
     data: rdo.data,
     obraId: rdo.obra_id,
     obraNome: rdo.obras?.nome || "Sem nome",
-    status: rdo.status as any,
+    status: rdo.status as RDOStatus,
     criadoPorId: rdo.criado_por_id,
     criadoPorNome: "Usuário", // Name not fetched in simple query
-    periodo: rdo.periodo as any,
+    periodo: rdo.periodo as RDO['periodo'],
     clima: rdo.clima,
     equipeOciosa: rdo.equipe_ociosa,
     atividadesRealizadas: [], // Detailed data might not be in the fetch
@@ -111,14 +118,8 @@ const Relatorios = () => {
       ].join(","))
     ].join("\n");
 
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `relatorio_rdos_${format(new Date(), "yyyy-MM-dd")}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const filename = generateStandardFilename("relatorio", "rdos", "csv");
+    startDownload(Promise.resolve(csvContent), filename, "text/csv;charset=utf-8;");
   };
 
   const calculateMetrics = () => {
@@ -152,7 +153,7 @@ const Relatorios = () => {
     const headers = ["ID", "Nome", "Cliente", "Status", "Progresso (%)", "Responsável"];
     const csvContent = [
       headers.join(","),
-      ...obrasData.map(row => [
+      ...obrasData.map((row: any) => [
         row.id,
         `"${row.nome}"`,
         `"${row.cliente}"`,
@@ -172,7 +173,7 @@ const Relatorios = () => {
     const headers = ["Nome", "Função", "Status", "Email", "Telefone"];
     const csvContent = [
       headers.join(","),
-      ...equipesData.map(row => [
+      ...equipesData.map((row: any) => [
         `"${row.nome}"`,
         `"${row.funcao}"`,
         row.ativo ? "Ativo" : "Inativo",
@@ -191,7 +192,7 @@ const Relatorios = () => {
     const headers = ["Nome", "Categoria", "Marca/Modelo", "Status", "Identificação"];
     const csvContent = [
       headers.join(","),
-      ...equipamentosData.map(row => [
+      ...equipamentosData.map((row: any) => [
         `"${row.nome}"`,
         `"${row.categoria}"`,
         `"${row.marca}"`,
@@ -202,16 +203,9 @@ const Relatorios = () => {
     downloadCSV(csvContent, "relatorio_equipamentos");
   };
 
-  const downloadCSV = (content: string, filename: string) => {
-    const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `${filename}_${format(new Date(), "yyyy-MM-dd")}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast.success("Relatório gerado com sucesso!");
+  const downloadCSV = (content: string, identificador: string) => {
+    const filename = generateStandardFilename("relatorio", identificador, "csv");
+    startDownload(Promise.resolve(content), filename, "text/csv;charset=utf-8;");
   };
 
   const handleGenerateReport = (reportTitle: string) => {
@@ -358,8 +352,13 @@ const Relatorios = () => {
         <Button
           className="gradient-construction border-0 hover:opacity-90"
           onClick={handleExportData}
+          disabled={isDownloading}
         >
-          <Download className="mr-2 h-4 w-4" />
+          {isDownloading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="mr-2 h-4 w-4" />
+          )}
           Exportar Dados
         </Button>
       </div>

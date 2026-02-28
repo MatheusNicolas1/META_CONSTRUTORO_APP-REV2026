@@ -2,7 +2,6 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import Stripe from 'https://esm.sh/stripe@14.21.0?target=deno'
 import { writeAuditLog } from '../_shared/audit.ts'
-import { writeAuditLog } from '../_shared/audit.ts'
 import { logger } from '../_shared/logger.ts'
 import { trackServerEvent } from '../_shared/analytics.ts'
 
@@ -12,13 +11,6 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
 })
 
 const cryptoProvider = Stripe.createSubtleCryptoProvider()
-
-// Credit mapping based on plan
-const PLAN_CREDITS: Record<string, number> = {
-    basic: 100,
-    professional: 500,
-    master: -1, // -1 means unlimited
-}
 
 serve(async (req) => {
     const start = performance.now()
@@ -60,7 +52,7 @@ serve(async (req) => {
             maxRequests: 120
         })
 
-        // M4.4: Check idempotency via stripe_events table
+        // Idempotency Check
         const { data: existingEvent } = await supabaseAdmin
             .from('stripe_events')
             .select('id, processed')
@@ -68,18 +60,13 @@ serve(async (req) => {
             .single()
 
         if (existingEvent?.processed) {
-            logger.info(`Event ${event.id} already processed, skipping`, {
-                request_id: requestId,
-                function_name: 'stripe-webhook'
-            }, { event_id: event.id })
-
             return new Response(JSON.stringify({ received: true, skipped: true }), {
                 headers: { 'Content-Type': 'application/json' },
                 status: 200,
             })
         }
 
-        // M4.4: Record event for idempotency
+        // Record event
         const { error: insertError } = await supabaseAdmin
             .from('stripe_events')
             .insert({
@@ -97,12 +84,77 @@ serve(async (req) => {
             }, { event_id: event.id, error: insertError })
         }
 
-        // M5.3: Audit log webhook received
-        // Note: org_id from event metadata where available
-
         let processError: string | null = null
+
         try {
             switch (event.type) {
+                case 'invoice.payment_succeeded': {
+                    const invoice = event.data.object as Stripe.Invoice;
+                    if (!invoice.subscription) break;
+
+                    const subscriptionId = invoice.subscription as string;
+                    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+                    const priceId = subscription.items.data[0]?.price.id;
+
+                    // Metadata source: Check subscription metadata first, then invoice metadata
+                    // Metadata source: Check subscription metadata first, then invoice metadata
+                    const userId = subscription.metadata?.user_id || invoice.metadata?.user_id; // Keeping user_id for legacy/profile update
+                    const orgId = subscription.metadata?.org_id || invoice.metadata?.org_id;
+
+                    // Find Plan
+                    const { data: monthlyPlan } = await supabaseAdmin
+                        .from('plans')
+                        .select('id, slug')
+                        .eq('stripe_price_id_monthly', priceId)
+                        .eq('is_active', true)
+                        .single();
+
+                    const { data: yearlyPlan } = await supabaseAdmin
+                        .from('plans')
+                        .select('id, slug')
+                        .eq('stripe_price_id_yearly', priceId)
+                        .eq('is_active', true)
+                        .single();
+
+                    const plan = monthlyPlan || yearlyPlan;
+                    const billingCycle = monthlyPlan ? 'monthly' : 'yearly';
+
+                    if (plan) {
+                        // Upsert Subscription
+                        // M4.5: Write subscription truth to DB
+                        const subscriptionData = {
+                            stripe_subscription_id: subscription.id,
+                            stripe_customer_id: subscription.customer as string,
+                            stripe_price_id: priceId,
+                            org_id: orgId || null, // Use org_id from metadata
+                            status: subscription.status,
+                            plan_id: plan.id,
+                            billing_cycle: billingCycle,
+                            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+                            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+                            trial_end: subscription.trial_end ? new Date(subscription.trial_end * 1000).toISOString() : null,
+                            metadata: subscription.metadata
+                        };
+
+                        await supabaseAdmin
+                            .from('subscriptions')
+                            .upsert(subscriptionData, { onConflict: 'stripe_subscription_id' });
+
+                        // Update User Profile
+                        if (userId) {
+                            await supabaseAdmin
+                                .from('profiles')
+                                .update({
+                                    stripe_subscription_id: subscription.id,
+                                    subscription_status: subscription.status,
+                                    plan_type: plan.slug
+                                })
+                                .eq('id', userId);
+                        }
+                    }
+                    break;
+                }
+
                 case 'checkout.session.completed': {
                     const session = event.data.object as Stripe.Checkout.Session
                     const userId = session.client_reference_id || session.metadata?.user_id
@@ -227,76 +279,36 @@ serve(async (req) => {
                 }
 
                 case 'customer.subscription.updated': {
-                    const subscription = event.data.object as Stripe.Subscription
-
-                    // M4.5: Update subscription status in DB
-                    const { error: updateError } = await supabaseAdmin
+                    const subscription = event.data.object as Stripe.Subscription;
+                    await supabaseAdmin
                         .from('subscriptions')
                         .update({
-                            status: subscription.status as any,
-                            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+                            status: subscription.status,
                             current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-                            trial_end: subscription.trial_end ? new Date(subscription.trial_end * 1000).toISOString() : null,
                             canceled_at: subscription.canceled_at ? new Date(subscription.canceled_at * 1000).toISOString() : null,
                         })
-                        .eq('stripe_subscription_id', subscription.id)
-
-                    if (updateError) {
-                        logger.error(`Error updating subscription: ${updateError.message}`, {
-                            request_id: requestId,
-                            function_name: 'stripe-webhook'
-                        }, { subscription_id: subscription.id, error: updateError })
-                    }
-
-                    // Legacy: keep profiles in sync
-                    const customerId = subscription.customer as string
-                    await supabaseAdmin
-                        .from('profiles')
-                        .update({ subscription_status: subscription.status })
-                        .eq('stripe_customer_id', customerId)
-
-                    logger.info(`✅ Subscription updated: ${subscription.id}`, {
-                        request_id: requestId,
-                        function_name: 'stripe-webhook'
-                    }, { subscription_id: subscription.id })
-                    break
+                        .eq('stripe_subscription_id', subscription.id);
+                    break;
                 }
 
                 case 'customer.subscription.deleted': {
-                    const subscription = event.data.object as Stripe.Subscription
-
-                    // M4.5: Mark subscription as canceled in DB
-                    const { error: cancelError } = await supabaseAdmin
+                    const subscription = event.data.object as Stripe.Subscription;
+                    await supabaseAdmin
                         .from('subscriptions')
                         .update({
                             status: 'canceled',
                             canceled_at: new Date().toISOString(),
                         })
-                        .eq('stripe_subscription_id', subscription.id)
+                        .eq('stripe_subscription_id', subscription.id);
 
-                    if (cancelError) {
-                        logger.error(`Error canceling subscription: ${cancelError.message}`, {
-                            request_id: requestId,
-                            function_name: 'stripe-webhook'
-                        }, { subscription_id: subscription.id, error: cancelError })
-                    }
-
-                    // Legacy: downgrade profile to free
-                    const customerId = subscription.customer as string
                     await supabaseAdmin
                         .from('profiles')
                         .update({
                             subscription_status: 'canceled',
-                            plan_type: 'free',
-                            stripe_subscription_id: null,
+                            plan_type: 'free'
                         })
-                        .eq('stripe_customer_id', customerId)
-
-                    logger.info(`✅ Subscription canceled: ${subscription.id}`, {
-                        request_id: requestId,
-                        function_name: 'stripe-webhook'
-                    }, { subscription_id: subscription.id })
-                    break
+                        .eq('stripe_customer_id', subscription.customer as string);
+                    break;
                 }
 
 
@@ -321,16 +333,12 @@ serve(async (req) => {
                         function_name: 'stripe-webhook'
                     }, { event_type: event.type })
             }
-        } catch (error: any) {
-            processError = error.message
-            logger.error(`Error processing ${event.type}: ${error.message}`, {
-                request_id: requestId,
-                function_name: 'stripe-webhook',
-                latency_ms: performance.now() - start
-            }, error)
+        } catch (e: any) {
+            processError = e.message;
+            logger.error(`Error processing webhook event: ${e.message}`, { request_id: requestId }, e);
         }
 
-        // M4.4: Mark event as processed
+        // Mark processed
         await supabaseAdmin
             .from('stripe_events')
             .update({

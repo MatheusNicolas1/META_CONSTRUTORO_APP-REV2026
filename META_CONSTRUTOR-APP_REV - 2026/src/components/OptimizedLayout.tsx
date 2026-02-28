@@ -123,9 +123,7 @@ const OptimizedLayout = memo(({ children }: LayoutProps) => {
         <div className="flex h-screen w-full bg-background overflow-hidden">
           {/* Sidebar - oculta em PWA mobile, visível em desktop/tablet */}
           {!useMobileLayout && (
-            <div className="hidden md:flex">
-              <AppSidebar />
-            </div>
+            <AppSidebar />
           )}
 
           <div className="flex-1 flex flex-col min-w-0">

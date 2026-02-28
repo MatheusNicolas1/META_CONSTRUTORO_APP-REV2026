@@ -16,13 +16,23 @@ CREATE TABLE IF NOT EXISTS public.user_settings (
 ALTER TABLE public.user_settings ENABLE ROW LEVEL SECURITY;
 
 -- Policies: Users can only access their own settings
-CREATE POLICY "Users can view own settings" 
-ON public.user_settings FOR SELECT 
-USING (auth.uid() = user_id);
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'user_settings' AND policyname = 'Users can view own settings') THEN
+        CREATE POLICY "Users can view own settings" 
+        ON public.user_settings FOR SELECT 
+        USING (auth.uid() = user_id);
+    END IF;
+END $$;
 
-CREATE POLICY "Users can update own settings" 
-ON public.user_settings FOR UPDATE 
-USING (auth.uid() = user_id);
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'user_settings' AND policyname = 'Users can update own settings') THEN
+        CREATE POLICY "Users can update own settings" 
+        ON public.user_settings FOR UPDATE 
+        USING (auth.uid() = user_id);
+    END IF;
+END $$;
 
 -- Index
 CREATE INDEX IF NOT EXISTS idx_user_settings_user_id ON public.user_settings(user_id);
@@ -40,25 +50,37 @@ CREATE TABLE IF NOT EXISTS public.user_credits (
 ALTER TABLE public.user_credits ENABLE ROW LEVEL SECURITY;
 
 -- Policies: Users can only view their own credits
-CREATE POLICY "Users can view own credits" 
-ON public.user_credits FOR SELECT 
-USING (auth.uid() = user_id);
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'user_credits' AND policyname = 'Users can view own credits') THEN
+        CREATE POLICY "Users can view own credits" 
+        ON public.user_credits FOR SELECT 
+        USING (auth.uid() = user_id);
+    END IF;
+END $$;
 
 -- Credits are typically updated by backend/triggers, not directly by users
 -- But we allow updates for admins or for the user themselves
-CREATE POLICY "Users can update own credits" 
-ON public.user_credits FOR UPDATE 
-USING (auth.uid() = user_id);
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'user_credits' AND policyname = 'Users can update own credits') THEN
+        CREATE POLICY "Users can update own credits" 
+        ON public.user_credits FOR UPDATE 
+        USING (auth.uid() = user_id);
+    END IF;
+END $$;
 
 -- Index
 CREATE INDEX IF NOT EXISTS idx_user_credits_user_id ON public.user_credits(user_id);
 
 -- Triggers for updated_at
+DROP TRIGGER IF EXISTS update_user_settings_updated_at ON public.user_settings;
 CREATE TRIGGER update_user_settings_updated_at
 BEFORE UPDATE ON public.user_settings
 FOR EACH ROW
 EXECUTE FUNCTION public.update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_user_credits_updated_at ON public.user_credits;
 CREATE TRIGGER update_user_credits_updated_at
 BEFORE UPDATE ON public.user_credits
 FOR EACH ROW

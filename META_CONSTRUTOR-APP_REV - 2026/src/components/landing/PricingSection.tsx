@@ -67,20 +67,19 @@ const PricingSection = () => {
             Planos que crescem com você
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Escolha o plano ideal para o tamanho da sua operação. 
+            Escolha o plano ideal para o tamanho da sua operação.
             Teste gratuito de 14 dias em todos os planos pagos.
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {plans.map((plan, index) => (
-            <div 
+            <div
               key={plan.name}
-              className={`relative rounded-2xl border p-8 transition-all duration-300 hover:shadow-lg ${
-                plan.highlighted 
-                  ? 'border-primary bg-card shadow-lg scale-105' 
+              className={`relative rounded-2xl border p-8 transition-all duration-300 hover:shadow-lg ${plan.highlighted
+                  ? 'border-primary bg-card shadow-lg scale-105'
                   : 'border-border bg-card hover:border-primary/50'
-              }`}
+                }`}
             >
               {plan.highlighted && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -109,13 +108,12 @@ const PricingSection = () => {
                 ))}
               </ul>
 
-              <Button 
-                className={`w-full ${
-                  plan.highlighted 
-                    ? 'bg-primary hover:bg-primary/90' 
+              <Button
+                className={`w-full ${plan.highlighted
+                    ? 'bg-primary hover:bg-primary/90'
                     : 'variant-outline hover:bg-primary hover:text-primary-foreground'
-                }`}
-                onClick={() => navigate(`/checkout?plan=${plan.planKey}`)}
+                  }`}
+                onClick={() => navigate(plan.planKey === 'free' ? '/login' : `/checkout?plan=${plan.planKey}`)}
               >
                 {plan.buttonText}
               </Button>

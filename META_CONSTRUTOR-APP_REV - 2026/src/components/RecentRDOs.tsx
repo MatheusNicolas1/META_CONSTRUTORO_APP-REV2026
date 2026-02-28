@@ -29,68 +29,7 @@ interface RDOCardProps {
   rdo: RDO;
 }
 
-const mockRDOs: RDO[] = [
-  {
-    id: "1",
-    numeroRDO: "RDO-2024-001",
-    obra: "Residencial Vista Verde",
-    responsavel: "Eng. João Silva",
-    data: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-    status: "aprovado",
-    atividades: 8,
-    clima: "Ensolarado",
-    temperatura: "28°C",
-    equipamentos: ["Betoneira", "Guincho", "Vibrador"],
-    observacoes: "Concretagem da laje do 2º andar realizada conforme cronograma",
-    horaInicio: "07:00",
-    horaFim: "17:00"
-  },
-  {
-    id: "2",
-    numeroRDO: "RDO-2024-002",
-    obra: "Comercial Center Norte",
-    responsavel: "Eng. Maria Santos",
-    data: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-    status: "em_analise",
-    atividades: 12,
-    clima: "Parcialmente nublado",
-    temperatura: "25°C",
-    equipamentos: ["Grua", "Compressor", "Soldadora"],
-    observacoes: "Instalação da estrutura metálica da cobertura",
-    horaInicio: "06:30",
-    horaFim: "18:00"
-  },
-  {
-    id: "3",
-    numeroRDO: "RDO-2024-003",
-    obra: "Ponte Rio Azul",
-    responsavel: "Eng. Carlos Lima",
-    data: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-    status: "pendente",
-    atividades: 6,
-    clima: "Chuvoso",
-    temperatura: "22°C",
-    equipamentos: ["Escavadeira", "Caminhão", "Bomba d'água"],
-    observacoes: "Trabalhos de drenagem e preparação do terreno",
-    horaInicio: "07:30",
-    horaFim: "16:30"
-  },
-  {
-    id: "4",
-    numeroRDO: "RDO-2024-004",
-    obra: "Residencial Vista Verde",
-    responsavel: "Eng. Ana Costa",
-    data: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
-    status: "aprovado",
-    atividades: 10,
-    clima: "Ensolarado",
-    temperatura: "30°C",
-    equipamentos: ["Betoneira", "Andaime", "Nível a laser"],
-    observacoes: "Execução de alvenaria e instalações elétricas",
-    horaInicio: "07:00",
-    horaFim: "17:30"
-  },
-];
+// mockRDOs removed
 
 const getStatusBadge = (status: RDO["status"]) => {
   switch (status) {
@@ -132,7 +71,7 @@ function RDOCard({ rdo }: RDOCardProps) {
               <span className="truncate">{rdo.obra}</span>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2 ml-3">
             <Link to={`/rdo/${rdo.id}/editar`} onClick={(e) => e.stopPropagation()}>
               <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
@@ -268,17 +207,17 @@ export function RecentRDOs() {
                 id: rdo.id,
                 numeroRDO: `RDO-${new Date(rdo.data).toISOString().split('T')[0].replace(/-/g, '')}`,
                 obra: rdo.obras?.nome || "Obra não especificada",
-                responsavel: "Responsável",
+                responsavel: "—", // TBD
                 data: new Date(rdo.data),
-                status: rdo.status === 'Aprovado' ? 'aprovado' : 
-                       rdo.status === 'Rejeitado' ? 'rejeitado' : 
-                       rdo.status === 'Aguardando aprovação' ? 'em_analise' : 'pendente',
-                atividades: 0,
+                status: (rdo.status === 'APPROVED' || rdo.status === 'Aprovado') ? 'aprovado' :
+                  (rdo.status === 'REJECTED' || rdo.status === 'Rejeitado') ? 'rejeitado' :
+                    (rdo.status === 'SUBMITTED' || rdo.status === 'Aguardando aprovação') ? 'em_analise' : 'pendente',
+                atividades: 0, // TBD
                 clima: rdo.clima,
-                temperatura: "N/A",
-                equipamentos: [],
+                temperatura: "—",
+                equipamentos: [], // TBD
                 observacoes: rdo.observacoes || "",
-                horaInicio: "07:00",
+                horaInicio: "07:00", // Default shift
                 horaFim: "17:00"
               }} />
             ))
@@ -292,7 +231,7 @@ export function RecentRDOs() {
             </div>
           )}
         </div>
-        
+
         {rdos && rdos.length > 0 && (
           <Link to="/rdo">
             <Button variant="outline" className="w-full mt-3 sm:mt-4 h-9 text-sm">

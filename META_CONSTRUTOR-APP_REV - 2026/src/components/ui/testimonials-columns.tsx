@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 
 interface TestimonialData {
   text: string;

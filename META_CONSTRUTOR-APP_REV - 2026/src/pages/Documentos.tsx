@@ -1,12 +1,17 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DocumentoExpandableCard } from "@/components/DocumentoExpandableCard";
-import { FileText, Search, Plus, Upload } from "lucide-react";
+import { FileText, Search, Plus, Upload, Loader2 } from "lucide-react";
+import { useDocuments, Documento, DocumentType } from "@/hooks/useDocuments";
+import { useObras } from "@/hooks/useObras";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
+import { useDownload } from "@/hooks/useDownload";
+import { generateStandardFilename } from "@/utils/downloadHelper";
 
 const Documentos = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,82 +19,33 @@ const Documentos = () => {
   const [selectedTipo, setSelectedTipo] = useState("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const documentos = [
-    {
-      id: 1,
-      nome: "Projeto Estrutural - Residencial Vista Verde",
-      tipo: "Projeto",
-      obra: "Residencial Vista Verde",
-      arquivo: "projeto_estrutural_vista_verde.pdf",
-      tamanho: "15.2 MB",
-      dataUpload: "2024-01-10",
-      autor: "Eng. João Silva",
-      versao: "v2.1",
-      status: "Aprovado",
-      descricao: "Projeto estrutural completo do empreendimento"
-    },
-    {
-      id: 2,
-      nome: "Licença de Construção - Comercial Center Norte",
-      tipo: "Licença",
-      obra: "Comercial Center Norte",
-      arquivo: "licenca_construcao_center_norte.pdf",
-      tamanho: "3.8 MB",
-      dataUpload: "2024-01-08",
-      autor: "Prefeitura Municipal",
-      versao: "v1.0",
-      status: "Válido",
-      descricao: "Licença de construção emitida pela prefeitura"
-    },
-    {
-      id: 3,
-      nome: "Relatório de Inspeção - Ponte Rio Azul",
-      tipo: "Relatório",
-      obra: "Ponte Rio Azul",
-      arquivo: "relatorio_inspecao_ponte_azul.pdf",
-      tamanho: "8.5 MB",
-      dataUpload: "2024-01-12",
-      autor: "Eng. Carlos Lima",
-      versao: "v1.3",
-      status: "Em Revisão",
-      descricao: "Relatório de inspeção estrutural mensal"
-    },
-    {
-      id: 4,
-      nome: "Memorial Descritivo - Hospital Regional Sul",
-      tipo: "Memorial",
-      obra: "Hospital Regional Sul",
-      arquivo: "memorial_descritivo_hospital_sul.pdf",
-      tamanho: "12.1 MB",
-      dataUpload: "2024-01-14",
-      autor: "Eng. Ana Costa",
-      versao: "v1.0",
-      status: "Em Elaboração",
-      descricao: "Memorial descritivo dos sistemas hospitalares"
-    },
-    {
-      id: 5,
-      nome: "Cronograma Físico-Financeiro",
-      tipo: "Cronograma",
-      obra: "Residencial Vista Verde",
-      arquivo: "cronograma_fisico_financeiro.xlsx",
-      tamanho: "2.1 MB",
-      dataUpload: "2024-01-15",
-      autor: "Eng. João Silva",
-      versao: "v3.0",
-      status: "Atualizado",
-      descricao: "Cronograma atualizado com marcos de pagamento"
-    }
-  ];
+  // Form State
+  const [newDocData, setNewDocData] = useState<{
+    nome: string;
+    tipo: string;
+    obra: string;
+    descricao: string;
+    versao: string;
+    file: File | null;
+  }>({
+    nome: "",
+    tipo: "",
+    obra: "",
+    descricao: "",
+    versao: "", // Not used in backend yet, but kept for UI
+    file: null
+  });
 
-  const obras = [
-    { id: 1, nome: "Residencial Vista Verde" },
-    { id: 2, nome: "Comercial Center Norte" },
-    { id: 3, nome: "Ponte Rio Azul" },
-    { id: 4, nome: "Hospital Regional Sul" }
-  ];
+  const { documentos, isLoading, uploadDocument, deleteDocument } = useDocuments({
+    obraId: selectedObra,
+    categoria: selectedTipo,
+    search: searchTerm
+  });
 
-  const tiposDocumento = [
+  const { obras } = useObras();
+  const { isLoading: isDownloading, startDownload } = useDownload();
+
+  const tiposDocumento: DocumentType[] = [
     "Projeto",
     "Licença",
     "Relatório",
@@ -97,40 +53,64 @@ const Documentos = () => {
     "Cronograma",
     "Contrato",
     "Certificado",
-    "Laudo"
+    "Laudo",
+    "Outros"
   ];
 
-  const filteredDocumentos = documentos.filter(documento => {
-    const matchesSearch = documento.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         documento.tipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         documento.autor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         documento.descricao.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesObra = !selectedObra || selectedObra === "all" || documento.obra === selectedObra;
-    const matchesTipo = !selectedTipo || selectedTipo === "all" || documento.tipo === selectedTipo;
-    
-    return matchesSearch && matchesObra && matchesTipo;
-  });
-
-  const handleEditDocumento = (documento: any) => {
-    console.log("Editando documento:", documento);
-    // Implementar lógica de edição
-  };
-
-  const handleDeleteDocumento = (id: number) => {
-    if (confirm("Tem certeza que deseja excluir este documento?")) {
-      console.log("Excluindo documento:", id);
-      // Implementar lógica de exclusão
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setNewDocData({ ...newDocData, file: e.target.files[0] });
     }
   };
 
-  const handleDownloadDocumento = (documento: any) => {
-    console.log("Baixando documento:", documento);
-    // Implementar lógica de download
+  const handleUpload = async () => {
+    if (!newDocData.file || !newDocData.nome || !newDocData.tipo) {
+      toast.error("Preencha os campos obrigatórios e selecione um arquivo.");
+      return;
+    }
+
+    uploadDocument.mutate({
+      nome: newDocData.nome,
+      categoria: newDocData.tipo,
+      obra_id: newDocData.obra, // Optional
+      descricao: newDocData.descricao,
+      file: newDocData.file
+    }, {
+      onSuccess: () => {
+        setIsDialogOpen(false);
+        setNewDocData({ nome: "", tipo: "", obra: "", descricao: "", versao: "", file: null });
+      }
+    });
   };
 
-  const handleViewDocumento = (documento: any) => {
-    console.log("Visualizando documento:", documento);
-    // Implementar lógica de visualização
+  const handleEditDocumento = (documento: Documento) => {
+    console.log("Editando documento:", documento);
+    // Implementar lógica de edição no futuro
+    toast.info("Edição em breve");
+  };
+
+  const handleDeleteDocumento = (id: string) => {
+    if (confirm("Tem certeza que deseja excluir este documento?")) {
+      deleteDocument.mutate(id);
+    }
+  };
+
+  const handleDownloadDocumento = async (documento: Documento) => {
+    const filename = generateStandardFilename("documento", documento.nome, documento.tipo);
+
+    // Para forçar o download com o nome correto de arquivos do Storage, 
+    // precisamos baixar o blob primeiro.
+    const downloadPromise = fetch(documento.url)
+      .then(res => {
+        if (!res.ok) throw new Error("Erro ao baixar arquivo do storage");
+        return res.blob();
+      });
+
+    await startDownload(downloadPromise, filename);
+  };
+
+  const handleViewDocumento = (documento: Documento) => {
+    window.open(documento.url, '_blank');
   };
 
   return (
@@ -156,19 +136,27 @@ const Documentos = () => {
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="nome">Nome do Documento</Label>
-                <Input id="nome" placeholder="Ex: Projeto Estrutural - Bloco A" />
+                <Label htmlFor="nome">Nome do Documento *</Label>
+                <Input
+                  id="nome"
+                  placeholder="Ex: Projeto Estrutural - Bloco A"
+                  value={newDocData.nome}
+                  onChange={(e) => setNewDocData({ ...newDocData, nome: e.target.value })}
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="tipo">Tipo de Documento</Label>
-                  <Select>
+                  <Label htmlFor="tipo">Tipo de Documento *</Label>
+                  <Select
+                    value={newDocData.tipo}
+                    onValueChange={(val) => setNewDocData({ ...newDocData, tipo: val })}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione o tipo" />
                     </SelectTrigger>
                     <SelectContent>
                       {tiposDocumento.map((tipo) => (
-                        <SelectItem key={tipo} value={tipo.toLowerCase()}>
+                        <SelectItem key={tipo} value={tipo}>
                           {tipo}
                         </SelectItem>
                       ))}
@@ -176,14 +164,17 @@ const Documentos = () => {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="obra">Obra</Label>
-                  <Select>
+                  <Label htmlFor="obra">Obra (Opcional)</Label>
+                  <Select
+                    value={newDocData.obra}
+                    onValueChange={(val) => setNewDocData({ ...newDocData, obra: val })}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione a obra" />
                     </SelectTrigger>
                     <SelectContent>
                       {obras.map((obra) => (
-                        <SelectItem key={obra.id} value={obra.nome}>
+                        <SelectItem key={obra.id} value={obra.id}>
                           {obra.nome}
                         </SelectItem>
                       ))}
@@ -192,11 +183,17 @@ const Documentos = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="arquivo">Arquivo</Label>
-                <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+                <Label htmlFor="arquivo">Arquivo *</Label>
+                <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:bg-muted/50 transition cursor-pointer relative">
+                  <input
+                    type="file"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    onChange={handleFileChange}
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                  />
                   <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                  <p className="text-sm text-muted-foreground">
-                    Clique para selecionar ou arraste o arquivo aqui
+                  <p className="text-sm text-foreground">
+                    {newDocData.file ? newDocData.file.name : "Clique para selecionar ou arraste o arquivo aqui"}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     PDF, DOC, XLS, JPG, PNG (máx. 50MB)
@@ -205,19 +202,25 @@ const Documentos = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="descricao">Descrição</Label>
-                <Input id="descricao" placeholder="Breve descrição do documento" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="versao">Versão</Label>
-                <Input id="versao" placeholder="Ex: v1.0" />
+                <Input
+                  id="descricao"
+                  placeholder="Breve descrição do documento"
+                  value={newDocData.descricao}
+                  onChange={(e) => setNewDocData({ ...newDocData, descricao: e.target.value })}
+                />
               </div>
             </div>
             <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={uploadDocument.isPending}>
                 Cancelar
               </Button>
-              <Button className="gradient-construction border-0" onClick={() => setIsDialogOpen(false)}>
-                Fazer Upload
+              <Button
+                className="gradient-construction border-0"
+                onClick={handleUpload}
+                disabled={uploadDocument.isPending}
+              >
+                {uploadDocument.isPending ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : <Upload className="h-4 w-4 mr-2" />}
+                {uploadDocument.isPending ? "Enviando..." : "Fazer Upload"}
               </Button>
             </div>
           </DialogContent>
@@ -231,7 +234,7 @@ const Documentos = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
-              placeholder="Buscar por nome, tipo ou autor..."
+              placeholder="Buscar por nome..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -247,7 +250,7 @@ const Documentos = () => {
             <SelectContent>
               <SelectItem value="all">Todas as obras</SelectItem>
               {obras.map((obra) => (
-                <SelectItem key={obra.id} value={obra.nome}>
+                <SelectItem key={obra.id} value={obra.id}>
                   {obra.nome}
                 </SelectItem>
               ))}
@@ -271,8 +274,8 @@ const Documentos = () => {
           </Select>
         </div>
         <div className="space-y-2 flex items-end">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => {
               setSearchTerm("");
               setSelectedObra("all");
@@ -286,28 +289,34 @@ const Documentos = () => {
       </div>
 
       {/* Documents Grid */}
-      <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-        {filteredDocumentos.map((documento) => (
-          <DocumentoExpandableCard
-            key={documento.id}
-            documento={documento}
-            onEdit={handleEditDocumento}
-            onDelete={handleDeleteDocumento}
-            onDownload={handleDownloadDocumento}
-            onView={handleViewDocumento}
-          />
-        ))}
-      </div>
-
-      {filteredDocumentos.length === 0 && (
-        <div className="text-center py-12">
-          <FileText className="mx-auto h-12 w-12 text-muted-foreground" />
-          <h3 className="mt-4 text-lg font-medium text-card-foreground">Nenhum documento encontrado</h3>
-          <p className="mt-2 text-muted-foreground">
-            {searchTerm || selectedObra || selectedTipo 
-              ? "Tente ajustar os filtros de busca" 
-              : "Comece fazendo upload do seu primeiro documento"}
-          </p>
+      {isLoading ? (
+        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+          {[1, 2, 3, 4, 5, 6].map(i => <Skeleton key={i} className="h-48 w-full rounded-xl" />)}
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+          {documentos.length > 0 ? (
+            documentos.map((documento) => (
+              <DocumentoExpandableCard
+                key={documento.id}
+                documento={documento}
+                onEdit={handleEditDocumento}
+                onDelete={handleDeleteDocumento}
+                onDownload={handleDownloadDocumento}
+                onView={handleViewDocumento}
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <FileText className="mx-auto h-12 w-12 text-muted-foreground" />
+              <h3 className="mt-4 text-lg font-medium text-card-foreground">Nenhum documento encontrado</h3>
+              <p className="mt-2 text-muted-foreground">
+                {searchTerm || selectedObra !== "all" || selectedTipo !== "all"
+                  ? "Tente ajustar os filtros de busca"
+                  : "Comece fazendo upload do seu primeiro documento"}
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>

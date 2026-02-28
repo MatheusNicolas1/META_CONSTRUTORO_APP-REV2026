@@ -21,8 +21,8 @@ export function ExpenseApprovalDialog({ expense, open, onOpenChange }: ExpenseAp
   if (!expense) return null;
 
   const handleApprove = async () => {
-    const nextStatus = expense.approval_status === 'Pending Manager' 
-      ? 'Pending General Manager' 
+    const nextStatus = expense.approval_status === 'Pending Manager'
+      ? 'Pending General Manager'
       : 'Approved';
 
     await approveExpense.mutateAsync({
@@ -63,6 +63,9 @@ export function ExpenseApprovalDialog({ expense, open, onOpenChange }: ExpenseAp
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Detalhes da Despesa</DialogTitle>
+          <div className="sr-only">
+            Detalhes completos da despesa para aprovação ou rejeição.
+          </div>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -143,46 +146,46 @@ export function ExpenseApprovalDialog({ expense, open, onOpenChange }: ExpenseAp
             </div>
           )}
 
-          {(expense.approval_status === 'Pending Manager' || 
+          {(expense.approval_status === 'Pending Manager' ||
             expense.approval_status === 'Pending General Manager') && (
-            <div>
-              <Label htmlFor="rejection-reason">Motivo da Rejeição (opcional)</Label>
-              <Textarea
-                id="rejection-reason"
-                value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
-                placeholder="Descreva o motivo caso vá rejeitar..."
-                rows={3}
-                className="mt-2"
-              />
-            </div>
-          )}
+              <div>
+                <Label htmlFor="rejection-reason">Motivo da Rejeição (opcional)</Label>
+                <Textarea
+                  id="rejection-reason"
+                  value={rejectionReason}
+                  onChange={(e) => setRejectionReason(e.target.value)}
+                  placeholder="Descreva o motivo caso vá rejeitar..."
+                  rows={3}
+                  className="mt-2"
+                />
+              </div>
+            )}
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Fechar
           </Button>
-          {(expense.approval_status === 'Pending Manager' || 
+          {(expense.approval_status === 'Pending Manager' ||
             expense.approval_status === 'Pending General Manager') && (
-            <>
-              <Button
-                variant="destructive"
-                onClick={handleReject}
-                disabled={approveExpense.isPending}
-              >
-                <XCircle className="mr-2 h-4 w-4" />
-                Rejeitar
-              </Button>
-              <Button
-                onClick={handleApprove}
-                disabled={approveExpense.isPending}
-              >
-                <CheckCircle2 className="mr-2 h-4 w-4" />
-                Aprovar
-              </Button>
-            </>
-          )}
+              <>
+                <Button
+                  variant="destructive"
+                  onClick={handleReject}
+                  disabled={approveExpense.isPending}
+                >
+                  <XCircle className="mr-2 h-4 w-4" />
+                  Rejeitar
+                </Button>
+                <Button
+                  onClick={handleApprove}
+                  disabled={approveExpense.isPending}
+                >
+                  <CheckCircle2 className="mr-2 h-4 w-4" />
+                  Aprovar
+                </Button>
+              </>
+            )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

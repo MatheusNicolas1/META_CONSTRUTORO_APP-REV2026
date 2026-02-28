@@ -14,6 +14,11 @@ import type { Expense, ApprovalStatus, CostCategory } from '@/types/expense';
 import SEO from '@/components/SEO';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useRequireOrg } from '@/hooks/requireOrg';
+import { toast } from 'sonner';
+import { useDownload } from '@/hooks/useDownload';
+import { generateStandardFilename } from '@/utils/downloadHelper';
+import { Loader2 } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function Despesas() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -23,6 +28,7 @@ export default function Despesas() {
   const { expenses, isLoading } = useExpenses();
   const { rdo } = usePermissions();
   const { orgId, isLoading: orgLoading } = useRequireOrg();
+  const { isLoading: isDownloading, startDownload } = useDownload();
 
   const { data: obras } = useQuery({
     queryKey: ['obras-list', orgId],
@@ -64,7 +70,10 @@ export default function Despesas() {
   };
 
   const exportToCSV = () => {
-    if (!filteredExpenses?.length) return;
+    if (!filteredExpenses?.length) {
+      toast.error("Não há despesas para exportar.");
+      return;
+    }
 
     const headers = ['Data', 'Nota Fiscal', 'Fornecedor', 'Categoria', 'Valor', 'Status'];
     const rows = filteredExpenses.map((expense) => [
@@ -77,11 +86,9 @@ export default function Despesas() {
     ]);
 
     const csv = [headers, ...rows].map((row) => row.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `despesas_${new Date().toISOString().split('T')[0]}.csv`;
-    link.click();
+    const filename = generateStandardFilename("despesas", null, "csv");
+
+    startDownload(Promise.resolve(csv), filename, 'text/csv;charset=utf-8;');
   };
 
   return (
@@ -149,11 +156,11 @@ export default function Despesas() {
 
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <CardTitle>Lista de Despesas</CardTitle>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
                 <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v as any)}>
-                  <SelectTrigger className="w-[200px]">
+                  <SelectTrigger className="w-full sm:w-[200px]">
                     <SelectValue placeholder="Filtrar por status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -166,7 +173,7 @@ export default function Despesas() {
                 </Select>
 
                 <Select value={filterCategory} onValueChange={(v) => setFilterCategory(v as any)}>
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue placeholder="Filtrar por categoria" />
                   </SelectTrigger>
                   <SelectContent>
@@ -180,8 +187,37 @@ export default function Despesas() {
                   </SelectContent>
                 </Select>
 
-                <Button variant="outline" size="icon" onClick={exportToCSV}>
-                  <Download className="h-4 w-4" />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={exportToCSV}
+                        className="hidden sm:inline-flex"
+                        disabled={isDownloading}
+                      >
+                        {isDownloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Baixar arquivo</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <Button
+                  variant="outline"
+                  onClick={exportToCSV}
+                  className="w-full sm:hidden"
+                  disabled={isDownloading}
+                >
+                  {isDownloading ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Download className="h-4 w-4 mr-2" />
+                  )}
+                  Exportar CSV
                 </Button>
               </div>
             </div>

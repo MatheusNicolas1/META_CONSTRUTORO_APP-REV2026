@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { format, subDays, isAfter, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Bell, Building, FileText, Calendar, Filter, Check, CheckCheck, Trash2 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Bell, Building, FileText, Calendar, Filter, Check, CheckCheck, ExternalLink } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -22,6 +23,7 @@ interface Notification {
 }
 
 const Notificacoes = () => {
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterType, setFilterType] = useState<string>('all');
@@ -82,7 +84,7 @@ const Notificacoes = () => {
     try {
       const { error } = await supabase
         .from('notifications')
-        .update({ is_read: true })
+        .update({ is_read: true } as any)
         .eq('id', id);
 
       if (error) throw error;
@@ -101,7 +103,7 @@ const Notificacoes = () => {
 
       const { error } = await supabase
         .from('notifications')
-        .update({ is_read: true })
+        .update({ is_read: true } as any)
         .eq('user_id', user.id)
         .eq('is_read', false);
 
@@ -262,6 +264,7 @@ const Notificacoes = () => {
                 key={notification.id}
                 notification={notification}
                 onMarkAsRead={markAsRead}
+                onNavigate={(route) => navigate(route)}
                 getIcon={getIcon}
               />
             ))
@@ -284,6 +287,7 @@ const Notificacoes = () => {
                   key={notification.id}
                   notification={notification}
                   onMarkAsRead={markAsRead}
+                  onNavigate={(route) => navigate(route)}
                   getIcon={getIcon}
                 />
               ))
@@ -297,17 +301,30 @@ const Notificacoes = () => {
 interface NotificationCardProps {
   notification: Notification;
   onMarkAsRead: (id: string) => void;
+  onNavigate: (route: string) => void;
   getIcon: (type: string) => JSX.Element;
 }
 
-const NotificationCard = ({ notification, onMarkAsRead, getIcon }: NotificationCardProps) => {
+const NotificationCard = ({ notification, onMarkAsRead, onNavigate, getIcon }: NotificationCardProps) => {
+  const handleClick = () => {
+    // Sempre marca como lida ao clicar
+    if (!notification.is_read) {
+      onMarkAsRead(notification.id);
+    }
+    // Navega para a rota salva no banco, se existir
+    if (notification.route) {
+      onNavigate(notification.route);
+    }
+  };
+
   return (
     <Card
       className={cn(
         "transition-all hover:shadow-md cursor-pointer",
-        !notification.is_read && "border-l-4 border-l-primary bg-primary/5"
+        !notification.is_read && "border-l-4 border-l-primary bg-primary/5",
+        notification.route && "hover:border-primary/50"
       )}
-      onClick={() => !notification.is_read && onMarkAsRead(notification.id)}
+      onClick={handleClick}
     >
       <CardContent className="flex items-start gap-4 p-4">
         <div className="flex-shrink-0 mt-1">
@@ -321,11 +338,16 @@ const NotificationCard = ({ notification, onMarkAsRead, getIcon }: NotificationC
             )}>
               {notification.title}
             </h3>
-            {!notification.is_read && (
-              <Badge variant="secondary" className="flex-shrink-0">
-                Nova
-              </Badge>
-            )}
+            <div className="flex items-center gap-1 flex-shrink-0">
+              {!notification.is_read && (
+                <Badge variant="secondary">
+                  Nova
+                </Badge>
+              )}
+              {notification.route && (
+                <ExternalLink className="h-3 w-3 text-muted-foreground" />
+              )}
+            </div>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
             {notification.message}

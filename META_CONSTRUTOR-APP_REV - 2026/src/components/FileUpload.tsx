@@ -12,6 +12,7 @@ interface UploadedFile {
   size: number;
   type: string;
   url?: string;
+  file?: File; // Added to access raw file for upload
 }
 
 interface FileUploadProps {
@@ -23,13 +24,13 @@ interface FileUploadProps {
   className?: string;
 }
 
-export function FileUpload({ 
-  accept = "*", 
-  maxSize = 50, 
-  multiple = true, 
+export function FileUpload({
+  accept = "*",
+  maxSize = 50,
+  multiple = true,
   onFilesUploaded,
   uploadType = 'all',
-  className 
+  className
 }: FileUploadProps) {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -49,7 +50,7 @@ export function FileUpload({
     if (!selectedFiles) return;
 
     const newFiles: UploadedFile[] = [];
-    
+
     Array.from(selectedFiles).forEach((file) => {
       // Verificar tamanho
       if (file.size > maxSize * 1024 * 1024) {
@@ -85,7 +86,8 @@ export function FileUpload({
         name: file.name,
         size: file.size,
         type: file.type,
-        url: URL.createObjectURL(file)
+        url: URL.createObjectURL(file),
+        file: file // Store raw file
       });
     });
 
@@ -164,11 +166,10 @@ export function FileUpload({
   return (
     <div className={className}>
       <div
-        className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-          isDragging 
-            ? 'border-construction-orange bg-construction-orange/10' 
+        className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${isDragging
+            ? 'border-construction-orange bg-construction-orange/10'
             : 'border-border hover:border-construction-orange/50'
-        }`}
+          }`}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -183,7 +184,7 @@ export function FileUpload({
         <p className="text-xs text-muted-foreground mb-4">
           {getUploadDescription()}
         </p>
-        
+
         <Input
           type="file"
           accept={getAcceptString()}

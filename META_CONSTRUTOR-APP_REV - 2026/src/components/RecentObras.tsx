@@ -11,7 +11,7 @@ import { useRecentObras } from "@/hooks/useRecentObras";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Obra {
-  id: number;
+  id: string;
   nome: string;
   progresso: number;
   prazo: string;
@@ -30,53 +30,7 @@ interface ObraCardProps {
   obra: Obra;
 }
 
-const mockObras: Obra[] = [
-  {
-    id: 1,
-    nome: "Residencial Vista Verde",
-    progresso: 75,
-    prazo: "2024-03-15",
-    status: "Em andamento",
-    responsavel: "Eng. João Silva",
-    localizacao: "Zona Sul - SP",
-    equipe: ["João Silva", "Maria Costa", "Pedro Santos"],
-    materiaisPrincipais: ["Concreto", "Aço", "Alvenaria"],
-    orcamento: 2500000,
-    proximaEtapa: "Instalações elétricas",
-    dataInicio: "2023-08-15",
-    atividades: 45
-  },
-  {
-    id: 2,
-    nome: "Comercial Center Norte",
-    progresso: 45,
-    prazo: "2024-05-20",
-    status: "Em andamento",
-    responsavel: "Eng. Maria Santos",
-    localizacao: "Zona Norte - SP",
-    equipe: ["Maria Santos", "Carlos Lima", "Ana Silva"],
-    materiaisPrincipais: ["Estrutura metálica", "Vidro", "Revestimento"],
-    orcamento: 4200000,
-    proximaEtapa: "Cobertura metálica",
-    dataInicio: "2023-10-01",
-    atividades: 68
-  },
-  {
-    id: 3,
-    nome: "Ponte Rio Azul",
-    progresso: 90,
-    prazo: "2024-02-28",
-    status: "Finalizando",
-    responsavel: "Eng. Carlos Lima",
-    localizacao: "Interior - SP",
-    equipe: ["Carlos Lima", "Roberto Silva", "Luis Costa"],
-    materiaisPrincipais: ["Concreto armado", "Aço estrutural"],
-    orcamento: 1800000,
-    proximaEtapa: "Acabamento final",
-    dataInicio: "2023-06-01",
-    atividades: 123
-  },
-];
+// mockObras removed
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat('pt-BR', {
@@ -125,7 +79,7 @@ function ObraCard({ obra }: ObraCardProps) {
               {getStatusBadge(obra.status)}
             </div>
           </div>
-          
+
           <div className="flex items-center gap-1.5 sm:gap-2 ml-2 sm:ml-3 flex-shrink-0">
             <Link to={`/obras/${obra.id}`} onClick={(e) => e.stopPropagation()}>
               <Button variant="ghost" size="sm" className="h-6 w-6 sm:h-7 sm:w-7 p-0">
@@ -283,19 +237,19 @@ export function RecentObras() {
           ) : obras && obras.length > 0 ? (
             obras.map((obra) => (
               <ObraCard key={obra.id} obra={{
-                id: parseInt(obra.id),
+                id: obra.id,
                 nome: obra.nome,
-                progresso: obra.progresso,
-                prazo: obra.previsao_termino,
+                progresso: obra.progresso || 0,
+                prazo: obra.previsao_termino || new Date().toISOString(),
                 status: obra.status,
-                responsavel: obra.responsavel,
-                localizacao: obra.localizacao,
-                equipe: [],
-                materiaisPrincipais: [],
-                orcamento: 0,
+                responsavel: obra.responsavel || "—",
+                localizacao: obra.localizacao || "—",
+                equipe: [], // TBD: Fetch relation
+                materiaisPrincipais: [], // TBD: Fetch relation
+                orcamento: 0, // TBD: Fetch relation
                 proximaEtapa: obra.descricao || "Em andamento",
-                dataInicio: obra.data_inicio,
-                atividades: 0
+                dataInicio: obra.data_inicio || new Date().toISOString(),
+                atividades: 0 // TBD: Count relation
               }} />
             ))
           ) : (
@@ -308,7 +262,7 @@ export function RecentObras() {
             </div>
           )}
         </div>
-        
+
         {obras && obras.length > 0 && (
           <Link to="/obras">
             <Button variant="outline" className="w-full mt-3 sm:mt-4 h-9 text-sm">

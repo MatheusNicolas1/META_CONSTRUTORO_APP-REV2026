@@ -30,7 +30,7 @@ class IntelligentPrefetcher {
       'Perfil': 'Perfil',
       'Feedback': 'Feedback',
       'FAQ': 'FAQ',
-      'Seguranca': 'Seguranca',
+
       'NotFound': 'NotFound'
     };
 

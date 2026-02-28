@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { usePermissions } from './usePermissions';
+import { useRequireOrg } from '@/hooks/requireOrg';
 import { useAuthUserId } from './useAuthUserId';
 
 export interface CreateEquipeData {
@@ -15,24 +16,32 @@ export interface CreateEquipeData {
 export const useEquipesSupabase = () => {
   const queryClient = useQueryClient();
   const { equipe: equipePerms } = usePermissions();
+  const { orgId } = useRequireOrg();
   const { userId, isLoading: userLoading } = useAuthUserId();
 
   const equipesQuery = useQuery({
-    queryKey: ['equipes', userId],
+    queryKey: ['equipes', orgId], // Org-Bound Cache Key covers schema drift
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Usuário não autenticado');
+      if (!userId) throw new Error('Usuário não autenticado');
 
       const { data, error } = await supabase
         .from('equipes')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       return data || [];
     },
-    enabled: !!userId,
+    enabled: !!orgId && !!userId,
+    // Start with empty data to avoid flash of content
+    placeholderData: [],
+    // Avoid refetching immediately if we just got an error
+    retry: (failureCount, error) => {
+      // Don't retry 400/401/403
+      if ((error as any)?.status === 400 || (error as any)?.status === 401 || (error as any)?.status === 403) return false;
+      return failureCount < 3;
+    }
   });
 
   const createEquipe = useMutation({
@@ -45,14 +54,15 @@ export const useEquipesSupabase = () => {
         throw new Error('Você não tem permissão para cadastrar colaboradores.');
       }
 
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Usuário não autenticado');
+      if (!userId) throw new Error('Usuário não autenticado');
 
       const { data, error } = await supabase
         .from('equipes')
         .insert({
           ...equipeData,
-          user_id: user.id,
+          // @ts-ignore - Schema drift: Types mismatch with DB columns (user_id/org_id)
+          user_id: userId,
+          org_id: orgId,
           ativo: equipeData.ativo ?? true,
         })
         .select()
@@ -62,7 +72,7 @@ export const useEquipesSupabase = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['equipes'], exact: false });
+      queryClient.invalidateQueries({ queryKey: ['equipes', orgId] });
       toast.success('Colaborador cadastrado com sucesso!');
     },
     onError: (error) => {
@@ -84,7 +94,7 @@ export const useEquipesSupabase = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['equipes'], exact: false });
+      queryClient.invalidateQueries({ queryKey: ['equipes', orgId] });
       toast.success('Colaborador atualizado com sucesso!');
     },
     onError: (error) => {
@@ -103,7 +113,7 @@ export const useEquipesSupabase = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['equipes'], exact: false });
+      queryClient.invalidateQueries({ queryKey: ['equipes', orgId] });
       toast.success('Colaborador excluído com sucesso!');
     },
     onError: (error) => {

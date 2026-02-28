@@ -1,10 +1,10 @@
-export type Json =
+export type SupabaseJson =
   | string
   | number
   | boolean
   | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+  | { [key: string]: SupabaseJson | undefined }
+  | SupabaseJson[]
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
@@ -49,7 +49,7 @@ export type Database = {
           action: string
           admin_id: string
           created_at: string
-          details: Json | null
+          details: SupabaseJson | null
           id: string
           target_user_id: string | null
         }
@@ -57,7 +57,7 @@ export type Database = {
           action: string
           admin_id: string
           created_at?: string
-          details?: Json | null
+          details?: SupabaseJson | null
           id?: string
           target_user_id?: string | null
         }
@@ -65,7 +65,7 @@ export type Database = {
           action?: string
           admin_id?: string
           created_at?: string
-          details?: Json | null
+          details?: SupabaseJson | null
           id?: string
           target_user_id?: string | null
         }
@@ -142,42 +142,45 @@ export type Database = {
           completed_at: string | null
           completed_by: string | null
           created_at: string
-          descricao: string | null
+          description: string | null
           id: string
-          obrigatorio: boolean
-          observacoes: string | null
-          prioridade: string
-          requer_anexo: boolean
+          is_obligatory: boolean | null
+          observations: string | null
+          order: number | null
+          priority: string
+          requires_attachment: boolean | null
           status: string
-          titulo: string
+          title: string
         }
         Insert: {
           checklist_id: string
           completed_at?: string | null
           completed_by?: string | null
-          created_at?: string
-          descricao?: string | null
+          created_at?: string | null
+          description?: string | null
           id?: string
-          obrigatorio?: boolean
-          observacoes?: string | null
-          prioridade: string
-          requer_anexo?: boolean
+          is_obligatory?: boolean | null
+          observations?: string | null
+          order?: number | null
+          priority?: string
+          requires_attachment?: boolean | null
           status?: string
-          titulo: string
+          title: string
         }
         Update: {
           checklist_id?: string
           completed_at?: string | null
           completed_by?: string | null
-          created_at?: string
-          descricao?: string | null
+          created_at?: string | null
+          description?: string | null
           id?: string
-          obrigatorio?: boolean
-          observacoes?: string | null
-          prioridade?: string
-          requer_anexo?: boolean
+          is_obligatory?: boolean | null
+          observations?: string | null
+          order?: number | null
+          priority?: string
+          requires_attachment?: boolean | null
           status?: string
-          titulo?: string
+          title?: string
         }
         Relationships: [
           {
@@ -191,67 +194,49 @@ export type Database = {
       }
       checklists: {
         Row: {
-          categoria: string
+          category: string
           completed_at: string | null
           created_at: string
-          data_vencimento: string | null
-          descricao: string | null
+          description: string | null
+          due_date: string | null
           id: string
           obra_id: string
-          progresso_completo: number | null
-          progresso_total: number | null
-          responsavel_id: string
-          signature_data: string | null
-          signature_email: string | null
-          signature_name: string | null
-          signed_at: string | null
+          org_id: string
+          responsible_id: string | null
           started_at: string | null
-          status: string
-          template_id: string | null
-          titulo: string
-          updated_at: string
+          status: string | null
+          title: string
+          updated_at: string | null
         }
         Insert: {
-          categoria: string
+          category: string
           completed_at?: string | null
-          created_at?: string
-          data_vencimento?: string | null
-          descricao?: string | null
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
           id?: string
           obra_id: string
-          progresso_completo?: number | null
-          progresso_total?: number | null
-          responsavel_id: string
-          signature_data?: string | null
-          signature_email?: string | null
-          signature_name?: string | null
-          signed_at?: string | null
+          org_id: string
+          responsible_id?: string | null
           started_at?: string | null
-          status?: string
-          template_id?: string | null
-          titulo: string
-          updated_at?: string
+          status?: string | null
+          title: string
+          updated_at?: string | null
         }
         Update: {
-          categoria?: string
+          category?: string
           completed_at?: string | null
-          created_at?: string
-          data_vencimento?: string | null
-          descricao?: string | null
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
           id?: string
           obra_id?: string
-          progresso_completo?: number | null
-          progresso_total?: number | null
-          responsavel_id?: string
-          signature_data?: string | null
-          signature_email?: string | null
-          signature_name?: string | null
-          signed_at?: string | null
+          org_id?: string
+          responsible_id?: string | null
           started_at?: string | null
-          status?: string
-          template_id?: string | null
-          titulo?: string
-          updated_at?: string
+          status?: string | null
+          title?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -261,6 +246,38 @@ export type Database = {
             referencedRelation: "obras"
             referencedColumns: ["id"]
           },
+        ]
+      }
+      organization_members: {
+        Row: {
+          created_at: string
+          id: string
+          organization_id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organization_id: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organization_id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_members_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          }
         ]
       }
       comments: {
@@ -430,7 +447,7 @@ export type Database = {
           observacoes?: string | null
           status?: string
           updated_at?: string
-          user_id: string
+          created_by: string
         }
         Update: {
           categoria?: string
@@ -440,7 +457,7 @@ export type Database = {
           observacoes?: string | null
           status?: string
           updated_at?: string
-          user_id?: string
+          created_by?: string
         }
         Relationships: []
       }
@@ -465,7 +482,7 @@ export type Database = {
           nome: string
           telefone?: string | null
           updated_at?: string
-          user_id: string
+          created_by: string
         }
         Update: {
           ativo?: boolean
@@ -476,7 +493,7 @@ export type Database = {
           nome?: string
           telefone?: string | null
           updated_at?: string
-          user_id?: string
+          created_by?: string
         }
         Relationships: []
       }
@@ -502,6 +519,7 @@ export type Database = {
           team_member_id: string | null
           updated_at: string
           user_submitting_id: string
+          org_id?: string
         }
         Insert: {
           amount: number
@@ -524,6 +542,7 @@ export type Database = {
           team_member_id?: string | null
           updated_at?: string
           user_submitting_id: string
+          org_id?: string
         }
         Update: {
           amount?: number
@@ -546,6 +565,7 @@ export type Database = {
           team_member_id?: string | null
           updated_at?: string
           user_submitting_id?: string
+          org_id?: string
         }
         Relationships: [
           {
@@ -650,7 +670,7 @@ export type Database = {
           observacoes?: string | null
           telefone?: string | null
           updated_at?: string
-          user_id: string
+          created_by: string
         }
         Update: {
           ativo?: boolean
@@ -664,6 +684,42 @@ export type Database = {
           nome?: string
           observacoes?: string | null
           telefone?: string | null
+          updated_at?: string
+          created_by?: string
+        }
+        Relationships: []
+      }
+      integrations: {
+        Row: {
+          config: SupabaseJson
+          created_at: string
+          id: string
+          is_active: boolean
+          last_sync: string | null
+          service_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          config?: SupabaseJson
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_sync?: string | null
+          service_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          config?: SupabaseJson
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_sync?: string | null
+          service_id?: string
+          status?: string
           updated_at?: string
           user_id?: string
         }
@@ -754,6 +810,8 @@ export type Database = {
           tipo: string
           updated_at: string
           user_id: string
+          org_id?: string
+          orcamento_previsto?: number
         }
         Insert: {
           area?: string | null
@@ -776,7 +834,9 @@ export type Database = {
           status?: string
           tipo: string
           updated_at?: string
-          user_id: string
+          created_by: string
+          org_id?: string
+          orcamento_previsto?: number
         }
         Update: {
           area?: string | null
@@ -799,7 +859,48 @@ export type Database = {
           status?: string
           tipo?: string
           updated_at?: string
-          user_id?: string
+          created_by?: string
+          org_id?: string
+          orcamento_previsto?: number
+        }
+        Relationships: []
+      }
+      plans: {
+        Row: {
+          created_at: string
+          features: SupabaseJson | null
+          id: string
+          interval: string
+          limits: SupabaseJson | null
+          name: string
+          price: number
+          stripe_price_id: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          features?: SupabaseJson | null
+          id?: string
+          interval: string
+          limits?: SupabaseJson | null
+          name: string
+          price: number
+          stripe_price_id?: string | null
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          features?: SupabaseJson | null
+          id?: string
+          interval?: string
+          limits?: SupabaseJson | null
+          name?: string
+          price?: number
+          stripe_price_id?: string | null
+          type?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1095,12 +1196,13 @@ export type Database = {
           status: string
           tempo_ocioso: number | null
           updated_at: string
+          org_id?: string
         }
         Insert: {
           aprovado_por_id?: string | null
           clima: string
           created_at?: string
-          criado_por_id: string
+          created_by: string
           data: string
           data_aprovacao?: string | null
           equipe_ociosa?: boolean
@@ -1112,12 +1214,13 @@ export type Database = {
           status?: string
           tempo_ocioso?: number | null
           updated_at?: string
+          org_id?: string
         }
         Update: {
           aprovado_por_id?: string | null
           clima?: string
           created_at?: string
-          criado_por_id?: string
+          created_by?: string
           data?: string
           data_aprovacao?: string | null
           equipe_ociosa?: boolean
@@ -1129,6 +1232,7 @@ export type Database = {
           status?: string
           tempo_ocioso?: number | null
           updated_at?: string
+          org_id?: string
         }
         Relationships: [
           {
@@ -1250,24 +1354,90 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          billing_cycle: string
+          cancel_at_period_end: boolean
+          canceled_at: string | null
+          created_at: string
+          current_period_end: string
+          current_period_start: string
+          id: string
+          metadata: SupabaseJson | null
+          org_id: string
+          plan_id: string
+          quantity: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          billing_cycle?: string
+          cancel_at_period_end?: boolean
+          canceled_at?: string | null
+          created_at?: string
+          current_period_end?: string
+          current_period_start?: string
+          id?: string
+          metadata?: SupabaseJson | null
+          org_id: string
+          plan_id: string
+          quantity?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          billing_cycle?: string
+          cancel_at_period_end?: boolean
+          canceled_at?: string | null
+          created_at?: string
+          current_period_end?: string
+          current_period_start?: string
+          id?: string
+          metadata?: SupabaseJson | null
+          org_id?: string
+          plan_id?: string
+          quantity?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_activity: {
         Row: {
           created_at: string | null
-          event_data: Json | null
+          event_data: SupabaseJson | null
           event_name: string
           id: string
           user_id: string
         }
         Insert: {
           created_at?: string | null
-          event_data?: Json | null
+          event_data?: SupabaseJson | null
           event_name: string
           id?: string
           user_id: string
         }
         Update: {
           created_at?: string | null
-          event_data?: Json | null
+          event_data?: SupabaseJson | null
           event_name?: string
           id?: string
           user_id?: string
@@ -1435,6 +1605,19 @@ export type Database = {
       }
     }
     Views: {
+      admin_users_view: {
+        Row: {
+          id: string
+          email: string
+          full_name: string | null
+          role: Database["public"]["Enums"]["app_role"] | null
+          created_at: string | null
+          last_sign_in_at: string | null
+          credits: number | null
+          plan_name: string | null
+          status: string | null
+        }
+      },
       menu_engagement_metrics: {
         Row: {
           date: string | null
@@ -1559,7 +1742,7 @@ export type Database = {
     Functions: {
       add_credit_for_share: {
         Args: { p_platform: string; p_post_url: string; p_user_id: string }
-        Returns: Json
+        Returns: SupabaseJson
       }
       check_and_grant_achievements: {
         Args: { user_id_param: string }
@@ -1567,7 +1750,7 @@ export type Database = {
       }
       check_user_duplicates: {
         Args: { p_cpf_cnpj: string; p_email: string; p_phone: string }
-        Returns: Json
+        Returns: SupabaseJson
       }
       create_default_user: { Args: never; Returns: undefined }
       get_checklist_safe: {
@@ -1630,6 +1813,7 @@ export type Database = {
       [_ in never]: never
     }
   }
+
 }
 
 type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
@@ -1638,116 +1822,116 @@ type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+  | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+  ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+    DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+  : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+    DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
-    ? R
-    : never
+  ? R
+  : never
   : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R
-      }
-      ? R
-      : never
-    : never
+    DefaultSchema["Views"])
+  ? (DefaultSchema["Tables"] &
+    DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+      Row: infer R
+    }
+  ? R
+  : never
+  : never
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof DefaultSchema["Tables"]
+  | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+  ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+  : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
-    }
-    ? I
-    : never
+    Insert: infer I
+  }
+  ? I
+  : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I
-      }
-      ? I
-      : never
-    : never
+  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+    Insert: infer I
+  }
+  ? I
+  : never
+  : never
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof DefaultSchema["Tables"]
+  | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+  ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+  : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
-    }
-    ? U
-    : never
+    Update: infer U
+  }
+  ? U
+  : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U
-      }
-      ? U
-      : never
-    : never
+  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+    Update: infer U
+  }
+  ? U
+  : never
+  : never
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof DefaultSchema["Enums"]
+  | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+  ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+  : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never
+  ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+  : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof DatabaseWithoutInternals },
+  | keyof DefaultSchema["CompositeTypes"]
+  | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+  ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+  : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never
+  ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+  : never
 
 export const Constants = {
   public: {

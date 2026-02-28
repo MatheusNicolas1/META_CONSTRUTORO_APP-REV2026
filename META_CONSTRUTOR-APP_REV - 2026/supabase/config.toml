@@ -1,9 +1,9 @@
 project_id = "bgdvlhttyjeuprrfxgun"
 
 [functions.create-checkout-session]
-verify_jwt = true
+verify_jwt = false
 
-[functions.webhook-stripe]
+[functions.stripe-webhook]
 verify_jwt = false
 
 [functions.n8n-integration]

@@ -25,8 +25,7 @@ const AdminOperationalMetrics = () => {
                 ? obras.reduce((acc, obra) => acc + (obra.progresso || 0), 0) / totalObras
                 : 0;
 
-            // Orçamento Previsto (Assume field exists, default 0 if not)
-            // @ts-ignore
+            // Orçamento Previsto
             const orcamentoPrevisto = obras.reduce((acc, obra) => acc + (obra.orcamento_previsto || 0), 0);
 
             // Prazo Médio (Dias restantes)
@@ -34,10 +33,8 @@ const AdminOperationalMetrics = () => {
             let totalDiasRestantes = 0;
             let obrasComPrazo = 0;
 
-            obras.forEach(obra => {
-                // @ts-ignore
+            obras.forEach((obra) => {
                 if (obra.previsao_termino) {
-                    // @ts-ignore
                     const termino = new Date(obra.previsao_termino);
                     if (termino > now) {
                         const diffTime = Math.abs(termino.getTime() - now.getTime());
@@ -51,7 +48,6 @@ const AdminOperationalMetrics = () => {
 
 
             // 2. Orçamento Executado (Despesas Aprovadas na org ativa)
-            // @ts-ignore
             const { data: expenses, error: expenseError } = await supabase
                 .from('expenses')
                 .select('amount')
@@ -60,13 +56,13 @@ const AdminOperationalMetrics = () => {
 
             // If chart/table doesn't exist, handle gracefully
             const orcamentoExecutado = expenses
-                ? expenses.reduce((acc: number, curr: any) => acc + Number(curr.amount || 0), 0)
+                ? expenses.reduce((acc, curr) => acc + Number(curr.amount || 0), 0)
                 : 0;
 
             // 3. Totais (RDOs, Colaboradores, Equipamentos)
             const { count: totalRDOs } = await supabase.from('rdos').select('*', { count: 'exact', head: true }).eq('org_id', orgId);
-            const { count: totalColaboradores } = await (supabase as any).from('org_members').select('*', { count: 'exact', head: true }).eq('org_id', orgId).eq('status', 'active');
-            const { count: totalEquipamentos } = await supabase.from('equipamentos').select('*', { count: 'exact', head: true }).eq('org_id', orgId);
+            const { count: totalColaboradores } = await supabase.from('organization_members').select('*', { count: 'exact', head: true }).eq('organization_id', orgId); // Fixed org_id -> organization_id for members?
+            const { count: totalEquipamentos } = await supabase.from('equipamentos').select('*', { count: 'exact', head: true }).eq('org_id', orgId || ''); // Fixed possible null orgId
 
             return {
                 totalObras,

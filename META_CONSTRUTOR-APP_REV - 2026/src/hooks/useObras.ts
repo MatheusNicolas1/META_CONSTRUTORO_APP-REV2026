@@ -6,6 +6,7 @@ import { notifyObraChange } from '@/utils/notificationService';
 import { usePermissions } from './usePermissions';
 import { useRequireOrg } from '@/hooks/requireOrg';
 import { track } from '@/integrations/analytics';
+import { useAuthUserId } from './useAuthUserId';
 
 export interface CreateObraData {
   nome: string;
@@ -19,45 +20,103 @@ export interface CreateObraData {
   descricao?: string;
   area?: string;
   prioridade?: string;
+  atividades?: any[]; // Budget items to be converted to activities
 }
 
 export const useObras = () => {
   const queryClient = useQueryClient();
   const { obra: obraPerms } = usePermissions();
   const { orgId, isLoading: orgLoading } = useRequireOrg();
+  const { userId } = useAuthUserId();
 
   // Realtime subscription for obras updates
+  // Realtime subscription for Obras (Singleton + Grace Period)
   useEffect(() => {
-    if (!orgId) return;
+    if (!orgId || !userId) return;
 
-    const channel = supabase
-      .channel(`obras-realtime-${orgId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'obras',
-          filter: `org_id=eq.${orgId}`
-        },
-        (payload) => {
-          console.log('Obras realtime update:', payload);
-          queryClient.invalidateQueries({ queryKey: ['obras', orgId] });
-          queryClient.invalidateQueries({ queryKey: ['recent-obras', orgId] });
-        }
-      )
-      .subscribe();
+    const channelKey = `obras-realtime-${userId}`; // Key by user since we filter by user
+    const REGISTRY_KEY = '__meta_obras_realtime_registry__';
+
+    // Initialize registry if needed
+    if (!(globalThis as any)[REGISTRY_KEY]) {
+      (globalThis as any)[REGISTRY_KEY] = new Map();
+    }
+    const registry = (globalThis as any)[REGISTRY_KEY];
+
+    let entry = registry.get(channelKey);
+    let didSubscribe = false;
+
+    // Setup function
+    const setup = () => {
+      if (!entry) {
+        console.log(`[Realtime-Obras] Creating NEW channel: ${channelKey}`);
+        const channel = supabase
+          .channel(channelKey)
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'obras',
+              filter: `org_id=eq.${orgId}`
+            },
+            () => {
+              window.dispatchEvent(new CustomEvent(`obras-changed-${channelKey}`));
+            }
+          )
+          .subscribe((status) => {
+            if (status === 'SUBSCRIBED') console.log(`[Realtime-Obras] Subscribed: ${channelKey}`);
+            else if (status === 'CHANNEL_ERROR') console.error(`[Realtime-Obras] Error: ${channelKey}`);
+          });
+
+        entry = { channel, refCount: 0, cleanupTimeout: null };
+        registry.set(channelKey, entry);
+      }
+
+      // Cancel pending cleanup
+      if (entry.cleanupTimeout) {
+        console.log(`[Realtime-Obras] Resurrecting channel: ${channelKey}`);
+        window.clearTimeout(entry.cleanupTimeout);
+        entry.cleanupTimeout = null;
+      }
+
+      entry.refCount++;
+      didSubscribe = true;
+    };
+
+    setup();
+
+    // Event listener for data reload
+    const handleRemoteChange = () => {
+      queryClient.invalidateQueries({ queryKey: ['obras', orgId] });
+      queryClient.invalidateQueries({ queryKey: ['recent-obras', orgId] });
+    };
+    window.addEventListener(`obras-changed-${channelKey}`, handleRemoteChange);
+
 
     return () => {
-      supabase.removeChannel(channel);
+      window.removeEventListener(`obras-changed-${channelKey}`, handleRemoteChange);
+
+      if (didSubscribe && entry) {
+        entry.refCount--;
+        if (entry.refCount <= 0) {
+          // Grace period 2s
+          entry.cleanupTimeout = window.setTimeout(() => {
+            if (entry.refCount <= 0) {
+              console.log(`[Realtime-Obras] Removing channel: ${channelKey}`);
+              supabase.removeChannel(entry.channel);
+              registry.delete(channelKey);
+            }
+          }, 2000);
+        }
+      }
     };
-  }, [queryClient, orgId]);
+  }, [queryClient, orgId, userId]);
 
   const obrasQuery = useQuery({
     queryKey: ['obras', orgId],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Usuário não autenticado');
+      if (!orgId) throw new Error('Organização não selecionada');
 
       const { data, error } = await supabase
         .from('obras')
@@ -69,7 +128,7 @@ export const useObras = () => {
       if (error) throw error;
       return data || [];
     },
-    enabled: !orgLoading && !!orgId,
+    enabled: !orgLoading && !!orgId && !!userId,
   });
 
   const createObra = useMutation({
@@ -85,17 +144,50 @@ export const useObras = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
 
+      // Separate activities from obra data
+      const { atividades, ...obraPayload } = obraData;
+
       const { data, error } = await supabase
         .from('obras')
         .insert({
-          ...obraData,
+          ...obraPayload,
+          created_by: user.id,
           org_id: orgId,
-          user_id: user.id,
           progresso: 0,
-          status: 'Iniciando',
-        })
+          status: 'ACTIVE',
+        } as any)
         .select()
         .single();
+
+      if (error) throw error;
+
+      // Insert activities if present
+      if (atividades && atividades.length > 0) {
+        const atividadesToInsert = atividades.map((item: any) => ({
+          user_id: user.id,
+          obra_id: data.id, // Link to the new obra
+          titulo: item.descricao || 'Nova Atividade',
+          status: 'agendada',
+          prioridade: 'media',
+          data: obraData.data_inicio || new Date().toISOString().split('T')[0],
+          hora: '08:00',
+          unidade_medida: item.unidade,
+          quantidade_prevista: Number(item.quantidade) || 0,
+          // Store entered value in observacoes strictly or just ignore if no column
+          observacoes: `Orçamento: Val. Unit: ${item.valorUnitario} | Total: ${item.valorTotal}`,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }));
+
+        const { error: atividadesError } = await supabase
+          .from('atividades')
+          .insert(atividadesToInsert);
+
+        if (atividadesError) {
+          console.error('Error creating initial activities:', atividadesError);
+          toast.error('Obra criada, mas houve erro ao salvar algumas atividades.');
+        }
+      }
 
       if (error) throw error;
 
@@ -106,7 +198,7 @@ export const useObras = () => {
       track('product.obra_created', {
         obra_id: data.id,
         org_id: orgId,
-        user_id: user.id,
+        created_by: user.id,
         tipo: obraData.tipo,
         localizacao: obraData.localizacao
       });
@@ -131,7 +223,7 @@ export const useObras = () => {
 
       const { data, error } = await supabase
         .from('obras')
-        .update(updateData)
+        .update(updateData as any)
         .eq('id', id)
         .eq('org_id', orgId)
         .select()

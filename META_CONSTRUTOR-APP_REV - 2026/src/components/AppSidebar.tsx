@@ -11,7 +11,8 @@ import {
   BarChart3,
   Zap,
   Shield,
-  DollarSign
+  DollarSign,
+  CreditCard
 } from "lucide-react";
 import { NavLink, useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
@@ -34,7 +35,7 @@ export function AppSidebar() {
   const { state, isMobile, setOpenMobile } = useSidebar();
   const location = useLocation();
   // const { t } = useTranslation();
-  const { roles, user } = useAuth();
+  const { roles, user, hasRole } = useAuth();
   const collapsed = state === "collapsed";
 
   const t = (key: string) => i18n.t(key);
@@ -56,8 +57,11 @@ export function AppSidebar() {
     { title: t('menu.integracoes'), url: "/integracoes", icon: Zap, tourId: "integracoes" },
   ];
 
-  const isAdmin = roles.includes('Administrador');
+  const isAdmin = hasRole('Administrador');
   const isSuperAdmin = user?.email === 'matheusnicolas.org@gmail.com';
+
+  // Verificação ESTRITA para Presidente conforme solicitado
+  const isPresidente = roles.includes('Presidente');
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -162,8 +166,8 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
 
-          {/* Painel Administrativo - Somente para Administradores */}
-          {isAdmin && (
+          {/* Painel Administrativo - Somente para Presidente (Estrito) */}
+          {isPresidente && (
             <SidebarGroup className={`transition-all duration-300 ${collapsed ? 'px-2 py-2' : 'px-3 py-2'}`}>
               {!collapsed && (
                 <SidebarGroupLabel className="text-sidebar-foreground/70 px-2 py-1.5 text-xs font-semibold uppercase tracking-wider">

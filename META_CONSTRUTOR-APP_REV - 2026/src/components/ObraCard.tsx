@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { formatStatusLabel } from "@/utils/formatters";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress as ProgressBar } from "@/components/ui/progress";
@@ -70,7 +71,8 @@ export function ObraCard({ obra }: ObraCardProps) {
                 {obra.nome}
               </h4>
               <Badge variant="secondary" className={getStatusColor(obra.status)}>
-                {obra.status}
+                {/* Use helper to show humanized label */}
+                {formatStatusLabel(obra.status)}
               </Badge>
             </div>
             <div className="flex items-center text-xs text-muted-foreground">
@@ -78,7 +80,7 @@ export function ObraCard({ obra }: ObraCardProps) {
               <span className="truncate">{obra.localizacao}</span>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2 ml-3">
             <Link to={`/obras/${obra.id}`} onClick={(e) => e.stopPropagation()}>
               <Button variant="ghost" size="sm" className="h-7 w-7 p-0">

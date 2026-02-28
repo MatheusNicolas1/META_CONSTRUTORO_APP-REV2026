@@ -5,6 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CreditsInfoDialog } from "@/components/CreditsInfoDialog";
 import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/components/auth/AuthContext";
+import { usePlanLimits } from "@/hooks/usePlanLimits";
 
 interface UserCredits {
   credits_balance: number;
@@ -13,12 +15,15 @@ interface UserCredits {
 }
 
 export const CreditsDisplay = () => {
+  const { user } = useAuth();
+  const { isPresidente } = usePlanLimits();
   const [credits, setCredits] = useState<UserCredits | null>(null);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadCredits();
+    if (!user?.id) return;
+
+    loadCredits(user.id, user.email || null);
 
     // Configurar listener para mudanças em tempo real com tratamento de erros
     let channel: any = null;
@@ -34,7 +39,7 @@ export const CreditsDisplay = () => {
             table: 'user_credits'
           },
           () => {
-            loadCredits();
+            if (user?.id) loadCredits(user.id, user.email || null);
           }
         )
         .subscribe((status) => {
@@ -55,19 +60,14 @@ export const CreditsDisplay = () => {
         }
       }
     };
-  }, []);
+  }, [user?.id]);
 
-  const loadCredits = async () => {
+  const loadCredits = async (userId: string, email: string | null) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (!user) return;
-      setUserEmail(user.email || null);
-
       const { data, error } = await supabase
         .from('user_credits')
         .select('credits_balance, plan_type, total_shared')
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .single();
 
       if (error) {
@@ -76,7 +76,7 @@ export const CreditsDisplay = () => {
           const { data: newCredits } = await supabase
             .from('user_credits')
             .insert({
-              user_id: user.id,
+              user_id: userId,
               plan_type: 'free',
               credits_balance: 7
             })
@@ -98,9 +98,12 @@ export const CreditsDisplay = () => {
 
   if (loading || !credits) return null;
 
-  // Não mostrar para planos premium ou admin específico
+  // Presidentes têm acesso ilimitado — não mostrar aviso de créditos
+  if (isPresidente) return null;
+
+  // Não mostrar para planos premium
   if (credits.plan_type !== 'free') return null;
-  if (userEmail === 'matheusnicolas.org@gmail.com') return null;
+  if (user?.email === 'matheusnicolas.org@gmail.com') return null;
 
   return (
     <Card data-tour="credits" className="p-4 mb-4 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">

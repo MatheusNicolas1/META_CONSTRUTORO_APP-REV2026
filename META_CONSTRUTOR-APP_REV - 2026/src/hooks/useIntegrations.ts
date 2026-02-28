@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import {
   Integration,
+  IntegrationType,
   IntegrationConfig,
   IntegrationLog,
   IntegrationStatus,
@@ -43,9 +44,9 @@ export const useIntegrations = () => {
     setIsLoading(true);
     try {
       // Fetch user's integrations configs from Supabase
-      // Casting table name as any because it might not be in the generated types yet
+      // Fetch user's integrations configs from Supabase
       const { data: userIntegrations, error } = await supabase
-        .from('integrations' as any)
+        .from('integrations')
         .select('*')
         .eq('user_id', session.user.id);
 
@@ -55,19 +56,18 @@ export const useIntegrations = () => {
 
       // Merge defaults with saved configs
       const mergedIntegrations: Integration[] = defaultIntegrations.map(def => {
-        // userIntegrations is typed as any[] implicitly from the cast above
-        const saved = userIntegrations?.find((ui: any) => ui.service_id === def.id);
+        const saved = userIntegrations?.find((ui) => ui.service_id === def.id);
 
         return {
           id: def.id!, // service_id matches predefined IDs
           name: def.name || '',
-          type: def.type as any,
+          type: def.type as IntegrationType,
           description: def.description || '',
           isActive: saved?.is_active ?? false,
           isConfigured: !!saved?.config,
-          status: saved?.status || 'disconnected',
-          configuration: saved?.config || {},
-          lastSync: saved?.last_sync,
+          status: (saved?.status as Integration['status']) || 'disconnected',
+          configuration: (saved?.config as IntegrationConfig) || {},
+          lastSync: saved?.last_sync || undefined,
           priority: def.priority,
           isAdvanced: def.isAdvanced,
           fluxos: def.fluxos || []
@@ -106,7 +106,7 @@ export const useIntegrations = () => {
       console.log('Salvando configuração:', { integrationId, config });
 
       const { error } = await supabase
-        .from('integrations' as any)
+        .from('integrations')
         .upsert({
           user_id: session.user.id,
           service_id: integrationId,
@@ -179,11 +179,11 @@ export const useIntegrations = () => {
 
   const saveGmailConfig = (config: GmailConfig) => saveIntegrationConfig('gmail', config);
   const testGmailConfig = (config: GmailConfig) => testIntegration('gmail', config);
-  const connectGmailOAuth = async () => ({ clientId: 'mock', clientSecret: 'mock', accessToken: 'mock', refreshToken: 'mock', settings: { enableAutoReports: true, enableUrgentAlerts: true, defaultSender: 'test@email.com' } } as GmailConfig);
+  const connectGmailOAuth = async () => ({ clientId: '', clientSecret: '', accessToken: '', refreshToken: '', settings: { enableAutoReports: true, enableUrgentAlerts: true, defaultSender: 'test@email.com' } } as GmailConfig);
 
   const saveGoogleDriveConfig = (config: GoogleDriveConfig) => saveIntegrationConfig('googledrive', config);
   const testGoogleDriveConfig = (config: GoogleDriveConfig) => testIntegration('googledrive', config);
-  const connectGoogleDriveOAuth = async () => ({ clientId: 'mock', clientSecret: 'mock', accessToken: 'mock', refreshToken: 'mock', settings: { autoSync: true, folderStructure: {} } } as GoogleDriveConfig);
+  const connectGoogleDriveOAuth = async () => ({ clientId: '', clientSecret: '', accessToken: '', refreshToken: '', settings: { autoSync: true, folderStructure: {} } } as GoogleDriveConfig);
 
   // Webhook stubs
   const saveWebhook = async () => { };

@@ -19,15 +19,12 @@ export const useEquipamentosSupabase = () => {
   const equipamentosQuery = useQuery({
     queryKey: ['equipamentos', orgId, userId],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user?.id) return [];
-      if (!orgId) return [];
+      if (!userId || !orgId) return [];
 
       const { data, error } = await supabase
         .from('equipamentos')
         .select('*')
-        .eq('org_id', orgId)
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -38,16 +35,15 @@ export const useEquipamentosSupabase = () => {
 
   const createEquipamento = useMutation({
     mutationFn: async (equipamentoData: CreateEquipamentoData) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user?.id || !orgId) throw new Error('Usuário ou organização não autenticados');
+      if (!userId) throw new Error('Usuário não autenticado');
 
       const { data, error } = await supabase
         .from('equipamentos')
         .insert({
           ...equipamentoData,
+          user_id: userId,
           org_id: orgId,
-          user_id: user.id,
-        })
+        } as any)
         .select()
         .single();
 
@@ -66,15 +62,13 @@ export const useEquipamentosSupabase = () => {
 
   const updateEquipamento = useMutation({
     mutationFn: async ({ id, ...updateData }: { id: string } & Partial<CreateEquipamentoData>) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user?.id || !orgId) throw new Error('Usuário ou organização não autenticados');
+      if (!userId) throw new Error('Usuário não autenticado');
 
       const { data, error } = await supabase
         .from('equipamentos')
         .update(updateData)
         .eq('id', id)
-        .eq('org_id', orgId)
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .select()
         .single();
 
@@ -93,15 +87,13 @@ export const useEquipamentosSupabase = () => {
 
   const deleteEquipamento = useMutation({
     mutationFn: async (id: string) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user?.id || !orgId) throw new Error('Usuário ou organização não autenticados');
+      if (!userId) throw new Error('Usuário não autenticado');
 
       const { error } = await supabase
         .from('equipamentos')
         .delete()
         .eq('id', id)
-        .eq('org_id', orgId)
-        .eq('user_id', user.id);
+        .eq('user_id', userId);
 
       if (error) throw error;
     },

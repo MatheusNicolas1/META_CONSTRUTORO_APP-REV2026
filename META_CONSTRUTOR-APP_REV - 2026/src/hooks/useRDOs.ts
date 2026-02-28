@@ -6,100 +6,311 @@ import { notifyRDOChange } from '@/utils/notificationService';
 import { useRequireOrg } from '@/hooks/requireOrg';
 import { track } from '@/integrations/analytics';
 
-export interface CreateRDOData {
-  obra_id: string;
-  data: string;
-  periodo: string;
-  clima: string;
-  equipe_ociosa?: boolean;
-  tempo_ocioso?: number;
-  observacoes?: string;
-}
+import { CreateRDOData } from "@/types/rdo";
+import { RDOSupabase } from '@/types/supabase-rdo';
 
 export const useRDOs = () => {
   const queryClient = useQueryClient();
   const { orgId, isLoading: orgLoading } = useRequireOrg();
 
   // Realtime subscription for RDOs updates
+  // Realtime subscription for RDOs updates (Singleton + Grace Period)
   useEffect(() => {
     if (!orgId) return;
 
-    const channel = supabase
-      .channel(`rdos-realtime-${orgId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'rdos',
-          filter: `org_id=eq.${orgId}`
-        },
-        (payload) => {
-          console.log('RDOs realtime update:', payload);
-          queryClient.invalidateQueries({ queryKey: ['rdos', orgId] });
-          queryClient.invalidateQueries({ queryKey: ['recent-rdos', orgId] });
-        }
-      )
-      .subscribe();
+    const channelKey = `rdos-realtime-${orgId}`;
+    const REGISTRY_KEY = '__meta_rdos_realtime_registry__';
+
+    // Initialize registry if needed
+    if (!(globalThis as any)[REGISTRY_KEY]) {
+      (globalThis as any)[REGISTRY_KEY] = new Map();
+    }
+    const registry = (globalThis as any)[REGISTRY_KEY];
+
+    let entry = registry.get(channelKey);
+    let didSubscribe = false;
+
+    // Setup function
+    const setup = () => {
+      if (!entry) {
+        console.log(`[Realtime-RDO] Creating NEW channel: ${channelKey}`);
+        const channel = supabase
+          .channel(channelKey)
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'rdos',
+              filter: `org_id=eq.${orgId}`
+            },
+            () => {
+              // Dispatch global event for all hooks
+              window.dispatchEvent(new CustomEvent(`rdos-changed-${channelKey}`));
+            }
+          )
+          .subscribe((status) => {
+            if (status === 'SUBSCRIBED') console.log(`[Realtime-RDO] Subscribed: ${channelKey}`);
+            else if (status === 'CHANNEL_ERROR') console.error(`[Realtime-RDO] Error: ${channelKey}`);
+          });
+
+        entry = { channel, refCount: 0, cleanupTimeout: null };
+        registry.set(channelKey, entry);
+      }
+
+      // Cancel pending cleanup
+      if (entry.cleanupTimeout) {
+        console.log(`[Realtime-RDO] Resurrecting channel: ${channelKey}`);
+        window.clearTimeout(entry.cleanupTimeout);
+        entry.cleanupTimeout = null;
+      }
+
+      entry.refCount++;
+      didSubscribe = true;
+    };
+
+    setup();
+
+    // Event listener for data reload
+    const handleRemoteChange = () => {
+      queryClient.invalidateQueries({ queryKey: ['rdos', orgId] });
+      queryClient.invalidateQueries({ queryKey: ['recent-rdos', orgId] });
+    };
+    window.addEventListener(`rdos-changed-${channelKey}`, handleRemoteChange);
 
     return () => {
-      supabase.removeChannel(channel);
+      window.removeEventListener(`rdos-changed-${channelKey}`, handleRemoteChange);
+
+      if (didSubscribe && entry) {
+        entry.refCount--;
+        if (entry.refCount <= 0) {
+          // Grace period 2s
+          entry.cleanupTimeout = window.setTimeout(() => {
+            if (entry.refCount <= 0) {
+              console.log(`[Realtime-RDO] Removing channel: ${channelKey}`);
+              supabase.removeChannel(entry.channel);
+              registry.delete(channelKey);
+            }
+          }, 2000);
+        }
+      }
     };
   }, [queryClient, orgId]);
 
   const rdosQuery = useQuery({
     queryKey: ['rdos', orgId],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Usuário não autenticado');
-
       const { data, error } = await supabase
         .from('rdos')
         .select(`
           *,
-          obras (nome)
+          obras (nome),
+          documentos (*)
         `)
-        .eq('org_id', orgId)
+        // .eq('user_id', user.id) -- REMOVED for Org-First visibility
+        .order('data', { ascending: false })
         .order('created_at', { ascending: false })
         .limit(20);
 
       if (error) throw error;
-      return data || [];
+      return (data as unknown as RDOSupabase[]) || [];
     },
     enabled: !orgLoading && !!orgId,
   });
 
   const createRDO = useMutation({
-    mutationFn: async (rdoData: CreateRDOData) => {
+    mutationFn: async (input: CreateRDOData) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
 
-      const { data, error } = await supabase
-        .from('rdos')
-        .insert({
-          ...rdoData,
-          org_id: orgId,
-          criado_por_id: user.id,
-          status: 'Em elaboração',
-        })
-        .select(`*, obras (nome)`)
-        .single();
+      // 1. Destructure data
+      const {
+        atividadesRealizadas,
+        atividadesExtras,
+        equipesPresentes,
+        equipamentosUtilizados,
+        files,
+        equipamentosQuebrados,
+        acidentes,
+        materiaisFalta,
+        estoqueMateriais,
+        ...baseData
+      } = input;
 
-      if (error) throw error;
+      // 2. Prepare JSONB Details
+      const detalhes = {
+        equipamentosQuebrados,
+        acidentes,
+        materiaisFalta,
+        estoqueMateriais
+      };
+
+      // 3. Insert Base RDO
+      const insertPayload = {
+        obra_id: baseData.obraId,
+        data: baseData.data,
+        periodo: baseData.periodo,
+        clima: baseData.clima,
+        equipe_ociosa: baseData.equipeOciosa,
+        tempo_ocioso: baseData.tempoOcioso,
+        observacoes: baseData.observacoes,
+        criado_por_id: user.id,
+        org_id: orgId,
+        status: 'Em elaboração',
+      };
+      console.log('[RDO-CREATE] Insert payload:', JSON.stringify(insertPayload, null, 2));
+
+      const { data: rdoRaw, error } = await supabase
+        .from('rdos')
+        .insert(insertPayload as any)
+        .select()
+        .single();
+      const rdo = rdoRaw as any;
+
+      if (error) {
+        console.error('[RDO-CREATE] Supabase error:', error.code, error.message, error.details, error.hint);
+        throw error;
+      }
+      if (!rdo) throw new Error('[RDO-CREATE] rdo null após insert');
+      console.log('[RDO-CREATE] RDO created:', rdo.id);
+
+      // 4. Insert Relational Data & Files (Parallel)
+      const promises = [];
+
+      // Atividades
+      if (atividadesRealizadas?.length > 0) {
+        const payload = atividadesRealizadas.map(a => ({
+          rdo_id: rdo.id,
+          nome: a.nome,
+          categoria: a.categoria,
+          quantidade: a.quantidade,
+          unidade_medida: a.unidadeMedida,
+          percentual_concluido: a.percentualConcluido,
+          status: a.status,
+          observacoes: a.observacoes,
+          is_extra: false
+        }));
+        promises.push(supabase.from('rdo_atividades').insert(payload as any).throwOnError());
+      }
+
+      // Atividades Extras
+      if (atividadesExtras?.length > 0) {
+        const payload = atividadesExtras.map(a => ({
+          rdo_id: rdo.id,
+          nome: a.nome,
+          categoria: a.categoria,
+          quantidade: a.quantidade,
+          unidade_medida: a.unidadeMedida,
+          percentual_concluido: a.percentualConcluido,
+          justificativa: a.justificativa,
+          is_extra: true,
+          status: 'Concluída' // Default for extras usually
+        }));
+        promises.push(supabase.from('rdo_atividades').insert(payload as any).throwOnError());
+      }
+
+      // Helper: valida UUID v4 (exige pelo menos um hífen e 36 chars)
+      const isValidUUID = (id: any): boolean =>
+        typeof id === 'string' && id.includes('-') && id.length >= 32;
+
+      // Equipes — insere com FK se UUID real, senão passa pelos detalhes JSONB
+      const equipesComUUID = (equipesPresentes ?? []).filter(e => isValidUUID(e.id));
+      const equipeSemUUID = (equipesPresentes ?? []).filter(e => !isValidUUID(e.id));
+
+      if (equipesComUUID.length > 0) {
+        const payload = equipesComUUID.map(e => ({
+          rdo_id: rdo.id,
+          equipe_id: e.id,
+          horas_trabalho: e.horasTrabalho,
+          presente: e.presente ?? true,
+          horas_ociosas: e.horasOciosas ?? 0
+        }));
+        promises.push(supabase.from('rdo_equipes').insert(payload as any).throwOnError());
+      }
+
+      // Equipamentos — insere com FK se UUID real, senão passa pelos detalhes JSONB
+      const equipComUUID = (equipamentosUtilizados ?? []).filter(e => isValidUUID(e.id));
+      const equipSemUUID = (equipamentosUtilizados ?? []).filter(e => !isValidUUID(e.id));
+
+      if (equipComUUID.length > 0) {
+        const payload = equipComUUID.map(e => ({
+          rdo_id: rdo.id,
+          equipamento_id: e.id,
+          horas_uso: e.horasUso ?? 0,
+          status: e.status ?? 'Operacional',
+          observacoes: e.observacoes ?? null
+        }));
+        promises.push(supabase.from('rdo_equipamentos').insert(payload as any).throwOnError());
+      }
+
+      // Gravar itens sem UUID no JSONB detalhes do RDO (update)
+      const equipesJsonb = equipeSemUUID.map(e => ({
+        nome: e.nome, funcao: e.funcao, horasTrabalho: e.horasTrabalho,
+        presente: e.presente ?? true, horasOciosas: e.horasOciosas ?? 0
+      }));
+      const equipamentosJsonb = equipSemUUID.map(e => ({
+        nome: e.nome, categoria: e.categoria, horasUso: e.horasUso ?? 0,
+        status: e.status ?? 'Operacional', observacoes: e.observacoes ?? null
+      }));
+
+      if (equipesJsonb.length > 0 || equipamentosJsonb.length > 0) {
+        promises.push(
+          supabase.from('rdos').update({
+            detalhes: {
+              ...detalhes,
+              equipes: equipesJsonb,
+              equipamentos: equipamentosJsonb,
+            }
+          } as any).eq('id', rdo.id).throwOnError()
+        );
+      }
+
+      // Files — salva o storage path no banco (bucket privado: não usar publicUrl)
+      if (files?.length > 0) {
+        const uploadPromises = files.map(async (file) => {
+          const fileExt = (file.name.split('.').pop() || 'bin').toLowerCase();
+          // Sanitizar nome: remover espaços e caracteres especiais
+          const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const storagePath = `${rdo.id}/${Date.now()}-${safeName}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from('documentos')
+            .upload(storagePath, file, { upsert: false });
+
+          if (uploadError) {
+            console.error('[RDO-UPLOAD] upload failed:', uploadError.message);
+            return null; // não bloqueia criação do RDO
+          }
+
+          // Salva o PATH (não publicUrl) — downloads usarão createSignedUrl
+          return supabase.from('documentos').insert({
+            nome: file.name,
+            tipo: fileExt,
+            categoria: 'Relatório',
+            url: storagePath,  // path relativo no bucket
+            uploaded_by: user.id,
+            rdo_id: rdo.id,
+            tamanho: file.size
+          } as any).throwOnError();
+        });
+        promises.push(...uploadPromises);
+      }
+
+      await Promise.all(promises);
 
       // Enviar notificação
-      const obraName = data.obras?.nome || 'Obra';
-      await notifyRDOChange(user.id, obraName, rdoData.data, 'created', data.id);
+      const obraName = (rdo as any).obras?.nome || 'Obra';
+      await notifyRDOChange(user.id, obraName, baseData.data, 'created', rdo.id);
 
       // M9: Analytics
       track('product.rdo_created', {
-        rdo_id: data.id,
+        rdo_id: rdo.id,
         org_id: orgId,
-        obra_id: rdoData.obra_id,
-        data: rdoData.data
+        obra_id: baseData.obraId,
+        data: baseData.data
       });
 
-      return data;
+      return rdo;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['rdos', orgId] });
@@ -108,39 +319,88 @@ export const useRDOs = () => {
     },
     onError: (error) => {
       console.error('Erro ao criar RDO:', error);
-      toast.error('Erro ao criar RDO. Tente novamente.');
+      toast.error('Erro ao criar RDO. ' + error.message);
     },
   });
 
   const updateRDO = useMutation({
     mutationFn: async ({ id, ...updateData }: { id: string } & Partial<CreateRDOData>) => {
+      // Simplification for MVP: Only update fields in RDOS table for now, 
+      // as updating relationals is complex. 
+      // But we should at least support updating the "detalhes" jsonb.
+
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
 
-      const { data, error } = await supabase
+      // Destructure same as create
+      const {
+        atividadesRealizadas,
+        atividadesExtras,
+        equipesPresentes,
+        equipamentosUtilizados,
+        files,
+        equipamentosQuebrados,
+        acidentes,
+        materiaisFalta,
+        estoqueMateriais,
+        ...baseData
+      } = updateData;
+
+      const detalhes = {
+        equipamentosQuebrados,
+        acidentes,
+        materiaisFalta,
+        estoqueMateriais
+      };
+
+      const updatePayload: any = {
+        ...baseData,
+        detalhes
+      }
+
+      // Clean undefined
+      Object.keys(updatePayload).forEach(key => updatePayload[key] === undefined && delete updatePayload[key]);
+
+      const { data: updateRaw, error } = await supabase
         .from('rdos')
-        .update(updateData)
+        .update(updatePayload as any)
         .eq('id', id)
-        .eq('org_id', orgId)
         .select(`*, obras (nome)`)
         .single();
+      const data = updateRaw as any;
 
       if (error) throw error;
 
-      // Enviar notificação
-      const obraName = data.obras?.nome || 'Obra';
-      await notifyRDOChange(user.id, obraName, data.data, 'updated', id);
+      // Handle files (add new ones)
+      if (files?.length > 0) {
+        const uploadPromises = files.map(async (file) => {
+          const fileExt = (file.name.split('.').pop() || 'bin').toLowerCase();
+          const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const storagePath = `${id}/${Date.now()}-${safeName}`;
+          const { error: upErr } = await supabase.storage.from('documentos').upload(storagePath, file, { upsert: false });
+          if (upErr) { console.error('[RDO-UPDATE] upload failed:', upErr.message); return null; }
+          return supabase.from('documentos').insert({
+            nome: file.name,
+            tipo: fileExt,
+            categoria: 'Relatório',
+            url: storagePath,
+            uploaded_by: user.id,
+            rdo_id: id,
+            tamanho: file.size
+          } as any);
+        });
+        await Promise.all(uploadPromises);
+      }
 
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['rdos', orgId] });
-      queryClient.invalidateQueries({ queryKey: ['recent-rdos', orgId] });
       toast.success('RDO atualizado com sucesso!');
     },
     onError: (error) => {
       console.error('Erro ao atualizar RDO:', error);
-      toast.error('Erro ao atualizar RDO. Tente novamente.');
+      toast.error('Erro ao atualizar RDO.');
     },
   });
 
@@ -149,26 +409,27 @@ export const useRDOs = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
 
-      const { data, error } = await supabase
+      const { data: submitRaw, error } = await supabase
         .from('rdos')
-        .update({ status: 'Aguardando aprovação' })
+        .update({ status: 'Aguardando aprovação' } as any)
         .eq('id', id)
-        .eq('org_id', orgId)
+        .eq('criado_por_id', user.id)
         .select(`*, obras (nome)`)
         .single();
+      const data = submitRaw as any;
 
       if (error) throw error;
 
       // Enviar notificação especial para aprovação
-      const obraName = data.obras?.nome || 'Obra';
-      await notifyRDOChange(user.id, obraName, data.data, 'submitted', id);
+      const obraName = data?.obras?.nome || 'Obra';
+      await notifyRDOChange(user.id, obraName, data?.data, 'submitted', id);
 
       // M9: Analytics
       track('product.rdo_submitted', {
         rdo_id: id,
         org_id: orgId,
-        obra_id: data.obra_id,
-        status_to: 'Aguardando aprovação'
+        obra_id: data?.obra_id,
+        status_to: 'SUBMITTED'
       });
 
       return data;
@@ -189,18 +450,19 @@ export const useRDOs = () => {
       if (!user) throw new Error('Usuário não autenticado');
 
       // Buscar dados do RDO antes de deletar
-      const { data: rdoData } = await supabase
+      const { data: rdoDataRaw } = await supabase
         .from('rdos')
         .select(`*, obras (nome)`)
         .eq('id', id)
-        .eq('org_id', orgId)
+        .eq('criado_por_id', user.id)
         .single();
+      const rdoData = rdoDataRaw as any;
 
       const { error } = await supabase
         .from('rdos')
         .delete()
         .eq('id', id)
-        .eq('org_id', orgId);
+        .eq('criado_por_id', user.id);
 
       if (error) throw error;
 

@@ -8,9 +8,9 @@ const TimelineSection = lazy(() => import('@/components/sobre/TimelineSection'))
 const TeamSection = lazy(() => import('@/components/sobre/TeamSection'));
 const InstitutionalTestimonials = lazy(() => import('@/components/sobre/InstitutionalTestimonials'));
 const ImpactMetrics = lazy(() => import('@/components/sobre/ImpactMetrics'));
-import { 
-  Target, 
-  Eye, 
+import {
+  Target,
+  Eye,
   Heart,
   Shield,
   Headphones,
@@ -84,15 +84,15 @@ const Sobre = () => {
 
   return (
     <>
-      <SEO 
+      <SEO
         title="Sobre Nós - Meta Construtor | Transformando a Gestão de Obras no Brasil"
         description="Conheça a história, missão e valores do Meta Construtor. Descubra como revolucionamos a gestão de obras com tecnologia 100% brasileira."
-        canonical={window.location.href}
+        canonical="https://metaconstrutor.com.br/sobre"
       />
-      
+
       <div className="min-h-screen bg-background">
         <LandingNavigation />
-        
+
         <main className="pt-16 md:pt-20 w-full">
           {/* Hero Section */}
           <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-primary/10 via-background to-secondary/5 relative overflow-hidden w-full">
@@ -100,25 +100,25 @@ const Sobre = () => {
               <div className="grid lg:grid-cols-2 gap-12 items-center">
                 <div className="text-center lg:text-left">
                   <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
-                    Transformando a gestão de obras 
+                    Transformando a gestão de obras
                     <span className="text-primary"> no Brasil</span>
                   </h1>
                   <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                    Simplificamos processos, reduzimos retrabalho e damos mais previsibilidade 
+                    Simplificamos processos, reduzimos retrabalho e damos mais previsibilidade
                     às construtoras através de tecnologia intuitiva e acessível.
                   </p>
-                  <button 
+                  <button
                     onClick={() => navigate('/contato')}
                     className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
                   >
                     Fale com a nossa equipe
                   </button>
                 </div>
-                
+
                 <div className="relative">
                   <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50">
-                    <img 
-                      src="/lovable-uploads/5557c860-388b-4ad5-bde2-5718350a8197.png" 
+                    <img
+                      src="/lovable-uploads/5557c860-388b-4ad5-bde2-5718350a8197.png"
                       alt="MetaConstrutor - Dashboard de gestão de obras digitalizado"
                       className="w-full h-auto object-cover animate-fade-in"
                     />
@@ -144,7 +144,7 @@ const Sobre = () => {
 
               <div className="grid md:grid-cols-3 gap-8">
                 {missionValues.map((value, index) => (
-                  <div 
+                  <div
                     key={index}
                     className="bg-card rounded-2xl p-8 border border-border hover:shadow-lg transition-all duration-300 hover:scale-105 text-center group"
                   >
@@ -187,7 +187,7 @@ const Sobre = () => {
 
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {differentials.map((differential, index) => (
-                  <div 
+                  <div
                     key={index}
                     className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 text-center group"
                   >
@@ -230,7 +230,7 @@ const Sobre = () => {
 
               <div className="grid md:grid-cols-3 gap-8">
                 {commitments.map((commitment, index) => (
-                  <div 
+                  <div
                     key={index}
                     className="bg-card rounded-xl p-8 border border-border hover:shadow-lg transition-all duration-300 text-center"
                   >
@@ -259,13 +259,13 @@ const Sobre = () => {
                 Junte-se às centenas de construtoras que já transformaram sua gestão de obras.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button 
+                <button
                   onClick={() => navigate('/login')}
                   className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   Começar Gratuitamente
                 </button>
-                <button 
+                <button
                   onClick={() => navigate('/contato')}
                   className="border border-border hover:bg-muted text-foreground px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300"
                 >
@@ -275,7 +275,7 @@ const Sobre = () => {
             </div>
           </section>
         </main>
-        
+
         <FooterSection />
       </div>
     </>

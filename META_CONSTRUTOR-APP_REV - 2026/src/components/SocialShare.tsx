@@ -16,16 +16,18 @@ interface SocialShareProps {
   obraId?: string;
   rdoId?: string;
   onShareSuccess?: () => void;
+  compact?: boolean;
 }
 
-export const SocialShare = ({ 
-  title, 
-  text, 
-  url, 
+export const SocialShare = ({
+  title,
+  text,
+  url,
   imageUrl,
   obraId,
   rdoId,
-  onShareSuccess 
+  onShareSuccess,
+  compact
 }: SocialShareProps) => {
   return (
     <SocialShareButton
@@ -35,6 +37,7 @@ export const SocialShare = ({
       obraId={obraId}
       rdoId={rdoId}
       onShareSuccess={onShareSuccess}
+      compact={compact}
     />
   );
 };

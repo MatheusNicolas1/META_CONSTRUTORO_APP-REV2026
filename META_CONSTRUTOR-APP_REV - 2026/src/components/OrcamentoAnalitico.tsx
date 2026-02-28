@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trash2, Plus, Calculator } from "lucide-react";
 
-interface AtividadeOrcamento {
+export interface AtividadeOrcamento {
   id: string;
   descricao: string;
   unidade: string;
@@ -14,39 +14,34 @@ interface AtividadeOrcamento {
   valorTotal: number;
 }
 
-export const OrcamentoAnalitico = () => {
-  const [atividades, setAtividades] = useState<AtividadeOrcamento[]>([
-    {
-      id: "1",
-      descricao: "",
-      unidade: "",
-      quantidade: 0,
-      valorUnitario: 0,
-      valorTotal: 0
-    }
-  ]);
+interface OrcamentoAnaliticoProps {
+  atividades: AtividadeOrcamento[];
+  onAtividadesChange: (atividades: AtividadeOrcamento[]) => void;
+}
 
+export const OrcamentoAnalitico = ({ atividades, onAtividadesChange }: OrcamentoAnaliticoProps) => {
   const calcularValorTotal = (quantidade: number, valorUnitario: number) => {
     return quantidade * valorUnitario;
   };
 
   const atualizarAtividade = (id: string, campo: keyof AtividadeOrcamento, valor: any) => {
-    setAtividades(prev => prev.map(atividade => {
+    const novasAtividades = atividades.map(atividade => {
       if (atividade.id === id) {
         const atividadeAtualizada = { ...atividade, [campo]: valor };
-        
+
         // Recalcular valor total quando quantidade ou valor unitário mudarem
         if (campo === 'quantidade' || campo === 'valorUnitario') {
           atividadeAtualizada.valorTotal = calcularValorTotal(
-            atividadeAtualizada.quantidade, 
+            atividadeAtualizada.quantidade,
             atividadeAtualizada.valorUnitario
           );
         }
-        
+
         return atividadeAtualizada;
       }
       return atividade;
-    }));
+    });
+    onAtividadesChange(novasAtividades);
   };
 
   const adicionarAtividade = () => {
@@ -58,12 +53,12 @@ export const OrcamentoAnalitico = () => {
       valorUnitario: 0,
       valorTotal: 0
     };
-    setAtividades(prev => [novaAtividade, ...prev]);
+    onAtividadesChange([novaAtividade, ...atividades]);
   };
 
   const removerAtividade = (id: string) => {
     if (atividades.length > 1) {
-      setAtividades(prev => prev.filter(atividade => atividade.id !== id));
+      onAtividadesChange(atividades.filter(atividade => atividade.id !== id));
     }
   };
 
@@ -80,7 +75,7 @@ export const OrcamentoAnalitico = () => {
     <div className="space-y-6 mt-0">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h3 className="text-lg font-semibold text-card-foreground">Orçamento Analítico</h3>
-        <Button 
+        <Button
           onClick={adicionarAtividade}
           variant="outline"
           size="sm"
@@ -121,7 +116,7 @@ export const OrcamentoAnalitico = () => {
                   className="h-10"
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Unidade</Label>
@@ -132,7 +127,7 @@ export const OrcamentoAnalitico = () => {
                     className="h-10"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Quantidade</Label>
                   <Input
@@ -144,7 +139,7 @@ export const OrcamentoAnalitico = () => {
                     className="h-10"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Valor Unitário (R$)</Label>
                   <Input
@@ -156,7 +151,7 @@ export const OrcamentoAnalitico = () => {
                     className="h-10"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Valor Total</Label>
                   <div className="flex items-center gap-2 h-10 px-3 py-2 bg-muted/50 rounded-md border">

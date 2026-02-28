@@ -14,7 +14,7 @@ const CriarConta = () => {
   const navigate = useNavigate();
   const { signUp, isLoading } = useSignUp();
 
-  const handleSignUp = async (data: any) => {
+  const handleSignUp = async (data: { name: string; email: string; phone: string; password: string; confirmPassword: string }) => {
     const success = await signUp(data);
 
     if (success) {
@@ -35,9 +35,9 @@ const CriarConta = () => {
       });
 
       if (error) throw error;
-    } catch (error: any) {
-      console.error('Erro ao fazer login com Google:', error);
-      toast.error(error.message || "Erro ao fazer login com Google. Tente novamente.");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Erro ao fazer login com Google. Tente novamente.';
+      toast.error(message);
     }
   };
 
@@ -50,7 +50,7 @@ const CriarConta = () => {
       <SEO
         title="Criar conta | Meta Construtor"
         description="Cadastre-se no Meta Construtor e gerencie suas obras com facilidade."
-        canonical={window.location.href}
+        canonical="https://metaconstrutor.com.br/criar-conta"
       />
       <SignUpPage
         heroImageSrc="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1200&h=800&fit=crop"

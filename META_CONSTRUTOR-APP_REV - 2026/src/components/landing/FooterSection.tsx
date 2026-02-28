@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Github, Linkedin, Mail } from 'lucide-react';
 import Logo from '@/components/Logo';
 
@@ -38,14 +39,46 @@ const FooterSection = () => {
     { icon: Mail, href: 'mailto:contato@metaconstrutor.com', label: 'Email' }
   ];
 
-  const scrollToSection = (href: string) => {
-    if (href.startsWith('#')) {
-      const element = document.getElementById(href.substring(1));
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
+  // Helper to render links — internal routes use <Link>, external use <a>
+  const renderLink = (href: string, children: React.ReactNode, className: string, key: number) => {
+    const isExternal = href.startsWith('http') || href.startsWith('mailto:');
+    if (isExternal) {
+      return (
+        <a
+          key={key}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={className}
+        >
+          {children}
+        </a>
+      );
     }
+    return (
+      <Link key={key} to={href} className={className}>
+        {children}
+      </Link>
+    );
   };
+
+  const renderLinkColumn = (title: string, links: { name: string; href: string }[]) => (
+    <div>
+      <h3 className="font-semibold text-foreground mb-4">{title}</h3>
+      <ul className="space-y-3">
+        {links.map((link, index) => (
+          <li key={index}>
+            {renderLink(
+              link.href,
+              link.name,
+              "text-muted-foreground hover:text-foreground transition-colors text-sm",
+              index
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 
   return (
     <footer className="bg-card border-t border-border">
@@ -58,16 +91,18 @@ const FooterSection = () => {
               <Logo size="sm" />
             </div>
             <p className="text-muted-foreground mb-6 max-w-sm">
-              Revolucione a gestão das suas obras com a plataforma mais completa 
+              Revolucione a gestão das suas obras com a plataforma mais completa
               do mercado de construção civil.
             </p>
-            
+
             {/* Social Links */}
             <div className="flex gap-4">
               {socialLinks.map((social, index) => (
                 <a
                   key={index}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={social.label}
                   className="w-10 h-10 bg-muted hover:bg-primary hover:text-primary-foreground rounded-lg flex items-center justify-center transition-colors"
                 >
@@ -77,70 +112,11 @@ const FooterSection = () => {
             </div>
           </div>
 
-          {/* Link Columns */}
-          <div>
-            <h3 className="font-semibold text-foreground mb-4">Produto</h3>
-            <ul className="space-y-3">
-              {footerLinks.produto.map((link, index) => (
-                <li key={index}>
-                  <a
-                    href={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-foreground mb-4">Empresa</h3>
-            <ul className="space-y-3">
-              {footerLinks.empresa.map((link, index) => (
-                <li key={index}>
-                  <a
-                    href={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-foreground mb-4">Legal</h3>
-            <ul className="space-y-3">
-              {footerLinks.legal.map((link, index) => (
-                <li key={index}>
-                  <a
-                    href={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-foreground mb-4">Suporte</h3>
-            <ul className="space-y-3">
-              {footerLinks.suporte.map((link, index) => (
-                <li key={index}>
-                  <a
-                    href={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Link Columns — using <Link> for SPA navigation */}
+          {renderLinkColumn('Produto', footerLinks.produto)}
+          {renderLinkColumn('Empresa', footerLinks.empresa)}
+          {renderLinkColumn('Legal', footerLinks.legal)}
+          {renderLinkColumn('Suporte', footerLinks.suporte)}
         </div>
 
         {/* Bottom Bar */}
@@ -148,7 +124,7 @@ const FooterSection = () => {
           <div className="text-sm text-muted-foreground">
             © {currentYear} Meta Construtor. Todos os direitos reservados.
           </div>
-          
+
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <span>Feito com ❤️ no Brasil</span>
             <div className="flex items-center gap-1">

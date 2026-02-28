@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { UseFormReturn, useFieldArray } from "react-hook-form";
-import { Plus, Trash2, CheckCircle, Clock, PlayCircle } from "lucide-react";
+import { Plus, Trash2, CheckCircle, Clock, PlayCircle, AlertCircle, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,20 +10,22 @@ import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Link } from "react-router-dom";
 import { RDOFormData } from "@/schemas/rdoSchema";
+import { useActivitiesSupabase } from "@/hooks/useActivitiesSupabase";
 
 interface RDOActivitiesSectionProps {
   form: UseFormReturn<RDOFormData>;
 }
 
-const atividadesDisponiveis = [
-  { id: 1, nome: "Escavação de Fundação", categoria: "Terraplanagem", unidadeMedida: "m³" },
-  { id: 2, nome: "Concretagem de Laje", categoria: "Estrutura", unidadeMedida: "m²" },
-  { id: 3, nome: "Instalação Elétrica", categoria: "Instalações", unidadeMedida: "m" },
-  { id: 4, nome: "Alvenaria de Vedação", categoria: "Alvenaria", unidadeMedida: "m²" },
-  { id: 5, nome: "Aplicação de Argamassa", categoria: "Acabamento", unidadeMedida: "m²" },
-  { id: 6, nome: "Instalação Hidráulica", categoria: "Instalações", unidadeMedida: "m" },
-];
+// const atividadesDisponiveis = [
+//   { id: 1, nome: "Escavação de Fundação", categoria: "Terraplanagem", unidadeMedida: "m³" },
+//   { id: 2, nome: "Concretagem de Laje", categoria: "Estrutura", unidadeMedida: "m²" },
+//   { id: 3, nome: "Instalação Elétrica", categoria: "Instalações", unidadeMedida: "m" },
+//   { id: 4, nome: "Alvenaria de Vedação", categoria: "Alvenaria", unidadeMedida: "m²" },
+//   { id: 5, nome: "Aplicação de Argamassa", categoria: "Acabamento", unidadeMedida: "m²" },
+//   { id: 6, nome: "Instalação Hidráulica", categoria: "Instalações", unidadeMedida: "m" },
+// ];
 
 const getStatusIcon = (status: string) => {
   switch (status) {
@@ -55,6 +57,12 @@ export function RDOActivitiesSection({ form }: RDOActivitiesSectionProps) {
   const [isAtividadesOpen, setIsAtividadesOpen] = useState(true);
   const [isExtrasOpen, setIsExtrasOpen] = useState(false);
 
+  const obraId = form.watch("obraId");
+  const { activitiesList, isLoading } = useActivitiesSupabase({ obraId });
+
+  // Use real activities or empty if loading/none
+  const atividadesDisponiveis = activitiesList || [];
+
   const {
     fields: atividadesFields,
     append: appendAtividade,
@@ -76,12 +84,13 @@ export function RDOActivitiesSection({ form }: RDOActivitiesSectionProps) {
 
   const adicionarAtividade = (atividadeId: string) => {
     const atividade = atividadesDisponiveis.find(a => a.id.toString() === atividadeId);
-    if (atividade && !atividadesFields.find(a => a.nome === atividade.nome)) {
+    if (atividade && !atividadesFields.find(a => a.nome === atividade.titulo)) {
       appendAtividade({
-        nome: atividade.nome,
-        categoria: atividade.categoria,
-        quantidade: 1,
-        unidadeMedida: atividade.unidadeMedida,
+        id: atividade.id, // Keep the ID for reference
+        nome: atividade.titulo,
+        categoria: atividade.categoria || 'Geral',
+        quantidade: atividade.quantidade_prevista || 1,
+        unidadeMedida: atividade.unidade_medida || 'un',
         percentualConcluido: 0,
         status: 'Iniciada',
         observacoes: '',
@@ -124,29 +133,52 @@ export function RDOActivitiesSection({ form }: RDOActivitiesSectionProps) {
               </CardTitle>
             </CardHeader>
           </CollapsibleTrigger>
-          
+
           <CollapsibleContent>
             <CardContent className="space-y-4">
-              {/* Adicionar Atividade */}
-              <div className="flex gap-2">
-                <Select onValueChange={adicionarAtividade}>
-                  <SelectTrigger className="flex-1">
-                    <SelectValue placeholder="Adicionar atividade do cronograma" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {atividadesDisponiveis
-                      .filter(atividade => !atividadesFields.find(a => a.nome === atividade.nome))
-                      .map((atividade) => (
-                        <SelectItem key={atividade.id} value={atividade.id.toString()}>
-                          <div className="flex flex-col">
-                            <span className="font-medium">{atividade.nome}</span>
-                            <span className="text-sm text-muted-foreground">{atividade.categoria}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              {/* Feedback contextual */}
+              {!obraId ? (
+                <div className="flex items-center gap-2 p-3 rounded-md bg-muted/50 border border-border text-sm text-muted-foreground">
+                  <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                  <span>Selecione a <strong>obra</strong> no campo acima para carregar as atividades disponíveis.</span>
+                </div>
+              ) : isLoading ? (
+                <div className="flex items-center gap-2 p-3 rounded-md bg-muted/50 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin flex-shrink-0" />
+                  <span>Carregando atividades da obra...</span>
+                </div>
+              ) : atividadesDisponiveis.length === 0 ? (
+                <div className="flex items-center gap-2 p-3 rounded-md bg-amber-50 border border-amber-200 dark:bg-amber-950/20 dark:border-amber-800 text-sm">
+                  <AlertCircle className="h-4 w-4 flex-shrink-0 text-amber-600" />
+                  <span className="text-amber-700 dark:text-amber-400">
+                    Nenhuma atividade cadastrada para esta obra.{" "}
+                    <Link to="/atividades" className="font-medium underline underline-offset-2 hover:text-amber-900">
+                      Cadastrar atividade →
+                    </Link>
+                  </span>
+                </div>
+              ) : (
+                /* Adicionar Atividade */
+                <div className="flex gap-2">
+                  <Select onValueChange={adicionarAtividade}>
+                    <SelectTrigger className="flex-1">
+                      <SelectValue placeholder="Adicionar atividade do cronograma" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {atividadesDisponiveis
+                        .filter(atividade => !atividadesFields.find(a => a.nome === atividade.titulo))
+                        .map((atividade) => (
+                          <SelectItem key={atividade.id} value={atividade.id.toString()}>
+                            <div className="flex flex-col">
+                              <span className="font-medium">{atividade.titulo}</span>
+                              <span className="text-sm text-muted-foreground">{atividade.categoria || 'Sem categoria'}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               {/* Lista de Atividades */}
               <div className="space-y-3">
@@ -160,9 +192,9 @@ export function RDOActivitiesSection({ form }: RDOActivitiesSectionProps) {
                           <Badge variant="outline" className="text-xs">{atividade.categoria}</Badge>
                         </div>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => removeAtividade(index)}
                         className="text-destructive hover:text-destructive"
                       >
@@ -297,7 +329,7 @@ export function RDOActivitiesSection({ form }: RDOActivitiesSectionProps) {
               </CardTitle>
             </CardHeader>
           </CollapsibleTrigger>
-          
+
           <CollapsibleContent>
             <CardContent className="space-y-4">
               <div className="flex justify-between items-center">
@@ -314,9 +346,9 @@ export function RDOActivitiesSection({ form }: RDOActivitiesSectionProps) {
                 <div key={extra.id} className="p-4 bg-muted/20 rounded-lg border space-y-4">
                   <div className="flex justify-between items-start">
                     <h4 className="font-medium text-card-foreground">Atividade Extra #{index + 1}</h4>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => removeExtra(index)}
                       className="text-destructive hover:text-destructive"
                     >

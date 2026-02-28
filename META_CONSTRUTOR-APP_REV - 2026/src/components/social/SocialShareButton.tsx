@@ -18,6 +18,7 @@ interface SocialShareButtonProps {
   obraId?: string;
   rdoId?: string;
   onShareSuccess?: () => void;
+  compact?: boolean;
 }
 
 export const SocialShareButton = ({
@@ -26,7 +27,8 @@ export const SocialShareButton = ({
   imageUrl,
   obraId,
   rdoId,
-  onShareSuccess
+  onShareSuccess,
+  compact = false
 }: SocialShareButtonProps) => {
   const [showPreview, setShowPreview] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<'instagram' | 'linkedin' | null>(null);
@@ -121,9 +123,9 @@ export const SocialShareButton = ({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm">
-            <Share2 className="h-4 w-4 mr-2" />
-            Compartilhar
+          <Button variant={compact ? "ghost" : "outline"} size={compact ? "icon" : "sm"}>
+            <Share2 className="h-4 w-4" />
+            {!compact && <span className="ml-2">Compartilhar</span>}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">

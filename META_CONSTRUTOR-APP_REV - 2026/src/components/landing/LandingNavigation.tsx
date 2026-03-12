@@ -5,6 +5,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { usePricingNavigation } from '@/hooks/usePricingNavigation';
 import { cn } from '@/lib/utils';
 import Logo from '@/components/Logo';
+import { useAuth } from '@/components/auth/AuthContext';
+import { LogOut } from 'lucide-react';
 
 const menuItems = [
   { name: 'Apresentação', href: '/home' },
@@ -19,6 +21,7 @@ const LandingNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { navigateToFreePlan } = usePricingNavigation();
+  const { isAuthenticated, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -126,29 +129,53 @@ const LandingNavigation = () => {
 
               {/* Action Buttons */}
               <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigate('/login')}
-                  className={cn(isScrolled && 'hidden', 'touch-manipulation h-10 sm:h-9')}
-                >
-                  <span>Login</span>
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={() => navigate('/login')}
-                  className={cn(isScrolled && 'hidden', 'touch-manipulation h-10 sm:h-9')}
-                >
-                  <span>Começar Gratuitamente</span>
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={() => navigate('/login')}
-                  className={cn(isScrolled ? 'inline-flex' : 'hidden', 'touch-manipulation h-10 sm:h-9')}
-                >
-                  <span>Começar</span>
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
+                {!isAuthenticated ? (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => navigate('/login')}
+                      className={cn(isScrolled && 'hidden', 'touch-manipulation h-10 sm:h-9')}
+                    >
+                      <span>Login</span>
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => navigate('/criar-conta')}
+                      className={cn(isScrolled && 'hidden', 'touch-manipulation h-10 sm:h-9')}
+                    >
+                      <span>Começar Gratuitamente</span>
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => navigate('/criar-conta')}
+                      className={cn(isScrolled ? 'inline-flex' : 'hidden', 'touch-manipulation h-10 sm:h-9')}
+                    >
+                      <span>Começar</span>
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => signOut()}
+                      className="touch-manipulation h-10 sm:h-9"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      <span>Sair</span>
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => navigate('/app/dashboard')}
+                      className="touch-manipulation h-10 sm:h-9"
+                    >
+                      <span>Dashboard</span>
+                      <ArrowRight className="ml-1 h-4 w-4 hidden sm:inline-block" />
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { useDownload } from "@/hooks/useDownload";
 import { generateStandardFilename } from "@/utils/downloadHelper";
-import { generateRDOPdf, type RDOPdfData } from "@/utils/generateRDOPdf";
+import { useRDODownload } from "@/hooks/useRDODownload";
 import { toast } from "sonner";
 
 const RDOPage = () => {
@@ -36,7 +36,8 @@ const RDOPage = () => {
 
   const { rdos, isLoading, deleteRDO, createRDO, updateRDO } = useRDOs();
   const { obras } = useObras();
-  const { isLoading: isDownloading, startDownload } = useDownload();
+  const { isLoading: isCsvDownloading, startDownload } = useDownload();
+  const { downloadRDO, isDownloading: isPdfDownloading } = useRDODownload();
 
   const filteredRDOs = rdos.filter(rdo => {
     const obraNome = (rdo as any).obras?.nome || '';
@@ -83,123 +84,51 @@ const RDOPage = () => {
     startDownload(Promise.resolve(csv), filename, 'text/csv;charset=utf-8;');
   };
 
-  // Helper para baixar imagem via URL CORS e transformar em Base64
-  const urlToBase64 = async (url: string): Promise<string> => {
-    try {
-      const resp = await fetch(url);
-      const blob = await resp.blob();
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    } catch (e) {
-      console.error("Erro ao converter URL logo para base64:", e);
-      return "";
-    }
-  };
-
-  const handleDownloadSingleRDO = async (rdo: RDO) => {
-    const toastId = toast.loading('Gerando PDF do RDO...');
-    try {
-      // Lazy Fetch: Busca todos os detalhes do RDO no momento do download para não onerar a listagem
-      const { data: rawRdo, error } = await supabase
-        .from('rdos')
-        .select(`
-          *,
-          obras (nome, localizacao),
-          rdo_atividades (*),
-          rdo_equipes (*, equipes(*)),
-          rdo_equipamentos (*, equipamentos(*)),
-          documentos (*)
-        `)
-        .eq('id', rdo.id)
-        .single();
-
-      if (error) throw error;
-      if (!rawRdo) throw new Error("RDO não encontrado");
-
-      const fullRdo = rawRdo as any;
-
-      // Buscar nome do Responsável (temos que buscar na profiles pq a FK é pra auth.users)
-      const { data: profile } = await supabase.from('profiles').select('name, avatar_url').eq('id', fullRdo.criado_por_id).single();
-
-      let empresaLogoB64 = "";
-      if (profile && (profile as any).avatar_url) {
-        empresaLogoB64 = await urlToBase64((profile as any).avatar_url);
-      }
-
-      // Mapeamento dos detalhes JSONB (quando criados sem UUID de catálogo)
-      const isRecordArray = (val: any): val is any[] => Array.isArray(val) && val.length > 0;
-      const getDetalhes = (key: string) => {
-        const det = fullRdo.detalhes as Record<string, any>;
-        if (!det) return [];
-        return isRecordArray(det[key]) ? det[key] : [];
-      };
-
-      // Combinando Arrays (Tabelas Relacionais + JSONB fallback)
-      const atividadesList = (fullRdo.rdo_atividades || []).map((a: any) => ({
-        nome: a.nome,
-        status: a.status,
-        percentual: a.percentual_concluido,
-        quantidade: a.quantidade,
-        unidade: a.unidade_medida
-      }));
-
-      const equipesList = [
-        ...(fullRdo.rdo_equipes || []).map((e: any) => ({
-          nome: e.equipes?.nome || 'Equipe',
-          funcao: e.equipes?.funcao,
-          quantidade: e.quantidade
-        })),
-        ...getDetalhes('equipes').map((e: any) => ({ nome: e.nome, funcao: e.funcao, quantidade: e.quantidade }))
-      ];
-
-      const equipamentosList = [
-        ...(fullRdo.rdo_equipamentos || []).map((e: any) => ({
-          nome: e.equipamentos?.nome || 'Equipamento',
-          status: e.status,
-          horasUso: e.horas_uso
-        })),
-        ...getDetalhes('equipamentos').map((e: any) => ({
-          nome: e.nome,
-          status: e.status,
-          horasUso: e.horasUso
-        }))
-      ];
-
-      const pdfData: RDOPdfData = {
-        id: fullRdo.id,
-        numero: fullRdo.numero,
-        data: fullRdo.data,
-        periodo: fullRdo.periodo ?? 'Integral',
-        clima: fullRdo.clima ?? 'N/A',
-        status: fullRdo.status,
-        obraNome: fullRdo.obras?.nome ?? 'Obra não informada',
-        obraLocal: fullRdo.obras?.localizacao,
-        responsavel: profile ? (profile as any).name : 'Responsável',
-        observacoes: fullRdo.observacoes,
-        equipes: equipesList,
-        atividades: atividadesList,
-        equipamentos: equipamentosList,
-        empresaLogo: empresaLogoB64,
-        documentos: fullRdo.documentos?.map((d: any) => ({ nome: d.nome, tipo: d.tipo })) ?? [],
-      };
-
-
-      const { blob, filename } = await generateRDOPdf(pdfData);
-      startDownload(Promise.resolve(blob), filename, 'application/pdf');
-      toast.success('PDF gerado com sucesso!', { id: toastId });
-    } catch (err) {
-      console.error('Erro ao gerar PDF do RDO:', err);
-      toast.error('Falha ao gerar PDF. Tente novamente.', { id: toastId });
-    }
-  };
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
     setEditingRDO(null);
+  };
+
+  // Helper functions for mapping
+  const mapAtividades = (atividades: any[], isExtra: boolean) =>
+    Array.isArray(atividades) ? atividades.filter(a => a.is_extra === isExtra).map(a => ({
+      id: a.id,
+      nome: a.nome,
+      categoria: a.categoria,
+      quantidade: a.quantidade,
+      unidadeMedida: a.unidade_medida,
+      percentualConcluido: a.percentual_concluido,
+      status: a.status,
+      observacoes: !isExtra ? a.observacoes : undefined,
+      justificativa: isExtra ? a.justificativa : undefined,
+      descricao: isExtra ? a.justificativa : (a.observacoes || '')
+    })) : [];
+
+  const mapEquipes = (rdo: any) => {
+    const fromDb = Array.isArray(rdo.rdo_equipes) ? rdo.rdo_equipes.map((re: any) => ({
+      id: re.equipe_id,
+      nome: re.equipes?.nome || 'Equipe',
+      funcao: re.equipes?.funcao || 'Geral',
+      horasTrabalho: re.horas_trabalho,
+      presente: re.presente,
+      horasOciosas: re.horas_ociosas
+    })) : [];
+    const fromJson = Array.isArray(rdo.detalhes?.equipes) ? rdo.detalhes.equipes : [];
+    return [...fromDb, ...fromJson];
+  };
+
+  const mapEquipamentos = (rdo: any) => {
+    const fromDb = Array.isArray(rdo.rdo_equipamentos) ? rdo.rdo_equipamentos.map((re: any) => ({
+      id: re.equipamento_id,
+      nome: re.equipamentos?.nome || 'Equipamento',
+      categoria: re.equipamentos?.categoria || 'Geral',
+      horasUso: re.horas_uso,
+      status: re.status,
+      observacoes: re.observacoes
+    })) : [];
+    const fromJson = Array.isArray(rdo.detalhes?.equipamentos) ? rdo.detalhes.equipamentos : [];
+    return [...fromDb, ...fromJson];
   };
 
   // Map Supabase RDO to component format
@@ -215,17 +144,17 @@ const RDOPage = () => {
     aprovadoPorId: rdo.aprovado_por_id,
     aprovadoPorNome: rdo.aprovado_por_id ? 'Aprovador' : undefined,
     dataAprovacao: rdo.data_aprovacao,
-    atividadesRealizadas: [],
-    atividadesExtras: [],
+    atividadesRealizadas: mapAtividades(rdo.rdo_atividades, false),
+    atividadesExtras: mapAtividades(rdo.rdo_atividades, true),
     periodo: rdo.periodo,
     clima: rdo.clima,
     equipeOciosa: rdo.equipe_ociosa,
-    equipesPresentes: [],
-    equipamentosUtilizados: [],
-    equipamentosQuebrados: [],
-    acidentes: [],
-    materiaisFalta: [],
-    estoqueMateriais: [],
+    equipesPresentes: mapEquipes(rdo),
+    equipamentosUtilizados: mapEquipamentos(rdo),
+    equipamentosQuebrados: rdo.detalhes?.equipamentosQuebrados || [],
+    acidentes: rdo.detalhes?.acidentes || [],
+    materiaisFalta: rdo.detalhes?.materiaisFalta || [],
+    estoqueMateriais: rdo.detalhes?.estoqueMateriais || [],
     observacoes: rdo.observacoes || '',
     // Map documents to images and files
     imagens: rdo.documentos?.filter((d: any) => d.tipo && (d.tipo.includes('image') || ['jpg', 'jpeg', 'png', 'webp'].includes(d.tipo))).map((d: any) => d.url) || [],
@@ -246,14 +175,14 @@ const RDOPage = () => {
             variant="outline"
             className="w-full sm:w-auto"
             onClick={handleExportRDOs}
-            disabled={isDownloading}
+            disabled={isCsvDownloading}
           >
-            {isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+            {isCsvDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
             Exportar
           </Button>
           <Button
             className="gradient-construction border-0 hover:opacity-90 w-full sm:w-auto"
-            onClick={() => navigate('/rdo/novo')}
+            onClick={() => navigate('/app/rdo/novo')}
           >
             <Plus className="mr-2 h-4 w-4" />
             Novo RDO
@@ -343,7 +272,7 @@ const RDOPage = () => {
                   rdo={mappedRDO}
                   onEdit={handleEditRDO}
                   onDelete={handleDeleteRDO}
-                  onDownload={() => handleDownloadSingleRDO(mappedRDO as any)}
+                  onDownload={() => downloadRDO(String(mappedRDO.id))}
                 />
               );
             })}
@@ -364,7 +293,7 @@ const RDOPage = () => {
             <div className="mt-6">
               <Button
                 className="gradient-construction border-0 hover:opacity-90"
-                onClick={() => navigate('/rdo/novo')}
+                onClick={() => navigate('/app/rdo/novo')}
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Criar Primeiro RDO
@@ -392,3 +321,5 @@ const RDOPage = () => {
 };
 
 export default RDOPage;
+ 
+

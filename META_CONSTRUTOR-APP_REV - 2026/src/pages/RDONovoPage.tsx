@@ -5,13 +5,14 @@
  * As seções filhas já têm seu próprio Card — não encapsulamos aqui.
  */
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useCredits } from "@/hooks/useCredits";
 import {
     ArrowLeft,
     Send,
@@ -44,16 +45,19 @@ import { toast } from "sonner";
 
 const RDONovoPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const preselectedObraId = location.state?.selectedObraId || "";
     const { obras } = useObras();
     const { createRDO } = useRDOs();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { isFreePlan, hasCredits, balance } = useCredits();
 
     const form = useForm<RDOFormData>({
         resolver: zodResolver(rdoSchema),
         mode: "onSubmit",
         defaultValues: {
             data: new Date().toISOString().split("T")[0],
-            obraId: "",
+            obraId: preselectedObraId,
             periodo: "Manhã",
             clima: "",
             equipeOciosa: false,
@@ -127,7 +131,7 @@ const RDONovoPage = () => {
                 files: data.files,
             });
             // onSuccess do hook já mostra toast.success
-            navigate("/rdo");
+            navigate("/app/rdo");
         } catch (err: any) {
             // onError do hook já mostra toast.error — mas garantimos fallback aqui
             console.error("[RDONovoPage] Erro ao salvar:", err);
@@ -147,7 +151,7 @@ const RDONovoPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="bg-background">
             {/* ─── Top bar ─── */}
             <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border">
                 <div className="max-w-[1400px] mx-auto px-4 md:px-6 h-14 flex items-center gap-2">
@@ -155,7 +159,7 @@ const RDONovoPage = () => {
                         type="button"
                         variant="ghost"
                         size="sm"
-                        onClick={() => navigate("/rdo")}
+                        onClick={() => navigate("/app/rdo")}
                         className="text-muted-foreground hover:text-foreground gap-1.5 px-2"
                     >
                         <ArrowLeft className="h-4 w-4" />
@@ -190,7 +194,7 @@ const RDONovoPage = () => {
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(handleSubmit, onInvalid)} noValidate>
-                        <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-6 items-start">
+                        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-start">
 
                             {/* ─── LEFT COLUMN ─── */}
                             <div className="space-y-4 min-w-0">
@@ -227,24 +231,38 @@ const RDONovoPage = () => {
                                 <SectionHeader n={8} label="Anexos" icon={<Paperclip className="h-4 w-4" />} filled={sections[7].filled} />
                                 <RDOAttachmentsSection form={form} />
 
-                                {/* Botões mobile */}
-                                <div className="xl:hidden pt-2 pb-10 flex flex-col gap-3">
+                                {/* Botões mobile/tablet — visível abaixo de lg */}
+                                <div className="lg:hidden pt-2 pb-10 flex flex-col gap-3">
+                                    {isFreePlan && !hasCredits && (
+                                        <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-center">
+                                            <AlertTriangle className="h-4 w-4 text-destructive mx-auto mb-1" />
+                                            <p className="text-xs font-medium text-destructive">Seus créditos de RDO acabaram</p>
+                                            <p className="text-[11px] text-muted-foreground mt-0.5">Faça upgrade para criar RDOs ilimitados</p>
+                                        </div>
+                                    )}
+                                    {isFreePlan && hasCredits && (
+                                        <p className="text-center text-xs text-muted-foreground">
+                                            <span className={balance <= 2 ? "text-yellow-600 font-medium" : ""}>
+                                                {balance} crédito{balance !== 1 ? 's' : ''} restante{balance !== 1 ? 's' : ''}
+                                            </span>
+                                        </p>
+                                    )}
                                     <Button
                                         type="submit"
-                                        disabled={isSubmitting}
+                                        disabled={isSubmitting || (isFreePlan && !hasCredits)}
                                         className="gradient-construction border-0 hover:opacity-90 h-12 font-semibold text-base"
                                     >
                                         {isSubmitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
-                                        {isSubmitting ? "Salvando..." : "Finalizar e Enviar RDO"}
+                                        {isSubmitting ? "Salvando..." : (isFreePlan && !hasCredits) ? "Sem créditos" : "Finalizar e Enviar RDO"}
                                     </Button>
-                                    <Button type="button" variant="outline" className="h-11" onClick={() => navigate("/rdo")}>
+                                    <Button type="button" variant="outline" className="h-11" onClick={() => navigate("/app/rdo")}>
                                         Cancelar
                                     </Button>
                                 </div>
                             </div>
 
                             {/* ─── RIGHT COLUMN — Painel Sticky ─── */}
-                            <div className="hidden xl:block">
+                            <div className="hidden lg:block">
                                 <div className="sticky top-[72px] space-y-3">
 
                                     {/* Card de resumo */}
@@ -319,21 +337,45 @@ const RDONovoPage = () => {
 
                                             {/* Ações */}
                                             <div className="space-y-2">
+                                                {/* Alerta de créditos */}
+                                                {isFreePlan && !hasCredits && (
+                                                    <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-center">
+                                                        <AlertTriangle className="h-4 w-4 text-destructive mx-auto mb-1" />
+                                                        <p className="text-xs font-medium text-destructive">Seus créditos de RDO acabaram</p>
+                                                        <p className="text-[11px] text-muted-foreground mt-0.5">Faça upgrade para criar RDOs ilimitados</p>
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="mt-2 h-7 text-xs border-destructive/30 text-destructive hover:bg-destructive/10"
+                                                            onClick={() => navigate("/app/perfil?tab=assinatura")}
+                                                        >
+                                                            Ver planos
+                                                        </Button>
+                                                    </div>
+                                                )}
+                                                {isFreePlan && hasCredits && (
+                                                    <p className="text-center text-xs text-muted-foreground">
+                                                        <span className={balance <= 2 ? "text-yellow-600 font-medium" : ""}>
+                                                            {balance} crédito{balance !== 1 ? 's' : ''} restante{balance !== 1 ? 's' : ''}
+                                                        </span>
+                                                    </p>
+                                                )}
                                                 <Button
                                                     type="submit"
-                                                    disabled={isSubmitting}
+                                                    disabled={isSubmitting || (isFreePlan && !hasCredits)}
                                                     className="w-full gradient-construction border-0 hover:opacity-90 h-10 font-semibold"
                                                 >
                                                     {isSubmitting
                                                         ? <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                                                         : <Send className="h-4 w-4 mr-2" />}
-                                                    {isSubmitting ? "Salvando..." : "Finalizar RDO"}
+                                                    {isSubmitting ? "Salvando..." : (isFreePlan && !hasCredits) ? "Sem créditos" : "Finalizar RDO"}
                                                 </Button>
                                                 <Button
                                                     type="button"
                                                     variant="outline"
                                                     className="w-full h-9 text-sm"
-                                                    onClick={() => navigate("/rdo")}
+                                                    onClick={() => navigate("/app/rdo")}
                                                     disabled={isSubmitting}
                                                 >
                                                     Cancelar

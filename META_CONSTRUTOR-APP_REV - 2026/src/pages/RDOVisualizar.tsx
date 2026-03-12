@@ -13,11 +13,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { getSignedUrl, deleteDocumento } from "@/utils/storageUtils";
+import { RDONotasSection } from "@/components/rdo/RDONotasSection";
+import { useRDODownload } from "@/hooks/useRDODownload";
 
 
 const RDOVisualizar = () => {
   const { id } = useParams();
+  const rdoId = id as string;
   const { data: rdoRaw, isLoading, error } = useRDODetails(id);
+  const { downloadRDO, isDownloading: isPdfDownloading } = useRDODownload();
   const rdo = rdoRaw as any;
   const queryClient = useQueryClient();
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -88,7 +92,7 @@ const RDOVisualizar = () => {
     return (
       <div className="flex flex-col items-center justify-center py-12">
         <h2 className="text-xl font-semibold mb-2">RDO nÃ£o encontrado</h2>
-        <Link to="/rdo">
+        <Link to="/app/rdo">
           <Button variant="outline">Voltar para RDOs</Button>
         </Link>
       </div>
@@ -169,8 +173,13 @@ const RDOVisualizar = () => {
             <Mail className="mr-2 h-4 w-4" />
             Enviar por Email
           </Button>
-          <Button variant="outline" className="w-full sm:w-auto">
-            <Download className="mr-2 h-4 w-4" />
+          <Button
+            variant="outline"
+            className="w-full sm:w-auto"
+            onClick={() => downloadRDO(rdoId)}
+            disabled={isPdfDownloading}
+          >
+            {isPdfDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
             Baixar PDF
           </Button>
           <Button className="gradient-construction border-0 hover:opacity-90 w-full sm:w-auto">
@@ -364,6 +373,9 @@ const RDOVisualizar = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Seção de Notas Múltiplas */}
+      <RDONotasSection rdoId={rdoData.id} />
     </div>
   );
 };

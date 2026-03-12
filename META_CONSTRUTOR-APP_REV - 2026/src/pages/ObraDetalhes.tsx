@@ -48,7 +48,7 @@ const ObraDetalhes = () => {
       <div className="flex h-screen items-center justify-center flex-col gap-4">
         <h2 className="text-xl font-semibold">Erro ao carregar obra</h2>
         <p className="text-muted-foreground">Não foi possível encontrar os detalhes desta obra.</p>
-        <Link to="/obras">
+        <Link to="/app/obras">
           <Button variant="outline">Voltar para Obras</Button>
         </Link>
       </div>
@@ -117,7 +117,7 @@ const ObraDetalhes = () => {
             imageUrl={obra.area ? undefined : undefined}
             obraId={obra.id.toString()}
           />
-          <Link to="/rdo" className="w-full sm:w-auto">
+          <Link to="/app/rdo" className="w-full sm:w-auto">
             <Button className="gradient-construction border-0 hover:opacity-90 w-full sm:w-auto">
               <FileText className="mr-2 h-4 w-4" />
               Criar RDO
@@ -173,11 +173,12 @@ const ObraDetalhes = () => {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 sm:grid-cols-7 bg-muted">
+        <TabsList className="grid w-full grid-cols-4 sm:grid-cols-8 bg-muted">
           <TabsTrigger value="geral" className="text-xs sm:text-sm">Geral</TabsTrigger>
           <TabsTrigger value="documentos" className="text-xs sm:text-sm">Documentos</TabsTrigger>
           <TabsTrigger value="rdos" className="text-xs sm:text-sm">RDOs</TabsTrigger>
-          <TabsTrigger value="equipe" className="text-xs sm:text-sm">Equipe</TabsTrigger>
+          <TabsTrigger value="atividades" className="text-xs sm:text-sm">Atividades</TabsTrigger>
+          <TabsTrigger value="equipes" className="text-xs sm:text-sm">Equipes</TabsTrigger>
           <TabsTrigger value="equipamentos" className="text-xs sm:text-sm">Equipamentos</TabsTrigger>
           <TabsTrigger value="financeiro" className="text-xs sm:text-sm">Financeiro</TabsTrigger>
           <TabsTrigger value="imagens" className="text-xs sm:text-sm">Imagens</TabsTrigger>
@@ -254,7 +255,7 @@ const ObraDetalhes = () => {
                   <CardTitle className="text-card-foreground">Relatórios Diários de Obra (RDO)</CardTitle>
                   <CardDescription>RDOs vinculados a esta obra</CardDescription>
                 </div>
-                <Link to="/rdo">
+                <Link to="/app/rdo/novo" state={{ selectedObraId: id }}>
                   <Button className="gradient-construction border-0">
                     <FileText className="mr-2 h-4 w-4" />
                     Novo RDO
@@ -272,7 +273,7 @@ const ObraDetalhes = () => {
                 <div className="text-center py-8">
                   <FileText className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
                   <p className="text-muted-foreground">Nenhum RDO cadastrado para esta obra</p>
-                  <Link to="/rdo" className="mt-3 inline-block">
+                  <Link to="/app/rdo/novo" state={{ selectedObraId: id }} className="mt-3 inline-block">
                     <Button size="sm" className="gradient-construction border-0">
                       <FileText className="mr-2 h-4 w-4" />
                       Criar primeiro RDO
@@ -317,7 +318,7 @@ const ObraDetalhes = () => {
                             </p>
                           )}
                         </div>
-                        <Link to={`/rdo/${rdo.id}/visualizar`}>
+                        <Link to={`/app/rdo/${rdo.id}/visualizar`}>
                           <Button size="sm" variant="outline">Ver Detalhes</Button>
                         </Link>
                       </div>
@@ -329,7 +330,7 @@ const ObraDetalhes = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="equipe" className="space-y-6">
+        <TabsContent value="equipes" className="space-y-6">
           <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="text-card-foreground">Equipes Alocadas</CardTitle>
@@ -348,6 +349,26 @@ const ObraDetalhes = () => {
                   <Badge variant="outline">{equipe.membros} membros</Badge>
                 </div>
               ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="atividades" className="space-y-6">
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle className="text-card-foreground">Atividades da Obra</CardTitle>
+              <CardDescription>Atividades vinculadas a esta obra</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="text-center py-8">
+                <FileText className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+                <p className="text-muted-foreground">Módulo de atividades em desenvolvimento / centralizado na listagem principal.</p>
+                <Link to="/app/atividades" className="mt-3 inline-block">
+                  <Button size="sm" variant="outline">
+                    Gerenciar Atividades Globalmente
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

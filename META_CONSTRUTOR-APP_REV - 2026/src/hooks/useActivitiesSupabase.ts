@@ -5,6 +5,7 @@ import { useAuth } from '@/components/auth/AuthContext';
 import { notifyActivityChange } from '@/utils/notificationService';
 import { useRequireOrg } from '@/hooks/requireOrg';
 import { RealtimeChannel } from '@supabase/supabase-js';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface Activity {
   id: string;
@@ -54,6 +55,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
   const { orgId, isLoading: orgLoading } = useRequireOrg();
+  const queryClient = useQueryClient();
 
   // Refs for component stability
   const isMountedRef = useRef(true);
@@ -344,6 +346,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
       }
 
       await loadActivities();
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
       return result;
     } catch (error) {
       console.error('Error saving activity:', error);
@@ -354,7 +357,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
       });
       return null;
     }
-  }, [isAuthenticated, user?.id, toast, loadActivities]);
+  }, [isAuthenticated, user?.id, toast, loadActivities, orgId, queryClient]);
 
   // Deletar atividade
   const deleteActivity = useCallback(async (activityId: string) => {
@@ -376,6 +379,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
 
       toast({ title: 'Atividade excluída', description: 'A atividade foi removida com sucesso.' });
       await loadActivities();
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
     } catch (error) {
       console.error('Error deleting activity:', error);
       toast({
@@ -384,7 +388,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
         variant: 'destructive',
       });
     }
-  }, [isAuthenticated, user?.id, activities, toast, loadActivities]);
+  }, [isAuthenticated, user?.id, activities, toast, loadActivities, orgId, queryClient]);
 
   // Helpers
   const getActivitiesForDate = useCallback((date: string): Activity[] => {

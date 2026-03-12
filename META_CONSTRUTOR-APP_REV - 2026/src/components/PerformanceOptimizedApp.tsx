@@ -13,6 +13,7 @@ import { SafeSuspense } from '@/components/SafeSuspense';
 import OptimizedLayout from '@/components/OptimizedLayout';
 import { AuthWrapper } from '@/components/auth/AuthWrapper';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import PublicRoute from '@/components/auth/PublicRoute';
 import type { UserRole } from '@/types/user';
 import { AuditProvider } from '@/components/security/AuditLogger';
 import { OrgProvider } from '@/contexts/OrgContext';
@@ -351,12 +352,12 @@ export const PerformanceOptimizedApp = memo(() => (
                       {/* Rota raiz redireciona para home */}
                       <Route path="/" element={<Navigate to="/home" replace />} />
                       {/* Rotas públicas sem layout */}
-                      <Route path="/login" element={<Login />} />
+                      <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
                       <Route path="/logout" element={<Logout />} />
-                      <Route path="/recuperar-senha" element={<RecuperarSenha />} />
-                      <Route path="/redefinir-senha" element={<RedefinirSenha />} />
-                      <Route path="/criar-conta" element={<CriarConta />} />
-                      <Route path="/mfa" element={<MFA />} />
+                      <Route path="/recuperar-senha" element={<PublicRoute><RecuperarSenha /></PublicRoute>} />
+                      <Route path="/redefinir-senha" element={<PublicRoute><RedefinirSenha /></PublicRoute>} />
+                      <Route path="/criar-conta" element={<PublicRoute><CriarConta /></PublicRoute>} />
+                      <Route path="/mfa" element={<PublicRoute><MFA /></PublicRoute>} />
                       <Route path="/renovar-sessao" element={<RenovarSessao />} />
                       <Route path="/home" element={<Index />} />
                       <Route path="/sobre" element={<SafeSuspense><Sobre /></SafeSuspense>} />
@@ -375,64 +376,64 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/status" element={<SafeSuspense><StatusPage /></SafeSuspense>} />
                       <Route path="/api" element={<SafeSuspense><APIPage /></SafeSuspense>} />
                       {/* Rotas de Checkout */}
-                      <Route path="/checkout" element={<Checkout />} />
-                      <Route path="/checkout/success" element={<CheckoutSuccess />} />
-                      <Route path="/checkout/cancel" element={<CheckoutCancel />} />
+                      <Route path="/checkout" element={<PublicRoute><Checkout /></PublicRoute>} />
+                      <Route path="/checkout/success" element={<PublicRoute><CheckoutSuccess /></PublicRoute>} />
+                      <Route path="/checkout/cancel" element={<PublicRoute><CheckoutCancel /></PublicRoute>} />
                       {/* Dashboard protegido */}
-                      <Route path="/dashboard" element={<ProtectedPage><Dashboard /></ProtectedPage>} />
+                      <Route path="/app/dashboard" element={<ProtectedPage><Dashboard /></ProtectedPage>} />
                       {/* Obras */}
-                      <Route path="/obras" element={<ProtectedPage><Obras /></ProtectedPage>} />
-                      <Route path="/obras/:id" element={<ProtectedPage><ObraDetalhes /></ProtectedPage>} />
-                      <Route path="/obras/:id/editar" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Obras /></ProtectedPage>} />
+                      <Route path="/app/obras" element={<ProtectedPage><Obras /></ProtectedPage>} />
+                      <Route path="/app/obras/:id" element={<ProtectedPage><ObraDetalhes /></ProtectedPage>} />
+                      <Route path="/app/obras/:id/editar" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Obras /></ProtectedPage>} />
                       {/* RDO */}
-                      <Route path="/rdo" element={<ProtectedPage><RDO /></ProtectedPage>} />
-                      <Route path="/rdo/novo" element={<ProtectedPage><RDONovoPage /></ProtectedPage>} />
-                      <Route path="/rdo/:id/visualizar" element={<ProtectedPage><RDOVisualizar /></ProtectedPage>} />
-                      <Route path="/rdo/:id/editar" element={<ProtectedPage><RDONovoPage /></ProtectedPage>} />
+                      <Route path="/app/rdo" element={<ProtectedPage><RDO /></ProtectedPage>} />
+                      <Route path="/app/rdo/novo" element={<ProtectedPage><RDONovoPage /></ProtectedPage>} />
+                      <Route path="/app/rdo/:id/visualizar" element={<ProtectedPage><RDOVisualizar /></ProtectedPage>} />
+                      <Route path="/app/rdo/:id/editar" element={<ProtectedPage><RDONovoPage /></ProtectedPage>} />
                       {/* Atividades */}
-                      <Route path="/atividades" element={<ProtectedPage><Atividades /></ProtectedPage>} />
+                      <Route path="/app/atividades" element={<ProtectedPage><Atividades /></ProtectedPage>} />
                       {/* Checklist */}
-                      <Route path="/checklist" element={<ProtectedPage><Checklist /></ProtectedPage>} />
-                      <Route path="/checklist/:id" element={<ProtectedPage><ChecklistDetalhes /></ProtectedPage>} />
+                      <Route path="/app/checklist" element={<ProtectedPage><Checklist /></ProtectedPage>} />
+                      <Route path="/app/checklist/:id" element={<ProtectedPage><ChecklistDetalhes /></ProtectedPage>} />
                       {/* Equipes */}
-                      <Route path="/equipes" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
-                      <Route path="/equipes/novo" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
-                      <Route path="/equipes/:id/editar" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
+                      <Route path="/app/equipes" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
+                      <Route path="/app/equipes/novo" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
+                      <Route path="/app/equipes/:id/editar" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
                       {/* Colaboradores */}
-                      <Route path="/colaboradores" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
-                      <Route path="/colaboradores/novo" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
-                      <Route path="/colaboradores/:id/editar" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
+                      <Route path="/app/colaboradores" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
+                      <Route path="/app/colaboradores/novo" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
+                      <Route path="/app/colaboradores/:id/editar" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
                       {/* Equipamentos */}
-                      <Route path="/equipamentos" element={<ProtectedPage><Equipamentos /></ProtectedPage>} />
+                      <Route path="/app/equipamentos" element={<ProtectedPage><Equipamentos /></ProtectedPage>} />
                       {/* Mais - Menu PWA */}
-                      <Route path="/mais" element={<ProtectedPage><Mais /></ProtectedPage>} />
+                      <Route path="/app/mais" element={<ProtectedPage><Mais /></ProtectedPage>} />
                       {/* Documentos */}
-                      <Route path="/documentos" element={<ProtectedPage><Documentos /></ProtectedPage>} />
+                      <Route path="/app/documentos" element={<ProtectedPage><Documentos /></ProtectedPage>} />
                       {/* Fornecedores */}
-                      <Route path="/fornecedores" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Fornecedores /></ProtectedPage>} />
+                      <Route path="/app/fornecedores" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Fornecedores /></ProtectedPage>} />
                       {/* Despesas */}
-                      <Route path="/despesas" element={<ProtectedPage><Despesas /></ProtectedPage>} />
+                      <Route path="/app/despesas" element={<ProtectedPage><Despesas /></ProtectedPage>} />
                       {/* Relatórios */}
-                      <Route path="/relatorios" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Relatorios /></ProtectedPage>} />
+                      <Route path="/app/relatorios" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Relatorios /></ProtectedPage>} />
                       {/* Integrações */}
-                      <Route path="/integracoes" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Integracoes /></ProtectedPage>} />
-                      <Route path="/integracoes/*" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Integracoes /></ProtectedPage>} />
+                      <Route path="/app/integracoes" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Integracoes /></ProtectedPage>} />
+                      <Route path="/app/integracoes/*" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Integracoes /></ProtectedPage>} />
                       {/* Configurações */}
-                      <Route path="/configuracoes" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Configuracoes /></ProtectedPage>} />
+                      <Route path="/app/configuracoes" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Configuracoes /></ProtectedPage>} />
                       {/* Perfil */}
-                      <Route path="/perfil" element={<ProtectedPage><Perfil /></ProtectedPage>} />
+                      <Route path="/app/perfil" element={<ProtectedPage><Perfil /></ProtectedPage>} />
                       {/* Notificações */}
-                      <Route path="/notificacoes" element={<ProtectedPage><Notificacoes /></ProtectedPage>} />
+                      <Route path="/app/notificacoes" element={<ProtectedPage><Notificacoes /></ProtectedPage>} />
                       {/* Feedback e FAQ */}
-                      <Route path="/feedback" element={<ProtectedPage><Feedback /></ProtectedPage>} />
-                      <Route path="/faq" element={<ProtectedPage><FAQ /></ProtectedPage>} />
+                      <Route path="/app/feedback" element={<ProtectedPage><Feedback /></ProtectedPage>} />
+                      <Route path="/app/faq" element={<ProtectedPage><FAQ /></ProtectedPage>} />
                       {/* Segurança */}
-                      <Route path="/seguranca" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Seguranca /></ProtectedPage>} />
+                      <Route path="/app/seguranca" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Seguranca /></ProtectedPage>} />
                       {/* Painel Administrativo */}
-                      <Route path="/admin/dashboard" element={<ProtectedPage roles={["Presidente"]}><AdminDashboard /></ProtectedPage>} />
+                      <Route path="/app/admin/dashboard" element={<ProtectedPage roles={["Presidente"]}><AdminDashboard /></ProtectedPage>} />
                       {/* Perfil Público e Configurações */}
                       <Route path="/perfil/:slug" element={<PerfilPublico />} />
-                      <Route path="/configurar-perfil" element={<ProtectedPage><ConfigurarPerfil /></ProtectedPage>} />
+                      <Route path="/app/configurar-perfil" element={<ProtectedPage><ConfigurarPerfil /></ProtectedPage>} />
                       {/* 404 */}
                       <Route path="*" element={<SafeSuspense><NotFound /></SafeSuspense>} />
                     </Routes>

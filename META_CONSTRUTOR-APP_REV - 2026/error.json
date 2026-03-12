@@ -1,0 +1,9 @@
+{
+  "error": {
+    "code": "23502",
+    "details": "Failing row contains (1d9e4de2-ab45-4714-a921-85c7791cf1ea, Obra Teste Error Capture, null, null, null, null, 0, null, null, ACTIVE, null, null, null, null, null, 0c1711ea-555c-4ea8-b461-1bc2d596cb09, 2026-03-04 12:12:15.2147+00, 2026-03-04 12:12:15.2147+00, f, null, null, 7baad9ac-55d5-4774-bb03-a285e305b05d).",
+    "hint": null,
+    "message": "null value in column \"localizacao\" of relation \"obras\" violates not-null constraint"
+  },
+  "data": null
+}

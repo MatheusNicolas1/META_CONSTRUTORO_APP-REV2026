@@ -73,7 +73,7 @@ function RDOCard({ rdo }: RDOCardProps) {
           </div>
 
           <div className="flex items-center gap-2 ml-3">
-            <Link to={`/rdo/${rdo.id}/editar`} onClick={(e) => e.stopPropagation()}>
+            <Link to={`/app/rdo/${rdo.id}/editar`} onClick={(e) => e.stopPropagation()}>
               <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
                 <FileText className="h-3 w-3" />
               </Button>
@@ -164,7 +164,7 @@ function RDOCard({ rdo }: RDOCardProps) {
 
         {/* Botão de ação principal */}
         <div className="mt-4 pt-3 border-t border-border/30">
-          <Link to={`/rdo/${rdo.id}/visualizar`} onClick={(e) => e.stopPropagation()}>
+          <Link to={`/app/rdo/${rdo.id}/visualizar`} onClick={(e) => e.stopPropagation()}>
             <Button variant="outline" size="sm" className="w-full h-8 text-xs font-medium">
               Visualizar RDO Completo
             </Button>
@@ -225,7 +225,7 @@ export function RecentRDOs() {
             <div className="text-center py-8 text-muted-foreground text-sm">
               Nenhum RDO cadastrado ainda.
               <br />
-              <Link to="/rdo" className="text-construction-orange hover:underline mt-2 inline-block">
+              <Link to="/app/rdo" className="text-construction-orange hover:underline mt-2 inline-block">
                 Criar seu primeiro RDO
               </Link>
             </div>
@@ -233,7 +233,7 @@ export function RecentRDOs() {
         </div>
 
         {rdos && rdos.length > 0 && (
-          <Link to="/rdo">
+          <Link to="/app/rdo">
             <Button variant="outline" className="w-full mt-3 sm:mt-4 h-9 text-sm">
               Ver Todos os RDOs
             </Button>

@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import { format } from "date-fns";
 import { FileText, Calendar, Building2, Clock, Sun, Cloud, CloudRain, CloudSnow } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
@@ -24,9 +24,7 @@ const climaOptions = [
 
 import { useObras } from "@/hooks/useObras";
 import { Skeleton } from "@/components/ui/skeleton";
-
-// Mock removed
-
+import { useState } from "react";
 
 export function RDOFormHeader({ form }: RDOFormHeaderProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
@@ -58,7 +56,7 @@ export function RDOFormHeader({ form }: RDOFormHeaderProps) {
                     date={selectedDate}
                     onDateChange={(date) => {
                       setSelectedDate(date);
-                      field.onChange(date?.toISOString().split('T')[0] || '');
+                      field.onChange(date ? format(date, 'yyyy-MM-dd') : '');
                     }}
                     placeholder="Selecione a data"
                     className="w-full"

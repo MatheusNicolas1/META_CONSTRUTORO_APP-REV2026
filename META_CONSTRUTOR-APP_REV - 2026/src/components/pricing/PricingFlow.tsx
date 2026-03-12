@@ -158,7 +158,7 @@ export function PricingFlow({ showHeader = true }: { showHeader?: boolean }) {
 
         queryClient.invalidateQueries({ queryKey: ['subscription'] });
         setTimeout(() => {
-            navigate('/perfil');
+            navigate('/app/perfil');
         }, 3000);
     };
 

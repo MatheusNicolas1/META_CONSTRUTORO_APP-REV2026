@@ -30,7 +30,7 @@ export const useFornecedores = () => {
       const { data, error } = await supabase
         .from('fornecedores')
         .select('*')
-        .eq('created_by', user.id)
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -48,8 +48,7 @@ export const useFornecedores = () => {
         .from('fornecedores')
         .insert({
           ...fornecedorData,
-          created_by: user.id,
-          org_id: orgId,
+          user_id: user.id,
           ativo: fornecedorData.ativo ?? true,
         })
         .select()

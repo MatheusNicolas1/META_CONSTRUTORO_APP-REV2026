@@ -90,6 +90,7 @@ export const useObras = () => {
     const handleRemoteChange = () => {
       queryClient.invalidateQueries({ queryKey: ['obras', orgId] });
       queryClient.invalidateQueries({ queryKey: ['recent-obras', orgId] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
     };
     window.addEventListener(`obras-changed-${channelKey}`, handleRemoteChange);
 
@@ -120,7 +121,10 @@ export const useObras = () => {
 
       const { data, error } = await supabase
         .from('obras')
-        .select('*')
+        .select(`
+          *,
+          atividades (count)
+        `)
         .eq('org_id', orgId)
         .order('created_at', { ascending: false })
         .limit(20);
@@ -151,7 +155,7 @@ export const useObras = () => {
         .from('obras')
         .insert({
           ...obraPayload,
-          created_by: user.id,
+          user_id: user.id,
           org_id: orgId,
           progresso: 0,
           status: 'ACTIVE',
@@ -208,6 +212,7 @@ export const useObras = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['obras', orgId] });
       queryClient.invalidateQueries({ queryKey: ['recent-obras', orgId] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
       toast.success('Obra criada com sucesso!');
     },
     onError: (error) => {
@@ -246,6 +251,7 @@ export const useObras = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['obras', orgId] });
       queryClient.invalidateQueries({ queryKey: ['recent-obras', orgId] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
       toast.success('Obra atualizada com sucesso!');
     },
     onError: (error) => {
@@ -289,6 +295,7 @@ export const useObras = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['obras', orgId] });
       queryClient.invalidateQueries({ queryKey: ['recent-obras', orgId] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
       toast.success('Obra excluída com sucesso!');
     },
     onError: (error) => {

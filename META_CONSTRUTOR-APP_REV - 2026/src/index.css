@@ -85,18 +85,53 @@
 }
 
 /* Animation delays */
-.animate-delay-100 { animation-delay: 0.1s; }
-.animate-delay-200 { animation-delay: 0.2s; }
-.animate-delay-300 { animation-delay: 0.3s; }
-.animate-delay-400 { animation-delay: 0.4s; }
-.animate-delay-500 { animation-delay: 0.5s; }
-.animate-delay-600 { animation-delay: 0.6s; }
-.animate-delay-700 { animation-delay: 0.7s; }
-.animate-delay-800 { animation-delay: 0.8s; }
-.animate-delay-900 { animation-delay: 0.9s; }
-.animate-delay-1000 { animation-delay: 1s; }
-.animate-delay-1200 { animation-delay: 1.2s; }
-.animate-delay-1400 { animation-delay: 1.4s; }
+.animate-delay-100 {
+  animation-delay: 0.1s;
+}
+
+.animate-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animate-delay-300 {
+  animation-delay: 0.3s;
+}
+
+.animate-delay-400 {
+  animation-delay: 0.4s;
+}
+
+.animate-delay-500 {
+  animation-delay: 0.5s;
+}
+
+.animate-delay-600 {
+  animation-delay: 0.6s;
+}
+
+.animate-delay-700 {
+  animation-delay: 0.7s;
+}
+
+.animate-delay-800 {
+  animation-delay: 0.8s;
+}
+
+.animate-delay-900 {
+  animation-delay: 0.9s;
+}
+
+.animate-delay-1000 {
+  animation-delay: 1s;
+}
+
+.animate-delay-1200 {
+  animation-delay: 1.2s;
+}
+
+.animate-delay-1400 {
+  animation-delay: 1.4s;
+}
 
 /* Custom checkbox styling */
 .custom-checkbox {
@@ -166,34 +201,34 @@ All colors MUST be HSL.
     /* MetaConstrutor Design System - Light Mode */
     --background: 0 0% 100%;
     --foreground: 210 63% 11%;
-    
+
     --card: 0 0% 98%;
     --card-foreground: 210 63% 11%;
-    
+
     --popover: 0 0% 100%;
     --popover-foreground: 210 63% 11%;
-    
+
     --primary: 14 100% 57%;
     --primary-foreground: 0 0% 100%;
-    
+
     --secondary: 202 76% 44%;
     --secondary-foreground: 0 0% 100%;
-    
+
     --muted: 158 13% 92%;
     --muted-foreground: 210 63% 11%;
-    
+
     --accent: 202 76% 44%;
     --accent-foreground: 0 0% 100%;
-    
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
-    
+
     --border: 158 13% 85%;
     --input: 158 13% 90%;
     --ring: 14 100% 57%;
-    
+
     --radius: 0.75rem;
-    
+
     /* Construction-specific colors */
     --construction-orange: 14 100% 57%;
     --construction-orange-light: 14 100% 67%;
@@ -203,11 +238,11 @@ All colors MUST be HSL.
     --construction-blue-light: 204 65% 21%;
     --construction-dark: 210 63% 11%;
     --construction-gray: 158 13% 50%;
-    
+
     /* Success colors */
     --success: 81 67% 48%;
     --success-foreground: 0 0% 100%;
-    
+
     /* Sidebar Light Mode */
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 210 63% 11%;
@@ -223,32 +258,32 @@ All colors MUST be HSL.
     /* MetaConstrutor Dark Mode */
     --background: 210 63% 11%;
     --foreground: 0 0% 100%;
-    
+
     --card: 210 63% 8%;
     --card-foreground: 0 0% 100%;
-    
+
     --popover: 210 63% 11%;
     --popover-foreground: 0 0% 100%;
-    
+
     --primary: 14 100% 57%;
     --primary-foreground: 0 0% 100%;
-    
+
     --secondary: 202 76% 44%;
     --secondary-foreground: 0 0% 100%;
-    
+
     --muted: 210 63% 15%;
     --muted-foreground: 158 13% 70%;
-    
+
     --accent: 202 76% 44%;
     --accent-foreground: 0 0% 100%;
-    
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
-    
+
     --border: 210 63% 20%;
     --input: 210 63% 15%;
     --ring: 14 100% 57%;
-    
+
     /* Construction colors for dark mode */
     --construction-orange: 14 100% 57%;
     --construction-orange-light: 14 100% 67%;
@@ -258,11 +293,11 @@ All colors MUST be HSL.
     --construction-blue-light: 204 65% 21%;
     --construction-dark: 210 63% 11%;
     --construction-gray: 158 13% 50%;
-    
+
     /* Success colors */
     --success: 81 67% 48%;
     --success-foreground: 0 0% 100%;
-    
+
     /* Sidebar dark mode */
     --sidebar-background: 210 63% 11%;
     --sidebar-foreground: 0 0% 100%;
@@ -273,7 +308,7 @@ All colors MUST be HSL.
     --sidebar-border: 210 63% 20%;
     --sidebar-ring: 14 100% 57%;
   }
-  
+
   /* Enhanced color variations for better contrast */
   .theme-construction {
     --primary-variant: 14 95% 62%;
@@ -290,25 +325,25 @@ All colors MUST be HSL.
     --info-variant: 202 71% 39%;
     --warning-variant: 14 95% 47%;
   }
-  
+
   /* Gradients */
   .gradient-construction {
     background: linear-gradient(135deg, hsl(var(--construction-orange)), hsl(var(--construction-orange-light)));
   }
-  
+
   .gradient-success {
     background: linear-gradient(135deg, hsl(var(--construction-green)), hsl(var(--construction-green-light)));
   }
-  
+
   .gradient-info {
     background: linear-gradient(135deg, hsl(var(--construction-blue)), hsl(var(--construction-blue-light)));
   }
-  
+
   /* Login gradients */
   .gradient-login-bg {
     background: linear-gradient(135deg, hsl(var(--construction-blue)) 0%, hsl(210 63% 11%) 100%);
   }
-  
+
   .gradient-login-card {
     background: linear-gradient(135deg, hsl(var(--construction-orange)) 0%, hsl(210 63% 11%) 100%);
   }
@@ -319,37 +354,42 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
-  html, body {
+  html,
+  body,
+  #root {
     @apply bg-background text-foreground antialiased;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
     overflow-x: hidden;
     word-wrap: break-word;
   }
-  
+
   /* Scroll behavior improvements */
   html {
     scroll-behavior: smooth;
   }
-  
+
   /* Custom scrollbar styles for better UX */
   .scrollbar-thin {
     scrollbar-width: thin;
     scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--muted));
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar-track {
     background: hsl(var(--muted));
     border-radius: 3px;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background: hsl(var(--muted-foreground));
     border-radius: 3px;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--foreground));
   }
@@ -385,7 +425,7 @@ All colors MUST be HSL.
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
-  
+
   /* Mobile-first responsive improvements */
   .line-clamp-2 {
     overflow: hidden;
@@ -393,12 +433,12 @@ All colors MUST be HSL.
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
   }
-  
+
   /* Fix for text truncation in mobile */
   .truncate-mobile {
     @apply truncate;
   }
-  
+
   @media (max-width: 640px) {
     .truncate-mobile {
       max-width: 150px;
@@ -407,17 +447,18 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
+
   /* Mobile-specific utilities */
   @media (max-width: 768px) {
     .mobile-padding {
       @apply px-4 py-2;
     }
-    
+
     .mobile-text-sm {
       @apply text-sm;
     }
   }
-  
+
   /* Touch-friendly sizing */
   .touch-target {
     min-height: 44px;
@@ -439,66 +480,66 @@ All colors MUST be HSL.
       min-width: 48px;
     }
   }
-  
+
   /* Responsive spacing */
   .responsive-spacing {
     @apply space-y-4 md:space-y-6;
   }
-  
+
   /* Enhanced hover and focus effects with better contrast */
   .hover-scale {
     @apply transition-transform duration-200 hover:scale-105;
   }
-  
+
   /* Fade in animation for images and elements */
   .animate-fade-in {
     animation: fadeSlideIn 0.5s ease-out both;
     opacity: 1;
   }
-  
+
   /* Blur transition effects */
   .blur-xs {
     filter: blur(2px);
   }
-  
+
   /* Better touch targets for mobile */
   .touch-safe {
     min-height: 44px;
     min-width: 44px;
     @apply flex items-center justify-center;
   }
-  
+
   @media (max-width: 768px) {
     .touch-safe {
       min-height: 48px;
       min-width: 48px;
     }
   }
-  
+
   .focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
   }
-  
+
   /* Better contrast utilities */
   .text-contrast {
     @apply text-foreground;
   }
-  
+
   .bg-contrast {
     @apply bg-background;
   }
-  
+
   /* Mobile improvements for touch interfaces */
   .touch-safe {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   /* Better mobile padding and margins */
   .mobile-safe {
     @apply p-4 m-2;
   }
-  
+
   @media (max-width: 768px) {
     .mobile-safe {
       @apply p-3 m-1;
@@ -513,42 +554,40 @@ All colors MUST be HSL.
   }
 
   .rac-calendar .day-btn {
-    @apply h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 aspect-square rounded-lg
-           tabular-nums text-foreground bg-transparent relative text-xs sm:text-sm
-           focus:outline-none focus:ring-2 focus:ring-[#FF5722] focus:ring-offset-1 focus:ring-offset-background;
+    @apply h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 aspect-square rounded-lg tabular-nums text-foreground bg-transparent relative text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#FF5722] focus:ring-offset-1 focus:ring-offset-background;
     display: grid;
     place-items: center;
   }
 
   /* fora do mês */
-  .rac-calendar .day-btn[data-outside-month] { 
-    @apply text-muted-foreground/60 hover:bg-transparent; 
+  .rac-calendar .day-btn[data-outside-month] {
+    @apply text-muted-foreground/60 hover:bg-transparent;
   }
 
   /* hover não altera a cor do número */
-  .rac-calendar .day-btn:hover { 
-    @apply bg-foreground/10; 
+  .rac-calendar .day-btn:hover {
+    @apply bg-foreground/10;
   }
 
   /* dia selecionado */
-  .rac-calendar .day-btn[data-selected] { 
-    @apply bg-[#FF5722] text-white font-medium; 
+  .rac-calendar .day-btn[data-selected] {
+    @apply bg-[#FF5722] text-white font-medium;
   }
 
   /* hoje */
-  .rac-calendar .day-btn[data-today] { 
-    @apply ring-2 ring-[#FF5722] ring-offset-1 ring-offset-background; 
+  .rac-calendar .day-btn[data-today] {
+    @apply ring-2 ring-[#FF5722] ring-offset-1 ring-offset-background;
   }
 
   /* desabilitado */
-  .rac-calendar .day-btn[aria-disabled="true"] { 
-    @apply opacity-50 pointer-events-none; 
+  .rac-calendar .day-btn[aria-disabled="true"] {
+    @apply opacity-50 pointer-events-none;
   }
 
   /* garantir 7 colunas fixas com espaçamento responsivo */
-  .rac-calendar .grid { 
+  .rac-calendar .grid {
     display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr)); 
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 2px;
   }
 
@@ -571,11 +610,11 @@ All colors MUST be HSL.
     .rac-calendar {
       @apply max-w-full px-2;
     }
-    
+
     .rac-calendar .grid {
       gap: 1px;
     }
-    
+
     .rac-calendar .day-btn {
       min-height: 32px;
       min-width: 32px;
@@ -583,54 +622,55 @@ All colors MUST be HSL.
   }
 
   /* CORREÇÃO: garantir contraste perfeito em todos os temas */
-  .rac-calendar .day-btn { 
-    color: hsl(var(--foreground)) !important; 
+  .rac-calendar .day-btn {
+    color: hsl(var(--foreground)) !important;
     background-color: transparent;
   }
 
-  .rac-calendar .day-btn:hover { 
+  .rac-calendar .day-btn:hover {
     background-color: hsl(var(--accent)) !important;
     color: hsl(var(--accent-foreground)) !important;
   }
 
   /* dia selecionado - sobrescreve acima */
-  .rac-calendar .day-btn[data-selected] { 
-    background-color: hsl(var(--primary)) !important; 
+  .rac-calendar .day-btn[data-selected] {
+    background-color: hsl(var(--primary)) !important;
     color: hsl(var(--primary-foreground)) !important;
   }
 
   /* hoje - mantém contraste */
-  .rac-calendar .day-btn[data-today] { 
+  .rac-calendar .day-btn[data-today] {
     color: hsl(var(--foreground)) !important;
     border: 2px solid hsl(var(--primary));
   }
 
   /* fora do mês */
-  .rac-calendar .day-btn[data-outside-month] { 
+  .rac-calendar .day-btn[data-outside-month] {
     color: hsl(var(--muted-foreground)) !important;
     opacity: 0.5;
   }
+
   /* Layout e responsividade melhoradas */
   .responsive-card {
     @apply transition-all duration-300 hover:shadow-lg;
   }
-  
+
   .mobile-stack {
     @apply flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between;
   }
-  
+
   .truncate-mobile {
     @apply truncate max-w-[200px] sm:max-w-none;
   }
-  
+
   .button-group-mobile {
     @apply flex gap-2 overflow-x-auto pb-1 sm:pb-0;
   }
-  
+
   .flex-responsive {
     @apply flex flex-wrap gap-2 sm:flex-nowrap;
   }
-  
+
   /* Melhorias de touch para mobile */
   .touch-safe {
     @apply min-h-[44px] min-w-[44px] sm:min-h-[32px] sm:min-w-[32px];
@@ -650,11 +690,12 @@ All colors MUST be HSL.
 
   /* Responsive breakpoints for menu */
   @media (max-width: 768px) {
+
     /* Tablet: auto-collapse sidebar */
     .sidebar-collapsed-tablet {
       width: 4rem !important;
     }
-    
+
     /* Adjust main content padding for tablet */
     main {
       padding-left: 0.75rem;
@@ -663,6 +704,7 @@ All colors MUST be HSL.
   }
 
   @media (max-width: 1024px) {
+
     /* Adjust layout for tablets */
     .lg\:pb-8 {
       padding-bottom: 5rem;
@@ -671,11 +713,12 @@ All colors MUST be HSL.
 
   /* PWA specific styles */
   @media (display-mode: standalone) {
+
     /* Remove default padding when in PWA mode */
     body {
       overscroll-behavior-y: contain;
     }
-    
+
     /* Add safe area for bottom navigation */
     .pb-20 {
       padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
@@ -687,12 +730,12 @@ All colors MUST be HSL.
     .card-responsive {
       padding: 1rem;
     }
-    
+
     /* Adjust typography for mobile */
     .text-responsive {
       @apply text-sm;
     }
-    
+
     .heading-responsive {
       @apply text-lg sm:text-xl md:text-2xl;
     }
@@ -703,7 +746,7 @@ All colors MUST be HSL.
     @apply overflow-x-auto scrollbar-thin;
   }
 
-  [role="tablist"] > * {
+  [role="tablist"]>* {
     @apply shrink-0;
   }
 

@@ -152,7 +152,7 @@ export function RDOActivitiesSection({ form }: RDOActivitiesSectionProps) {
                   <AlertCircle className="h-4 w-4 flex-shrink-0 text-amber-600" />
                   <span className="text-amber-700 dark:text-amber-400">
                     Nenhuma atividade cadastrada para esta obra.{" "}
-                    <Link to="/atividades" className="font-medium underline underline-offset-2 hover:text-amber-900">
+                    <Link to="/app/atividades" className="font-medium underline underline-offset-2 hover:text-amber-900">
                       Cadastrar atividade →
                     </Link>
                   </span>

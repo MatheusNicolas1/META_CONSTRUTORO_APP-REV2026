@@ -42,8 +42,7 @@ export const useEquipamentosSupabase = () => {
         .insert({
           ...equipamentoData,
           user_id: userId,
-          org_id: orgId,
-        } as any)
+        })
         .select()
         .single();
 

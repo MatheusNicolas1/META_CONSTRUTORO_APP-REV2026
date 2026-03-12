@@ -277,7 +277,7 @@ export function ObraExpandableCard({
               className="h-8 text-xs font-medium"
               onClick={(e) => {
                 e.stopPropagation();
-                navigate(`/obras/${id}`);
+                navigate(`/app/obras/${id}`);
               }}
             >
               <Building2 className="h-3 w-3 mr-1.5" />

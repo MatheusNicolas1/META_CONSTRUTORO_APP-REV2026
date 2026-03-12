@@ -41,20 +41,20 @@ export function AppSidebar() {
   const t = (key: string) => i18n.t(key);
 
   const menuItems = [
-    { title: t('menu.obras'), url: "/obras", icon: Briefcase, tourId: "obras" },
-    { title: t('menu.rdo'), url: "/rdo", icon: FileText, tourId: "rdo" },
-    { title: t('menu.checklist'), url: "/checklist", icon: CheckSquare, tourId: "checklist" },
-    { title: t('menu.atividades'), url: "/atividades", icon: Calendar, tourId: "atividades" },
-    { title: t('menu.equipes'), url: "/equipes", icon: Users, tourId: "equipes" },
-    { title: t('menu.equipamentos'), url: "/equipamentos", icon: Wrench, tourId: "equipamentos" },
+    { title: t('menu.obras'), url: "/app/obras", icon: Briefcase, tourId: "obras" },
+    { title: t('menu.rdo'), url: "/app/rdo", icon: FileText, tourId: "rdo" },
+    { title: t('menu.checklist'), url: "/app/checklist", icon: CheckSquare, tourId: "checklist" },
+    { title: t('menu.atividades'), url: "/app/atividades", icon: Calendar, tourId: "atividades" },
+    { title: t('menu.equipes'), url: "/app/equipes", icon: Users, tourId: "equipes" },
+    { title: t('menu.equipamentos'), url: "/app/equipamentos", icon: Wrench, tourId: "equipamentos" },
   ];
 
   const secondaryItems = [
-    { title: t('menu.documentos'), url: "/documentos", icon: Folder, tourId: "documentos" },
-    { title: t('menu.fornecedores'), url: "/fornecedores", icon: Truck, tourId: "fornecedores" },
-    { title: 'Despesas', url: "/despesas", icon: DollarSign, tourId: "despesas" },
-    { title: t('menu.relatorios'), url: "/relatorios", icon: BarChart3, tourId: "relatorios" },
-    { title: t('menu.integracoes'), url: "/integracoes", icon: Zap, tourId: "integracoes" },
+    { title: t('menu.documentos'), url: "/app/documentos", icon: Folder, tourId: "documentos" },
+    { title: t('menu.fornecedores'), url: "/app/fornecedores", icon: Truck, tourId: "fornecedores" },
+    { title: 'Despesas', url: "/app/despesas", icon: DollarSign, tourId: "despesas" },
+    { title: t('menu.relatorios'), url: "/app/relatorios", icon: BarChart3, tourId: "relatorios" },
+    { title: t('menu.integracoes'), url: "/app/integracoes", icon: Zap, tourId: "integracoes" },
   ];
 
   const isAdmin = hasRole('Administrador');
@@ -91,7 +91,7 @@ export function AppSidebar() {
         <div className={`border-b border-sidebar-border transition-all duration-300 h-14 sm:h-16 flex items-center ${collapsed ? 'px-2' : 'px-4'}`}>
           <div className="flex items-center justify-center w-full">
             <Link
-              to="/dashboard"
+              to="/app/dashboard"
               className="flex items-center justify-center hover:opacity-80 transition-opacity touch-safe w-full"
               title={collapsed ? "MetaConstrutor - Dashboard" : "Dashboard"}
             >
@@ -179,8 +179,8 @@ export function AppSidebar() {
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild tooltip={collapsed ? "Painel Admin" : undefined}>
                       <NavLink
-                        to="/admin/dashboard"
-                        className={`${getNavClass('/admin/dashboard')} flex items-center gap-3 transition-all duration-200 rounded-lg h-10 ${collapsed ? 'justify-center px-0 w-10 mx-auto' : 'justify-start px-3'
+                        to="/app/admin/dashboard"
+                        className={`${getNavClass('/app/admin/dashboard')} flex items-center gap-3 transition-all duration-200 rounded-lg h-10 ${collapsed ? 'justify-center px-0 w-10 mx-auto' : 'justify-start px-3'
                           }`}
                         title={collapsed ? "Painel Admin" : undefined}
                       >

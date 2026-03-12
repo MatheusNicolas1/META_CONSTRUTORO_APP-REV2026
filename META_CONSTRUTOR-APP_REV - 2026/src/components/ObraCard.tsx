@@ -82,7 +82,7 @@ export function ObraCard({ obra }: ObraCardProps) {
           </div>
 
           <div className="flex items-center gap-2 ml-3">
-            <Link to={`/obras/${obra.id}`} onClick={(e) => e.stopPropagation()}>
+            <Link to={`/app/obras/${obra.id}`} onClick={(e) => e.stopPropagation()}>
               <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
                 <Building2 className="h-3 w-3" />
               </Button>
@@ -174,7 +174,7 @@ export function ObraCard({ obra }: ObraCardProps) {
 
         {/* Botão de ação principal */}
         <div className="mt-4 pt-3 border-t border-border/30">
-          <Link to={`/obras/${obra.id}`} onClick={(e) => e.stopPropagation()}>
+          <Link to={`/app/obras/${obra.id}`} onClick={(e) => e.stopPropagation()}>
             <Button variant="outline" size="sm" className="w-full h-8 text-xs font-medium">
               <Eye className="h-3 w-3 mr-2" />
               Ver Detalhes da Obra

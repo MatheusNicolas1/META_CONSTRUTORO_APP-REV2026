@@ -27,10 +27,11 @@ export const downloadFile = (data: Blob | string, filename: string, mimeType?: s
     // Limpeza de recursos
     document.body.removeChild(link);
 
-    // Pequeno timeout para garantir que o navegador processou o click antes de revogar a URL
+    // Timeout conservador para garantir que o navegador processou o download
+    // (PDFs com imagens base64 podem levar mais tempo para o browser serializar)
     setTimeout(() => {
         window.URL.revokeObjectURL(url);
-    }, 100);
+    }, 5000);
 };
 
 /**

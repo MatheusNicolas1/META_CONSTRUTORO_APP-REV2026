@@ -81,7 +81,7 @@ function ObraCard({ obra }: ObraCardProps) {
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2 ml-2 sm:ml-3 flex-shrink-0">
-            <Link to={`/obras/${obra.id}`} onClick={(e) => e.stopPropagation()}>
+            <Link to={`/app/obras/${obra.id}`} onClick={(e) => e.stopPropagation()}>
               <Button variant="ghost" size="sm" className="h-6 w-6 sm:h-7 sm:w-7 p-0">
                 <Building2 className="h-3 w-3" />
               </Button>
@@ -196,7 +196,7 @@ function ObraCard({ obra }: ObraCardProps) {
 
         {/* Botão de ação principal */}
         <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-border/30">
-          <Link to={`/obras/${obra.id}`} onClick={(e) => e.stopPropagation()}>
+          <Link to={`/app/obras/${obra.id}`} onClick={(e) => e.stopPropagation()}>
             <Button variant="outline" size="sm" className="w-full h-7 sm:h-8 text-[10px] sm:text-xs font-medium">
               Visualizar Obra Completa
             </Button>
@@ -256,7 +256,7 @@ export function RecentObras() {
             <div className="text-center py-8 text-muted-foreground text-sm">
               Nenhuma obra cadastrada ainda.
               <br />
-              <Link to="/obras" className="text-construction-orange hover:underline mt-2 inline-block">
+              <Link to="/app/obras" className="text-construction-orange hover:underline mt-2 inline-block">
                 Criar sua primeira obra
               </Link>
             </div>
@@ -264,7 +264,7 @@ export function RecentObras() {
         </div>
 
         {obras && obras.length > 0 && (
-          <Link to="/obras">
+          <Link to="/app/obras">
             <Button variant="outline" className="w-full mt-3 sm:mt-4 h-9 text-sm">
               Ver Todas as Obras
             </Button>

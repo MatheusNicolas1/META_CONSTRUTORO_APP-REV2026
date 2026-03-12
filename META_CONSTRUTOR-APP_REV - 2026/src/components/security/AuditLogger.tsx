@@ -1,9 +1,10 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useCallback } from 'react';
 import { useAuth } from '@/components/auth/AuthContext';
 
-export type AuditEvent = 
+export type AuditEvent =
   | 'auth.login'
-  | 'auth.logout' 
+  | 'auth.logout'
   | 'auth.failed_login'
   | 'auth.mfa_enabled'
   | 'auth.mfa_disabled'
@@ -103,6 +104,15 @@ export const AuditProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Listener global para eventos de erro
   window.addEventListener('error', (event) => {
+    // Ignorar erros irrelevantes (AdBlockers, extensões, ResizeObserver)
+    if (
+      event.message?.includes('ResizeObserver') ||
+      event.filename?.includes('extension') ||
+      event.message?.includes('stripe.com')
+    ) {
+      return;
+    }
+
     logEvent('system.error', {
       message: event.message,
       filename: event.filename,
@@ -116,8 +126,19 @@ export const AuditProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Listener para rejeições de Promise não tratadas
   window.addEventListener('unhandledrejection', (event) => {
+    const reasonStr = event.reason?.toString() || '';
+    const isAbortError = event.reason?.name === 'AbortError' || reasonStr.includes('aborted');
+    const isStripeError = reasonStr.includes('stripe.com') || reasonStr.includes('Failed to fetch');
+
+    // Se for erro inofensivo de rede/abort, impedimos spam no console de Audit
+    if (isAbortError || isStripeError) {
+      // Usar preventDefault previne que apareça "Uncaught (in promise)" no DevTools
+      event.preventDefault();
+      return;
+    }
+
     logEvent('system.error', {
-      reason: event.reason?.toString(),
+      reason: reasonStr,
       stack: event.reason?.stack,
     }, {
       severity: 'error',
@@ -177,12 +198,12 @@ const storeAuditLog = (entry: AuditLogEntry): void => {
   try {
     const logs = getStoredLogs();
     logs.push(entry);
-    
+
     // Manter apenas os últimos 1000 logs no localStorage
     if (logs.length > 1000) {
       logs.splice(0, logs.length - 1000);
     }
-    
+
     localStorage.setItem('audit_logs', JSON.stringify(logs));
   } catch (error) {
     console.error('Failed to store audit log:', error);
@@ -201,7 +222,7 @@ const getStoredLogs = (): AuditLogEntry[] => {
 const sendToAuditService = async (entry: AuditLogEntry): Promise<void> => {
   // TODO: Implementar envio para serviço de auditoria externo
   // Por enquanto, apenas armazenar localmente
-  
+
   // Exemplo de integração futura:
   /*
   try {
@@ -231,19 +252,19 @@ export const getAuditLogs = (filters?: {
     if (filters.event) {
       logs = logs.filter(log => filters.event!.includes(log.event));
     }
-    
+
     if (filters.userId) {
       logs = logs.filter(log => log.userId === filters.userId);
     }
-    
+
     if (filters.dateFrom) {
       logs = logs.filter(log => log.timestamp >= filters.dateFrom!);
     }
-    
+
     if (filters.dateTo) {
       logs = logs.filter(log => log.timestamp <= filters.dateTo!);
     }
-    
+
     if (filters.severity) {
       logs = logs.filter(log => filters.severity!.includes(log.severity));
     }
@@ -262,7 +283,7 @@ export const getAuditLogs = (filters?: {
 
 export const exportAuditLogs = (format: 'json' | 'csv' = 'json'): string => {
   const logs = getAuditLogs();
-  
+
   if (format === 'csv') {
     const headers = ['timestamp', 'event', 'userName', 'userRole', 'severity', 'success', 'resource', 'details'];
     const rows = logs.map(log => [
@@ -275,9 +296,9 @@ export const exportAuditLogs = (format: 'json' | 'csv' = 'json'): string => {
       log.resource || '',
       JSON.stringify(log.details),
     ]);
-    
+
     return [headers, ...rows].map(row => row.join(',')).join('\n');
   }
-  
+
   return JSON.stringify(logs, null, 2);
 };

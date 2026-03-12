@@ -9,36 +9,36 @@ export const BottomNavigation = memo(() => {
 
   const navItems = [
     {
-      to: "/dashboard",
+      to: "/app/dashboard",
       icon: Home,
       label: t('menu.dashboard'),
     },
     {
-      to: "/rdo",
+      to: "/app/rdo",
       icon: FileText,
       label: t('menu.rdo'),
     },
     {
-      to: "/rdo/novo",
+      to: "/app/rdo/novo",
       icon: PlusCircle,
       label: t('menu.novo_rdo'),
       isMain: true,
     },
     {
-      to: "/obras",
+      to: "/app/obras",
       icon: Building2,
       label: t('menu.obras'),
     },
     {
-      to: "/mais",
+      to: "/app/mais",
       icon: MoreHorizontal,
       label: t('menu.mais'),
     },
   ];
   return (
-    <nav 
+    <nav
       className="fixed bottom-0 left-0 right-0 z-50 bg-sidebar-background/95 backdrop-blur-lg border-t border-sidebar-border lg:hidden safe-area-bottom"
-      style={{ 
+      style={{
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}
     >

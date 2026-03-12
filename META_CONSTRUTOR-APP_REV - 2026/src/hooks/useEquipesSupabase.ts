@@ -60,9 +60,7 @@ export const useEquipesSupabase = () => {
         .from('equipes')
         .insert({
           ...equipeData,
-          // @ts-ignore - Schema drift: Types mismatch with DB columns (user_id/org_id)
           user_id: userId,
-          org_id: orgId,
           ativo: equipeData.ativo ?? true,
         })
         .select()

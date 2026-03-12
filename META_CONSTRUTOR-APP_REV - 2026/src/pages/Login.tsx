@@ -46,10 +46,7 @@ const Login = () => {
         description: "Bem-vindo de volta ao Meta Construtor.",
       });
 
-      // Redirecionar para dashboard
-      setTimeout(() => {
-        window.location.replace("/dashboard");
-      }, 500);
+      // Redirecionamento é tratado no AuthContext
 
     } catch (error: unknown) {
       // Erro já é tratado no AuthContext com toast
@@ -66,7 +63,7 @@ const Login = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: `${window.location.origin}/app/dashboard`,
         },
       });
 

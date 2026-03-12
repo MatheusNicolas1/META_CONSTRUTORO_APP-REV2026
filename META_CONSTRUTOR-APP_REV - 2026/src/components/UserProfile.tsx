@@ -33,22 +33,10 @@ export function UserProfile() {
     setIsLoggingOut(true);
 
     try {
-      // TODO: Replace with actual logout logic when Supabase is integrated
-      // await supabase.auth.signOut();
-
-      // Simulate logout delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      toast({
-        title: "Sessão encerrada",
-        description: "Você foi desconectado com sucesso.",
-      });
-
-      // Redirect to login page
-      startTransition(() => {
-        navigate("/login");
-      });
+      await signOut(); // Desloga do Supabase, zera session e faz toast
+      // O signOut default lá do AuthContext já executa a navegação para o /login
     } catch (error) {
+      // O Erro já é repassado no Auth Context, mas caso não venha toast de lá
       toast({
         title: "Erro ao sair",
         description: "Ocorreu um erro ao tentar sair. Tente novamente.",
@@ -61,7 +49,7 @@ export function UserProfile() {
 
   const handleProfileClick = () => {
     startTransition(() => {
-      navigate("/perfil");
+      navigate("/app/perfil");
     });
   };
 
@@ -121,7 +109,7 @@ export function UserProfile() {
           <span>Meu Perfil</span>
         </DropdownMenuItem>
 
-        <DropdownMenuItem onClick={() => startTransition(() => navigate("/configuracoes"))} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => startTransition(() => navigate("/app/configuracoes"))} className="cursor-pointer">
           <Settings className="mr-2 h-4 w-4" />
           <span>Configurações</span>
         </DropdownMenuItem>

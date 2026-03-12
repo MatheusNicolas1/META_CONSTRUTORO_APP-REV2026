@@ -54,16 +54,14 @@ export const rdoSchema = z.object({
 
   equipamentosQuebrados: z.array(z.object({
     id: z.string().optional(),
-    nome: z.string().min(1, "Nome do equipamento é obrigatório"),
-    categoria: z.string(),
-    descricaoProblema: z.string().min(1, "Descrição do problema é obrigatória"),
+    nome: z.string().optional(),
+    categoria: z.string().optional(),
+    descricaoProblema: z.string().min(1, "Descrição do problema/ocorrência é obrigatória"),
     causouOciosidade: z.boolean(),
     horasParada: z.number().optional(),
-    impactoProducao: z.string(),
-    // Novos campos para problemas e ocorrências
-    issueType: z.enum(['equipment', 'occurrence']),
-    // Campos específicos para ocorrências
-    tipoOcorrencia: z.string().optional(),
+    impactoProducao: z.string().optional(),
+    issueType: z.enum(['equipment', 'occurrence']).default('occurrence'),
+    tipoOcorrencia: z.string().min(1, "Tipo de ocorrência é obrigatório").optional(),
     envolvidos: z.array(z.string()).optional(),
     acoesTomadas: z.string().optional(),
   })),

@@ -8,9 +8,11 @@ const Logout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    signOut();
-    navigate("/login", { replace: true });
-  }, [navigate, signOut]);
+    const handleLogout = async () => {
+      await signOut();
+    };
+    handleLogout();
+  }, [signOut]);
 
   return (
     <main className="min-h-screen w-full flex items-center justify-center">

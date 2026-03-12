@@ -75,6 +75,7 @@ export const useRDOs = () => {
     const handleRemoteChange = () => {
       queryClient.invalidateQueries({ queryKey: ['rdos', orgId] });
       queryClient.invalidateQueries({ queryKey: ['recent-rdos', orgId] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
     };
     window.addEventListener(`rdos-changed-${channelKey}`, handleRemoteChange);
 
@@ -105,7 +106,10 @@ export const useRDOs = () => {
         .select(`
           *,
           obras (nome),
-          documentos (*)
+          documentos (*),
+          rdo_atividades (*),
+          rdo_equipes (*, equipes(*)),
+          rdo_equipamentos (*, equipamentos(*))
         `)
         // .eq('user_id', user.id) -- REMOVED for Org-First visibility
         .order('data', { ascending: false })
@@ -142,7 +146,8 @@ export const useRDOs = () => {
         equipamentosQuebrados,
         acidentes,
         materiaisFalta,
-        estoqueMateriais
+        estoqueMateriais,
+        tempo_ocioso: baseData.tempoOcioso
       };
 
       // 3. Insert Base RDO
@@ -152,11 +157,11 @@ export const useRDOs = () => {
         periodo: baseData.periodo,
         clima: baseData.clima,
         equipe_ociosa: baseData.equipeOciosa,
-        tempo_ocioso: baseData.tempoOcioso,
         observacoes: baseData.observacoes,
         criado_por_id: user.id,
         org_id: orgId,
         status: 'Em elaboração',
+        detalhes: detalhes
       };
       console.log('[RDO-CREATE] Insert payload:', JSON.stringify(insertPayload, null, 2));
 
@@ -315,6 +320,7 @@ export const useRDOs = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['rdos', orgId] });
       queryClient.invalidateQueries({ queryKey: ['recent-rdos', orgId] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
       toast.success('RDO criado com sucesso!');
     },
     onError: (error) => {
@@ -350,13 +356,17 @@ export const useRDOs = () => {
         equipamentosQuebrados,
         acidentes,
         materiaisFalta,
-        estoqueMateriais
+        estoqueMateriais,
+        tempo_ocioso: baseData.tempoOcioso
       };
 
       const updatePayload: any = {
         ...baseData,
         detalhes
       }
+
+      // Remove tempoOcioso from top level object since it exists in detalhes only
+      delete updatePayload.tempoOcioso;
 
       // Clean undefined
       Object.keys(updatePayload).forEach(key => updatePayload[key] === undefined && delete updatePayload[key]);
@@ -365,7 +375,7 @@ export const useRDOs = () => {
         .from('rdos')
         .update(updatePayload as any)
         .eq('id', id)
-        .select(`*, obras (nome)`)
+        .select(`*, obras (nome), rdo_atividades(*), rdo_equipes(*, equipes(*)), rdo_equipamentos(*, equipamentos(*))`)
         .single();
       const data = updateRaw as any;
 
@@ -396,6 +406,7 @@ export const useRDOs = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['rdos', orgId] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
       toast.success('RDO atualizado com sucesso!');
     },
     onError: (error) => {
@@ -436,6 +447,7 @@ export const useRDOs = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['rdos', orgId] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
       toast.success('RDO enviado para aprovação!');
     },
     onError: (error) => {
@@ -475,6 +487,7 @@ export const useRDOs = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['rdos', orgId] });
       queryClient.invalidateQueries({ queryKey: ['recent-rdos', orgId] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
       toast.success('RDO excluído com sucesso!');
     },
     onError: (error) => {

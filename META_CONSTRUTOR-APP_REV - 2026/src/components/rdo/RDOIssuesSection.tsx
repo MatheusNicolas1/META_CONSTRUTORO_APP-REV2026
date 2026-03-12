@@ -28,7 +28,7 @@ const equipamentosDisponiveis = [
 
 const tiposOcorrencia = [
   "Acidente de trabalho",
-  "Queda de altura", 
+  "Queda de altura",
   "Lesão por esforço repetitivo",
   "Queimadura",
   "Corte",
@@ -54,13 +54,13 @@ export function RDOIssuesSection({ form }: RDOIssuesSectionProps) {
 
   const adicionarProblema = () => {
     appendIssue({
-      nome: "",
-      categoria: "",
+      nome: "Ocorrência",
+      categoria: "Geral",
       descricaoProblema: "",
       causouOciosidade: false,
       horasParada: 0,
       impactoProducao: "",
-      issueType: 'equipment',
+      issueType: 'occurrence',
       tipoOcorrencia: "",
       envolvidos: [],
       acoesTomadas: "",
@@ -95,7 +95,7 @@ export function RDOIssuesSection({ form }: RDOIssuesSectionProps) {
             </CardTitle>
           </CardHeader>
         </CollapsibleTrigger>
-        
+
         <CollapsibleContent>
           <CardContent className="space-y-4">
             <div className="flex justify-between items-center">
@@ -115,9 +115,9 @@ export function RDOIssuesSection({ form }: RDOIssuesSectionProps) {
                     <AlertTriangle className="h-4 w-4 text-destructive" />
                     Registro #{index + 1}
                   </h4>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => removeIssue(index)}
                     className="text-destructive hover:text-destructive"
                   >
@@ -125,119 +125,45 @@ export function RDOIssuesSection({ form }: RDOIssuesSectionProps) {
                   </Button>
                 </div>
 
-                {/* Tipo de Issue */}
-                <div>
-                  <Label className="text-sm font-medium">Tipo de Registro *</Label>
-                  <RadioGroup
-                    value={issue.issueType}
-                    onValueChange={(value) => atualizarIssue(index, 'issueType', value)}
-                    className="flex gap-6 mt-2"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="equipment" id={`equipment-${issue.id}`} />
-                      <Label htmlFor={`equipment-${issue.id}`} className="flex items-center gap-2">
-                        <Wrench className="h-4 w-4" />
-                        Problema de Equipamento
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="occurrence" id={`occurrence-${issue.id}`} />
-                      <Label htmlFor={`occurrence-${issue.id}`} className="flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        Ocorrência/Acidente da Obra
-                      </Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-
-                {/* Campos para Problema de Equipamento */}
-                {issue.issueType === 'equipment' && (
-                  <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label className="text-sm">Nome do Equipamento *</Label>
-                        <Select
-                          value={issue.nome}
-                          onValueChange={(value) => {
-                            const equipamento = equipamentosDisponiveis.find(e => e.nome === value);
-                            atualizarIssue(index, 'nome', value);
-                            if (equipamento) {
-                              atualizarIssue(index, 'categoria', equipamento.categoria);
-                            }
-                          }}
-                        >
-                          <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Selecione o equipamento" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {equipamentosDisponiveis.map((equipamento) => (
-                              <SelectItem key={equipamento.id} value={equipamento.nome}>
-                                {equipamento.nome}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label className="text-sm">Categoria</Label>
-                        <Input
-                          value={issue.categoria}
-                          className="mt-1"
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  </>
-                )}
-
                 {/* Campos para Ocorrência */}
-                {issue.issueType === 'occurrence' && (
-                  <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label className="text-sm">Tipo de Ocorrência *</Label>
-                        <Select
-                          value={issue.tipoOcorrencia}
-                          onValueChange={(value) => atualizarIssue(index, 'tipoOcorrencia', value)}
-                        >
-                          <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Selecione o tipo" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {tiposOcorrencia.map((tipo) => (
-                              <SelectItem key={tipo} value={tipo}>
-                                {tipo}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label className="text-sm">Envolvidos</Label>
-                        <Input
-                          placeholder="Nomes dos envolvidos (separados por vírgula)"
-                          value={issue.envolvidos?.join(', ') || ''}
-                          onChange={(e) => {
-                            const envolvidos = e.target.value.split(',').map(s => s.trim()).filter(s => s);
-                            atualizarIssue(index, 'envolvidos', envolvidos);
-                          }}
-                          className="mt-1"
-                        />
-                      </div>
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm">Tipo de Ocorrência *</Label>
+                      <Select
+                        value={issue.tipoOcorrencia}
+                        onValueChange={(value) => atualizarIssue(index, 'tipoOcorrencia', value)}
+                      >
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Selecione o tipo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {tiposOcorrencia.map((tipo) => (
+                            <SelectItem key={tipo} value={tipo}>
+                              {tipo}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
-                  </>
-                )}
-
-                {/* Descrição do Problema (comum) */}
+                    <div>
+                      <Label className="text-sm">Envolvidos</Label>
+                      <Input
+                        placeholder="Nomes dos envolvidos (separados por vírgula)"
+                        value={issue.envolvidos?.join(', ') || ''}
+                        onChange={(e) => {
+                          const envolvidos = e.target.value.split(',').map(s => s.trim()).filter(s => s);
+                          atualizarIssue(index, 'envolvidos', envolvidos);
+                        }}
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
+                </>
                 <div>
-                  <Label className="text-sm">
-                    {issue.issueType === 'equipment' ? 'Descrição do Problema *' : 'Descrição da Ocorrência *'}
-                  </Label>
+                  <Label className="text-sm">Descrição da Ocorrência *</Label>
                   <Textarea
-                    placeholder={issue.issueType === 'equipment' 
-                      ? "Descreva o problema apresentado pelo equipamento..." 
-                      : "Descreva a ocorrência ou acidente..."
-                    }
+                    placeholder="Descreva a ocorrência ou acidente..."
                     value={issue.descricaoProblema}
                     onChange={(e) => atualizarIssue(index, 'descricaoProblema', e.target.value)}
                     className="mt-1"
@@ -245,19 +171,17 @@ export function RDOIssuesSection({ form }: RDOIssuesSectionProps) {
                   />
                 </div>
 
-                {/* Ações Tomadas (apenas para ocorrências) */}
-                {issue.issueType === 'occurrence' && (
-                  <div>
-                    <Label className="text-sm">Ações Tomadas</Label>
-                    <Textarea
-                      placeholder="Descreva as ações e providências tomadas..."
-                      value={issue.acoesTomadas || ''}
-                      onChange={(e) => atualizarIssue(index, 'acoesTomadas', e.target.value)}
-                      className="mt-1"
-                      rows={2}
-                    />
-                  </div>
-                )}
+                {/* Ações Tomadas */}
+                <div>
+                  <Label className="text-sm">Ações Tomadas</Label>
+                  <Textarea
+                    placeholder="Descreva as ações e providências tomadas..."
+                    value={issue.acoesTomadas || ''}
+                    onChange={(e) => atualizarIssue(index, 'acoesTomadas', e.target.value)}
+                    className="mt-1"
+                    rows={2}
+                  />
+                </div>
 
                 {/* Impacto e Ociosidade */}
                 <div className="flex items-center space-x-4">
@@ -265,7 +189,7 @@ export function RDOIssuesSection({ form }: RDOIssuesSectionProps) {
                     <Checkbox
                       id={`causou-ociosidade-${issue.id}`}
                       checked={issue.causouOciosidade}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={(checked) =>
                         atualizarIssue(index, 'causouOciosidade', checked === true)
                       }
                     />
@@ -283,7 +207,7 @@ export function RDOIssuesSection({ form }: RDOIssuesSectionProps) {
                         max="24"
                         step="0.5"
                         value={issue.horasParada || 0}
-                        onChange={(e) => 
+                        onChange={(e) =>
                           atualizarIssue(index, 'horasParada', parseFloat(e.target.value) || 0)
                         }
                         className="mt-1"

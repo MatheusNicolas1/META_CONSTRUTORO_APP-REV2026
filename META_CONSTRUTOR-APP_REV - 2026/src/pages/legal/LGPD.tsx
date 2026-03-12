@@ -185,13 +185,13 @@ const LGPD = () => {
           </Card>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="outline" onClick={() => navigate('/perfil?tab=seguranca')}>
+            <Button size="lg" variant="outline" onClick={() => navigate('/app/perfil?tab=seguranca')}>
               Solicitar / Exportar Meus Dados
             </Button>
             <Button size="lg" variant="outline" onClick={() => window.location.href = 'mailto:dpo@metaconstrutor.com?subject=Solicitação LGPD'}>
               Falar com o DPO
             </Button>
-            <Button size="lg" variant="destructive" onClick={() => navigate('/perfil?tab=seguranca')}>
+            <Button size="lg" variant="destructive" onClick={() => navigate('/app/perfil?tab=seguranca')}>
               Excluir Meus Dados
             </Button>
           </div>

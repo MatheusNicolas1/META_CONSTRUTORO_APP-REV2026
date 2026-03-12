@@ -120,7 +120,7 @@ const Obras = () => {
               dataInicio={obra.data_inicio}
               previsaoTermino={obra.previsao_termino}
               status={obra.status || "Iniciando"}
-              atividades={0} // Atualmente não temos contagem de atividades no modelo
+              atividades={obra.atividades?.[0]?.count || 0}
               equipes={[]} // Atualmente as equipes são relacionadas, não incluídas direto na obra
               tarefasRecentes={[]} // Tarefas seriam buscadas separadamente
             />

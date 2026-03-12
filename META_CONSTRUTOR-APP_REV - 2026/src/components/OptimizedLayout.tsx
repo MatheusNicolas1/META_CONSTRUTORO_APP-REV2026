@@ -4,6 +4,7 @@ import { AppSidebar } from "./AppSidebar";
 import { NotificationPanel } from "./NotificationPanel";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { UserProfile } from "./UserProfile";
+import { CreditBadge } from "./CreditBadge";
 import { GlobalSearch } from "./GlobalSearch";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { I18nProvider } from "react-aria-components";
@@ -33,7 +34,7 @@ const Header = memo(() => {
           {/* Logo - Visível apenas no mobile quando sidebar está fechada */}
           {isMobile && (
             <Link
-              to="/dashboard"
+              to="/app/dashboard"
               className="flex items-center gap-2 min-w-0 hover:opacity-80 transition-opacity"
               title="Dashboard"
             >
@@ -51,6 +52,7 @@ const Header = memo(() => {
 
         {/* Right section - Actions */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          <CreditBadge />
           <NotificationPanel />
           <ThemeToggle />
           <UserProfile />
@@ -91,18 +93,18 @@ const OptimizedLayout = memo(({ children }: LayoutProps) => {
   useEffect(() => {
     const path = location.pathname;
     const eventMap: Record<string, ActivityEvent> = {
-      '/dashboard': 'view_dashboard',
-      '/obras': 'view_obras',
-      '/rdos': 'view_rdos',
-      '/equipes': 'view_equipes',
-      '/equipamentos': 'view_equipamentos',
-      '/fornecedores': 'view_fornecedores',
-      '/checklist': 'view_checklist',
-      '/documentos': 'view_documentos',
-      '/relatorios': 'view_relatorios',
-      '/integracoes': 'view_integracoes',
-      '/configuracoes': 'view_configuracoes',
-      '/perfil': 'view_perfil',
+      '/app/dashboard': 'view_dashboard',
+      '/app/obras': 'view_obras',
+      '/app/rdos': 'view_rdos',
+      '/app/equipes': 'view_equipes',
+      '/app/equipamentos': 'view_equipamentos',
+      '/app/fornecedores': 'view_fornecedores',
+      '/app/checklist': 'view_checklist',
+      '/app/documentos': 'view_documentos',
+      '/app/relatorios': 'view_relatorios',
+      '/app/integracoes': 'view_integracoes',
+      '/app/configuracoes': 'view_configuracoes',
+      '/app/perfil': 'view_perfil',
     };
 
     const event = eventMap[path];

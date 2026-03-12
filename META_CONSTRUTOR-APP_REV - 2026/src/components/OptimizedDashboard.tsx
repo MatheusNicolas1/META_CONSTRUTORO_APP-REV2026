@@ -80,13 +80,13 @@ const OptimizedDashboard = memo(() => {
             <p className="text-muted-foreground">Visão geral das suas obras e projetos</p>
           </div>
           <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
-            <OptimizedLink to="/rdo" className="w-full sm:w-auto">
+            <OptimizedLink to="/app/rdo" className="w-full sm:w-auto">
               <Button variant="outline" className="w-full sm:w-auto text-sidebar-foreground border-sidebar-border hover:bg-sidebar-accent hover:text-sidebar-accent-foreground touch-safe">
                 <FileText className="mr-2 h-4 w-4" />
                 Novo RDO
               </Button>
             </OptimizedLink>
-            <OptimizedLink to="/obras" className="w-full sm:w-auto">
+            <OptimizedLink to="/app/obras" className="w-full sm:w-auto">
               <Button className="gradient-construction border-0 hover:opacity-90 w-full sm:w-auto touch-safe">
                 <Building2 className="mr-2 h-4 w-4" />
                 Nova Obra

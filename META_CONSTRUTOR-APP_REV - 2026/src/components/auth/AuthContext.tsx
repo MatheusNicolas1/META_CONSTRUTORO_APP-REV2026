@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { User as AuthUser, Session } from "@supabase/supabase-js";
@@ -114,6 +115,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   }, []);
 
+  // Helper: verifica se uma sessão é realmente válida (tem user + token)
+  const isSessionValid = (s: Session | null): s is Session => {
+    return !!s?.user && !!s?.access_token;
+  };
+
+  // Helper: limpa completamente qualquer vestígio de sessão no localStorage
+  const clearSessionStorage = () => {
+    // Remove todas as chaves do Supabase do localStorage
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (key.startsWith('sb-') || key.includes('supabase'))) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+  };
+
   // Configurar listener de autenticação
   useEffect(() => {
     let initialLoadDone = false;
@@ -122,10 +141,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, newSession) => {
-      setSession(newSession);
+      // Se o evento indica logout ou falha de refresh, limpar tudo
+      if (event === 'SIGNED_OUT' || (event === 'TOKEN_REFRESHED' && !isSessionValid(newSession))) {
+        setSession(null);
+        setUser(null);
+        setRoles([]);
+        setLoading(false);
+        return;
+      }
 
-      if (newSession?.user) {
-        // Para eventos subsequentes (após o load inicial), carregar dados
+      // Só aceitar sessões realmente válidas
+      if (isSessionValid(newSession)) {
+        setSession(newSession);
         if (initialLoadDone) {
           loadUserData(newSession.user)
             .catch((error) => {
@@ -133,21 +160,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             })
             .finally(() => setLoading(false));
         }
-        // Para o evento INITIAL_SESSION, o getSession abaixo já cuida
       } else {
+        // Sessão inválida/expirada — limpar estado
+        setSession(null);
         setUser(null);
         setRoles([]);
         setLoading(false);
       }
     });
 
-    // Verificar sessão existente — AWAIT loadUserData antes de setar loading=false
+    // Verificar sessão existente — validar antes de aceitar
     supabase.auth.getSession().then(async ({ data: { session: existingSession } }) => {
-      setSession(existingSession);
-      if (existingSession?.user) {
-        await loadUserData(existingSession.user).catch((error) => {
-          console.error("Erro ao carregar dados do usuário na sessão existente:", error);
-        });
+      if (isSessionValid(existingSession)) {
+        try {
+          setSession(existingSession);
+          await loadUserData(existingSession.user);
+        } catch (error) {
+          console.error("Erro ao carregar dados do usuário na sessão existente — invalidando sessão:", error);
+          // Sessão existe no Supabase mas perfil falhou — deslogar
+          await supabase.auth.signOut().catch(() => { });
+          clearSessionStorage();
+          setSession(null);
+          setUser(null);
+          setRoles([]);
+        }
+      } else {
+        // Sessão zombie — limpar para evitar estado fantasma
+        clearSessionStorage();
+        setSession(null);
+        setUser(null);
+        setRoles([]);
       }
       setLoading(false);
       initialLoadDone = true;
@@ -194,7 +236,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (data.session) {
         toast.success("Login realizado com sucesso!");
-        navigate("/dashboard");
+        navigate("/app/dashboard", { replace: true });
       }
     } catch (error: unknown) {
       // Log sanitizado: sem PII
@@ -204,17 +246,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = useCallback(async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-
+      // signOut com scope 'global' para invalidar todas as sessões do usuário
+      const { error } = await supabase.auth.signOut({ scope: 'global' });
+      if (error) {
+        console.error("Erro no supabase.auth.signOut:", error);
+      }
+    } catch (error) {
+      console.error("Erro no logout:", error);
+    } finally {
+      // Limpeza FORÇADA — garantir que nunca fique sessão residual
+      clearSessionStorage();
       setUser(null);
       setSession(null);
       setRoles([]);
       toast.success("Logout realizado com sucesso!");
       navigate("/login");
-    } catch (error) {
-      console.error("Erro no logout:", error);
-      toast.error("Erro ao fazer logout. Tente novamente.");
     }
   }, [navigate]);
 
@@ -265,7 +311,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [loadUserData, navigate]);
 
   const value = useMemo<AuthContextValue>(() => ({
-    isAuthenticated: !!session,
+    isAuthenticated: !!session?.user && !!session?.access_token,
     user,
     session,
     roles,

@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { rdoTemplateHtml } from "./template.ts";
+import { buildGenericReportHtml, makeReportFilename } from "./report-template.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,16 +15,16 @@ serve(async (req: Request) => {
   }
 
   try {
-    const { rdoId } = await req.json();
+    const requestBody = await req.json();
+    const { rdoId, reportType, report } = requestBody;
 
-    if (!rdoId) {
-      return new Response(JSON.stringify({ error: 'rdoId is required' }), { status: 400, headers: corsHeaders });
+    if (!rdoId && !reportType && !report) {
+      return new Response(JSON.stringify({ error: 'rdoId or reportType is required' }), { status: 400, headers: corsHeaders });
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
     const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY') || Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 
-    // Auth header from the client requesting the PDF
     const authHeader = req.headers.get('Authorization');
 
     const supabase = createClient(supabaseUrl, supabaseKey, {
@@ -34,7 +35,26 @@ serve(async (req: Request) => {
       },
     });
 
-    // 1. Fetch data
+    // Extrair user_id do JWT para validação multi-tenant
+    const jwt = authHeader?.replace('Bearer ', '').trim() || '';
+    const { data: { user }, error: authError } = await supabase.auth.getUser(jwt);
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: 'Não autenticado', details: authError?.message }), { status: 401, headers: corsHeaders });
+    }
+
+    if (!rdoId) {
+      const reportPayload = report || requestBody;
+      const generatedAt = reportPayload.generatedAt || new Date().toLocaleString('pt-BR');
+      const templateHtml = buildGenericReportHtml({
+        ...reportPayload,
+        reportType: reportPayload.reportType || reportType,
+        generatedAt,
+      });
+      const filename = makeReportFilename(reportPayload.reportType || reportType, generatedAt);
+      return await convertHtmlToPdf(templateHtml, filename, generatedAt);
+    }
+
+    // 1. Fetch RDO with all relationships (incluindo rdo_notas)
     const { data: rdo, error } = await supabase
       .from('rdos')
       .select(`
@@ -43,234 +63,352 @@ serve(async (req: Request) => {
         rdo_atividades (*),
         rdo_equipes (*, equipes(*)),
         rdo_equipamentos (*, equipamentos(*)),
-        documentos (*),
-        rdo_notas (*)
+        rdo_notas (*, profiles:user_id(name)),
+        documentos (*)
       `)
       .eq('id', rdoId)
       .single();
 
     if (error || !rdo) {
+      console.error('Fetch RDO error:', error?.message);
       throw new Error(`RDO não encontrado: ${error?.message}`);
     }
 
-    const detalhes = rdo.detalhes || {};
-    const safeArray = (val: any) => Array.isArray(val) ? val : [];
+    // Validar que o usuário pertence à mesma org do RDO (multi-tenant)
+    if (rdo.org_id) {
+      const { data: membership, error: memberError } = await supabase
+        .from('org_members')
+        .select('id')
+        .eq('org_id', rdo.org_id)
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .maybeSingle();
 
-    // Profiles fetching
+      if (memberError || !membership) {
+        console.error('Multi-tenant violation attempt:', { userId: user.id, orgId: rdo.org_id });
+        return new Response(JSON.stringify({ error: 'Acesso negado: você não pertence a esta organização' }), {
+          status: 403,
+          headers: corsHeaders
+        });
+      }
+    }
+
+    const detalhes = (rdo as Record<string, unknown>).detalhes as Record<string, unknown> || {};
+    const safeArray = (val: unknown) => Array.isArray(val) ? val : [];
+
+    // 2. Fetch creator profile
     let responsavelNome = 'Usuário';
     let responsavelCargo = 'Responsável';
-    if (rdo.criado_por_id || rdo.user_id) {
+    const creatorId = rdo.criado_por_id || (rdo as Record<string, unknown>).user_id;
+    if (creatorId) {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('name, bio') // assuming role/cargo is there
-        .eq('id', rdo.criado_por_id || rdo.user_id)
+        .select('name, bio, position')
+        .eq('id', creatorId)
         .single();
       if (profile) {
         if (profile.name) responsavelNome = profile.name;
-        if (profile.bio) responsavelCargo = profile.bio;
+        if (profile.position) responsavelCargo = profile.position;
+        else if (profile.bio) responsavelCargo = profile.bio;
       }
     }
 
+    // 3. Fetch approver profile (if approved)
     let aprovadorNome = 'Aprovador';
     let aprovadorCargo = 'Gerente';
-    if (rdo.aprovado_por) {
+    if (rdo.aprovado_por_id) {
       const { data: aprovadorProfile } = await supabase
         .from('profiles')
-        .select('name, bio')
-        .eq('id', rdo.aprovado_por)
+        .select('name, bio, position')
+        .eq('id', rdo.aprovado_por_id)
         .single();
       if (aprovadorProfile) {
         if (aprovadorProfile.name) aprovadorNome = aprovadorProfile.name;
-        if (aprovadorProfile.bio) aprovadorCargo = aprovadorProfile.bio;
+        if (aprovadorProfile.position) aprovadorCargo = aprovadorProfile.position;
+        else if (aprovadorProfile.bio) aprovadorCargo = aprovadorProfile.bio;
       }
     }
 
-    // 2. Read template
+    // 4. Start template replacements
     let templateHtml = rdoTemplateHtml;
 
-    // 3. Simple variable replacements
-    const formatData = (d: string) => d ? new Date(d).toLocaleDateString('pt-BR') : '';
+    const formatData = (d: string | null | undefined): string => {
+      if (!d) return '';
+      try {
+        return new Date(d).toLocaleDateString('pt-BR');
+      } catch {
+        return String(d);
+      }
+    };
+
     const numStr = rdo.numero || rdo.id.substring(0, 8);
 
-    templateHtml = templateHtml.replace(/\{\{rdo\.numero\}\}/g, numStr);
-    templateHtml = templateHtml.replace(/\{\{obra\.codigo\}\}/g, rdo.obras?.codigo || 'N/A');
+    // --- Header replacements ---
+    templateHtml = templateHtml.replace(/\{\{rdo\.numero\}\}/g, String(numStr));
+    templateHtml = templateHtml.replace(/\{\{obra\.codigo\}\}/g, (rdo.obras as Record<string, string>)?.codigo || 'N/A');
     templateHtml = templateHtml.replace(/\{\{rdo\.data_emissao\}\}/g, formatData(rdo.created_at));
     templateHtml = templateHtml.replace(/\{\{rdo\.data\}\}/g, formatData(rdo.data) || formatData(rdo.created_at));
-    templateHtml = templateHtml.replace(/\{\{obra\.nome\}\} - \{\{obra\.endereco\}\}/g, `${rdo.obras?.nome || 'Obra'} - ${rdo.obras?.localizacao || 'Endereço não informado'}`);
+    templateHtml = templateHtml.replace(/\{\{obra\.nome\}\} - \{\{obra\.endereco\}\}/g,
+      `${(rdo.obras as Record<string, string>)?.nome || 'Obra'} - ${(rdo.obras as Record<string, string>)?.localizacao || 'Endereço não informado'}`);
 
-    const climaManha = detalhes.climaManha || rdo.clima || '☀️ Claro';
-    const climaTarde = detalhes.climaTarde || rdo.clima || '☀️ Claro';
-    templateHtml = templateHtml.replace(/\{\{rdo\.clima_manha\}\} \| \{\{rdo\.clima_tarde\}\}/g, `Manhã: ${climaManha} | Tarde: ${climaTarde}`);
+    // --- Seção 1: Clima ---
+    const climaManha = (detalhes.climaManha as string) || rdo.clima || '☀️ Claro';
+    const climaTarde = (detalhes.climaTarde as string) || rdo.clima || '☀️ Claro';
+    templateHtml = templateHtml.replace(/\{\{rdo\.clima_manha\}\} \| \{\{rdo\.clima_tarde\}\}/g,
+      `Manhã: ${climaManha} | Tarde: ${climaTarde}`);
 
-    templateHtml = templateHtml.replace(/\{\{rdo\.equipe_ociosa\}\}/g, rdo.equipe_ociosa === 'Sim' || rdo.equipe_ociosa === true ? 'Sim' : 'Não');
+    templateHtml = templateHtml.replace(/\{\{rdo\.equipe_ociosa\}\}/g,
+      rdo.equipe_ociosa === true ? 'Sim' : 'Não');
+
+    // --- Seção 7: Observações ---
     templateHtml = templateHtml.replace(/\{\{rdo\.observacoes\}\}/g, rdo.observacoes || 'Sem observações gerais.');
 
-    // 4. Table Generations
-    const emptyMsg = `<tr><td colspan="100%" class="empty-message" style="text-align: center;">Nenhum registro nesta seção.</td></tr>`;
+    // 5. Table Generations
+    const emptyMsg = `<div class="empty-message">NENHUM REGISTRO NESTA SE&Ccedil;&Atilde;O</div>`;
 
-    // Períodos
+    // --- Seção 2: Períodos de Trabalho ---
     const periodosData = safeArray(detalhes.periodos);
-    const periodosHtml = periodosData.length ? periodosData.map((p: any) => `
-      <tr>
-        <td>${p.tipo || 'Hora Comum'}</td>
-        <td>${p.horarioInicio || '-'}</td>
-        <td>${p.horarioFim || '-'}</td>
-        <td>-</td>
-      </tr>
-    `).join('') : emptyMsg;
-    templateHtml = templateHtml.replace(/\{\{rdo\.periodos\}\}/g, periodosHtml);
+    let periodosHtml: string;
+    if (periodosData.length > 0) {
+      periodosHtml = periodosData.map((p: Record<string, string>) => `
+        <tr>
+          <td>${p.tipo || 'Hora Comum'}</td>
+          <td>${p.horarioInicio || '-'}</td>
+          <td>${p.horarioFim || '-'}</td>
+          <td>-</td>
+        </tr>
+      `).join('');
+      templateHtml = templateHtml.replace(/\{\{rdo\.periodos\}\}/g, periodosHtml);
+    } else if (rdo.periodo) {
+      periodosHtml = `
+        <tr>
+          <td>Período Geral</td>
+          <td colspan="2">${rdo.periodo}</td>
+          <td>${rdo.equipe_ociosa ? `Equipe ociosa: ${rdo.tempo_ocioso || 0}h` : '-'}</td>
+        </tr>
+      `;
+      templateHtml = templateHtml.replace(/\{\{rdo\.periodos\}\}/g, periodosHtml);
+    } else {
+      templateHtml = templateHtml.replace(/<table>[\s\S]*?\{\{rdo\.periodos\}\}[\s\S]*?<\/table>/i, emptyMsg);
+    }
 
-    // Equipes
-    const equipesDB = safeArray(rdo.rdo_equipes).map((e: any) => ({
-      nome: e.equipes?.nome || 'Equipe', funcao: e.equipes?.funcao || '', horasTrabalho: e.horas_trabalho
+    // --- Seção 3: Equipes Presentes ---
+    const equipesDB = safeArray(rdo.rdo_equipes).map((e: Record<string, unknown>) => ({
+      nome: (e.equipes as Record<string, string>)?.nome || 'Equipe',
+      funcao: (e.equipes as Record<string, string>)?.funcao || 'Operacional',
+      horasTrabalho: e.horas_trabalho,
+      presente: e.presente
     }));
-    const equipesJSON = safeArray(detalhes.equipes);
-    const equipesData = [...equipesDB, ...equipesJSON];
 
-    const equipesHtml = equipesData.length ? equipesData.map((e: any) => `
-      <tr>
-        <td>${e.nome || '-'}</td>
-        <td>-</td>
-        <td>-</td>
-        <td>${e.funcao || 'Operacional'}</td>
-      </tr>
-    `).join('') : emptyMsg;
-    templateHtml = templateHtml.replace(/\{\{rdo\.equipes\}\}/g, equipesHtml);
+    if (equipesDB.length) {
+      const equipesHtml = equipesDB.map((e: Record<string, unknown>) => `
+        <tr>
+          <td>${e.nome || '-'}</td>
+          <td>-</td>
+          <td>${e.horasTrabalho ? e.horasTrabalho + 'h' : '-'}</td>
+          <td>${e.funcao || 'Operacional'}</td>
+        </tr>
+      `).join('');
+      templateHtml = templateHtml.replace(/\{\{rdo\.equipes\}\}/g, equipesHtml);
+    } else {
+      templateHtml = templateHtml.replace(/<table>[\s\S]*?\{\{rdo\.equipes\}\}[\s\S]*?<\/table>/i, emptyMsg);
+    }
 
-    // Atividades Planejadas
-    const atividadesData = safeArray(rdo.rdo_atividades);
-    const atividadesHtml = atividadesData.length ? atividadesData.map((a: any) => `
-      <tr>
-        <td>${a.nome || a.descricao || '-'}</td>
-        <td>-</td>
-        <td><span class="status-badge status-${a.status?.toLowerCase().replace(' ', '-') || 'pendente'}">${a.status || 'Pendente'}</span></td>
-        <td>${a.percentual_concluido || '0'}%</td>
-        <td>${a.observacoes || '-'}</td>
-      </tr>
-    `).join('') : emptyMsg;
-    templateHtml = templateHtml.replace(/\{\{rdo\.atividades_planejadas\}\}/g, atividadesHtml);
+    // --- Seção 4: Atividades Realizadas ---
+    const todasAtividades = safeArray(rdo.rdo_atividades);
+    const atividadesPlanejadas = todasAtividades.filter((a: Record<string, unknown>) => !a.is_extra);
+    const atividadesExtras = todasAtividades.filter((a: Record<string, unknown>) => a.is_extra);
 
-    // Atividades Extras
-    const extrasData = safeArray(detalhes.atividadesExtras);
-    const extrasHtml = extrasData.length ? extrasData.map((a: any) => `
-      <tr>
-        <td>${a.descricao || '-'}</td>
-        <td>${a.justificativa || '-'}</td>
-        <td>-</td>
-        <td>-</td>
-      </tr>
-    `).join('') : emptyMsg;
-    templateHtml = templateHtml.replace(/\{\{rdo\.atividades_extras\}\}/g, extrasHtml);
+    if (atividadesPlanejadas.length) {
+      const atividadesPlanejadasHtml = atividadesPlanejadas.map((a: Record<string, unknown>) => {
+        const statusClass = getStatusClass(a.status as string);
+        return `
+          <tr>
+            <td>${a.nome || a.descricao || '-'}</td>
+            <td>-</td>
+            <td><span class="status-badge ${statusClass}">${a.status || 'Pendente'}</span></td>
+            <td>${a.percentual_concluido || '0'}%</td>
+            <td>${a.observacoes || '-'}</td>
+          </tr>
+        `;
+      }).join('');
+      templateHtml = templateHtml.replace(/\{\{rdo\.atividades_planejadas\}\}/g, atividadesPlanejadasHtml);
+    } else {
+      templateHtml = templateHtml.replace(/<table>[\s\S]*?\{\{rdo\.atividades_planejadas\}\}[\s\S]*?<\/table>/i, emptyMsg);
+    }
 
-    // Equipamentos
-    const eqDB = safeArray(rdo.rdo_equipamentos).map((e: any) => ({
-      nome: e.equipamentos?.nome || 'Equipamento', status: e.status, horasUso: e.horas_uso, obs: e.observacoes
+    if (atividadesExtras.length) {
+      const extrasHtml = atividadesExtras.map((a: Record<string, unknown>) => `
+        <tr>
+          <td>${a.nome || a.descricao || '-'}</td>
+          <td>${a.justificativa || '-'}</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>
+      `).join('');
+      templateHtml = templateHtml.replace(/\{\{rdo\.atividades_extras\}\}/g, extrasHtml);
+    } else {
+      templateHtml = templateHtml.replace(/<table>[\s\S]*?\{\{rdo\.atividades_extras\}\}[\s\S]*?<\/table>/i, emptyMsg);
+    }
+
+    // --- Seção 5: Equipamentos Utilizados ---
+    const eqDB = safeArray(rdo.rdo_equipamentos);
+    const eqOperacionais = eqDB.filter((e: Record<string, unknown>) => e.status !== 'Quebrado');
+
+    if (eqOperacionais.length) {
+      const equipamentosHtml = eqOperacionais.map((e: Record<string, unknown>) => `
+        <tr>
+          <td>${(e.equipamentos as Record<string, string>)?.nome || 'Equipamento'}</td>
+          <td>1</td>
+          <td>${e.horas_uso ? e.horas_uso + 'h' : '-'}</td>
+          <td>-</td>
+          <td>${e.observacoes || '-'}</td>
+        </tr>
+      `).join('');
+      templateHtml = templateHtml.replace(/\{\{rdo\.equipamentos\}\}/g, equipamentosHtml);
+    } else {
+      templateHtml = templateHtml.replace(/<table>[\s\S]*?\{\{rdo\.equipamentos\}\}[\s\S]*?<\/table>/i, emptyMsg);
+    }
+
+    // --- Seção 6: Problemas e Ocorrências ---
+    // Fonte 1: Equipamentos com status "Quebrado" da tabela rdo_equipamentos
+    const eqQuebrados = eqDB
+      .filter((e: Record<string, unknown>) => e.status === 'Quebrado')
+      .map((e: Record<string, unknown>) => ({
+        tipo: 'Equipamento Quebrado',
+        descricao: e.descricao_problema || `${(e.equipamentos as Record<string, string>)?.nome || 'Equipamento'} com defeito`,
+        envolvidos: '-',
+        acoes: e.observacoes || '-',
+        status: 'Registrado',
+        horario: e.horas_parada ? `${e.horas_parada}h parado` : '-'
+      }));
+
+    // Fonte 2: Dados JSONB (acidentes e ocorrências manuais)
+    const ocorrenciasJSON = safeArray(detalhes.equipamentosQuebrados).map((o: Record<string, unknown>) => ({
+      tipo: (o.tipoOcorrencia as string) || (o.issueType as string) || 'Geral',
+      descricao: (o.descricaoProblema as string) || (o.descricao as string) || '-',
+      envolvidos: Array.isArray(o.envolvidos) ? o.envolvidos.join(', ') : ((o.envolvidos as string) || '-'),
+      acoes: (o.acoesTomadas as string) || '-',
+      status: 'Registrado',
+      horario: o.horasParada ? `${o.horasParada}h` : '-'
     }));
-    const eqJSON = safeArray(detalhes.equipamentos);
-    const eqData = [...eqDB, ...eqJSON];
 
-    const equipamentosHtml = eqData.length ? eqData.map((e: any) => `
-      <tr>
-        <td>${e.nome || '-'}</td>
-        <td>1</td>
-        <td>${e.horasUso ? e.horasUso + 'h' : '-'}</td>
-        <td>-</td>
-        <td>${e.obs || '-'}</td>
-      </tr>
-    `).join('') : emptyMsg;
-    templateHtml = templateHtml.replace(/\{\{rdo\.equipamentos\}\}/g, equipamentosHtml);
+    const acidentesJSON = safeArray(detalhes.acidentes).map((ac: Record<string, unknown>) => ({
+      tipo: 'Acidente',
+      descricao: (ac.descricao as string) || '-',
+      envolvidos: Array.isArray(ac.colaboradoresEnvolvidos) ? ac.colaboradoresEnvolvidos.join(', ') : '-',
+      acoes: (ac.providenciasTomadas as string) || '-',
+      status: (ac.gravidade as string) || 'Registrado',
+      horario: (ac.horaOcorrencia as string) || '-'
+    }));
 
-    // Ocorrencias
-    const ocorrenciasData = safeArray(detalhes.equipamentosQuebrados); // and acidentes
-    const ocorrenciasHtml = ocorrenciasData.length ? ocorrenciasData.map((o: any) => `
-      <tr>
-        <td>${o.tipoOcorrencia || 'Geral'}</td>
-        <td>${o.descricaoProblema || o.descricao || '-'}</td>
-        <td>${safeArray(o.envolvidos).join(', ') || '-'}</td>
-        <td>${o.acoesTomadas || '-'}</td>
-        <td><span class="status-badge status-resolvido">Registrado</span></td>
-        <td>${o.horasParada ? o.horasParada + 'h' : '-'}</td>
-      </tr>
-    `).join('') : emptyMsg;
-    templateHtml = templateHtml.replace(/\{\{rdo\.ocorrencias\}\}/g, ocorrenciasHtml);
+    const ocorrenciasAll = [...eqQuebrados, ...ocorrenciasJSON, ...acidentesJSON];
 
-    // Anexos
+    if (ocorrenciasAll.length) {
+      const ocorrenciasHtml = ocorrenciasAll.map((o) => `
+        <tr>
+          <td>${o.tipo}</td>
+          <td>${o.descricao}</td>
+          <td>${o.envolvidos}</td>
+          <td>${o.acoes}</td>
+          <td><span class="status-badge status-resolvido">${o.status}</span></td>
+          <td>${o.horario}</td>
+        </tr>
+      `).join('');
+      templateHtml = templateHtml.replace(/\{\{rdo\.ocorrencias\}\}/g, ocorrenciasHtml);
+    } else {
+      templateHtml = templateHtml.replace(/<table>[\s\S]*?\{\{rdo\.ocorrencias\}\}[\s\S]*?<\/table>/i, emptyMsg);
+    }
+
+    // --- Seção 8: Anexos ---
     const documentosGeral = safeArray(rdo.documentos);
-    const fotos = documentosGeral.filter((d: any) => d.tipo && (d.tipo.includes('image') || ['jpg', 'jpeg', 'png', 'webp'].includes(d.tipo)));
-    const docs = documentosGeral.filter((d: any) => !fotos.includes(d));
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'];
+    const fotos = documentosGeral.filter((d: Record<string, string>) =>
+      d.tipo && (d.tipo.includes('image') || imageExtensions.includes(d.tipo.toLowerCase()))
+    );
+    const docs = documentosGeral.filter((d: Record<string, unknown>) => !fotos.includes(d));
 
     templateHtml = templateHtml.replace(/\{\{anexos\.total\}\}/g, documentosGeral.length.toString());
 
-    const fotosHtml = fotos.length ? fotos.map((f: any) => `
-      <div class="gallery-item">
-          <!-- O ideal seria ter uma tag img aqui, mas usaremos placeholders p/ n quebrar PDF s/ URL publica -->
-          <div style="width: 100%; height: 70px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 9pt;">Img: ${f.nome || 'Imagem'}</div>
-          <div class="gallery-caption">${f.nome || 'Foto'}</div>
-      </div>
-    `).join('') : '<div class="empty-message">Nenhum registro nesta seção.</div>';
+    let fotosHtmlChunks = [];
+    if (fotos.length) {
+      for (const f of fotos) {
+         let imgTag = `<div style="width: 100%; height: 70px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 9pt;">📷 ${f.nome || 'Imagem'}</div>`;
+
+         if (f.url) {
+            try {
+              const { data: fileBlob, error: downloadError } = await supabase.storage.from('documentos').download(f.url);
+              if (fileBlob && !downloadError) {
+                 const arr = await fileBlob.arrayBuffer();
+                 const uint8Array = new Uint8Array(arr);
+                 let binary = '';
+                 const chunkSize = 8192;
+                 for (let i = 0; i < uint8Array.length; i += chunkSize) {
+                    const chunk = uint8Array.subarray(i, i + chunkSize);
+                    binary += String.fromCharCode.apply(null, chunk as unknown as number[]);
+                 }
+                 const b64 = btoa(binary);
+                 const mime = fileBlob.type || 'image/jpeg';
+                 imgTag = `<img src="data:${mime};base64,${b64}" class="gallery-image" style="max-height: 100%; max-width: 100%; object-fit: contain; margin: 0 auto; display: block;" />`;
+              } else {
+                 console.error('Erro ao baixar imagem do storage:', downloadError);
+              }
+            } catch (e) {
+              console.error('Erro ao processar imagem para base64:', e);
+            }
+         }
+
+         fotosHtmlChunks.push(`
+          <div class="gallery-item">
+              <div style="height: 70px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #ccc; border-radius: 3px;">
+                  ${imgTag}
+              </div>
+              <div class="gallery-caption">${f.nome || 'Foto'}</div>
+          </div>
+         `);
+      }
+    }
+    const fotosHtml = fotosHtmlChunks.length ? fotosHtmlChunks.join('') : emptyMsg;
     templateHtml = templateHtml.replace(/\{\{anexos\.imagens\}\}/g, fotosHtml);
 
-    const docsHtml = docs.length ? docs.map((d: any) => `
+    const docsHtml = docs.length ? docs.map((d: Record<string, string>) => `
       <div class="attachment-item">
+          <div class="attachment-icon">📄</div>
           <div class="attachment-info">
-              <div class="attachment-name">Anexo: ${d.nome || 'Documento'}</div>
+              <div class="attachment-name">${d.nome || 'Documento'}</div>
               <div class="attachment-meta">${d.tipo || 'Arquivo'}</div>
           </div>
       </div>
-    `).join('') : '<div class="empty-message">Nenhum registro nesta seção.</div>';
+    `).join('') : emptyMsg;
     templateHtml = templateHtml.replace(/\{\{anexos\.documentos\}\}/g, docsHtml);
 
-    // Identificação
-    templateHtml = templateHtml.replace(/\{\{usuario\.nome\}\} - \{\{usuario\.cargo\}\} - \{\{rdo\.data_elaboracao\}\}/g,
-      `${responsavelNome} - ${responsavelCargo} - ${formatData(rdo.created_at)}`);
+    // --- Identificação ---
+    templateHtml = templateHtml.replace(
+      /\{\{usuario\.nome\}\} - \{\{usuario\.cargo\}\} - \{\{rdo\.data_elaboracao\}\}/g,
+      `${responsavelNome} - ${responsavelCargo} - ${formatData(rdo.created_at)}`
+    );
 
     if (rdo.status === 'Aprovado') {
       templateHtml = templateHtml.replace(/\{\{status_aprovacao\}\}/g,
-        `<div class="identification-field" style="background-color: #e6ffe6; border-color: #99cc99;"><strong>Aprovado por:</strong> ${aprovadorNome} - ${aprovadorCargo} - ${formatData(rdo.updated_at)}</div>`);
+        `<div class="identification-field" style="background-color: #e6ffe6; border-color: #99cc99;"><strong>Aprovado por:</strong> ${aprovadorNome} - ${aprovadorCargo} - ${formatData(rdo.data_aprovacao)}</div>`);
+    } else if (rdo.status === 'Rejeitado') {
+      templateHtml = templateHtml.replace(/\{\{status_aprovacao\}\}/g,
+        `<div class="identification-field" style="background-color: #ffe6e6; border-color: #ff9999;"><strong>Status:</strong> Rejeitado${rdo.motivo_rejeicao ? ' - ' + rdo.motivo_rejeicao : ''}</div>`);
     } else {
       templateHtml = templateHtml.replace(/\{\{status_aprovacao\}\}/g,
-        `<div class="identification-field" style="background-color: #fff8e6; border-color: #ffcc66;"><strong>Status:</strong> Aguardando aprovação</div>`);
+        `<div class="identification-field" style="background-color: #fff8e6; border-color: #ffcc66;"><strong>Status:</strong> ${rdo.status || 'Em elaboração'}</div>`);
     }
 
-    templateHtml = templateHtml.replace(/\{\{rdo\.data_geracao\}\}/g, new Date().toLocaleString('pt-BR'));
+    const dataGeracao = new Date().toLocaleString('pt-BR');
+    templateHtml = templateHtml.replace(/\{\{rdo\.data_geracao\}\}/g, dataGeracao);
 
-    // 5. Convert to PDF using Gotenberg Demo API (no API key required)
-    console.log('Using Gotenberg Demo API for PDF generation');
+    return await convertHtmlToPdf(templateHtml, `RDO-${numStr}.PDF`, dataGeracao);
 
-    let pdfBuffer: ArrayBuffer;
-
-    const formData = new FormData();
-    // Gotenberg expects a file named index.html
-    const htmlFile = new File([templateHtml], "index.html", { type: "text/html" });
-    formData.append('files', htmlFile);
-    // Add margin parameters
-    formData.append('marginTop', '0.59in'); // 15mm
-    formData.append('marginBottom', '0.59in');
-    formData.append('marginLeft', '0.59in');
-    formData.append('marginRight', '0.59in');
-
-    const response = await fetch('https://demo.gotenberg.dev/forms/chromium/convert/html', {
-      method: 'POST',
-      body: formData
-    });
-
-    if (!response.ok) {
-      throw new Error(`Gotenberg error: ${await response.text()}`);
-    }
-
-    pdfBuffer = await response.arrayBuffer();
-
-    return new Response(pdfBuffer, {
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="RDO-${numStr}.pdf"`
-      },
-    });
-
-  } catch (err: any) {
-    console.error('Error generating PDF:', err);
-    return new Response(JSON.stringify({ error: err.message, stack: err.stack }), {
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    const errorStack = err instanceof Error ? err.stack : '';
+    console.error('[generate-rdo-pdf] Error:', errorMessage);
+    return new Response(JSON.stringify({ error: errorMessage, stack: errorStack }), {
       status: 500,
       headers: {
         ...corsHeaders,
@@ -279,3 +417,53 @@ serve(async (req: Request) => {
     });
   }
 });
+
+async function convertHtmlToPdf(templateHtml: string, filename: string, generatedAt: string): Promise<Response> {
+  console.info('[generate-rdo-pdf] Converting HTML to PDF via Gotenberg...');
+
+  const formData = new FormData();
+  const htmlFile = new File([templateHtml], "index.html", { type: "text/html" });
+  const footerHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="font-family:Roboto,Helvetica,Arial,sans-serif;margin:0;padding:0;"><div style="width:100%;font-size:7pt;color:#777;text-align:right;padding-right:15mm;">P&Aacute;GINA <span class="pageNumber"></span> DE <span class="totalPages"></span> | GERADO EM ${generatedAt}</div></body></html>`;
+  const footerFile = new File([footerHtml], "footer.html", { type: "text/html" });
+  formData.append('files', htmlFile);
+  formData.append('files', footerFile);
+  formData.append('marginTop', '0.59in');
+  formData.append('marginBottom', '0.59in');
+  formData.append('marginLeft', '0.59in');
+  formData.append('marginRight', '0.59in');
+
+  const response = await fetch('https://demo.gotenberg.dev/forms/chromium/convert/html', {
+    method: 'POST',
+    body: formData
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    console.error('[generate-rdo-pdf] Gotenberg error:', errText);
+    throw new Error(`Falha ao converter HTML para PDF: ${response.status} - ${errText}`);
+  }
+
+  const pdfBuffer = await response.arrayBuffer();
+  console.info(`[generate-rdo-pdf] PDF generated successfully. Size: ${pdfBuffer.byteLength} bytes`);
+
+  return new Response(pdfBuffer, {
+    headers: {
+      ...corsHeaders,
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${filename}"`
+    },
+  });
+}
+
+/**
+ * Retorna a classe CSS correspondente ao status da atividade.
+ */
+function getStatusClass(status: string | undefined): string {
+  if (!status) return 'status-pendente';
+  const s = status.toLowerCase();
+  if (s.includes('conclu')) return 'status-concluida';
+  if (s.includes('andamento')) return 'status-andamento';
+  if (s.includes('não') || s.includes('nao')) return 'status-nao-iniciada';
+  if (s.includes('paralisada')) return 'status-paralisada';
+  return 'status-pendente';
+}

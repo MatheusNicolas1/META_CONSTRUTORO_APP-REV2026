@@ -2,7 +2,7 @@ import { useOrg } from '@/contexts/OrgContext';
 
 interface RequireOrgResult {
     orgId: string;
-    role: 'Administrador' | 'Gerente' | 'Colaborador';
+    role: 'Presidente' | 'Administrador' | 'Gerente' | 'Colaborador';
     isLoading: boolean;
 }
 

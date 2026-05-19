@@ -9,18 +9,18 @@ import { useEquipamentosSupabase } from "@/hooks/useEquipamentosSupabase";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Wrench, Search, Plus, Loader2 } from "lucide-react";
 
+const emptyFormData = { nome: "", categoria: "", status: "Operacional", observacoes: "" };
+
 const Equipamentos = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   
-  const [formData, setFormData] = useState({
-    nome: "",
-    categoria: "",
-    status: "Operacional",
-    observacoes: "",
-  });
+  const [formData, setFormData] = useState(emptyFormData);
+  const [editFormData, setEditFormData] = useState(emptyFormData);
 
-  const { equipamentos, isLoading, createEquipamento, deleteEquipamento } = useEquipamentosSupabase();
+  const { equipamentos, isLoading, createEquipamento, updateEquipamento, deleteEquipamento } = useEquipamentosSupabase();
 
   const filteredEquipamentos = equipamentos.filter(equipamento =>
     equipamento.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -29,7 +29,31 @@ const Equipamentos = () => {
   );
 
   const handleEditEquipamento = (equipamento: any) => {
-    console.log("Editando equipamento:", equipamento);
+    setEditingId(equipamento.id);
+    setEditFormData({
+      nome: equipamento.nome || "",
+      categoria: equipamento.categoria || "",
+      status: equipamento.status || "Operacional",
+      observacoes: equipamento.observacoes || "",
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleEditSubmit = () => {
+    if (!editingId || !editFormData.nome || !editFormData.categoria) return;
+    updateEquipamento.mutate({
+      id: editingId,
+      nome: editFormData.nome,
+      categoria: editFormData.categoria,
+      status: editFormData.status,
+      observacoes: editFormData.observacoes || undefined,
+    }, {
+      onSuccess: () => {
+        setEditFormData(emptyFormData);
+        setEditingId(null);
+        setIsEditDialogOpen(false);
+      }
+    });
   };
 
   const handleDeleteEquipamento = (id: number | string) => {
@@ -215,6 +239,59 @@ const Equipamentos = () => {
           </div>
         )}
       </div>
+
+      {/* Modal de Edição */}
+      <Dialog open={isEditDialogOpen} onOpenChange={(open) => { setIsEditDialogOpen(open); if (!open) { setEditingId(null); setEditFormData(emptyFormData); } }}>
+        <DialogContent className="sm:max-w-[500px] bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="text-card-foreground">Editar Equipamento</DialogTitle>
+            <DialogDescription>Atualize os dados do equipamento</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-nome">Nome do Equipamento *</Label>
+              <Input id="edit-nome" value={editFormData.nome} onChange={(e) => setEditFormData(prev => ({ ...prev, nome: e.target.value }))} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-categoria">Categoria *</Label>
+                <Select value={editFormData.categoria} onValueChange={(value) => setEditFormData(prev => ({ ...prev, categoria: value }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Concreto">Concreto</SelectItem>
+                    <SelectItem value="Elevação">Elevação</SelectItem>
+                    <SelectItem value="Pneumático">Pneumático</SelectItem>
+                    <SelectItem value="Terraplanagem">Terraplanagem</SelectItem>
+                    <SelectItem value="Corte e Furação">Corte e Furação</SelectItem>
+                    <SelectItem value="Medição">Medição</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-status">Status</Label>
+                <Select value={editFormData.status} onValueChange={(value) => setEditFormData(prev => ({ ...prev, status: value }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Operacional">Operacional</SelectItem>
+                    <SelectItem value="Manutenção">Manutenção</SelectItem>
+                    <SelectItem value="Inativo">Inativo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-observacoes">Observações</Label>
+              <Input id="edit-observacoes" value={editFormData.observacoes} onChange={(e) => setEditFormData(prev => ({ ...prev, observacoes: e.target.value }))} />
+            </div>
+          </div>
+          <div className="flex justify-end space-x-2">
+            <Button variant="outline" onClick={() => { setIsEditDialogOpen(false); setEditingId(null); setEditFormData(emptyFormData); }} disabled={updateEquipamento.isPending}>Cancelar</Button>
+            <Button className="gradient-construction border-0" onClick={handleEditSubmit} disabled={updateEquipamento.isPending}>
+              {updateEquipamento.isPending ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>) : 'Salvar Alterações'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

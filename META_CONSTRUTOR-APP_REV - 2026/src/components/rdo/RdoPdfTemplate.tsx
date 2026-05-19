@@ -1,5 +1,5 @@
 import React from 'react';
-import { RDOPdfData } from '@/utils/generateRDOPdf';
+import { RDOPdfData } from '@/types/rdo-pdf';
 
 // Helpers de formatação
 const formatDate = (dateStr: string): string => {

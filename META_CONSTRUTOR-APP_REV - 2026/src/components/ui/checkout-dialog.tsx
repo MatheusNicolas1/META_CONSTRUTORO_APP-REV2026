@@ -12,10 +12,11 @@ interface CheckoutDialogProps {
     clientSecret: string | null;
     planName: string;
     amount: string;
-    period: string; // 'por mês' etc
+    period: string;
     billingCycle: 'monthly' | 'yearly';
     onBillingChange: (cycle: 'monthly' | 'yearly') => Promise<void>;
     planPrice: number;
+    yearlyTotal?: number;
 }
 
 export default function CheckoutDialog({
@@ -25,7 +26,8 @@ export default function CheckoutDialog({
     planName,
     billingCycle,
     onBillingChange,
-    planPrice
+    planPrice,
+    yearlyTotal
 }: CheckoutDialogProps) {
     const [isUpdating, setIsUpdating] = useState(false);
 
@@ -42,7 +44,7 @@ export default function CheckoutDialog({
     const appearance = {
         theme: 'flat' as const,
         variables: {
-            colorPrimary: '#10b981', // Emerald 500
+            colorPrimary: '#10b981',
             colorBackground: '#ffffff',
             colorText: '#0f172a',
             colorDanger: '#ef4444',
@@ -69,7 +71,6 @@ export default function CheckoutDialog({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="w-[95vw] max-w-[450px] max-h-[90vh] overflow-y-auto p-0 gap-0 border-0 rounded-2xl shadow-2xl bg-white dark:bg-gray-950">
-                {/* Header Clean */}
                 <div className="p-4 sm:p-6 bg-slate-50 dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
                     <DialogHeader className="space-y-4">
                         <DialogTitle className="flex justify-between items-start">
@@ -87,7 +88,6 @@ export default function CheckoutDialog({
                             Finalize sua assinatura escolhendo o ciclo de faturamento e inserindo os dados do cartão.
                         </DialogDescription>
 
-                        {/* Toggle Ciclo */}
                         <div className="flex bg-slate-200 dark:bg-slate-800 p-1 rounded-xl">
                             <button
                                 type="button"
@@ -116,19 +116,22 @@ export default function CheckoutDialog({
                         </div>
                     </DialogHeader>
 
-                    {/* Resumo do Pedido */}
                     <div className="mt-4 flex justify-between items-end border-t pt-4 border-slate-200 dark:border-slate-800">
                         <div>
                             <p className="text-sm text-slate-500 font-medium">Plano {planName}</p>
                             <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
                                 {planPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                                <span className="text-sm font-normal text-slate-400 ml-1">/{billingCycle === 'monthly' ? 'mês' : 'ano'}</span>
+                                <span className="text-sm font-normal text-slate-400 ml-1">/mês</span>
                             </p>
+                            {billingCycle === 'yearly' && yearlyTotal ? (
+                                <p className="text-xs text-slate-500 mt-1">
+                                    Total anual: {yearlyTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} em 12x de {planPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                </p>
+                            ) : null}
                         </div>
                     </div>
                 </div>
 
-                {/* Body do Stripe */}
                 <div className="p-4 sm:p-6">
                     {isUpdating ? (
                         <div className="flex flex-col items-center justify-center py-12 space-y-4">

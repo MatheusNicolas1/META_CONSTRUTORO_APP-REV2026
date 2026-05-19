@@ -38,7 +38,7 @@ const Perfil = () => {
           .from('profiles')
           .select('*')
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
 
@@ -51,6 +51,12 @@ const Perfil = () => {
             cpf_cnpj: data.cpf_cnpj || "",
             avatar_url: data.avatar_url || "",
           });
+        } else {
+          setUserData((current) => ({
+            ...current,
+            name: user.name || "",
+            email: user.email || "",
+          }));
         }
       } catch (error) {
         console.error("Erro ao carregar perfil:", error);

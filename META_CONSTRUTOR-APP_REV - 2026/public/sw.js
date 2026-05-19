@@ -11,9 +11,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        return cache.addAll(urlsToCache).catch(err => {
-          console.log('Cache addAll error:', err);
-        });
+        return cache.addAll(urlsToCache).catch(() => undefined);
       })
   );
 });

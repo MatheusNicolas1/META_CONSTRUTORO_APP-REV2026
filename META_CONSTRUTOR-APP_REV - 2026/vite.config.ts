@@ -12,17 +12,6 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
   ],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-slot', 'framer-motion', 'lucide-react', 'sonner'],
-          'supabase-vendor': ['@supabase/supabase-js', '@tanstack/react-query'],
-          'charts-vendor': ['recharts'],
-        },
-      },
-    },
-  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

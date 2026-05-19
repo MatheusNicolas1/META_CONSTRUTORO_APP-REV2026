@@ -34,13 +34,13 @@ const TimelineSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-muted/30">
+    <section className="py-16 md:py-20 bg-muted/30 overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4 break-words">
             Nossa História
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto">
             Uma jornada de inovação e crescimento no setor da construção civil.
           </p>
         </div>
@@ -59,13 +59,13 @@ const TimelineSection = () => {
                       {/* Left content */}
                       <div className="w-1/2 pr-8 text-right">
                         <div className="bg-card rounded-lg p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
-                          <div className="text-2xl font-bold text-primary mb-2">
+                          <div className="text-2xl font-semibold leading-none text-primary mb-2">
                             {milestone.year}
                           </div>
-                          <h3 className="text-xl font-semibold text-foreground mb-3">
+                          <h3 className="text-xl font-semibold leading-snug text-foreground mb-3">
                             {milestone.title}
                           </h3>
-                          <p className="text-muted-foreground">
+                          <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
                             {milestone.description}
                           </p>
                         </div>
@@ -92,13 +92,13 @@ const TimelineSection = () => {
                       {/* Right content */}
                       <div className="w-1/2 pl-8">
                         <div className="bg-card rounded-lg p-6 border border-border shadow-sm hover:shadow-md transition-shadow">
-                          <div className="text-2xl font-bold text-primary mb-2">
+                          <div className="text-2xl font-semibold leading-none text-primary mb-2">
                             {milestone.year}
                           </div>
-                          <h3 className="text-xl font-semibold text-foreground mb-3">
+                          <h3 className="text-xl font-semibold leading-snug text-foreground mb-3">
                             {milestone.title}
                           </h3>
-                          <p className="text-muted-foreground">
+                          <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
                             {milestone.description}
                           </p>
                         </div>
@@ -108,18 +108,18 @@ const TimelineSection = () => {
                 </div>
 
                 {/* Mobile layout */}
-                <div className="md:hidden w-full flex items-start space-x-4">
+                <div className="md:hidden w-full min-w-0 flex items-start gap-3 sm:gap-4">
                   <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
                     <milestone.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <div className="bg-card rounded-lg p-4 border border-border flex-1">
-                    <div className="text-lg font-bold text-primary mb-1">
+                  <div className="bg-card rounded-lg p-4 border border-border flex-1 min-w-0">
+                    <div className="text-lg font-semibold leading-none text-primary mb-1">
                       {milestone.year}
                     </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-2">
+                    <h3 className="text-lg font-semibold leading-snug text-foreground mb-2 break-words">
                       {milestone.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm leading-relaxed text-muted-foreground break-words">
                       {milestone.description}
                     </p>
                   </div>

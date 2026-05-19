@@ -50,10 +50,10 @@ const FAQSection = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4">
             Perguntas frequentes
           </h2>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-base sm:text-lg leading-relaxed text-muted-foreground">
             Tire suas dúvidas sobre o MetaConstrutor e nossa forma de trabalho
           </p>
         </div>
@@ -68,7 +68,7 @@ const FAQSection = () => {
                     onClick={() => toggleItem(index)}
                     aria-expanded={openItems.includes(index)}
                   >
-                  <h3 className="text-base sm:text-lg font-semibold text-foreground pr-4">
+                  <h3 className="text-base sm:text-lg font-semibold leading-snug text-foreground pr-4">
                     {faq.question}
                   </h3>
                   {openItems.includes(index) ? (
@@ -95,10 +95,10 @@ const FAQSection = () => {
           <Card className="bg-card border-border">
             <CardContent className="p-4 sm:p-6 md:p-8">
               <MessageCircle className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-primary mx-auto mb-3 sm:mb-4" />
-              <h3 className="text-lg sm:text-xl font-bold text-foreground mb-2">
+              <h3 className="text-lg sm:text-xl font-semibold leading-snug text-foreground mb-2">
                 Ainda tem dúvidas?
               </h3>
-              <p className="text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base px-2 sm:px-0">
+              <p className="text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed px-2 sm:px-0">
                 Nossa equipe está pronta para ajudar você a encontrar a melhor solução 
                 para sua empresa de construção.
               </p>
@@ -106,7 +106,7 @@ const FAQSection = () => {
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                 <Button 
                   size="lg"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto touch-manipulation"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto touch-manipulation text-base font-semibold leading-none"
                   onClick={() => {
                     if ((window as any).gtag) {
                       (window as any).gtag('event', 'contact_from_faq', {
@@ -122,7 +122,7 @@ const FAQSection = () => {
                 <Button 
                   variant="outline" 
                   size="lg"
-                  className="w-full sm:w-auto touch-manipulation"
+                  className="w-full sm:w-auto touch-manipulation text-base font-semibold leading-none"
                    onClick={() => {
                      if ((window as any).gtag) {
                        (window as any).gtag('event', 'start_trial_from_faq', {

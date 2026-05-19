@@ -39,13 +39,13 @@ const TeamSection = () => {
   ];
 
   return (
-    <section className="py-20">
+    <section className="py-16 md:py-20 overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4 break-words">
             Quem está por trás
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto">
             Conheça a equipe que trabalha diariamente para revolucionar a gestão de obras no Brasil.
           </p>
         </div>
@@ -72,7 +72,7 @@ const TeamSection = () => {
               </div>
 
               {/* Info */}
-              <h3 className="text-base sm:text-lg font-semibold text-foreground mb-1 break-words">
+              <h3 className="text-base sm:text-lg font-semibold leading-snug text-foreground mb-1 break-words">
                 {member.name}
               </h3>
               <p className="text-primary font-medium mb-3 text-xs sm:text-sm break-words leading-tight">

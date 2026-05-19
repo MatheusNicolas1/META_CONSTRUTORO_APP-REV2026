@@ -17,14 +17,14 @@ import {
   RefreshCw
 } from "lucide-react";
 import { IntegrationLog, IntegrationStatus } from "@/types/integration";
-import { eventManager } from "@/services/eventManager";
 
 interface IntegrationDashboardProps {
   logs: IntegrationLog[];
   onRefresh: () => void;
+  statuses?: IntegrationStatus[];
 }
 
-export const IntegrationDashboard = ({ logs, onRefresh }: IntegrationDashboardProps) => {
+export const IntegrationDashboard = ({ logs, onRefresh, statuses = [] }: IntegrationDashboardProps) => {
   const [stats, setStats] = useState({
     totalEvents: 0,
     successRate: 0,
@@ -32,52 +32,7 @@ export const IntegrationDashboard = ({ logs, onRefresh }: IntegrationDashboardPr
     lastHourEvents: 0
   });
 
-  const [integrationStatuses, setIntegrationStatuses] = useState<IntegrationStatus[]>([
-    {
-      integrationId: 'n8n-1',
-      name: 'N8N Automation',
-      type: 'n8n',
-      isHealthy: true,
-      lastCheck: new Date().toISOString(),
-      latency: 250,
-      errorCount: 0,
-      successRate: 98.5,
-      uptime: 99.9
-    },
-    {
-      integrationId: 'whatsapp-1',
-      name: 'WhatsApp Business',
-      type: 'whatsapp',
-      isHealthy: true,
-      lastCheck: new Date().toISOString(),
-      latency: 450,
-      errorCount: 2,
-      successRate: 95.2,
-      uptime: 97.8
-    },
-    {
-      integrationId: 'gmail-1',
-      name: 'Gmail',
-      type: 'gmail',
-      isHealthy: true,
-      lastCheck: new Date().toISOString(),
-      latency: 180,
-      errorCount: 0,
-      successRate: 100,
-      uptime: 100
-    },
-    {
-      integrationId: 'googledrive-1',
-      name: 'Google Drive',
-      type: 'googledrive',
-      isHealthy: false,
-      lastCheck: new Date(Date.now() - 300000).toISOString(),
-      latency: 0,
-      errorCount: 5,
-      successRate: 85.3,
-      uptime: 92.1
-    }
-  ]);
+  const integrationStatuses = statuses;
 
   useEffect(() => {
     calculateStats();
@@ -115,18 +70,7 @@ export const IntegrationDashboard = ({ logs, onRefresh }: IntegrationDashboardPr
     return isHealthy ? "text-green-600" : "text-red-600";
   };
 
-  const testIntegration = async (integrationId: string) => {
-    console.log(`Testing integration: ${integrationId}`);
-    
-    // Simulate test event
-    await eventManager.dispatch({
-      event: 'notification.urgent',
-      entityId: 'test-123',
-      entityType: 'test',
-      data: { message: 'Integration test event' },
-      timestamp: new Date().toISOString()
-    });
-
+  const testIntegration = async () => {
     onRefresh();
   };
 
@@ -242,9 +186,9 @@ export const IntegrationDashboard = ({ logs, onRefresh }: IntegrationDashboardPr
                         <Button 
                           size="sm" 
                           variant="outline"
-                          onClick={() => testIntegration(status.integrationId)}
+                          onClick={() => testIntegration()}
                         >
-                          Test
+                          Refresh
                         </Button>
                       </div>
                     </div>

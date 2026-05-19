@@ -61,7 +61,7 @@ const AdminOperationalMetrics = () => {
 
             // 3. Totais (RDOs, Colaboradores, Equipamentos)
             const { count: totalRDOs } = await supabase.from('rdos').select('*', { count: 'exact', head: true }).eq('org_id', orgId);
-            const { count: totalColaboradores } = await supabase.from('organization_members').select('*', { count: 'exact', head: true }).eq('organization_id', orgId); // Fixed org_id -> organization_id for members?
+            const { count: totalColaboradores } = await supabase.from('org_members').select('*', { count: 'exact', head: true }).eq('org_id', orgId);
             const { count: totalEquipamentos } = await supabase.from('equipamentos').select('*', { count: 'exact', head: true }).eq('org_id', orgId || ''); // Fixed possible null orgId
 
             return {

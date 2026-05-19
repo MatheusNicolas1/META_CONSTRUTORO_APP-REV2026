@@ -1,10 +1,10 @@
-// Sistema de prefetch inteligente para reduzir delays
+﻿// Sistema de prefetch inteligente para reduzir delays
 class IntelligentPrefetcher {
   private prefetchQueue = new Set<string>();
   private prefetchedData = new Map<string, any>();
   private loadingPromises = new Map<string, Promise<any>>();
 
-  // Prefetch baseado em padrões de navegação - Melhorado
+  // Prefetch baseado em padrÃµes de navegaÃ§Ã£o - Melhorado
   async prefetchRoute(route: string, dataFetcher?: () => Promise<any>) {
     if (this.prefetchQueue.has(route)) return;
 
@@ -36,11 +36,10 @@ class IntelligentPrefetcher {
 
     const pageRoute = routeMap[route] || route;
 
-    // Preload do componente removido temporariamente para evitar erros de import dinâmico
+    // Preload do componente removido temporariamente para evitar erros de import dinÃ¢mico
     /*
     try {
       await import(`../pages/${pageRoute}.tsx`);
-      console.log(`✅ Prefetched route: ${route}`);
     } catch (error) {
        // ...
     }
@@ -51,14 +50,13 @@ class IntelligentPrefetcher {
       try {
         const data = await dataFetcher();
         this.prefetchedData.set(route, data);
-        console.log(`✅ Prefetched data for: ${route}`);
       } catch (error) {
-        console.warn(`⚠️ Failed to prefetch data for route: ${route}`, error);
+        console.warn(`âš ï¸ Failed to prefetch data for route: ${route}`, error);
       }
     }
   }
 
-  // Prefetch de dados críticos otimizado
+  // Prefetch de dados crÃ­ticos otimizado
   async prefetchCriticalData() {
     const criticalEndpoints = [
       {
@@ -77,14 +75,14 @@ class IntelligentPrefetcher {
             const authUser = localStorage.getItem("auth_user");
             const user = authUser ? JSON.parse(authUser) : null;
             return Promise.resolve({
-              name: user?.name || "Usuário",
+              name: user?.name || "UsuÃ¡rio",
               role: user?.role || "Colaborador",
               email: user?.email || "",
               avatar: user?.avatar || ""
             });
           } catch {
             return Promise.resolve({
-              name: "Usuário",
+              name: "UsuÃ¡rio",
               role: "Colaborador",
               email: "",
               avatar: ""
@@ -112,39 +110,36 @@ class IntelligentPrefetcher {
       {
         key: 'notifications',
         fetcher: () => Promise.resolve([
-          { id: 1, titulo: "RDO Pendente", descricao: "RDO da Obra Norte precisa de aprovação", tipo: "warning" },
-          { id: 2, titulo: "Equipamento Disponível", descricao: "Escavadeira retornou da manutenção", tipo: "info" }
+          { id: 1, titulo: "RDO Pendente", descricao: "RDO da Obra Norte precisa de aprovaÃ§Ã£o", tipo: "warning" },
+          { id: 2, titulo: "Equipamento DisponÃ­vel", descricao: "Escavadeira retornou da manutenÃ§Ã£o", tipo: "info" }
         ])
       }
     ];
 
-    // Execução em paralelo com limite de concorrência
+    // ExecuÃ§Ã£o em paralelo com limite de concorrÃªncia
     const executeBatch = async (batch: typeof criticalEndpoints) => {
       const promises = batch.map(async ({ key, fetcher }) => {
         try {
-          console.log(`📊 Prefetching data for: ${key}`);
           const startTime = performance.now();
           const data = await fetcher();
           const endTime = performance.now();
 
           this.prefetchedData.set(key, data);
-          console.log(`✅ Successfully prefetched: ${key} (${(endTime - startTime).toFixed(2)}ms)`, data);
         } catch (error) {
-          console.warn(`⚠️ Failed to prefetch critical data: ${key}`, error);
+          console.warn(`âš ï¸ Failed to prefetch critical data: ${key}`, error);
         }
       });
 
       await Promise.allSettled(promises);
     };
 
-    // Executar em lotes para não sobrecarregar
+    // Executar em lotes para nÃ£o sobrecarregar
     const batchSize = 3;
     for (let i = 0; i < criticalEndpoints.length; i += batchSize) {
       const batch = criticalEndpoints.slice(i, i + batchSize);
       await executeBatch(batch);
     }
 
-    console.log('🎯 Prefetch de dados críticos concluído');
   }
 
   // Prefetch baseado em hover/focus
@@ -169,7 +164,7 @@ class IntelligentPrefetcher {
 
     // Remover dados antigos
     this.prefetchedData.forEach((_, key) => {
-      // Implementar lógica de TTL se necessário
+      // Implementar lÃ³gica de TTL se necessÃ¡rio
     });
   }
 }
@@ -185,11 +180,10 @@ export const usePrefetch = () => {
   };
 };
 
-// Inicializar prefetch crítico quando a app carrega - Otimizado
+// Inicializar prefetch crÃ­tico quando a app carrega - Otimizado
 export const initializePrefetch = () => {
-  console.log('🚀 Inicializando sistema de prefetch...');
 
-  // Prefetch de dados críticos imediatamente para reduzir delay inicial
+  // Prefetch de dados crÃ­ticos imediatamente para reduzir delay inicial
   setTimeout(() => {
     prefetcher.prefetchCriticalData();
   }, 300);
@@ -202,7 +196,7 @@ export const initializePrefetch = () => {
       { route: 'Obras', priority: 1 },
       { route: 'RDO', priority: 1 },
 
-      // Prioridade média
+      // Prioridade mÃ©dia
       { route: 'Atividades', priority: 2 },
       { route: 'ObraDetalhes', priority: 2 },
       { route: 'RDOVisualizar', priority: 2 },
@@ -232,17 +226,15 @@ export const initializePrefetch = () => {
     }, { timeout: 5000 });
   }
 
-  // Cleanup inteligente baseado em uso de memória
+  // Cleanup inteligente baseado em uso de memÃ³ria
   const smartCleanup = () => {
     const memoryInfo = (performance as any).memory;
     if (memoryInfo && memoryInfo.usedJSHeapSize > 50 * 1024 * 1024) { // 50MB
-      console.log('🧹 Limpeza automática de cache devido ao uso de memória');
       prefetcher.cleanup();
     }
   };
 
-  // Cleanup periódico inteligente
+  // Cleanup periÃ³dico inteligente
   setInterval(smartCleanup, 3 * 60 * 1000); // A cada 3 minutos
 
-  console.log('✅ Sistema de prefetch inicializado com sucesso');
 };

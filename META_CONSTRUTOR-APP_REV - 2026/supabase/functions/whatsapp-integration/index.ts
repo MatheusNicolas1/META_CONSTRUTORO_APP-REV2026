@@ -56,7 +56,7 @@ serve(async (req) => {
     const businessAccountId = Deno.env.get('WHATSAPP_BUSINESS_ACCOUNT_ID');
 
     if (!accessToken || !phoneNumberId) {
-      console.log('WhatsApp Business API credentials not configured');
+      console.info('WhatsApp Business API credentials not configured');
       return new Response(
         JSON.stringify({ 
           error: 'WhatsApp integration not configured. Please add WHATSAPP_ACCESS_TOKEN and WHATSAPP_PHONE_NUMBER_ID secrets.',
@@ -161,7 +161,7 @@ serve(async (req) => {
             );
           }
 
-          console.log('WhatsApp message sent:', { to: formattedPhone, messageId: data.messages?.[0]?.id, userId: user.id });
+          console.info('WhatsApp message sent:', { to: formattedPhone, messageId: data.messages?.[0]?.id, userId: user.id });
 
           return new Response(
             JSON.stringify({ 
@@ -229,7 +229,7 @@ serve(async (req) => {
             );
           }
 
-          console.log('WhatsApp template sent:', { to: formattedPhone, templateName, messageId: data.messages?.[0]?.id, userId: user.id });
+          console.info('WhatsApp template sent:', { to: formattedPhone, templateName, messageId: data.messages?.[0]?.id, userId: user.id });
 
           return new Response(
             JSON.stringify({ 

@@ -6,6 +6,7 @@ import SEO from "@/components/SEO";
 import { useSignUp } from "@/hooks/useSignUp";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { getAuthCallbackUrl } from "@/utils/authRedirect";
 
 
 
@@ -20,7 +21,7 @@ const CriarConta = () => {
     if (success) {
       // Redirecionar para dashboard após sucesso
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/app/dashboard");
       }, 1500);
     }
   };
@@ -30,7 +31,11 @@ const CriarConta = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: getAuthCallbackUrl(),
+          queryParams: {
+            access_type: "offline",
+            prompt: "select_account",
+          },
         },
       });
 

@@ -16,13 +16,23 @@ export function SubscriptionCard() {
     const { data: subscription, isLoading } = useQuery({
         queryKey: ['subscription', user?.id],
         queryFn: async () => {
+            const { data: orgMember, error: orgError } = await supabase
+                .from('org_members')
+                .select('org_id')
+                .eq('user_id', user?.id)
+                .eq('status', 'active')
+                .maybeSingle();
+
+            if (orgError) throw orgError;
+            if (!orgMember?.org_id) return null;
+
             const { data, error } = await supabase
                 .from('subscriptions')
                 .select(`
           *,
           plan:plans(*)
         `)
-                .eq('user_id', user?.id)
+                .eq('org_id', orgMember.org_id)
                 .in('status', ['active', 'trialing', 'past_due', 'canceled'])
                 .maybeSingle();
 

@@ -1,4 +1,4 @@
-import { EventPayload, IntegrationEvent, ApiResponse } from '@/types/integration';
+﻿import { EventPayload, IntegrationEvent, ApiResponse } from '@/types/integration';
 
 export interface EventManager {
   dispatch(payload: EventPayload): Promise<ApiResponse>;
@@ -16,7 +16,6 @@ class EventManagerService implements EventManager {
 
   async dispatch(payload: EventPayload): Promise<ApiResponse> {
     try {
-      console.log('📤 Dispatching event:', payload);
       
       // Add to queue for processing
       this.eventQueue.push(payload);
@@ -39,7 +38,7 @@ class EventManagerService implements EventManager {
         data: { n8nResponse }
       };
     } catch (error) {
-      console.error('❌ Event dispatch failed:', error);
+      console.error('âŒ Event dispatch failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -83,7 +82,6 @@ class EventManagerService implements EventManager {
     
     try {
       // Here would be the actual processing logic
-      console.log('Processing event:', payload.event);
       
       this.logEvent(payload, 'success');
     } catch (error) {
@@ -101,7 +99,6 @@ class EventManagerService implements EventManager {
     const n8nWebhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL;
     
     if (!n8nWebhookUrl) {
-      console.log('N8N webhook URL not configured - skipping N8N dispatch');
       return { skipped: true, reason: 'N8N not configured' };
     }
 

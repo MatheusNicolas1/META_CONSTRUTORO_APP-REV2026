@@ -51,7 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Profile may not exist yet for new users — that's OK
       if (profileResult.error) {
-        console.warn("Erro ao buscar perfil (pode ser novo usuário):", profileResult.error.message);
+        // Perfil ausente ou falha transitoria nao deve bloquear login.
       }
       const profile = profileResult.data;
 
@@ -155,9 +155,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(newSession);
         if (initialLoadDone) {
           loadUserData(newSession.user)
-            .catch((error) => {
-              console.error("Erro ao carregar dados do usuário no onAuthStateChange:", error);
-            })
+            .catch(() => undefined)
             .finally(() => setLoading(false));
         }
       } else {
@@ -176,7 +174,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setSession(existingSession);
           await loadUserData(existingSession.user);
         } catch (error) {
-          console.error("Erro ao carregar dados do usuário na sessão existente — invalidando sessão:", error);
           // Sessão existe no Supabase mas perfil falhou — deslogar
           await supabase.auth.signOut().catch(() => { });
           clearSessionStorage();
@@ -191,6 +188,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(null);
         setRoles([]);
       }
+      setLoading(false);
+      initialLoadDone = true;
+    }).catch(() => {
+      clearSessionStorage();
+      setSession(null);
+      setUser(null);
+      setRoles([]);
       setLoading(false);
       initialLoadDone = true;
     });
@@ -249,10 +253,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // signOut com scope 'global' para invalidar todas as sessões do usuário
       const { error } = await supabase.auth.signOut({ scope: 'global' });
       if (error) {
-        console.error("Erro no supabase.auth.signOut:", error);
+        // signOut pode falhar se a sessao remota ja expirou.
       }
     } catch (error) {
-      console.error("Erro no logout:", error);
+      // A limpeza local abaixo ainda garante a saida do usuario.
     } finally {
       // Limpeza FORÇADA — garantir que nunca fique sessão residual
       clearSessionStorage();

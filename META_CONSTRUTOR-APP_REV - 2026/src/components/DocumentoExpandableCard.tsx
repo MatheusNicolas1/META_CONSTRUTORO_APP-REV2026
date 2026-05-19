@@ -214,9 +214,16 @@ export function DocumentoExpandableCard({
                     <div className="space-y-2">
                       <div className="flex items-center text-sm text-muted-foreground">
                         <FileType className="mr-2 h-4 w-4" />
-                        <a href={documento.url} target="_blank" rel="noopener noreferrer" className="hover:underline truncate max-w-[200px]">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onView(documento);
+                          }}
+                          className="hover:underline truncate max-w-[200px] text-left"
+                        >
                           {getFileName(documento.url)}
-                        </a>
+                        </button>
                       </div>
                       <div className="flex items-center text-sm text-muted-foreground">
                         <User className="mr-2 h-4 w-4" />

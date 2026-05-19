@@ -5,6 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 
 const ContactSection = () => {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,22 +13,48 @@ const ContactSection = () => {
     message: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Simulate form submission
-    toast({
-      title: "Mensagem enviada com sucesso!",
-      description: "Nossa equipe entrará em contato em breve.",
-    });
 
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      company: '',
-      message: ''
-    });
+    setIsSubmitting(true);
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+      const response = await fetch(`${supabaseUrl}/functions/v1/send-contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: supabaseAnonKey,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result?.error) {
+        throw new Error(result?.error?.message || 'Erro ao enviar contato');
+      }
+
+      toast({
+        title: "Mensagem enviada com sucesso!",
+        description: "Recebemos sua solicitacao e registramos o contato no atendimento.",
+      });
+
+      setFormData({
+        name: '',
+        email: '',
+        company: '',
+        message: ''
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao enviar mensagem",
+        description: error instanceof Error ? error.message : "Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -138,10 +165,11 @@ const ContactSection = () => {
               <Button 
                 type="submit" 
                 size="lg" 
+                disabled={isSubmitting}
                 className="w-full bg-primary hover:bg-primary/90"
               >
                 <Send className="mr-2 h-4 w-4" />
-                Enviar Mensagem
+                {isSubmitting ? 'Enviando...' : 'Enviar Mensagem'}
               </Button>
             </form>
           </div>

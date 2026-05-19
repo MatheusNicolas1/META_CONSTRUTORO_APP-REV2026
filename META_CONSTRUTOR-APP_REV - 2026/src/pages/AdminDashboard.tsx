@@ -18,7 +18,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     // Verificar se o usuário está autenticado e tem role de Administrador (ou superior)
     if (!loading && (!user || !hasRole('Administrador'))) {
-      navigate('/dashboard');
+      navigate('/app/dashboard');
     }
   }, [user, loading, navigate, hasRole]);
 

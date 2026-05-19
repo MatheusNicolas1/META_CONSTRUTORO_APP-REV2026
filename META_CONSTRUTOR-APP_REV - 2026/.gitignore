@@ -31,3 +31,23 @@ dist-ssr
 docs/STRIPE_CREDENTIALS.md
 
 /generated/prisma
+
+.release-backups/
+
+.env*.local
+
+# Local automation/test artifacts
+.agent/
+.agents/
+.playwright-cli/
+output/
+test-results/
+screenshot_fail.png
+*.tsbuildinfo
+vite.config.ts.timestamp-*.mjs
+
+# Local archives/backups
+*.zip
+
+# Supabase CLI local cache
+supabase/.temp/

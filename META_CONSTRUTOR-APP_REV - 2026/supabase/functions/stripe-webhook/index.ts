@@ -119,14 +119,14 @@ serve(async (req) => {
                     const plan = monthlyPlan || yearlyPlan;
                     const billingCycle = monthlyPlan ? 'monthly' : 'yearly';
 
-                    if (plan) {
+                    if (plan && orgId) {
                         // Upsert Subscription
                         // M4.5: Write subscription truth to DB
                         const subscriptionData = {
                             stripe_subscription_id: subscription.id,
                             stripe_customer_id: subscription.customer as string,
                             stripe_price_id: priceId,
-                            org_id: orgId || null, // Use org_id from metadata
+                            org_id: orgId, // Use org_id from metadata
                             status: subscription.status,
                             plan_id: plan.id,
                             billing_cycle: billingCycle,
@@ -151,6 +151,8 @@ serve(async (req) => {
                                 })
                                 .eq('id', userId);
                         }
+                    } else {
+                        throw new Error(`Missing ${!plan ? 'plan mapping' : 'org_id'} for subscription ${subscription.id}`);
                     }
                     break;
                 }
@@ -342,7 +344,7 @@ serve(async (req) => {
         await supabaseAdmin
             .from('stripe_events')
             .update({
-                processed: true,
+                processed: processError === null,
                 processed_at: new Date().toISOString(),
                 error: processError,
             })

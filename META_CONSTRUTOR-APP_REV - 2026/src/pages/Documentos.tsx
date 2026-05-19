@@ -12,12 +12,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { useDownload } from "@/hooks/useDownload";
 import { generateStandardFilename } from "@/utils/downloadHelper";
+import { downloadStorageFile, getSignedUrl } from "@/utils/storageUtils";
 
 const Documentos = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedObra, setSelectedObra] = useState("all");
   const [selectedTipo, setSelectedTipo] = useState("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingDoc, setEditingDoc] = useState<{ id: string; nome: string; categoria: string; descricao: string } | null>(null);
 
   // Form State
   const [newDocData, setNewDocData] = useState<{
@@ -36,7 +39,7 @@ const Documentos = () => {
     file: null
   });
 
-  const { documentos, isLoading, uploadDocument, deleteDocument } = useDocuments({
+  const { documentos, isLoading, uploadDocument, updateDocument, deleteDocument } = useDocuments({
     obraId: selectedObra,
     categoria: selectedTipo,
     search: searchTerm
@@ -84,9 +87,28 @@ const Documentos = () => {
   };
 
   const handleEditDocumento = (documento: Documento) => {
-    console.log("Editando documento:", documento);
-    // Implementar lógica de edição no futuro
-    toast.info("Edição em breve");
+    setEditingDoc({
+      id: documento.id,
+      nome: documento.nome,
+      categoria: documento.categoria || "",
+      descricao: documento.descricao || "",
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleEditSubmit = () => {
+    if (!editingDoc || !editingDoc.nome) return;
+    updateDocument.mutate({
+      id: editingDoc.id,
+      nome: editingDoc.nome,
+      categoria: editingDoc.categoria,
+      descricao: editingDoc.descricao,
+    }, {
+      onSuccess: () => {
+        setEditingDoc(null);
+        setIsEditDialogOpen(false);
+      }
+    });
   };
 
   const handleDeleteDocumento = (id: string) => {
@@ -100,17 +122,28 @@ const Documentos = () => {
 
     // Para forçar o download com o nome correto de arquivos do Storage, 
     // precisamos baixar o blob primeiro.
-    const downloadPromise = fetch(documento.url)
-      .then(res => {
-        if (!res.ok) throw new Error("Erro ao baixar arquivo do storage");
-        return res.blob();
-      });
+    const downloadPromise = downloadStorageFile('documentos', documento.url).then((blob) => {
+      if (!blob) throw new Error("Erro ao baixar arquivo do storage");
+      return blob;
+    });
 
     await startDownload(downloadPromise, filename);
   };
 
-  const handleViewDocumento = (documento: Documento) => {
-    window.open(documento.url, '_blank');
+  const handleViewDocumento = async (documento: Documento) => {
+    const viewer = window.open('about:blank', '_blank');
+    const url = await getSignedUrl('documentos', documento.url);
+    if (!url) {
+      viewer?.close();
+      toast.error("Nao foi possivel gerar o link de visualizacao.");
+      return;
+    }
+
+    if (viewer) {
+      viewer.location.href = url;
+    } else {
+      toast.error("O navegador bloqueou a nova aba. Permita pop-ups para visualizar o arquivo.");
+    }
   };
 
   return (
@@ -319,6 +352,44 @@ const Documentos = () => {
           )}
         </div>
       )}
+
+
+      {/* Modal de Edição de Documento */}
+      <Dialog open={isEditDialogOpen} onOpenChange={(open) => { setIsEditDialogOpen(open); if (!open) setEditingDoc(null); }}>
+        <DialogContent className="sm:max-w-[500px] bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="text-card-foreground">Editar Documento</DialogTitle>
+            <DialogDescription>Atualize os metadados do documento</DialogDescription>
+          </DialogHeader>
+          {editingDoc && (
+            <div className="grid gap-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-doc-nome">Nome *</Label>
+                <Input id="edit-doc-nome" value={editingDoc.nome} onChange={(e) => setEditingDoc(prev => prev ? { ...prev, nome: e.target.value } : null)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-doc-categoria">Categoria</Label>
+                <Select value={editingDoc.categoria} onValueChange={(value) => setEditingDoc(prev => prev ? { ...prev, categoria: value } : null)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {tiposDocumento.map((tipo) => (<SelectItem key={tipo} value={tipo}>{tipo}</SelectItem>))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-doc-descricao">Descrição</Label>
+                <Input id="edit-doc-descricao" value={editingDoc.descricao} onChange={(e) => setEditingDoc(prev => prev ? { ...prev, descricao: e.target.value } : null)} />
+              </div>
+            </div>
+          )}
+          <div className="flex justify-end space-x-2">
+            <Button variant="outline" onClick={() => { setIsEditDialogOpen(false); setEditingDoc(null); }} disabled={updateDocument.isPending}>Cancelar</Button>
+            <Button className="gradient-construction border-0" onClick={handleEditSubmit} disabled={updateDocument.isPending}>
+              {updateDocument.isPending ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>) : 'Salvar'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

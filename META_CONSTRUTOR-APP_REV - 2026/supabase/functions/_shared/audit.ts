@@ -58,6 +58,6 @@ export async function writeAuditLog(
         throw new Error(`Failed to write audit log: ${error.message}`)
     }
 
-    console.log(`✓ Audit log written: ${data.action} (${data.id}) at ${data.created_at}`)
+    console.info(`✓ Audit log written: ${data.action} (${data.id}) at ${data.created_at}`)
     return data
 }

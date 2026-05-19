@@ -10,24 +10,29 @@ import { useFornecedores } from "@/hooks/useFornecedores";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Truck, Search, Plus, Loader2 } from "lucide-react";
 
+const emptyFormData = {
+  nome: "",
+  categoria: "",
+  contato: "",
+  cnpj: "",
+  telefone: "",
+  email: "",
+  endereco: "",
+  observacoes: "",
+};
+
 const Fornecedores = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategoria, setSelectedCategoria] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   
-  const [formData, setFormData] = useState({
-    nome: "",
-    categoria: "",
-    contato: "",
-    cnpj: "",
-    telefone: "",
-    email: "",
-    endereco: "",
-    observacoes: "",
-  });
+  const [formData, setFormData] = useState(emptyFormData);
+  const [editFormData, setEditFormData] = useState(emptyFormData);
 
-  const { fornecedores, isLoading, createFornecedor, deleteFornecedor } = useFornecedores();
+  const { fornecedores, isLoading, createFornecedor, updateFornecedor, deleteFornecedor } = useFornecedores();
 
   const categorias = [
     "Materiais de Construção",
@@ -53,7 +58,39 @@ const Fornecedores = () => {
   });
 
   const handleEditFornecedor = (fornecedor: any) => {
-    console.log("Editando fornecedor:", fornecedor);
+    setEditingId(fornecedor.id);
+    setEditFormData({
+      nome: fornecedor.nome || "",
+      categoria: fornecedor.categoria || "",
+      contato: fornecedor.contato || "",
+      cnpj: fornecedor.cnpj || "",
+      telefone: fornecedor.telefone || "",
+      email: fornecedor.email || "",
+      endereco: fornecedor.endereco || "",
+      observacoes: fornecedor.observacoes || "",
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleEditSubmit = () => {
+    if (!editingId || !editFormData.nome || !editFormData.categoria || !editFormData.contato) return;
+    updateFornecedor.mutate({
+      id: editingId,
+      nome: editFormData.nome,
+      categoria: editFormData.categoria,
+      contato: editFormData.contato,
+      cnpj: editFormData.cnpj || undefined,
+      telefone: editFormData.telefone || undefined,
+      email: editFormData.email || undefined,
+      endereco: editFormData.endereco || undefined,
+      observacoes: editFormData.observacoes || undefined,
+    }, {
+      onSuccess: () => {
+        setEditFormData(emptyFormData);
+        setEditingId(null);
+        setIsEditDialogOpen(false);
+      }
+    });
   };
 
   const handleDeleteFornecedor = (id: number | string) => {
@@ -327,6 +364,67 @@ const Fornecedores = () => {
           </p>
         </div>
       )}
+
+      {/* Modal de Edição */}
+      <Dialog open={isEditDialogOpen} onOpenChange={(open) => { setIsEditDialogOpen(open); if (!open) { setEditingId(null); setEditFormData(emptyFormData); } }}>
+        <DialogContent className="sm:max-w-[600px] bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="text-card-foreground">Editar Fornecedor</DialogTitle>
+            <DialogDescription>
+              Atualize os dados do fornecedor
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-nome">Nome da Empresa *</Label>
+                <Input id="edit-nome" value={editFormData.nome} onChange={(e) => setEditFormData(prev => ({ ...prev, nome: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-categoria">Categoria *</Label>
+                <Select value={editFormData.categoria} onValueChange={(value) => setEditFormData(prev => ({ ...prev, categoria: value }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{categorias.map((cat) => (<SelectItem key={cat} value={cat}>{cat}</SelectItem>))}</SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-cnpj">CNPJ</Label>
+                <Input id="edit-cnpj" value={editFormData.cnpj} onChange={(e) => setEditFormData(prev => ({ ...prev, cnpj: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-contato">Contato Principal *</Label>
+                <Input id="edit-contato" value={editFormData.contato} onChange={(e) => setEditFormData(prev => ({ ...prev, contato: e.target.value }))} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-telefone">Telefone</Label>
+                <Input id="edit-telefone" value={editFormData.telefone} onChange={(e) => setEditFormData(prev => ({ ...prev, telefone: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-email">E-mail</Label>
+                <Input id="edit-email" type="email" value={editFormData.email} onChange={(e) => setEditFormData(prev => ({ ...prev, email: e.target.value }))} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-endereco">Endereço</Label>
+              <Input id="edit-endereco" value={editFormData.endereco} onChange={(e) => setEditFormData(prev => ({ ...prev, endereco: e.target.value }))} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-observacoes">Observações</Label>
+              <Textarea id="edit-observacoes" value={editFormData.observacoes} onChange={(e) => setEditFormData(prev => ({ ...prev, observacoes: e.target.value }))} />
+            </div>
+          </div>
+          <div className="flex justify-end space-x-2">
+            <Button variant="outline" onClick={() => { setIsEditDialogOpen(false); setEditingId(null); setEditFormData(emptyFormData); }} disabled={updateFornecedor.isPending}>Cancelar</Button>
+            <Button className="gradient-construction border-0" onClick={handleEditSubmit} disabled={updateFornecedor.isPending}>
+              {updateFornecedor.isPending ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>) : 'Salvar Alterações'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

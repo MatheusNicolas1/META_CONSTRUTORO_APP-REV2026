@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,18 +22,41 @@ import {
   AlertTriangle,
   PieChart
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { SocialShare } from "@/components/SocialShare";
+import { NovaObraForm } from "@/components/NovaObraForm";
 import { useObraDetails } from "@/hooks/useObraDetails";
 import { useRDOsByObra } from "@/hooks/useRDOsByObra";
 import { FileText as FileTextIcon, Clock, CheckCircle, AlertCircle, Wrench as WrenchIcon } from "lucide-react";
+import { useReportPdfDownload } from "@/hooks/useReportPdfDownload";
 
 const ObraDetalhes = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("geral");
+  const isEditRoute = location.pathname.endsWith("/editar");
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(isEditRoute);
 
   const { data: obra, isLoading, error } = useObraDetails(id || '');
   const { data: rdosReais = [], isLoading: rdosLoading } = useRDOsByObra(id);
+  const { downloadReportPdf, isDownloading } = useReportPdfDownload();
+
+  useEffect(() => {
+    setIsEditDialogOpen(isEditRoute);
+  }, [isEditRoute]);
+
+  const handleOpenEdit = () => {
+    if (!id) return;
+    navigate(`/app/obras/${id}/editar`);
+  };
+
+  const handleCloseEdit = () => {
+    setIsEditDialogOpen(false);
+    if (id && isEditRoute) {
+      navigate(`/app/obras/${id}`, { replace: true });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -68,15 +91,30 @@ const ObraDetalhes = () => {
     }
   };
 
-  const formatCurrency = (value: number) => {
+  const documentos = obra.documentos ?? [];
+  const imagens = obra.imagens ?? [];
+  const atividadesDetalhadas = obra.atividadesDetalhadas ?? [];
+  const equipes = obra.equipes ?? [];
+  const equipamentos = obra.equipamentos ?? [];
+  const despesas = obra.despesas ?? [];
+
+  const formatCurrency = (value?: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
-    }).format(value);
+    }).format(value || 0);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '-';
+    return new Date(dateString.includes('T') ? dateString : `${dateString}T00:00:00`).toLocaleDateString('pt-BR');
+  };
+
+  const formatFileSize = (bytes?: number | null) => {
+    if (!bytes) return '-';
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   const getItemStatusColor = (status: string) => {
@@ -86,6 +124,7 @@ const ObraDetalhes = () => {
       case "Ultrapassado":
         return "bg-red-500 text-white";
       case "Em andamento":
+      case "Executado":
         return "bg-construction-blue text-white";
       default:
         return "bg-muted text-muted-foreground";
@@ -95,6 +134,73 @@ const ObraDetalhes = () => {
   const percentualOrcamentoExecutado = obra && obra.financeiro && obra.financeiro.orcamentoTotal > 0
     ? (obra.financeiro.valorExecutado / obra.financeiro.orcamentoTotal) * 100
     : 0;
+
+  const handleExportObraPdf = () => {
+    downloadReportPdf({
+      reportType: "OBRA",
+      title: "Relatorio da Obra",
+      subtitle: obra.nome,
+      meta: [
+        { label: "Obra", value: obra.nome },
+        { label: "Status", value: obra.status },
+        { label: "Progresso", value: `${obra.progresso}%` },
+        { label: "Responsavel", value: obra.responsavel },
+      ],
+      sections: [
+        {
+          title: "Informacoes Basicas",
+          meta: [
+            { label: "Cliente", value: obra.cliente },
+            { label: "Localizacao", value: obra.localizacao },
+            { label: "Area", value: obra.area },
+            { label: "Orcamento", value: formatCurrency(obra.orcamento) },
+          ],
+        },
+        {
+          title: "Cronograma",
+          meta: [
+            { label: "Data de inicio", value: formatDate(obra.dataInicio) },
+            { label: "Previsao de termino", value: formatDate(obra.previsaoTermino) },
+          ],
+        },
+        {
+          title: "Indicadores",
+          meta: [
+            { label: "Progresso fisico", value: `${obra.progresso}%` },
+            { label: "Progresso financeiro", value: `${percentualOrcamentoExecutado.toFixed(1)}%` },
+          ],
+        },
+        {
+          title: "RDOs Vinculados",
+          columns: [
+            { key: "data", label: "Data" },
+            { key: "status", label: "Status" },
+            { key: "clima", label: "Clima" },
+            { key: "atividades", label: "Atividades" },
+            { key: "equipamentos", label: "Equipamentos" },
+          ],
+          rows: rdosReais.map((rdo) => ({
+            data: new Date(rdo.data + 'T00:00:00').toLocaleDateString('pt-BR'),
+            status: rdo.status,
+            clima: rdo.clima || "-",
+            atividades: rdo.totalAtividades,
+            equipamentos: rdo.totalEquipamentos,
+          })),
+        },
+        {
+          title: "Financeiro",
+          meta: [
+            { label: "Orcamento total", value: formatCurrency(obra.financeiro.orcamentoTotal) },
+            { label: "Valor executado", value: formatCurrency(obra.financeiro.valorExecutado) },
+            { label: "Saldo restante", value: formatCurrency(obra.financeiro.saldoRestante) },
+          ],
+        },
+        { title: "Problemas e Ocorrencias" },
+        { title: "Observacoes Gerais", notes: [obra.descricao || "Sem observacoes gerais."] },
+        { title: "Anexos" },
+      ],
+    });
+  };
 
   return (
     <div className="responsive-spacing">
@@ -117,13 +223,13 @@ const ObraDetalhes = () => {
             imageUrl={obra.area ? undefined : undefined}
             obraId={obra.id.toString()}
           />
-          <Link to="/app/rdo" className="w-full sm:w-auto">
+          <Link to="/app/rdo/novo" state={{ selectedObraId: id }} className="w-full sm:w-auto">
             <Button className="gradient-construction border-0 hover:opacity-90 w-full sm:w-auto">
               <FileText className="mr-2 h-4 w-4" />
               Criar RDO
             </Button>
           </Link>
-          <Button variant="outline" className="w-full sm:w-auto">
+          <Button variant="outline" className="w-full sm:w-auto" onClick={handleOpenEdit}>
             <Edit className="mr-2 h-4 w-4" />
             Editar Obra
           </Button>
@@ -237,12 +343,29 @@ const ObraDetalhes = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-center h-32 bg-muted rounded-lg border-2 border-dashed border-border">
-                <div className="text-center">
-                  <FileText className="mx-auto h-8 w-8 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground mt-2">Nenhum documento anexado</p>
+              {documentos.length === 0 ? (
+                <div className="flex items-center justify-center h-32 bg-muted rounded-lg border-2 border-dashed border-border">
+                  <div className="text-center">
+                    <FileText className="mx-auto h-8 w-8 text-muted-foreground" />
+                    <p className="text-sm text-muted-foreground mt-2">Nenhum documento anexado</p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                documentos.map((documento) => (
+                  <div key={documento.id} className="flex items-center justify-between gap-3 p-3 bg-muted/30 border border-border rounded-lg">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <FileText className="h-5 w-5 text-construction-orange flex-shrink-0" />
+                      <div className="min-w-0">
+                        <p className="font-medium text-card-foreground truncate">{documento.nome}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {documento.categoria || documento.tipo} - {formatFileSize(documento.tamanho)} - Origem: {documento.origem}
+                        </p>
+                      </div>
+                    </div>
+                    <Badge variant="outline">{formatDate(documento.created_at)}</Badge>
+                  </div>
+                ))
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -288,7 +411,13 @@ const ObraDetalhes = () => {
                     rejeitado: { label: 'Rejeitado', icon: <AlertCircle className="h-4 w-4" />, cls: 'bg-destructive text-white' },
                     rascunho: { label: 'Rascunho', icon: <FileTextIcon className="h-4 w-4" />, cls: 'bg-muted text-muted-foreground' },
                   };
-                  const s = statusMap[rdo.status] ?? statusMap.rascunho;
+                  const normalizedStatus = ({
+                    DRAFT: 'rascunho',
+                    SUBMITTED: 'em_analise',
+                    APPROVED: 'aprovado',
+                    REJECTED: 'rejeitado',
+                  } as Record<string, string>)[rdo.status] ?? rdo.status;
+                  const s = statusMap[normalizedStatus] ?? statusMap.rascunho;
                   return (
                     <div key={rdo.id} className="p-4 bg-muted/30 border border-border rounded-lg hover:bg-muted/50 transition-colors">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -337,18 +466,28 @@ const ObraDetalhes = () => {
               <CardDescription>Equipes trabalhando nesta obra</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {obra.equipes.map((equipe, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Users className="h-8 w-8 text-construction-blue" />
-                    <div>
-                      <p className="font-medium text-card-foreground">{equipe.nome}</p>
-                      <p className="text-sm text-muted-foreground">{equipe.funcao}</p>
-                    </div>
-                  </div>
-                  <Badge variant="outline">{equipe.membros} membros</Badge>
+              {equipes.length === 0 ? (
+                <div className="text-center py-8">
+                  <Users className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+                  <p className="text-muted-foreground">Nenhuma equipe vinculada a RDOs desta obra.</p>
+                  <p className="text-xs text-muted-foreground mt-1">Cadastre colaboradores em Equipes e selecione-os ao criar um RDO.</p>
                 </div>
-              ))}
+              ) : (
+                equipes.map((equipe, index) => (
+                  <div key={`${equipe.nome}-${index}`} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <Users className="h-8 w-8 text-construction-blue" />
+                      <div>
+                        <p className="font-medium text-card-foreground">{equipe.nome}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {equipe.funcao} - {equipe.horasTrabalho || 0}h registradas em RDOs
+                        </p>
+                      </div>
+                    </div>
+                    <Badge variant="outline">{equipe.membros} registro{equipe.membros !== 1 ? 's' : ''}</Badge>
+                  </div>
+                ))
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -360,15 +499,31 @@ const ObraDetalhes = () => {
               <CardDescription>Atividades vinculadas a esta obra</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {atividadesDetalhadas.length === 0 ? (
               <div className="text-center py-8">
                 <FileText className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                <p className="text-muted-foreground">Módulo de atividades em desenvolvimento / centralizado na listagem principal.</p>
-                <Link to="/app/atividades" className="mt-3 inline-block">
+                <p className="text-muted-foreground">Nenhuma atividade registrada nos RDOs desta obra.</p>
+                <Link to="/app/rdo/novo" state={{ selectedObraId: id }} className="mt-3 inline-block">
                   <Button size="sm" variant="outline">
-                    Gerenciar Atividades Globalmente
+                    Registrar atividades em um RDO
                   </Button>
                 </Link>
               </div>
+              ) : (
+                atividadesDetalhadas.map((atividade) => (
+                  <div key={atividade.id} className="flex items-center justify-between gap-3 p-3 bg-muted/30 border border-border rounded-lg">
+                    <div className="min-w-0">
+                      <p className="font-medium text-card-foreground truncate">{atividade.nome}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {atividade.categoria} - {atividade.quantidade} {atividade.unidadeMedida} - RDO de {formatDate(atividade.data)}
+                      </p>
+                    </div>
+                    <Badge className={getItemStatusColor(atividade.status)}>
+                      {atividade.status}
+                    </Badge>
+                  </div>
+                ))
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -380,20 +535,30 @@ const ObraDetalhes = () => {
               <CardDescription>Equipamentos em uso nesta obra</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {obra.equipamentos.map((equipamento, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Wrench className="h-8 w-8 text-construction-orange" />
-                    <div>
-                      <p className="font-medium text-card-foreground">{equipamento.nome}</p>
-                      <p className="text-sm text-muted-foreground">{equipamento.categoria}</p>
-                    </div>
-                  </div>
-                  <Badge variant={equipamento.status === "Ativo" ? "default" : "destructive"}>
-                    {equipamento.status}
-                  </Badge>
+              {equipamentos.length === 0 ? (
+                <div className="text-center py-8">
+                  <Wrench className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+                  <p className="text-muted-foreground">Nenhum equipamento vinculado a RDOs desta obra.</p>
+                  <p className="text-xs text-muted-foreground mt-1">Cadastre equipamentos e selecione-os nos RDOs para aparecerem aqui.</p>
                 </div>
-              ))}
+              ) : (
+                equipamentos.map((equipamento, index) => (
+                  <div key={`${equipamento.nome}-${index}`} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <Wrench className="h-8 w-8 text-construction-orange" />
+                      <div>
+                        <p className="font-medium text-card-foreground">{equipamento.nome}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {equipamento.categoria} - {equipamento.horasUso || 0}h de uso registradas
+                        </p>
+                      </div>
+                    </div>
+                    <Badge variant={equipamento.status === "Operacional" || equipamento.status === "Ativo" ? "default" : "destructive"}>
+                      {equipamento.status}
+                    </Badge>
+                  </div>
+                ))
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -524,7 +689,7 @@ const ObraDetalhes = () => {
                     <Filter className="mr-2 h-4 w-4" />
                     Filtros
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={handleExportObraPdf} disabled={isDownloading}>
                     <Download className="mr-2 h-4 w-4" />
                     Exportar PDF
                   </Button>
@@ -545,7 +710,13 @@ const ObraDetalhes = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {obra.financeiro.itensOrcamento.map((item) => (
+                    {obra.financeiro.itensOrcamento.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="p-6 text-center text-sm text-muted-foreground">
+                          Nenhuma despesa registrada para esta obra.
+                        </td>
+                      </tr>
+                    ) : obra.financeiro.itensOrcamento.map((item) => (
                       <tr key={item.id} className="border-b border-border/50 hover:bg-muted/50">
                         <td className="p-3 text-sm text-card-foreground font-medium">{item.atividade}</td>
                         <td className="p-3 text-sm text-card-foreground text-right">
@@ -571,6 +742,25 @@ const ObraDetalhes = () => {
                   </tbody>
                 </table>
               </div>
+              {despesas.length > 0 && (
+                <div className="mt-6 space-y-3">
+                  <h4 className="text-sm font-semibold text-card-foreground">Despesas vinculadas</h4>
+                  {despesas.slice(0, 5).map((despesa) => (
+                    <div key={despesa.id} className="flex items-center justify-between gap-3 p-3 bg-muted/30 border border-border rounded-lg">
+                      <div className="min-w-0">
+                        <p className="font-medium text-card-foreground truncate">{despesa.fornecedor}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {despesa.categoria} - NF {despesa.notaFiscal} - {formatDate(despesa.data)}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-card-foreground">{formatCurrency(despesa.valor)}</p>
+                        <p className="text-xs text-muted-foreground">{despesa.status}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -589,19 +779,89 @@ const ObraDetalhes = () => {
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-center h-32 bg-muted rounded-lg border-2 border-dashed border-border">
-                <div className="text-center">
-                  <ImageIcon className="mx-auto h-8 w-8 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground mt-2">Nenhuma imagem carregada</p>
+            <CardContent className="space-y-4">
+              {imagens.length === 0 ? (
+                <div className="flex items-center justify-center h-32 bg-muted rounded-lg border-2 border-dashed border-border">
+                  <div className="text-center">
+                    <ImageIcon className="mx-auto h-8 w-8 text-muted-foreground" />
+                    <p className="text-sm text-muted-foreground mt-2">Nenhuma imagem carregada</p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {imagens.map((imagem) => (
+                    <ObraImagePreviewCard key={imagem.id} imagem={imagem} />
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
+
+      <NovaObraForm
+        isOpen={isEditDialogOpen}
+        onClose={handleCloseEdit}
+        obra={obra}
+      />
     </div>
   );
 };
+
+type ObraImagemPreview = {
+  id: string;
+  nome: string;
+  url: string;
+  previewUrl?: string | null;
+  created_at: string;
+  origem: 'Obra' | 'RDO';
+};
+
+const isRenderableImageUrl = (value?: string | null) =>
+  Boolean(value && /^(https?:|blob:|data:)/i.test(value));
+
+const formatImageDate = (dateString?: string) => {
+  if (!dateString) return '-';
+  return new Date(dateString.includes('T') ? dateString : `${dateString}T00:00:00`).toLocaleDateString('pt-BR');
+};
+
+function ObraImagePreviewCard({ imagem }: { imagem: ObraImagemPreview }) {
+  const [previewFailed, setPreviewFailed] = useState(false);
+  const fallbackUrl = isRenderableImageUrl(imagem.url) ? imagem.url : null;
+  const previewSrc = imagem.previewUrl || fallbackUrl;
+  const showPreview = Boolean(previewSrc) && !previewFailed;
+
+  return (
+    <div className="overflow-hidden rounded-lg border border-border bg-muted/30 transition-colors hover:bg-muted/40">
+      <div className="relative aspect-[4/3] bg-muted/40">
+        {showPreview ? (
+          <img
+            src={previewSrc!}
+            alt={`Pre-visualizacao de ${imagem.nome}`}
+            loading="lazy"
+            className="h-full w-full object-cover"
+            onError={() => setPreviewFailed(true)}
+          />
+        ) : (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
+            <ImageIcon className="h-8 w-8" />
+            <span className="text-xs">Preview indisponivel</span>
+          </div>
+        )}
+        <Badge variant="secondary" className="absolute left-2 top-2 bg-background/90 text-[11px]">
+          {imagem.origem}
+        </Badge>
+      </div>
+      <div className="p-3">
+        <p className="truncate font-medium text-card-foreground" title={imagem.nome}>
+          {imagem.nome}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {formatImageDate(imagem.created_at)}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export default ObraDetalhes;

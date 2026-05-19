@@ -23,16 +23,16 @@ import {
 
 export const DashboardPreviewMockup = () => {
     return (
-        <div className="relative w-full perspective-1000">
+        <div className="relative w-full max-w-full min-w-0 overflow-hidden perspective-1000 lg:overflow-visible">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-blue-500/10 rounded-full blur-[80px] -z-10"></div>
-            <div className="bg-[#05111D] border border-[#1f2e42] rounded-xl shadow-[0_35px_60px_-15px_rgba(0,0,0,0.6)] overflow-hidden w-full max-w-[850px] transform lg:rotate-y-[-5deg] lg:rotate-x-[2deg] transition-transform duration-700 hover:rotate-0">
+            <div className="w-full max-w-[850px] min-w-0 transform overflow-hidden rounded-xl border border-[#1f2e42] bg-[#05111D] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.6)] transition-transform duration-700 lg:rotate-x-[2deg] lg:rotate-y-[-5deg] hover:rotate-0">
 
                 {/* Header */}
-                <div className="bg-[#081321] px-4 py-3 border-b border-[#1f2e42] flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
+                <div className="bg-[#081321] px-3 py-3 sm:px-4 border-b border-[#1f2e42] flex items-center justify-between gap-3 sm:gap-4">
+                    <div className="flex min-w-0 items-center gap-3 sm:gap-4">
                         <Menu className="text-gray-400 cursor-pointer w-5 h-5" />
-                        <div className="flex items-center gap-1">
-                            <span className="text-base font-bold tracking-tight text-white">
+                        <div className="flex min-w-0 items-center gap-1">
+                            <span className="truncate text-sm font-bold text-white sm:text-base">
                                 Meta<span className="text-primary">Construtor</span>
                             </span>
                         </div>
@@ -48,7 +48,7 @@ export const DashboardPreviewMockup = () => {
                             />
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex shrink-0 items-center gap-2 sm:gap-3">
                         <Bell className="text-gray-400 w-5 h-5 cursor-pointer hover:text-white" />
                         <Moon className="text-gray-400 w-5 h-5 cursor-pointer hover:text-white" />
                         <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center relative cursor-pointer">
@@ -83,11 +83,11 @@ export const DashboardPreviewMockup = () => {
                     {/* Main Content */}
                     <div className="flex-1 bg-[#05111D] p-4 md:p-6 overflow-hidden flex flex-col">
                         <div className="mb-5 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-                            <div>
-                                <h2 className="text-xl font-bold text-white mb-1">Relatórios Diários de Obra (RDO)</h2>
+                            <div className="min-w-0">
+                                <h2 className="text-lg sm:text-xl font-bold text-white mb-1 break-words">Relatórios Diários de Obra (RDO)</h2>
                                 <p className="text-xs text-gray-400">Gerencie todos os relatórios diários das obras</p>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex flex-wrap gap-2">
                                 <button className="px-3 py-1.5 border border-[#1f2e42] rounded text-xs font-medium text-white hover:bg-[#1f2e42] transition-colors flex items-center gap-1.5 cursor-default">
                                     <Download className="w-3.5 h-3.5" /> Exportar
                                 </button>
@@ -179,10 +179,10 @@ export const DashboardPreviewMockup = () => {
                             {/* Calendar Section */}
                             <div className="flex-1 flex flex-col gap-4">
                                 <div className="bg-[#081321] border border-[#1f2e42] rounded-lg p-4 flex-1">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <div className="flex items-center gap-2">
+                                    <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                        <div className="flex min-w-0 items-center gap-2">
                                             <Calendar className="text-primary w-4 h-4" />
-                                            <h3 className="text-sm font-semibold text-white">Calendário de Atividades</h3>
+                                            <h3 className="min-w-0 text-sm font-semibold text-white break-words">Calendário de Atividades</h3>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <button className="w-6 h-6 flex items-center justify-center rounded hover:bg-white/5 text-gray-400 cursor-default">

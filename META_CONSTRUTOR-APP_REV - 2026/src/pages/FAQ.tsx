@@ -72,7 +72,7 @@ const FAQ = () => {
         },
         {
           question: "Como exportar relatórios?",
-          answer: "Todos os relatórios podem ser exportados em formato PDF ou Excel. Clique no botão 'Exportar' na parte superior do relatório e selecione o formato desejado.",
+          answer: "Todos os relatórios podem ser exportados em formato PDF. Clique no botão 'Exportar' na parte superior do relatório para baixar o arquivo.",
         },
         {
           question: "Posso agendar relatórios automáticos?",

@@ -20,10 +20,15 @@ import { useToast } from "@/hooks/use-toast";
 import { useChecklist } from "@/hooks/useChecklist";
 import { useObras } from "@/hooks/useObras";
 import { useEquipesSupabase } from "@/hooks/useEquipesSupabase";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuthUserId } from "@/hooks/useAuthUserId";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ChecklistPage = () => {
   const { toast } = useToast();
   const { navigate } = useNavigationTransition();
+  const { userId } = useAuthUserId();
+  const queryClient = useQueryClient();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("active");
 
@@ -36,28 +41,50 @@ const ChecklistPage = () => {
     dateRange: {}
   });
 
-  const { checklistsQuery, createChecklist, deleteChecklist } = useChecklist();
+  const { useChecklistsQuery, createChecklist, deleteChecklist } = useChecklist();
 
   // Debounce filter changes if necessary, but for now direct passing is fine
-  const { data: checklists = [], isLoading } = checklistsQuery(filters);
+  const { data: checklists = [], isLoading } = useChecklistsQuery(filters);
 
   const handleCreateChecklist = async (formData: ChecklistFormData) => {
     try {
       await createChecklist.mutateAsync(formData);
-      // Toast is handled in the hook
     } catch (error) {
       console.error("Error creating checklist:", error);
-      // Toast handled in hook
     }
   };
 
-  const handleSignChecklist = (checklistId: string, signature: DigitalSignature) => {
-    // Implementar assinatura real depois
-    console.log("Signing checklist", checklistId, signature);
-    toast({
-      title: "Funcionalidade em desenvolvimento",
-      description: "A assinatura digital será implementada em breve no backend."
-    });
+  const handleSignChecklist = async (checklistId: string, signature: DigitalSignature) => {
+    if (!userId) {
+      toast({ title: "Erro", description: "Usuário não autenticado.", variant: "destructive" });
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('approve-checklist', {
+        body: {
+          checklist_id: checklistId,
+          signature,
+        },
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error.message || "Erro ao aprovar checklist");
+
+      queryClient.invalidateQueries({ queryKey: ['checklists'] });
+      queryClient.invalidateQueries({ queryKey: ['checklist', checklistId] });
+      toast({
+        title: "Checklist aprovado!",
+        description: "A assinatura digital foi registrada com sucesso."
+      });
+    } catch (error) {
+      console.error("Erro ao aprovar checklist:", error);
+      toast({
+        title: "Erro ao aprovar",
+        description: "Não foi possível registrar a aprovação.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleDeleteChecklist = async (id: string) => {

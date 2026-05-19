@@ -47,10 +47,10 @@ export const AnimatedTestimonials = ({
   };
 
   return (
-    <div className={cn("max-w-sm md:max-w-4xl mx-auto px-4 md:px-8 lg:px-12 py-20", className)}>
-      <div className="relative grid grid-cols-1 md:grid-cols-2 gap-20">
+    <div className={cn("max-w-sm md:max-w-4xl mx-auto px-4 md:px-8 lg:px-12 py-10 md:py-20", className)}>
+      <div className="relative grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20">
         <div>
-          <div className="relative h-80 w-full">
+          <div className="relative h-72 w-full overflow-hidden rounded-3xl sm:h-80">
             <AnimatePresence>
               {testimonials.map((testimonial, index) => (
                 <motion.div
@@ -69,7 +69,7 @@ export const AnimatedTestimonials = ({
                     zIndex: isActive(index)
                       ? 999
                       : testimonials.length + 2 - index,
-                    y: isActive(index) ? [0, -80, 0] : 0,
+                    y: 0,
                   }}
                   exit={{
                     opacity: 0,
@@ -87,7 +87,7 @@ export const AnimatedTestimonials = ({
                     src={testimonial.src}
                     alt={testimonial.name}
                     draggable={false}
-                    loading="lazy"
+                    loading={isActive(index) ? "eager" : "lazy"}
                     className="h-full w-full rounded-3xl object-cover object-center"
                   />
                 </motion.div>
@@ -115,13 +115,13 @@ export const AnimatedTestimonials = ({
               ease: "easeInOut",
             }}
           >
-            <h3 className="text-2xl font-bold text-foreground">
+            <h3 className="text-xl sm:text-2xl font-semibold leading-tight text-foreground">
               {testimonials[active].name}
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm leading-relaxed text-muted-foreground">
               {testimonials[active].designation}
             </p>
-            <motion.p className="text-lg text-muted-foreground mt-8">
+            <motion.p className="text-base sm:text-lg leading-relaxed text-muted-foreground mt-8">
               {testimonials[active].quote.split(" ").map((word, index) => (
                 <motion.span
                   key={index}

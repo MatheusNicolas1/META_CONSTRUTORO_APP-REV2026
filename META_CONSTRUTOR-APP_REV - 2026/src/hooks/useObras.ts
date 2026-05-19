@@ -27,7 +27,7 @@ export const useObras = () => {
   const queryClient = useQueryClient();
   const { obra: obraPerms } = usePermissions();
   const { orgId, isLoading: orgLoading } = useRequireOrg();
-  const { userId } = useAuthUserId();
+  const { userId, isLoading: authLoading } = useAuthUserId();
 
   // Realtime subscription for obras updates
   // Realtime subscription for Obras (Singleton + Grace Period)
@@ -49,7 +49,6 @@ export const useObras = () => {
     // Setup function
     const setup = () => {
       if (!entry) {
-        console.log(`[Realtime-Obras] Creating NEW channel: ${channelKey}`);
         const channel = supabase
           .channel(channelKey)
           .on(
@@ -65,8 +64,7 @@ export const useObras = () => {
             }
           )
           .subscribe((status) => {
-            if (status === 'SUBSCRIBED') console.log(`[Realtime-Obras] Subscribed: ${channelKey}`);
-            else if (status === 'CHANNEL_ERROR') console.error(`[Realtime-Obras] Error: ${channelKey}`);
+            if (status === 'CHANNEL_ERROR') console.error(`[Realtime-Obras] Error: ${channelKey}`);
           });
 
         entry = { channel, refCount: 0, cleanupTimeout: null };
@@ -75,7 +73,6 @@ export const useObras = () => {
 
       // Cancel pending cleanup
       if (entry.cleanupTimeout) {
-        console.log(`[Realtime-Obras] Resurrecting channel: ${channelKey}`);
         window.clearTimeout(entry.cleanupTimeout);
         entry.cleanupTimeout = null;
       }
@@ -104,7 +101,6 @@ export const useObras = () => {
           // Grace period 2s
           entry.cleanupTimeout = window.setTimeout(() => {
             if (entry.refCount <= 0) {
-              console.log(`[Realtime-Obras] Removing channel: ${channelKey}`);
               supabase.removeChannel(entry.channel);
               registry.delete(channelKey);
             }
@@ -115,24 +111,26 @@ export const useObras = () => {
   }, [queryClient, orgId, userId]);
 
   const obrasQuery = useQuery({
-    queryKey: ['obras', orgId],
+    queryKey: ['obras', orgId, userId],
     queryFn: async () => {
-      if (!orgId) throw new Error('Organização não selecionada');
+      if (!userId) throw new Error('Usuario nao autenticado');
 
-      const { data, error } = await supabase
+      let query = supabase
         .from('obras')
-        .select(`
-          *,
-          atividades (count)
-        `)
-        .eq('org_id', orgId)
+        .select('*')
         .order('created_at', { ascending: false })
-        .limit(20);
+        .limit(50);
+
+      query = orgId
+        ? query.or(`org_id.eq.${orgId},user_id.eq.${userId}`)
+        : query.eq('user_id', userId);
+
+      const { data, error } = await query;
 
       if (error) throw error;
-      return data || [];
+      return (data || []).map((obra) => ({ ...obra, atividades: [] }));
     },
-    enabled: !orgLoading && !!orgId && !!userId,
+    enabled: !authLoading && !orgLoading && !!userId,
   });
 
   const createObra = useMutation({
@@ -252,6 +250,7 @@ export const useObras = () => {
       queryClient.invalidateQueries({ queryKey: ['obras', orgId] });
       queryClient.invalidateQueries({ queryKey: ['recent-obras', orgId] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
+      queryClient.invalidateQueries({ queryKey: ['obra'] });
       toast.success('Obra atualizada com sucesso!');
     },
     onError: (error) => {

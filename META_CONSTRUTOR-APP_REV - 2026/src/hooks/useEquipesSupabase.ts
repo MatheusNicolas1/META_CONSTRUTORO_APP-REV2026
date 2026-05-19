@@ -61,6 +61,7 @@ export const useEquipesSupabase = () => {
         .insert({
           ...equipeData,
           user_id: userId,
+          org_id: orgId,
           ativo: equipeData.ativo ?? true,
         })
         .select()

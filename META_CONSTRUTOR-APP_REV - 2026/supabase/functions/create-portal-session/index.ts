@@ -1,70 +1,81 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
+import { getCorsHeaders } from "../_shared/cors.ts";
+import { createAdminClient, createScopedClient } from "../_shared/supabase-client.ts";
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import Stripe from 'https://esm.sh/stripe@14.14.0?target=deno'
-import { corsHeaders } from '../_shared/cors.ts'
+const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    apiVersion: "2023-10-16",
+    httpClient: Stripe.createFetchHttpClient(),
+});
 
-Deno.serve(async (req) => {
-    // 1. Handle CORS
-    if (req.method === 'OPTIONS') {
-        return new Response('ok', { headers: corsHeaders })
+serve(async (req) => {
+    const corsHeaders = getCorsHeaders(req);
+
+    if (req.method === "OPTIONS") {
+        return new Response("ok", { headers: corsHeaders });
     }
 
     try {
-        const stripeKey = Deno.env.get('STRIPE_SECRET_KEY');
-        if (!stripeKey) {
-            throw new Error('Missing STRIPE_SECRET_KEY');
+        const supabaseClient = createScopedClient(req);
+        const supabaseAdmin = createAdminClient();
+
+        const {
+            data: { user },
+        } = await supabaseClient.auth.getUser();
+
+        if (!user) {
+            throw new Error("User not found");
         }
 
-        const stripe = new Stripe(stripeKey, {
-            apiVersion: '2023-10-16',
-            httpClient: Stripe.createFetchHttpClient(),
-        });
+        const { returnUrl } = await req.json().catch(() => ({}));
 
-        // 2. Authentication
-        const supabaseClient = createClient(
-            Deno.env.get('SUPABASE_URL') ?? '',
-            Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-            { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
-        )
+        const { data: orgMember } = await supabaseAdmin
+            .from("org_members")
+            .select("org_id")
+            .eq("user_id", user.id)
+            .eq("status", "active")
+            .in("role", ["Presidente", "Administrador"])
+            .order("created_at", { ascending: true })
+            .limit(1)
+            .maybeSingle();
 
-        const { data: { user }, error: authError } = await supabaseClient.auth.getUser()
-        if (authError || !user) throw new Error('Unauthorized');
+        if (!orgMember?.org_id) throw new Error("Organization not found for user");
 
-        const { returnUrl } = await req.json();
+        const { data: subscription } = await supabaseAdmin
+            .from("subscriptions")
+            .select("stripe_customer_id")
+            .eq("org_id", orgMember.org_id)
+            .in("status", ["active", "trialing", "past_due"])
+            .order("updated_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
 
-        // 3. Get Stripe Customer ID
-        const { data: profile } = await supabaseClient
-            .from('profiles')
-            .select('stripe_customer_id')
-            .eq('id', user.id)
-            .single();
+        let customerId = subscription?.stripe_customer_id;
 
-        if (!profile?.stripe_customer_id) {
-            throw new Error('No Stripe customer found for this user');
+        if (!customerId) {
+            const { data: profile } = await supabaseAdmin
+                .from("profiles")
+                .select("stripe_customer_id")
+                .eq("id", user.id)
+                .maybeSingle();
+            customerId = profile?.stripe_customer_id;
         }
 
-        // 4. Create Portal Session
-        const session = await stripe.billingPortal.sessions.create({
-            customer: profile.stripe_customer_id,
-            return_url: returnUrl || 'http://localhost:5173/perfil',
+        if (!customerId) throw new Error("Stripe customer not found");
+
+        const portalSession = await stripe.billingPortal.sessions.create({
+            customer: customerId,
+            return_url: returnUrl || req.headers.get("origin") || "https://metaconstrutor.com.br/app/perfil",
         });
 
-        return new Response(
-            JSON.stringify({ url: session.url }),
-            {
-                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-                status: 200,
-            }
-        )
-
-    } catch (error: any) {
-        console.error(error);
-        return new Response(
-            JSON.stringify({ error: error.message }),
-            {
-                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-                status: 400,
-            }
-        )
+        return new Response(JSON.stringify({ url: portalSession.url }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 200,
+        });
+    } catch (error) {
+        return new Response(JSON.stringify({ error: error.message }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 400,
+        });
     }
 });

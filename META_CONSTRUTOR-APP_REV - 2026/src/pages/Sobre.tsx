@@ -90,7 +90,7 @@ const Sobre = () => {
         canonical="https://metaconstrutor.com.br/sobre"
       />
 
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen overflow-x-hidden bg-background">
         <LandingNavigation />
 
         <main className="pt-16 md:pt-20 w-full">
@@ -98,24 +98,24 @@ const Sobre = () => {
           <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-primary/10 via-background to-secondary/5 relative overflow-hidden w-full">
             <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="grid lg:grid-cols-2 gap-12 items-center">
-                <div className="text-center lg:text-left">
-                  <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
+                <div className="mx-auto max-w-[22rem] min-w-0 text-center lg:mx-0 lg:max-w-none lg:text-left">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 leading-tight break-words">
                     Transformando a gestão de obras
                     <span className="text-primary"> no Brasil</span>
                   </h1>
-                  <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+                  <p className="text-lg sm:text-xl text-muted-foreground mb-8 leading-relaxed">
                     Simplificamos processos, reduzimos retrabalho e damos mais previsibilidade
                     às construtoras através de tecnologia intuitiva e acessível.
                   </p>
                   <button
                     onClick={() => navigate('/contato')}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+                    className="w-full max-w-[20rem] bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-4 rounded-lg font-semibold text-base leading-none sm:w-auto sm:max-w-none sm:px-8 transition-all duration-300 shadow-lg hover:shadow-xl"
                   >
                     Fale com a nossa equipe
                   </button>
                 </div>
 
-                <div className="relative">
+                <div className="relative mx-auto max-w-[calc(100vw-2rem)] min-w-0 lg:max-w-none">
                   <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50">
                     <img
                       src="/lovable-uploads/5557c860-388b-4ad5-bde2-5718350a8197.png"
@@ -134,10 +134,10 @@ const Sobre = () => {
           <section className="py-12 md:py-16 lg:py-20 bg-muted/30 w-full">
             <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4 break-words">
                   Missão, Visão e Valores
                 </h2>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto">
                   Os pilares que guiam nossa jornada de transformação no setor da construção civil.
                 </p>
               </div>
@@ -146,15 +146,15 @@ const Sobre = () => {
                 {missionValues.map((value, index) => (
                   <div
                     key={index}
-                    className="bg-card rounded-2xl p-8 border border-border hover:shadow-lg transition-all duration-300 hover:scale-105 text-center group"
+                    className="bg-card rounded-2xl p-6 sm:p-8 border border-border hover:shadow-lg transition-all duration-300 md:hover:scale-105 text-center group"
                   >
                     <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:from-primary/30 group-hover:to-primary/20 transition-all">
                       <value.icon className="h-10 w-10 text-primary" />
                     </div>
-                    <h3 className="text-2xl font-semibold text-foreground mb-4">
+                    <h3 className="text-lg sm:text-xl font-semibold leading-snug text-foreground mb-4 break-words">
                       {value.title}
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed">
+                    <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                       {value.description}
                     </p>
                   </div>
@@ -177,10 +177,10 @@ const Sobre = () => {
           <section className="py-12 md:py-16 lg:py-20 bg-muted/30 w-full">
             <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4 break-words">
                   Diferenciais do MetaConstrutor
                 </h2>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto">
                   O que nos torna únicos no mercado de gestão de obras.
                 </p>
               </div>
@@ -194,10 +194,10 @@ const Sobre = () => {
                     <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
                       <differential.icon className="h-8 w-8 text-primary" />
                     </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-3">
+                    <h3 className="text-base sm:text-lg font-semibold leading-snug text-foreground mb-3 break-words">
                       {differential.title}
                     </h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       {differential.description}
                     </p>
                   </div>
@@ -220,10 +220,10 @@ const Sobre = () => {
           <section className="py-12 md:py-16 lg:py-20 w-full">
             <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4 break-words">
                   Compromisso e Responsabilidade
                 </h2>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto">
                   Nosso compromisso vai além da tecnologia, abraçando responsabilidade social e sustentabilidade.
                 </p>
               </div>
@@ -232,15 +232,15 @@ const Sobre = () => {
                 {commitments.map((commitment, index) => (
                   <div
                     key={index}
-                    className="bg-card rounded-xl p-8 border border-border hover:shadow-lg transition-all duration-300 text-center"
+                    className="bg-card rounded-xl p-6 sm:p-8 border border-border hover:shadow-lg transition-all duration-300 text-center"
                   >
                     <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-6">
                       <commitment.icon className="h-8 w-8 text-primary" />
                     </div>
-                    <h3 className="text-xl font-semibold text-foreground mb-4">
+                    <h3 className="text-lg sm:text-xl font-semibold leading-snug text-foreground mb-4 break-words">
                       {commitment.title}
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed">
+                    <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                       {commitment.description}
                     </p>
                   </div>
@@ -252,22 +252,22 @@ const Sobre = () => {
           {/* CTA Final */}
           <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-r from-primary/10 via-primary/5 to-background w-full">
             <div className="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-6 break-words">
                 Pronto para conhecer o MetaConstrutor?
               </h2>
-              <p className="text-lg text-muted-foreground mb-8">
+              <p className="text-base sm:text-lg leading-relaxed text-muted-foreground mb-8">
                 Junte-se às centenas de construtoras que já transformaram sua gestão de obras.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={() => navigate('/login')}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-4 rounded-lg font-semibold text-base leading-none sm:w-auto sm:px-8 transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   Começar Gratuitamente
                 </button>
                 <button
                   onClick={() => navigate('/contato')}
-                  className="border border-border hover:bg-muted text-foreground px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300"
+                  className="w-full border border-border hover:bg-muted text-foreground px-6 py-4 rounded-lg font-semibold text-base leading-none sm:w-auto sm:px-8 transition-all duration-300"
                 >
                   Agendar uma demonstração
                 </button>

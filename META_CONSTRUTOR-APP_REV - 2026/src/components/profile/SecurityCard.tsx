@@ -52,13 +52,6 @@ export const SecurityCard = () => {
         }
     };
 
-    const handleMFA = () => {
-        toast({
-            title: "Em breve",
-            description: "Autenticação de dois fatores estará disponível em breve.",
-        });
-    };
-
     const handleSessions = () => {
         toast({
             title: "Sessão Atual",
@@ -133,7 +126,7 @@ export const SecurityCard = () => {
             // Logout após 2s
             setTimeout(async () => {
                 await supabase.auth.signOut();
-                window.location.href = "/";
+                window.location.href = "/home";
             }, 2000);
 
         } catch (err) {
@@ -239,22 +232,6 @@ export const SecurityCard = () => {
                             </div>
                             <Button variant="outline" size="sm" onClick={handlePasswordReset} className="ml-2 flex-shrink-0">
                                 Alterar
-                            </Button>
-                        </div>
-
-                        {/* MFA */}
-                        <div className="flex items-center justify-between p-4 border rounded-xl hover:bg-muted/50 transition-colors">
-                            <div className="flex items-center gap-3">
-                                <div className="bg-orange-500/10 p-2.5 rounded-full flex-shrink-0">
-                                    <Shield className="h-4 w-4 text-orange-500" />
-                                </div>
-                                <div>
-                                    <h4 className="font-medium text-sm">Autenticação em 2 Etapas</h4>
-                                    <p className="text-xs text-muted-foreground mt-0.5">Adicione uma camada extra de segurança</p>
-                                </div>
-                            </div>
-                            <Button variant="outline" size="sm" onClick={handleMFA} className="ml-2 flex-shrink-0">
-                                Configurar
                             </Button>
                         </div>
 

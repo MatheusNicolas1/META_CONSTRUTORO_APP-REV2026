@@ -1,4 +1,4 @@
-// Monitor de performance em tempo real
+﻿// Monitor de performance em tempo real
 class PerformanceMonitor {
   private static instance: PerformanceMonitor;
   private metrics: Map<string, number[]> = new Map();
@@ -36,7 +36,6 @@ class PerformanceMonitor {
     // Monitor de memory usage
     this.startMemoryMonitor();
 
-    console.log('🚀 Performance Monitor iniciado');
   }
 
   private startFPSMonitor() {
@@ -71,9 +70,9 @@ class PerformanceMonitor {
       }
     };
 
-    // Medir memória a cada 10 segundos
+    // Medir memÃ³ria a cada 10 segundos
     setInterval(measureMemory, 10000);
-    measureMemory(); // Primeira medição
+    measureMemory(); // Primeira mediÃ§Ã£o
   }
 
   recordMetric(name: string, value: number) {
@@ -84,7 +83,7 @@ class PerformanceMonitor {
     const values = this.metrics.get(name)!;
     values.push(value);
     
-    // Manter apenas os últimos 100 valores
+    // Manter apenas os Ãºltimos 100 valores
     if (values.length > 100) {
       values.shift();
     }
@@ -124,14 +123,14 @@ class PerformanceMonitor {
       alerts.push(`FPS baixo: ${metrics.fps.latest}`);
     }
 
-    // Memória alta
+    // MemÃ³ria alta
     if (metrics.memory_used && metrics.memory_used.latest > 100) {
-      alerts.push(`Uso de memória alto: ${metrics.memory_used.latest}MB`);
+      alerts.push(`Uso de memÃ³ria alto: ${metrics.memory_used.latest}MB`);
     }
 
     // Layout shifts
     if (metrics['layout-shift'] && metrics['layout-shift'].latest > 0.1) {
-      alerts.push(`Layout instável detectado`);
+      alerts.push(`Layout instÃ¡vel detectado`);
     }
 
     return alerts;
@@ -146,7 +145,7 @@ class PerformanceMonitor {
       score -= (60 - metrics.fps.average) * 0.5;
     }
 
-    // Penalizar uso alto de memória
+    // Penalizar uso alto de memÃ³ria
     if (metrics.memory_used && metrics.memory_used.latest > 50) {
       score -= (metrics.memory_used.latest - 50) * 0.3;
     }
@@ -165,12 +164,10 @@ class PerformanceMonitor {
       this.observer.disconnect();
       this.observer = null;
     }
-    console.log('⏹️ Performance Monitor parado');
   }
 
   reset() {
     this.metrics.clear();
-    console.log('🔄 Métricas de performance resetadas');
   }
 }
 
@@ -188,7 +185,7 @@ export const usePerformanceMonitor = () => {
   };
 };
 
-// Utilitário para medir performance de operações
+// UtilitÃ¡rio para medir performance de operaÃ§Ãµes
 export const measurePerformance = async <T>(
   operation: () => Promise<T>,
   name: string
@@ -203,7 +200,7 @@ export const measurePerformance = async <T>(
     performanceMonitor.recordMetric(`operation_${name}`, duration);
     
     if (duration > 1000) {
-      console.warn(`⚠️ Operação lenta detectada: ${name} (${duration.toFixed(2)}ms)`);
+      console.warn(`âš ï¸ OperaÃ§Ã£o lenta detectada: ${name} (${duration.toFixed(2)}ms)`);
     }
     
     return result;

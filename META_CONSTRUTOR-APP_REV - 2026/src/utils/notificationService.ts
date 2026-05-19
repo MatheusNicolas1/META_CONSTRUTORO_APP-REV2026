@@ -115,7 +115,7 @@ export async function notifyObraChange(
 
   const { title, verb } = actionTexts[action];
   const message = `A obra "${obraName}" ${verb}.`;
-  const route = obraId ? `/obras/${obraId}` : '/obras';
+  const route = obraId ? `/app/obras/${obraId}` : '/app/obras';
 
   // Notificar o próprio usuário
   await sendNotification({
@@ -162,7 +162,7 @@ export async function notifyRDOChange(
   const { title, verb } = actionTexts[action];
   const formattedDate = new Date(rdoDate).toLocaleDateString('pt-BR');
   const message = `RDO de ${formattedDate} da obra "${obraName}" ${verb}.`;
-  const route = rdoId ? `/rdo/${rdoId}/visualizar` : '/rdo';
+  const route = rdoId ? `/app/rdo/${rdoId}/visualizar` : '/app/rdo';
 
   // Notificar o próprio usuário
   await sendNotification({
@@ -211,7 +211,7 @@ export async function notifyActivityChange(
     title,
     message,
     type: action === 'deleted' ? 'warning' : 'success',
-    route: '/dashboard'
+    route: '/app/dashboard'
   });
 
   // Se houver obra associada e orgId, notificar usuários relevantes
@@ -223,7 +223,7 @@ export async function notifyActivityChange(
         title,
         message,
         'info',
-        '/dashboard'
+        '/app/dashboard'
       );
     }
   }

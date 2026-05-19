@@ -85,8 +85,8 @@ export const IntegrationLogs = ({ logs, onRefresh, onExport }: IntegrationLogsPr
     try {
       await onExport(filters);
       toast({
-        title: "Exportação iniciada",
-        description: "Os logs serão exportados em breve",
+        title: "Logs exportados",
+        description: "O arquivo CSV foi gerado com os logs filtrados",
       });
     } catch (error) {
       toast({

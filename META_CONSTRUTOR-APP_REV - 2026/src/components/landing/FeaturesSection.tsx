@@ -24,7 +24,7 @@ const FeaturesSection = () => {
       icon: LayoutDashboard,
       title: 'Gestão de Obras',
       description: 'Acompanhe prazos e progresso em tempo real para nunca perder o controle',
-      href: '/obras',
+      href: '/login',
       benefits: [
         { title: 'Controle total de cronograma', completed: true },
         { title: 'Alertas automáticos de atrasos', completed: true },
@@ -45,7 +45,7 @@ const FeaturesSection = () => {
       icon: Building2,
       title: 'RDO Digital',
       description: 'Elimine papelada e ganhe agilidade com relatórios automáticos',
-      href: '/rdo',
+      href: '/login',
       benefits: [
         { title: 'Relatórios digitais automáticos', completed: true },
         { title: 'Aprovação online', completed: true },
@@ -66,7 +66,7 @@ const FeaturesSection = () => {
       icon: CheckSquare,
       title: 'Checklist Digital',
       description: 'Reduza retrabalhos com checklists validados em campo',
-      href: '/checklist',
+      href: '/login',
       benefits: [
         { title: 'Templates personalizáveis', completed: true },
         { title: 'Fotos e evidências', completed: true },
@@ -87,7 +87,7 @@ const FeaturesSection = () => {
       icon: Calendar,
       title: 'Cronograma Visual',
       description: 'Evite atrasos com gestão inteligente de prazos e atividades',
-      href: '/atividades',
+      href: '/login',
       benefits: [
         { title: 'Visualização de Gantt', completed: true },
         { title: 'Dependências automáticas', completed: true },
@@ -108,7 +108,7 @@ const FeaturesSection = () => {
       icon: Users,
       title: 'Controle de Equipes',
       description: 'Maximize produtividade com gestão otimizada de recursos humanos',
-      href: '/equipes',
+      href: '/login',
       benefits: [
         { title: 'Controle de presença', completed: true },
         { title: 'Alocação inteligente', completed: true },
@@ -129,7 +129,7 @@ const FeaturesSection = () => {
       icon: Wrench,
       title: 'Gestão de Equipamentos',
       description: 'Evite paradas não planejadas com controle preventivo de equipamentos',
-      href: '/equipamentos',
+      href: '/login',
       benefits: [
         { title: 'Manutenção preventiva', completed: true },
         { title: 'Controle de disponibilidade', completed: true },
@@ -150,7 +150,7 @@ const FeaturesSection = () => {
       icon: BarChart3,
       title: 'Relatórios Automáticos',
       description: 'Tome decisões rápidas com dados confiáveis e atualizados',
-      href: '/relatorios',
+      href: '/login',
       benefits: [
         { title: 'Dashboards em tempo real', completed: true },
         { title: 'Exportação automática', completed: true },
@@ -171,7 +171,7 @@ const FeaturesSection = () => {
       icon: Zap,
       title: 'Integrações Inteligentes',
       description: 'Centralize comunicação conectando WhatsApp, Gmail e outras ferramentas',
-      href: '/integracoes',
+      href: '/login',
       benefits: [
         { title: 'WhatsApp integrado', completed: true },
         { title: 'Sincronização Gmail', completed: true },
@@ -191,7 +191,7 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-background">
+    <section className="py-12 md:py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
@@ -270,9 +270,6 @@ const FeaturesSection = () => {
           >
             Começar Gratuitamente
           </Button>
-          <p className="text-sm text-muted-foreground mt-2">
-            Sem cartão de crédito • Teste grátis por 14 dias
-          </p>
         </div>
       </div>
     </section>

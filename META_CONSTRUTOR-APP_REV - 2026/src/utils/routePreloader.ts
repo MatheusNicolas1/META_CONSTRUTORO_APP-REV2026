@@ -1,4 +1,4 @@
-// Sistema inteligente de preload de rotas
+﻿// Sistema inteligente de preload de rotas
 class RoutePreloader {
   private static instance: RoutePreloader;
   private preloadedRoutes = new Set<string>();
@@ -13,48 +13,47 @@ class RoutePreloader {
     return RoutePreloader.instance;
   }
 
-  // Preload de rota com import dinâmico
+  // Preload de rota com import dinÃ¢mico
   async preloadRoute(routePath: string): Promise<void> {
     if (this.preloadedRoutes.has(routePath) || this.preloadPromises.has(routePath)) {
       return this.preloadPromises.get(routePath) || Promise.resolve();
     }
 
     const routeMap: Record<string, () => Promise<any>> = {
-      '/dashboard': () => import('@/pages/Dashboard'),
-      '/obras': () => import('@/pages/Obras'),
-      '/obra-detalhes': () => import('@/pages/ObraDetalhes'),
-      '/rdo': () => import('@/pages/RDO'),
-      '/rdo-visualizar': () => import('@/pages/RDOVisualizar'),
-      '/atividades': () => import('@/pages/Atividades'),
-      '/checklist': () => import('@/pages/Checklist'),
-      '/checklist-detalhes': () => import('@/pages/ChecklistDetalhes'),
-      '/equipes': () => import('@/pages/Equipes'),
-      '/equipamentos': () => import('@/pages/Equipamentos'),
-      '/documentos': () => import('@/pages/Documentos'),
-      '/fornecedores': () => import('@/pages/Fornecedores'),
-      '/relatorios': () => import('@/pages/Relatorios'),
-      '/integracoes': () => import('@/pages/Integracoes'),
-      '/configuracoes': () => import('@/pages/Configuracoes'),
-      '/perfil': () => import('@/pages/Perfil'),
-      '/feedback': () => import('@/pages/Feedback'),
-      '/faq': () => import('@/pages/FAQ'),
+      '/app/dashboard': () => import('@/pages/Dashboard'),
+      '/app/obras': () => import('@/pages/Obras'),
+      '/app/obra-detalhes': () => import('@/pages/ObraDetalhes'),
+      '/app/rdo': () => import('@/pages/RDO'),
+      '/app/rdo-visualizar': () => import('@/pages/RDOVisualizar'),
+      '/app/atividades': () => import('@/pages/Atividades'),
+      '/app/checklist': () => import('@/pages/Checklist'),
+      '/app/checklist-detalhes': () => import('@/pages/ChecklistDetalhes'),
+      '/app/equipes': () => import('@/pages/Equipes'),
+      '/app/equipamentos': () => import('@/pages/Equipamentos'),
+      '/app/documentos': () => import('@/pages/Documentos'),
+      '/app/fornecedores': () => import('@/pages/Fornecedores'),
+      '/app/relatorios': () => import('@/pages/Relatorios'),
+      '/app/integracoes': () => import('@/pages/Integracoes'),
+      '/app/configuracoes': () => import('@/pages/Configuracoes'),
+      '/app/perfil': () => import('@/pages/Perfil'),
+      '/app/feedback': () => import('@/pages/Feedback'),
+      '/app/faq': () => import('@/pages/FAQ'),
 
     };
 
     const importFn = routeMap[routePath];
     if (!importFn) {
-      console.warn(`Route preloader: Rota não encontrada: ${routePath}`);
+      console.warn(`Route preloader: Rota nÃ£o encontrada: ${routePath}`);
       return;
     }
 
     const preloadPromise = importFn()
       .then((module) => {
         this.preloadedRoutes.add(routePath);
-        console.log(`✅ Rota preloaded: ${routePath}`);
         return module;
       })
       .catch((error) => {
-        console.error(`❌ Erro ao preload da rota ${routePath}:`, error);
+        console.error(`âŒ Erro ao preload da rota ${routePath}:`, error);
         throw error;
       })
       .finally(() => {
@@ -65,9 +64,9 @@ class RoutePreloader {
     return preloadPromise;
   }
 
-  // Preload inteligente baseado em padrões de navegação
+  // Preload inteligente baseado em padrÃµes de navegaÃ§Ã£o
   async intelligentPreload(currentRoute: string): Promise<void> {
-    // Adicionar rota atual ao histórico
+    // Adicionar rota atual ao histÃ³rico
     this.addToHistory(currentRoute);
 
     // Preload de rotas relacionadas baseado na atual
@@ -79,7 +78,7 @@ class RoutePreloader {
     // Combinar e preload
     const routesToPreload = [...new Set([...relatedRoutes, ...frequentRoutes])];
 
-    // Preload em background com delay para não impactar performance
+    // Preload em background com delay para nÃ£o impactar performance
     setTimeout(() => {
       routesToPreload.forEach(route => {
         this.preloadRoute(route).catch(() => {
@@ -90,16 +89,16 @@ class RoutePreloader {
   }
 
   private addToHistory(route: string): void {
-    // Remover rota se já existe
+    // Remover rota se jÃ¡ existe
     const index = this.navigationHistory.indexOf(route);
     if (index > -1) {
       this.navigationHistory.splice(index, 1);
     }
 
-    // Adicionar no início
+    // Adicionar no inÃ­cio
     this.navigationHistory.unshift(route);
 
-    // Manter tamanho do histórico
+    // Manter tamanho do histÃ³rico
     if (this.navigationHistory.length > this.maxHistorySize) {
       this.navigationHistory.pop();
     }
@@ -108,24 +107,24 @@ class RoutePreloader {
   private getRelatedRoutes(currentRoute: string): string[] {
     // Mapeamento de rotas relacionadas
     const relatedRoutesMap: Record<string, string[]> = {
-      '/dashboard': ['/obras', '/rdo', '/atividades'],
-      '/obras': ['/obra-detalhes', '/rdo', '/atividades', '/equipes'],
-      '/obra-detalhes': ['/obras', '/rdo', '/documentos', '/checklist'],
-      '/rdo': ['/rdo-visualizar', '/obras', '/atividades', '/equipamentos'],
-      '/rdo-visualizar': ['/rdo', '/obras'],
-      '/atividades': ['/obras', '/rdo', '/checklist', '/equipes'],
-      '/checklist': ['/checklist-detalhes', '/atividades', '/obras'],
-      '/checklist-detalhes': ['/checklist', '/obras'],
-      '/equipes': ['/obras', '/atividades', '/rdo'],
-      '/equipamentos': ['/obras', '/rdo', '/atividades'],
-      '/documentos': ['/obras', '/obra-detalhes'],
-      '/fornecedores': ['/obras', '/documentos'],
-      '/relatorios': ['/obras', '/rdo', '/atividades'],
-      '/integracoes': ['/configuracoes'],
-      '/configuracoes': ['/integracoes', '/perfil'],
-      '/perfil': ['/configuracoes'],
-      '/feedback': ['/faq'],
-      '/faq': ['/feedback'],
+      '/app/dashboard': ['/app/obras', '/app/rdo', '/app/atividades'],
+      '/app/obras': ['/app/obra-detalhes', '/app/rdo', '/app/atividades', '/app/equipes'],
+      '/app/obra-detalhes': ['/app/obras', '/app/rdo', '/app/documentos', '/app/checklist'],
+      '/app/rdo': ['/app/rdo-visualizar', '/app/obras', '/app/atividades', '/app/equipamentos'],
+      '/app/rdo-visualizar': ['/app/rdo', '/app/obras'],
+      '/app/atividades': ['/app/obras', '/app/rdo', '/app/checklist', '/app/equipes'],
+      '/app/checklist': ['/app/checklist-detalhes', '/app/atividades', '/app/obras'],
+      '/app/checklist-detalhes': ['/app/checklist', '/app/obras'],
+      '/app/equipes': ['/app/obras', '/app/atividades', '/app/rdo'],
+      '/app/equipamentos': ['/app/obras', '/app/rdo', '/app/atividades'],
+      '/app/documentos': ['/app/obras', '/app/obra-detalhes'],
+      '/app/fornecedores': ['/app/obras', '/app/documentos'],
+      '/app/relatorios': ['/app/obras', '/app/rdo', '/app/atividades'],
+      '/app/integracoes': ['/app/configuracoes'],
+      '/app/configuracoes': ['/app/integracoes', '/app/perfil'],
+      '/app/perfil': ['/app/configuracoes'],
+      '/app/feedback': ['/app/faq'],
+      '/app/faq': ['/app/feedback'],
 
     };
 
@@ -133,7 +132,7 @@ class RoutePreloader {
   }
 
   private getFrequentRoutes(): string[] {
-    // Rotas mais frequentemente acessadas (baseado no histórico)
+    // Rotas mais frequentemente acessadas (baseado no histÃ³rico)
     const routeFrequency: Record<string, number> = {};
 
     this.navigationHistory.forEach(route => {
@@ -147,23 +146,22 @@ class RoutePreloader {
       .map(([route]) => route);
   }
 
-  // Preload de rotas críticas na inicialização
+  // Preload de rotas crÃ­ticas na inicializaÃ§Ã£o
   async preloadCriticalRoutes(): Promise<void> {
-    const criticalRoutes = ['/dashboard', '/obras', '/rdo'];
+    const criticalRoutes = ['/app/dashboard', '/app/obras', '/app/rdo'];
 
     const promises = criticalRoutes.map(route =>
       this.preloadRoute(route).catch(() => {
-        // Ignorar erros para não bloquear a inicialização
+        // Ignorar erros para nÃ£o bloquear a inicializaÃ§Ã£o
       })
     );
 
     await Promise.allSettled(promises);
-    console.log('📦 Rotas críticas preloaded');
   }
 
   // Preload baseado em hover/focus
   onRouteHover(routePath: string): void {
-    // Delay pequeno para evitar preload desnecessário
+    // Delay pequeno para evitar preload desnecessÃ¡rio
     setTimeout(() => {
       this.preloadRoute(routePath).catch(() => {
         // Ignorar erros
@@ -171,15 +169,14 @@ class RoutePreloader {
     }, 200);
   }
 
-  // Limpar cache quando necessário
+  // Limpar cache quando necessÃ¡rio
   clearCache(): void {
     this.preloadedRoutes.clear();
     this.preloadPromises.clear();
     this.navigationHistory = [];
-    console.log('🧹 Cache de rotas limpo');
   }
 
-  // Estatísticas
+  // EstatÃ­sticas
   getStats() {
     return {
       preloadedRoutes: Array.from(this.preloadedRoutes),
@@ -204,9 +201,9 @@ export const useRoutePreloader = () => {
   };
 };
 
-// Inicializar preload crítico
+// Inicializar preload crÃ­tico
 export const initializeRoutePreloader = () => {
-  // Preload de rotas críticas após inicialização
+  // Preload de rotas crÃ­ticas apÃ³s inicializaÃ§Ã£o
   setTimeout(() => {
     routePreloader.preloadCriticalRoutes();
   }, 1500);
@@ -214,7 +211,7 @@ export const initializeRoutePreloader = () => {
   // Preload adicional baseado em idle time
   if ('requestIdleCallback' in window) {
     requestIdleCallback(() => {
-      const additionalRoutes = ['/atividades', '/checklist', '/equipamentos'];
+      const additionalRoutes = ['/app/atividades', '/app/checklist', '/app/equipamentos'];
       additionalRoutes.forEach(route => {
         routePreloader.preloadRoute(route).catch(() => { });
       });

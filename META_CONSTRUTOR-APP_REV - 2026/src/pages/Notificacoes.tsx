@@ -53,10 +53,12 @@ const Notificacoes = () => {
           }
         )
         .subscribe();
-    });
+    }).catch(() => undefined);
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, []);
 
@@ -74,7 +76,7 @@ const Notificacoes = () => {
       if (error) throw error;
       setNotifications(data || []);
     } catch (error) {
-      console.error('Erro ao carregar notificações:', error);
+      // Falha transitoria ao buscar notificacoes nao deve poluir o console.
     } finally {
       setIsLoading(false);
     }

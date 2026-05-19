@@ -1,14 +1,14 @@
 /**
- * Teste Abrangente de Segurança - Meta Construtor
- * 
- * Este arquivo contém todos os testes de segurança, RBAC e integrações
- * para validação completa do frontend antes da integração com Supabase.
+ * Teste Abrangente de SeguranÃ§a - Meta Construtor
+ *
+ * Este arquivo contÃ©m todos os testes de seguranÃ§a, RBAC e integraÃ§Ãµes
+ * para validaÃ§Ã£o completa do frontend antes da integraÃ§Ã£o com Supabase.
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 
-// Importações dos componentes e sistemas testados
+// ImportaÃ§Ãµes dos componentes e sistemas testados
 import { hasRouteAccess, hasActionPermission, RBAC_MATRIX } from '@/security/RBACMatrix';
 import { secureStringSchema, strongPasswordSchema, sanitizeForDisplay } from '@/components/security/InputValidator';
 import { useRateLimit, RATE_LIMIT_CONFIGS } from '@/components/security/RateLimiter';
@@ -28,76 +28,76 @@ const mockLocalStorage = (() => {
 
 Object.defineProperty(window, 'localStorage', { value: mockLocalStorage });
 
-describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
-  
+describe('ðŸ›¡ï¸ SISTEMA DE SEGURANÃ‡A - TESTES ABRANGENTES', () => {
+
   beforeEach(() => {
     mockLocalStorage.clear();
     vi.clearAllMocks();
   });
 
-  describe('🔐 RBAC Matrix - Controle de Acesso', () => {
-    
-    it('✅ Administrador deve ter acesso total', () => {
+  describe('ðŸ” RBAC Matrix - Controle de Acesso', () => {
+
+    it('âœ… Administrador deve ter acesso total', () => {
       const adminRole: UserRole = 'Administrador';
-      
-      // Testar rotas críticas
-      expect(hasRouteAccess('/home', adminRole)).toBe(true);
-      expect(hasRouteAccess('/integracoes', adminRole)).toBe(true);
-      expect(hasRouteAccess('/seguranca', adminRole)).toBe(true);
-      expect(hasRouteAccess('/configuracoes', adminRole)).toBe(true);
-      expect(hasRouteAccess('/relatorios', adminRole)).toBe(true);
-      
-      // Testar ações críticas
+
+      // Testar rotas crÃ­ticas
+      expect(hasRouteAccess('/app/dashboard', adminRole)).toBe(true);
+      expect(hasRouteAccess('/app/integracoes', adminRole)).toBe(true);
+      expect(hasRouteAccess('/app/seguranca', adminRole)).toBe(true);
+      expect(hasRouteAccess('/app/configuracoes', adminRole)).toBe(true);
+      expect(hasRouteAccess('/app/relatorios', adminRole)).toBe(true);
+
+      // Testar aÃ§Ãµes crÃ­ticas
       expect(hasActionPermission('rdo.delete', adminRole)).toBe(true);
       expect(hasActionPermission('obra.delete', adminRole)).toBe(true);
       expect(hasActionPermission('integracao.configure', adminRole)).toBe(true);
       expect(hasActionPermission('sistema.backup', adminRole)).toBe(true);
     });
 
-    it('✅ Gerente deve ter acesso limitado', () => {
+    it('âœ… Gerente deve ter acesso limitado', () => {
       const gerenteRole: UserRole = 'Gerente';
-      
+
       // Permitido
-      expect(hasRouteAccess('/relatorios', gerenteRole)).toBe(true);
-      expect(hasRouteAccess('/equipes', gerenteRole)).toBe(true);
-      expect(hasRouteAccess('/seguranca', gerenteRole)).toBe(true);
+      expect(hasRouteAccess('/app/relatorios', gerenteRole)).toBe(true);
+      expect(hasRouteAccess('/app/equipes', gerenteRole)).toBe(true);
+      expect(hasRouteAccess('/app/seguranca', gerenteRole)).toBe(true);
       expect(hasActionPermission('rdo.approve', gerenteRole)).toBe(true);
-      
+
       // Negado
-      expect(hasRouteAccess('/integracoes', gerenteRole)).toBe(true); // Gerente tem acesso
+      expect(hasRouteAccess('/app/integracoes', gerenteRole)).toBe(true); // Gerente tem acesso
       expect(hasActionPermission('rdo.delete', gerenteRole)).toBe(false);
       expect(hasActionPermission('sistema.backup', gerenteRole)).toBe(false);
     });
 
-    it('✅ Colaborador deve ter acesso restrito', () => {
+    it('âœ… Colaborador deve ter acesso restrito', () => {
       const colaboradorRole: UserRole = 'Colaborador';
-      
+
       // Permitido (operacional)
-      expect(hasRouteAccess('/home', colaboradorRole)).toBe(true);
-      expect(hasRouteAccess('/obras', colaboradorRole)).toBe(true);
-      expect(hasRouteAccess('/rdo', colaboradorRole)).toBe(true);
-      expect(hasRouteAccess('/atividades', colaboradorRole)).toBe(true);
+      expect(hasRouteAccess('/app/dashboard', colaboradorRole)).toBe(true);
+      expect(hasRouteAccess('/app/obras', colaboradorRole)).toBe(true);
+      expect(hasRouteAccess('/app/rdo', colaboradorRole)).toBe(true);
+      expect(hasRouteAccess('/app/atividades', colaboradorRole)).toBe(true);
       expect(hasActionPermission('rdo.create', colaboradorRole)).toBe(true);
-      
-      // Negado (gestão)
-      expect(hasRouteAccess('/equipes', colaboradorRole)).toBe(false);
-      expect(hasRouteAccess('/integracoes', colaboradorRole)).toBe(false);
-      expect(hasRouteAccess('/configuracoes', colaboradorRole)).toBe(false);
+
+      // Negado (gestÃ£o)
+      expect(hasRouteAccess('/app/equipes', colaboradorRole)).toBe(false);
+      expect(hasRouteAccess('/app/integracoes', colaboradorRole)).toBe(false);
+      expect(hasRouteAccess('/app/configuracoes', colaboradorRole)).toBe(false);
       expect(hasActionPermission('rdo.approve', colaboradorRole)).toBe(false);
       expect(hasActionPermission('relatorio.export', colaboradorRole)).toBe(false);
     });
 
-    it('✅ Rotas dinâmicas devem ser validadas corretamente', () => {
-      // Testar rotas com parâmetros
-      expect(hasRouteAccess('/obras/123', 'Colaborador')).toBe(true);
-      expect(hasRouteAccess('/equipes/456/editar', 'Colaborador')).toBe(false);
-      expect(hasRouteAccess('/equipes/456/editar', 'Gerente')).toBe(true);
+    it('âœ… Rotas dinÃ¢micas devem ser validadas corretamente', () => {
+      // Testar rotas com parÃ¢metros
+      expect(hasRouteAccess('/app/obras/123', 'Colaborador')).toBe(true);
+      expect(hasRouteAccess('/app/equipes/456/editar', 'Colaborador')).toBe(false);
+      expect(hasRouteAccess('/app/equipes/456/editar', 'Gerente')).toBe(true);
     });
   });
 
-  describe('🔒 Validação e Sanitização de Inputs', () => {
-    
-    it('✅ Deve bloquear HTML/XSS', () => {
+  describe('ðŸ”’ ValidaÃ§Ã£o e SanitizaÃ§Ã£o de Inputs', () => {
+
+    it('âœ… Deve bloquear HTML/XSS', () => {
       const maliciousInputs = [
         '<script>alert("xss")</script>',
         '<img src="x" onerror="alert(1)">',
@@ -111,7 +111,7 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
       });
     });
 
-    it('✅ Deve bloquear SQL Injection', () => {
+    it('âœ… Deve bloquear SQL Injection', () => {
       const sqlInjections = [
         "'; DROP TABLE users; --",
         "1' OR '1'='1",
@@ -125,10 +125,10 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
       });
     });
 
-    it('✅ Deve sanitizar saída para exibição', () => {
+    it('âœ… Deve sanitizar saÃ­da para exibiÃ§Ã£o', () => {
       const unsafeInput = '<script>alert("xss")</script>"malicious"&dangerous';
       const sanitized = sanitizeForDisplay(unsafeInput);
-      
+
       expect(sanitized).not.toContain('<script>');
       expect(sanitized).not.toContain('"');
       expect(sanitized).toContain('&lt;script&gt;');
@@ -136,8 +136,8 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
       expect(sanitized).toContain('&amp;');
     });
 
-    it('✅ Deve validar senhas fortes', () => {
-      // Senhas válidas
+    it('âœ… Deve validar senhas fortes', () => {
+      // Senhas vÃ¡lidas
       const validPasswords = [
         'MinhaSenh@123',
         'P@ssw0rd!Strong',
@@ -148,11 +148,11 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
         expect(() => strongPasswordSchema.parse(password)).not.toThrow();
       });
 
-      // Senhas inválidas
+      // Senhas invÃ¡lidas
       const invalidPasswords = [
         '123456', // Muito simples
-        'password', // Sem maiúscula, número, especial
-        'PASSWORD', // Sem minúscula, número, especial
+        'password', // Sem maiÃºscula, nÃºmero, especial
+        'PASSWORD', // Sem minÃºscula, nÃºmero, especial
         'Pass1', // Muito curta
         'A'.repeat(130) // Muito longa
       ];
@@ -163,16 +163,16 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
     });
   });
 
-  describe('⏱️ Rate Limiting', () => {
-    
-    it('✅ Deve aplicar limite de tentativas de login', () => {
+  describe('â±ï¸ Rate Limiting', () => {
+
+    it('âœ… Deve aplicar limite de tentativas de login', () => {
       const mockConfig = RATE_LIMIT_CONFIGS.login;
       expect(mockConfig.maxAttempts).toBe(5);
       expect(mockConfig.windowMs).toBe(15 * 60 * 1000); // 15 minutos
     });
 
-    it('✅ Deve bloquear após exceder limite', () => {
-      // Simular múltiplas tentativas de login
+    it('âœ… Deve bloquear apÃ³s exceder limite', () => {
+      // Simular mÃºltiplas tentativas de login
       const attempts = [];
       for (let i = 0; i < 6; i++) {
         attempts.push({
@@ -181,14 +181,14 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
         });
       }
 
-      // Verificar se seria bloqueado após 5 tentativas
+      // Verificar se seria bloqueado apÃ³s 5 tentativas
       expect(attempts.length).toBeGreaterThan(5);
     });
   });
 
-  describe('📊 Sistema de Auditoria', () => {
-    
-    it('✅ Deve registrar eventos críticos', () => {
+  describe('ðŸ“Š Sistema de Auditoria', () => {
+
+    it('âœ… Deve registrar eventos crÃ­ticos', () => {
       const mockAuditEntry = {
         id: 'test-audit-1',
         timestamp: new Date().toISOString(),
@@ -203,32 +203,32 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
 
       // Simular armazenamento
       mockLocalStorage.setItem('audit_logs', JSON.stringify([mockAuditEntry]));
-      
+
       const logs = getAuditLogs();
       expect(logs).toHaveLength(1);
       expect(logs[0].event).toBe('auth.login');
     });
 
-    it('✅ Deve mascarar dados sensíveis', () => {
+    it('âœ… Deve mascarar dados sensÃ­veis', () => {
       const sensitiveData = {
         password: 'secretPassword123',
         token: 'abc123xyz',
         publicInfo: 'visible data'
       };
 
-      // A função maskSensitiveData deveria mascarar password e token
+      // A funÃ§Ã£o maskSensitiveData deveria mascarar password e token
       const expectedMasked = {
         password: '***MASKED***',
         token: '***MASKED***',
         publicInfo: 'visible data'
       };
 
-      // Verificar se dados sensíveis seriam mascarados
+      // Verificar se dados sensÃ­veis seriam mascarados
       expect(sensitiveData.password).toBeTruthy();
       expect(sensitiveData.token).toBeTruthy();
     });
 
-    it('✅ Deve exportar logs em formato CSV', () => {
+    it('âœ… Deve exportar logs em formato CSV', () => {
       const mockLogs = [
         {
           id: 'log-1',
@@ -245,16 +245,16 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
 
       mockLocalStorage.setItem('audit_logs', JSON.stringify(mockLogs));
       const csvExport = exportAuditLogs('csv');
-      
+
       expect(csvExport).toContain('timestamp,event,userName');
       expect(csvExport).toContain('2025-09-01T12:00:00Z');
       expect(csvExport).toContain('auth.login');
     });
   });
 
-  describe('📁 Upload Seguro', () => {
-    
-    it('✅ Deve validar tipos de arquivo', () => {
+  describe('ðŸ“ Upload Seguro', () => {
+
+    it('âœ… Deve validar tipos de arquivo', () => {
       const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
       const testFiles = [
         { name: 'test.jpg', type: 'image/jpeg', size: 1024 },
@@ -264,15 +264,15 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
 
       // Arquivo permitido
       expect(allowedTypes.includes(testFiles[0].type)).toBe(true);
-      
+
       // Arquivo bloqueado
       expect(allowedTypes.includes(testFiles[1].type)).toBe(false);
-      
+
       // Arquivo permitido
       expect(allowedTypes.includes(testFiles[2].type)).toBe(true);
     });
 
-    it('✅ Deve validar tamanho máximo', () => {
+    it('âœ… Deve validar tamanho mÃ¡ximo', () => {
       const maxSize = 10 * 1024 * 1024; // 10MB
       const testFiles = [
         { size: 5 * 1024 * 1024 }, // 5MB - OK
@@ -285,7 +285,7 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
       expect(testFiles[2].size <= maxSize).toBe(true);
     });
 
-    it('✅ Deve detectar arquivos suspeitos', () => {
+    it('âœ… Deve detectar arquivos suspeitos', () => {
       const suspiciousNames = [
         'virus.exe',
         'malware.bat',
@@ -294,12 +294,12 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
       ];
 
       const suspiciousKeywords = ['virus', 'malware', 'trojan'];
-      
+
       suspiciousNames.forEach(name => {
-        const isSuspicious = suspiciousKeywords.some(keyword => 
+        const isSuspicious = suspiciousKeywords.some(keyword =>
           name.toLowerCase().includes(keyword)
         );
-        
+
         if (name === 'legitimate.pdf') {
           expect(isSuspicious).toBe(false);
         } else {
@@ -309,9 +309,9 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
     });
   });
 
-  describe('🔗 Integrações Mock', () => {
-    
-    it('✅ Deve validar configurações de WhatsApp', () => {
+  describe('ðŸ”— IntegraÃ§Ãµes Mock', () => {
+
+    it('âœ… Deve validar configuraÃ§Ãµes de WhatsApp', () => {
       const validConfig = {
         phoneNumber: '+5511999999999',
         apiKey: 'whatsapp_api_key_123',
@@ -324,7 +324,7 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
         webhookUrl: 'not-a-url'
       };
 
-      // Validações básicas
+      // ValidaÃ§Ãµes bÃ¡sicas
       expect(validConfig.phoneNumber.startsWith('+')).toBe(true);
       expect(validConfig.apiKey.length > 0).toBe(true);
       expect(validConfig.webhookUrl.startsWith('https://')).toBe(true);
@@ -334,14 +334,14 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
       expect(invalidConfig.webhookUrl.startsWith('https://')).toBe(false);
     });
 
-    it('✅ Deve simular teste de conexão', async () => {
+    it('âœ… Deve simular teste de conexÃ£o', async () => {
       const mockTestResult = {
         success: true,
-        message: 'Conexão estabelecida com sucesso',
+        message: 'ConexÃ£o estabelecida com sucesso',
         timestamp: Date.now()
       };
 
-      // Simular teste de conexão
+      // Simular teste de conexÃ£o
       const testConnection = async () => {
         return new Promise(resolve => {
           setTimeout(() => resolve(mockTestResult), 100);
@@ -353,10 +353,10 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
     });
   });
 
-  describe('🎨 Experiência Visual', () => {
-    
-    it('✅ Deve aplicar semantic tokens do design system', () => {
-      // Verificar se não há cores hardcoded
+  describe('ðŸŽ¨ ExperiÃªncia Visual', () => {
+
+    it('âœ… Deve aplicar semantic tokens do design system', () => {
+      // Verificar se nÃ£o hÃ¡ cores hardcoded
       const validCssClasses = [
         'text-foreground',
         'bg-background',
@@ -381,12 +381,12 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
       });
     });
 
-    it('✅ Deve ter SEO implementado', () => {
+    it('âœ… Deve ter SEO implementado', () => {
       const pageMetadata = {
-        title: 'Meta Construtor | Sistema de Gestão',
-        description: 'Sistema completo para gestão de obras',
+        title: 'Meta Construtor | Sistema de GestÃ£o',
+        description: 'Sistema completo para gestÃ£o de obras',
         canonical: 'https://metaconstrutor.com',
-        keywords: 'construção, obras, RDO, gestão'
+        keywords: 'construÃ§Ã£o, obras, RDO, gestÃ£o'
       };
 
       expect(pageMetadata.title.length).toBeLessThan(60);
@@ -395,9 +395,9 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
     });
   });
 
-  describe('🚨 Casos de Borda e Recuperação', () => {
-    
-    it('✅ Deve lidar com localStorage cheio', () => {
+  describe('ðŸš¨ Casos de Borda e RecuperaÃ§Ã£o', () => {
+
+    it('âœ… Deve lidar com localStorage cheio', () => {
       // Simular localStorage cheio
       const originalSetItem = mockLocalStorage.setItem;
       mockLocalStorage.setItem = vi.fn().mockImplementation(() => {
@@ -413,12 +413,12 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
       }
 
       expect(errorThrown).toBe(true);
-      
-      // Restaurar função original
+
+      // Restaurar funÃ§Ã£o original
       mockLocalStorage.setItem = originalSetItem;
     });
 
-    it('✅ Deve limpar logs antigos automaticamente', () => {
+    it('âœ… Deve limpar logs antigos automaticamente', () => {
       // Simular 1500 logs (excede limite de 1000)
       const manyLogs = Array.from({ length: 1500 }, (_, i) => ({
         id: `log-${i}`,
@@ -430,27 +430,27 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
       }));
 
       mockLocalStorage.setItem('audit_logs', JSON.stringify(manyLogs));
-      
-      // Simular limpeza (mantém apenas últimos 1000)
+
+      // Simular limpeza (mantÃ©m apenas Ãºltimos 1000)
       const storedLogs = JSON.parse(mockLocalStorage.getItem('audit_logs') || '[]');
       const cleanedLogs = storedLogs.slice(-1000);
-      
+
       expect(cleanedLogs.length).toBe(1000);
       expect(storedLogs.length).toBe(1500);
     });
   });
 
-  describe('🧪 Testes de Integração', () => {
-    
-    it('✅ Deve integrar RBAC com Audit Logger', () => {
+  describe('ðŸ§ª Testes de IntegraÃ§Ã£o', () => {
+
+    it('âœ… Deve integrar RBAC com Audit Logger', () => {
       const testUser = {
         id: 'user-123',
         role: 'Colaborador' as UserRole
       };
 
-      const restrictedRoute = '/integracoes';
+      const restrictedRoute = '/app/integracoes';
       const hasAccess = hasRouteAccess(restrictedRoute, testUser.role);
-      
+
       // Deve registrar tentativa de acesso negado
       if (!hasAccess) {
         const auditEvent = {
@@ -469,7 +469,7 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
       expect(hasAccess).toBe(false);
     });
 
-    it('✅ Deve integrar Rate Limiting com Security Headers', () => {
+    it('âœ… Deve integrar Rate Limiting com Security Headers', () => {
       const securityHeaders = {
         'Content-Security-Policy': "default-src 'self'",
         'X-Frame-Options': 'DENY',
@@ -485,29 +485,24 @@ describe('🛡️ SISTEMA DE SEGURANÇA - TESTES ABRANGENTES', () => {
   });
 });
 
-// Função de utilidade para executar todos os testes
+// FunÃ§Ã£o de utilidade para executar todos os testes
 export const runComprehensiveSecurityTests = async () => {
-  console.log('🧪 Iniciando Testes Abrangentes de Segurança...');
-  
+
   const testResults = {
-    rbac: '✅ PASSOU',
-    inputValidation: '✅ PASSOU', 
-    rateLimiting: '✅ PASSOU',
-    auditLogger: '✅ PASSOU',
-    secureUpload: '✅ PASSOU',
-    integrationsMock: '✅ PASSOU',
-    visualExperience: '✅ PASSOU',
-    edgeCases: '✅ PASSOU',
-    integration: '✅ PASSOU'
+    rbac: 'âœ… PASSOU',
+    inputValidation: 'âœ… PASSOU',
+    rateLimiting: 'âœ… PASSOU',
+    auditLogger: 'âœ… PASSOU',
+    secureUpload: 'âœ… PASSOU',
+    integrationsMock: 'âœ… PASSOU',
+    visualExperience: 'âœ… PASSOU',
+    edgeCases: 'âœ… PASSOU',
+    integration: 'âœ… PASSOU'
   };
 
-  console.log('📊 Resultados dos Testes:');
   Object.entries(testResults).forEach(([test, result]) => {
-    console.log(`  ${test}: ${result}`);
   });
 
-  console.log('\n🎯 Status Geral: ✅ TODOS OS TESTES APROVADOS');
-  console.log('🚀 Sistema pronto para integração com Supabase!');
 
   return testResults;
 };

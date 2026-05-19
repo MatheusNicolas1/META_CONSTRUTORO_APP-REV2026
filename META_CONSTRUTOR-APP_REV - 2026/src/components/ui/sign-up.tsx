@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { AutoScrollTestimonials, type Testimonial as AutoScrollTestimonial } from './auto-scroll-testimonials';
 import { SignUpSteps } from './sign-up-steps';
 
@@ -96,7 +97,7 @@ export const SignUpPage: React.FC<SignUpPageProps> = ({
             </button>
 
             <p className="animate-fade-in text-center text-sm text-muted-foreground">
-              Já tem uma conta? <a href="#" onClick={(e) => { e.preventDefault(); onSignIn?.(); }} className="text-construction-orange hover:underline transition-colors">Fazer login</a>
+              Já tem uma conta? <Link to="/login" onClick={onSignIn} className="text-construction-orange hover:underline transition-colors">Fazer login</Link>
             </p>
           </div>
         </div>

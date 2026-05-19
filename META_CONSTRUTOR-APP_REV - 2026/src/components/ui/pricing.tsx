@@ -81,8 +81,8 @@ export function Pricing({
           window.history.replaceState({}, '', window.location.pathname);
         }
       } else {
-        // Default: centralizar no Profissional
-        targetIndex = plans.findIndex(plan => plan.name === "PROFISSIONAL");
+        // No mobile, start from the first card to avoid partially clipped slides.
+        targetIndex = isDesktop ? plans.findIndex(plan => plan.name === "PROFISSIONAL") : 0;
       }
 
       if (targetIndex !== -1) {
@@ -92,7 +92,7 @@ export function Pricing({
         }, 100);
       }
     }
-  }, [api, plans]);
+  }, [api, plans, isDesktop]);
 
   // Navegação com debounce
   const handlePrevious = () => {
@@ -155,12 +155,12 @@ export function Pricing({
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-6 lg:px-12">
+    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-12">
       {/* Título e descrição - opcional, pode ser removido se já tiver na página */}
       {(title || description) && (
         <div className="text-center space-y-3 mb-8 sm:mb-10">
           {title && (
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight leading-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight break-words">
               {title}
             </h2>
           )}
@@ -172,8 +172,8 @@ export function Pricing({
         </div>
       )}
 
-      <div className="flex justify-center items-center mb-8 sm:mb-10 gap-3 sm:gap-4">
-        <span className="text-xs sm:text-sm font-medium">Mensal</span>
+      <div className="flex flex-wrap justify-center items-center mb-8 sm:mb-10 gap-3 sm:gap-4">
+        <span className="text-xs sm:text-sm font-medium leading-none">Mensal</span>
         <Label>
           <Switch
             ref={switchRef as any}
@@ -181,14 +181,14 @@ export function Pricing({
             onCheckedChange={handleToggle}
           />
         </Label>
-        <span className="text-xs sm:text-sm font-medium text-center">
+        <span className="text-xs sm:text-sm font-medium leading-none text-center">
           Anual <span className="text-primary font-semibold">(Economize 20%)</span>
         </span>
       </div>
 
-      <div className="relative w-full pt-8 sm:pt-10 md:pt-12 pb-4">
+      <div className="relative w-full pt-4 sm:pt-6 md:pt-8 pb-4">
         {/* Setas de navegação posicionadas acima dos cards */}
-        <div className="flex items-center justify-center mb-6 gap-4 sm:gap-6">
+        <div className="flex items-center justify-center mb-4 gap-4 sm:gap-6">
           <button
             onClick={handlePrevious}
             disabled={!canScrollPrev || isNavigating}
@@ -212,7 +212,7 @@ export function Pricing({
         <Carousel
           setApi={setApi}
           opts={{
-            align: "center",
+            align: "start",
             loop: false,
             slidesToScroll: 1,
             skipSnaps: false,
@@ -222,17 +222,17 @@ export function Pricing({
             watchDrag: true,
             breakpoints: {
               '(max-width: 640px)': {
-                align: 'center',
-                containScroll: 'keepSnaps',
+                align: 'start',
+                containScroll: 'trimSnaps',
                 slidesToScroll: 1
               }
             }
           }}
-          className="w-full mx-auto"
+          className="w-full min-w-0 mx-auto"
           role="region"
           aria-label="Planos de preços"
         >
-          <CarouselContent className="pb-4 pt-8">
+          <CarouselContent className="pb-4 pt-6">
             {plans.map((plan, index) => (
               <CarouselItem
                 key={`${plan.name}-${index}`}
@@ -241,9 +241,9 @@ export function Pricing({
                 )}
               >
                 <motion.div
-                  initial={{ y: 20, opacity: 0 }}
+                  initial={{ y: 0, opacity: 1 }}
                   whileInView={{ y: 0, opacity: 1 }}
-                  viewport={{ once: true, margin: "-50px" }}
+                  viewport={{ once: true, margin: "160px" }}
                   transition={{
                     duration: 0.4,
                     type: "spring",
@@ -254,7 +254,7 @@ export function Pricing({
                   className={cn(
                     "rounded-2xl border bg-background text-center relative flex flex-col h-full transition-all duration-300 hover:shadow-lg",
                     plan.isPopular
-                      ? "border-primary border-2 shadow-2xl ring-4 ring-primary/15 scale-[1.05] z-10 p-4 sm:p-5 md:p-6 min-h-[620px] overflow-visible"
+                      ? "border-primary border-2 shadow-2xl ring-4 ring-primary/15 sm:scale-[1.05] z-10 p-4 sm:p-5 md:p-6 min-h-[620px] overflow-visible"
                       : "border-border hover:border-primary/40 p-4 sm:p-5 md:p-6 min-h-[580px] overflow-hidden"
                   )}
                 >
@@ -268,20 +268,20 @@ export function Pricing({
                   )}
 
                   <div className="flex-1 flex flex-col pt-4">
-                    <p className="text-xl font-bold text-foreground mb-3 leading-tight">
+                    <p className="text-lg sm:text-xl font-semibold text-foreground mb-3 leading-snug break-words">
                       {plan.name}
                     </p>
 
                     <div className="mt-2 flex flex-col items-center justify-center gap-1 mb-2 min-h-[5rem]">
                       {plan.price === "Sob consulta" ? (
-                        <span className="text-3xl font-bold tracking-tight text-foreground">
+                        <span className="text-2xl sm:text-3xl font-semibold text-foreground break-words">
                           {plan.price}
                         </span>
                       ) : (
                         <>
-                          <div className="flex items-baseline justify-center gap-1">
+                          <div className="flex min-w-0 items-baseline justify-center gap-1">
                             <span className="text-base text-muted-foreground self-start mt-2">R$</span>
-                            <span className="text-5xl font-bold tracking-tight text-foreground">
+                            <span className="text-4xl sm:text-5xl font-semibold leading-none text-foreground">
                               <NumberFlow
                                 value={
                                   (() => {
@@ -312,15 +312,15 @@ export function Pricing({
                       </p>
                     )}
 
-                    <p className="mt-2 text-base text-muted-foreground leading-relaxed text-center mb-5">
+                    <p className="mt-2 text-sm sm:text-base text-muted-foreground leading-relaxed text-center mb-5 break-words">
                       {plan.description}
                     </p>
 
                     <ul className="space-y-3 flex-1 text-left mb-5">
                       {plan.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-2.5 text-sm">
+                        <li key={idx} className="flex min-w-0 items-start gap-2.5 text-sm leading-relaxed">
                           <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                          <span className="text-foreground leading-relaxed">{feature}</span>
+                          <span className="min-w-0 text-foreground leading-relaxed break-words">{feature}</span>
                         </li>
                       ))}
                     </ul>
@@ -339,7 +339,7 @@ export function Pricing({
                             variant: plan.isPopular ? "default" : "outline",
                             size: "lg"
                           }),
-                          "w-full font-semibold transition-all duration-200",
+                          "w-full text-base font-semibold leading-none transition-all duration-200",
                           plan.isPopular && "shadow-lg hover:shadow-xl"
                         )}
                       >
@@ -355,7 +355,7 @@ export function Pricing({
       </div>
 
       <div className="text-center mt-10">
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm leading-relaxed text-muted-foreground">
           5 créditos gratuitos por mês • Cancele a qualquer momento • Suporte incluído
         </p>
       </div>

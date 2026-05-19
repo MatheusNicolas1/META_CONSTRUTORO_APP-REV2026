@@ -21,9 +21,8 @@ import {
   Filter,
   Loader2
 } from "lucide-react";
-import { useDownload } from "@/hooks/useDownload";
-import { generateStandardFilename } from "@/utils/downloadHelper";
 import { useRDODownload } from "@/hooks/useRDODownload";
+import { useReportPdfDownload } from "@/hooks/useReportPdfDownload";
 import { toast } from "sonner";
 
 const RDOPage = () => {
@@ -36,7 +35,7 @@ const RDOPage = () => {
 
   const { rdos, isLoading, deleteRDO, createRDO, updateRDO } = useRDOs();
   const { obras } = useObras();
-  const { isLoading: isCsvDownloading, startDownload } = useDownload();
+  const { downloadReportPdf, isDownloading: isReportDownloading } = useReportPdfDownload();
   const { downloadRDO, isDownloading: isPdfDownloading } = useRDODownload();
 
   const filteredRDOs = rdos.filter(rdo => {
@@ -66,7 +65,6 @@ const RDOPage = () => {
       return;
     }
 
-    const headers = ['Número', 'Data', 'Obra', 'Status', 'Clima', 'Período', 'Equipes', 'Equipamentos'];
     const rows = filteredRDOs.map(rdo => [
       (rdo as any).numero || rdo.id,
       rdo.data,
@@ -78,10 +76,67 @@ const RDOPage = () => {
       (rdo as any).equipamentos_utilizados?.length || 0
     ]);
 
-    const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
-    const filename = generateStandardFilename("rdo", "listagem", "csv");
-
-    startDownload(Promise.resolve(csv), filename, 'text/csv;charset=utf-8;');
+    downloadReportPdf({
+      reportType: "RDO",
+      title: "Relatorio de RDOs",
+      subtitle: "Listagem consolidada dos relatorios diarios de obra",
+      meta: [
+        { label: "Total de RDOs", value: filteredRDOs.length },
+        { label: "Obra", value: selectedObra === "all" ? "Todas" : obras.find((obra: any) => obra.id === selectedObra)?.nome || selectedObra },
+        { label: "Data", value: selectedDate ? selectedDate.toLocaleDateString("pt-BR") : "Todas" },
+        { label: "Busca", value: searchTerm || "Sem filtro" },
+      ],
+      sections: [
+        {
+          title: "Informacoes Basicas",
+          meta: [
+            { label: "Tipo de relatorio", value: "RDO" },
+            { label: "Total de registros", value: filteredRDOs.length },
+          ],
+        },
+        {
+          title: "Filtros Aplicados",
+          meta: [
+            { label: "Obra", value: selectedObra === "all" ? "Todas" : obras.find((obra: any) => obra.id === selectedObra)?.nome || selectedObra },
+            { label: "Data", value: selectedDate ? selectedDate.toLocaleDateString("pt-BR") : "Todas" },
+          ],
+        },
+        {
+          title: "Indicadores",
+          meta: [
+            { label: "Aprovados", value: filteredRDOs.filter((rdo) => rdo.status === "aprovado" || rdo.status === "Aprovado").length },
+            { label: "Pendentes", value: filteredRDOs.filter((rdo) => rdo.status !== "aprovado" && rdo.status !== "Aprovado").length },
+          ],
+        },
+        {
+          title: "RDOs",
+          columns: [
+            { key: "numero", label: "Numero" },
+            { key: "data", label: "Data" },
+            { key: "obra", label: "Obra" },
+            { key: "status", label: "Status" },
+            { key: "clima", label: "Clima" },
+            { key: "periodo", label: "Periodo" },
+            { key: "equipes", label: "Equipes" },
+            { key: "equipamentos", label: "Equipamentos" },
+          ],
+          rows: rows.map((row) => ({
+            numero: row[0],
+            data: row[1],
+            obra: row[2],
+            status: row[3],
+            clima: row[4],
+            periodo: row[5],
+            equipes: row[6],
+            equipamentos: row[7],
+          })),
+        },
+        { title: "Equipes Presentes" },
+        { title: "Problemas e Ocorrencias" },
+        { title: "Observacoes Gerais", notes: ["Relatorio consolidado gerado a partir dos RDOs filtrados."] },
+        { title: "Anexos" },
+      ],
+    });
   };
 
 
@@ -175,10 +230,10 @@ const RDOPage = () => {
             variant="outline"
             className="w-full sm:w-auto"
             onClick={handleExportRDOs}
-            disabled={isCsvDownloading}
+            disabled={isReportDownloading}
           >
-            {isCsvDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-            Exportar
+            {isReportDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+            Exportar PDF
           </Button>
           <Button
             className="gradient-construction border-0 hover:opacity-90 w-full sm:w-auto"

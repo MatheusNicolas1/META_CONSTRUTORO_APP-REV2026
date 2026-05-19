@@ -18,10 +18,13 @@ import {
 import { RDOStatus } from "@/types/rdo";
 import { useUserPermissions } from "@/hooks/useUserPermissions";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface RDOApprovalSectionProps {
-  rdoId: number;
+  rdoId: number | string;
   status: RDOStatus;
+  criadoPorId?: string;
   criadoPorNome: string;
   criadoEm: string;
   aprovadoPorNome?: string;
@@ -29,7 +32,7 @@ interface RDOApprovalSectionProps {
   motivoRejeicao?: string;
   onApprove?: (observacoes?: string) => void;
   onReject?: (motivo: string) => void;
-  onExport?: (format: 'pdf' | 'excel') => void;
+  onExport?: (format: 'pdf') => void;
   onSendEmail?: (emails: string[]) => void;
 }
 
@@ -60,6 +63,7 @@ export function RDOApprovalSection(props: RDOApprovalSectionProps) {
   const {
     rdoId,
     status,
+    criadoPorId,
     criadoPorNome,
     criadoEm,
     aprovadoPorNome,
@@ -72,32 +76,72 @@ export function RDOApprovalSection(props: RDOApprovalSectionProps) {
   } = props;
 
   const { currentUser, canApproveRDO, canExportRDO } = useUserPermissions();
+  const queryClient = useQueryClient();
   const [observacoes, setObservacoes] = useState('');
   const [motivoRejeicaoInput, setMotivoRejeicaoInput] = useState('');
   const [emailList, setEmailList] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const StatusIcon = statusConfig[status].icon;
-  const canApprove = canApproveRDO('creator-id'); // TODO: usar ID real do criador
+  const canApprove = canApproveRDO(criadoPorId || '');
   const canExport = canExportRDO(status);
 
-  const handleApprove = () => {
-    if (!onApprove) return;
-    onApprove(observacoes);
-    toast.success("RDO aprovado com sucesso!");
-    setObservacoes('');
+  const submitApproval = async (action: 'aprovar' | 'rejeitar', motivo?: string) => {
+    setIsSubmitting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Sessao expirada');
+
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/approve-rdo`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          rdo_id: String(rdoId),
+          action,
+          motivo_rejeicao: motivo,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error?.message || 'Erro ao atualizar RDO');
+
+      queryClient.invalidateQueries({ queryKey: ['rdo', String(rdoId)] });
+      queryClient.invalidateQueries({ queryKey: ['rdos'] });
+      return result;
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleReject = () => {
-    if (!onReject || !motivoRejeicaoInput.trim()) {
-      toast.error("Informe o motivo da rejeição");
+  const handleApprove = async () => {
+    try {
+      await submitApproval('aprovar');
+      onApprove?.(observacoes);
+      toast.success("RDO aprovado com sucesso!");
+      setObservacoes('');
+    } catch (error: any) {
+      toast.error(error.message || "Erro ao aprovar RDO");
+    }
+  };
+
+  const handleReject = async () => {
+    if (!motivoRejeicaoInput.trim()) {
+      toast.error("Informe o motivo da rejeicao");
       return;
     }
-    onReject(motivoRejeicaoInput);
-    toast.success("RDO rejeitado");
-    setMotivoRejeicaoInput('');
+    try {
+      await submitApproval('rejeitar', motivoRejeicaoInput);
+      onReject?.(motivoRejeicaoInput);
+      toast.success("RDO rejeitado");
+      setMotivoRejeicaoInput('');
+    } catch (error: any) {
+      toast.error(error.message || "Erro ao rejeitar RDO");
+    }
   };
-
-  const handleExport = (format: 'pdf' | 'excel') => {
+  const handleExport = (format: 'pdf') => {
     if (!onExport) return;
     onExport(format);
     toast.success(`Exportando RDO em ${format.toUpperCase()}...`);
@@ -212,7 +256,7 @@ export function RDOApprovalSection(props: RDOApprovalSectionProps) {
                 <Button 
                   variant="destructive"
                   onClick={handleReject}
-                  disabled={!motivoRejeicaoInput.trim()}
+                  disabled={isSubmitting || !motivoRejeicaoInput.trim()}
                 >
                   <XCircle className="h-4 w-4 mr-2" />
                   Rejeitar
@@ -238,15 +282,6 @@ export function RDOApprovalSection(props: RDOApprovalSectionProps) {
                   <FileDown className="h-4 w-4 mr-2" />
                   Exportar PDF
                 </Button>
-                
-                <Button 
-                  variant="outline"
-                  onClick={() => handleExport('excel')}
-                >
-                  <FileDown className="h-4 w-4 mr-2" />
-                  Exportar Excel
-                </Button>
-
                 <Button variant="outline">
                   <Printer className="h-4 w-4 mr-2" />
                   Imprimir
@@ -293,10 +328,6 @@ export function RDOApprovalSection(props: RDOApprovalSectionProps) {
           </div>
         )}
 
-        {/* TODO: Implementar após integração com Supabase */}
-        <div className="text-xs text-muted-foreground p-3 bg-muted/50 rounded">
-          💡 <strong>Próximos passos:</strong> Integrar com Supabase para fluxo real de aprovação e exportação
-        </div>
       </CardContent>
     </Card>
   );

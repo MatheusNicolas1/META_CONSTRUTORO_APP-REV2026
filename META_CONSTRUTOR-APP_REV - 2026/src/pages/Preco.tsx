@@ -11,7 +11,7 @@ import { FaqSection } from '@/components/pricing/FaqSection';
 import { motion } from 'framer-motion';
 
 const Preco = () => {
-  const { data: plans, isLoading } = usePlans();
+  const { data: plans, isLoading } = usePlans({ staticOnly: true });
   const navigate = useNavigate();
 
   // Transform database plans to UI pricing component format
@@ -53,13 +53,13 @@ const Preco = () => {
           description: plan.description || "Para pequenas equipes",
           buttonText: isBusiness ? "Falar com vendas" : (isFree ? "Começar Agora" : "Assinar Agora"),
           href: (isBusiness || isFree) ? (isBusiness ? "/contato" : "/login") : `/checkout?plan=${plan.slug}`,
-          isPopular: plan.slug === 'profissional',
+          isPopular: ['profissional', 'professional'].includes(plan.slug),
         };
       })
     : [];
 
   return (
-    <div className="min-h-screen bg-background font-sans selection:bg-primary/10">
+    <div className="min-h-screen overflow-x-hidden bg-background font-sans selection:bg-primary/10">
       <SEO
         title="Planos e Preços | Meta Construtor"
         description="Escolha o plano ideal para sua construtora. Comece gratuitamente e escale conforme seu crescimento."
@@ -68,14 +68,14 @@ const Preco = () => {
 
       <LandingNavigation />
 
-      <main>
+      <main className="w-full overflow-x-hidden">
         <PricingHero />
 
         <section id="pricing" className="py-12 md:py-24 relative bg-background">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-50" />
 
           {isLoading ? (
-            <div className="w-full max-w-6xl mx-auto px-6 lg:px-12 pt-12">
+            <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-12 pt-12">
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
                 {[1, 2, 3, 4, 5].map(i => (
                   <Skeleton key={i} className="h-[600px] w-full rounded-2xl" />
@@ -84,7 +84,7 @@ const Preco = () => {
             </div>
           ) : (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 1, y: 0 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}

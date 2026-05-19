@@ -69,27 +69,22 @@ const buildCSP = (nonce: string): string => {
   const isDevelopment = import.meta.env.DEV;
 
   // Stripe só precisa ser permitido em rotas de pagamento/checkout
-  const currentPath = window.location.pathname;
-  const needsStripe = currentPath.startsWith('/checkout') ||
-    currentPath.startsWith('/app/perfil') ||
-    currentPath === '/preco';
-
   const policies = [
     "default-src 'self'",
     [
       "script-src 'self'",
       `'nonce-${nonce}'`,
-      ...(needsStripe ? ['https://js.stripe.com'] : []),
+      'https://js.stripe.com',
       ...(isDevelopment ? ["'unsafe-eval'"] : []),
     ].join(' '),
     "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
     "font-src 'self' fonts.gstatic.com data:",
     "img-src 'self' data: blob: https:",
-    ...(needsStripe ? ["frame-src 'self' https://js.stripe.com https://hooks.stripe.com"] : ["frame-src 'self'"]),
+    "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
     [
       "connect-src",
       "'self'",
-      ...(needsStripe ? ["https://api.stripe.com"] : []),
+      "https://api.stripe.com",
       "https://maps.googleapis.com",
       // Supabase project (REST, Auth, Realtime)
       import.meta.env.VITE_SUPABASE_URL || "https://bgdvlhttyjeuprrfxgun.supabase.co",

@@ -58,13 +58,13 @@ const ImpactMetrics = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+    <section className="py-16 md:py-20 bg-gradient-to-br from-primary/5 via-background to-secondary/5 overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4 break-words">
             Impacto em Números
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto">
             Resultados reais que demonstram o valor da nossa plataforma para o setor da construção civil.
           </p>
         </div>
@@ -87,10 +87,10 @@ const ImpactMetrics = () => {
 
               {/* Number */}
               <div className="relative mb-3">
-                <div className="text-4xl md:text-5xl font-bold text-foreground mb-2 animate-fade-in">
+                <div className="text-4xl md:text-5xl font-semibold leading-none text-foreground mb-2 animate-fade-in break-words">
                   {metric.number}
                 </div>
-                <h3 className="text-lg font-semibold text-foreground">
+                <h3 className="text-lg font-semibold leading-snug text-foreground break-words">
                   {metric.label}
                 </h3>
               </div>
@@ -105,10 +105,10 @@ const ImpactMetrics = () => {
                 {metric.details.map((detail, detailIndex) => (
                   <div 
                     key={detailIndex}
-                    className="flex items-center justify-between text-xs bg-muted/50 rounded-lg px-3 py-2"
+                    className="flex min-w-0 items-center justify-between gap-2 text-xs leading-snug bg-muted/50 rounded-lg px-3 py-2"
                   >
-                    <span className="text-muted-foreground">{detail.split(' ')[0]}</span>
-                    <span className="font-medium text-foreground">{detail.substring(detail.indexOf(' ') + 1)}</span>
+                    <span className="shrink-0 text-muted-foreground">{detail.split(' ')[0]}</span>
+                    <span className="min-w-0 text-right font-medium text-foreground break-words">{detail.substring(detail.indexOf(' ') + 1)}</span>
                   </div>
                 ))}
               </div>
@@ -123,7 +123,7 @@ const ImpactMetrics = () => {
         {/* Additional info */}
         <div className="mt-16 text-center">
           <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 border border-border/50 max-w-2xl mx-auto">
-            <p className="text-muted-foreground text-sm">
+            <p className="text-muted-foreground text-sm leading-relaxed">
               <span className="font-semibold text-foreground">Metodologia:</span> Dados coletados entre janeiro de 2024 e dezembro de 2024, 
               baseados em métricas de +200 obras ativas e feedback direto de clientes.
             </p>

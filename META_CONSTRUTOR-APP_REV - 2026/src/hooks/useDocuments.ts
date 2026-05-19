@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useRequireOrg } from "@/hooks/requireOrg";
+import { getStoragePath } from "@/utils/storageUtils";
 
 export type DocumentType = 'Projeto' | 'Licença' | 'Relatório' | 'Memorial' | 'Cronograma' | 'Contrato' | 'Certificado' | 'Laudo' | 'Outros';
 
@@ -49,7 +50,7 @@ export const useDocuments = (filters?: { obraId?: string; categoria?: string; se
                 .order("created_at", { ascending: false });
 
             if (orgId) {
-                query = query.not('obra_id', 'is', null).filter('obra.org_id', 'eq', orgId);
+                query = query.eq('org_id', orgId);
             }
 
             if (filters?.obraId && filters.obraId !== 'all') {
@@ -69,11 +70,7 @@ export const useDocuments = (filters?: { obraId?: string; categoria?: string; se
                 throw error;
             }
 
-            const filteredData = orgId
-                ? data?.filter((d: any) => d.obra?.org_id === orgId)
-                : data;
-
-            return (filteredData || []) as unknown as Documento[];
+            return (data || []) as unknown as Documento[];
         },
         enabled: true
     });
@@ -93,10 +90,6 @@ export const useDocuments = (filters?: { obraId?: string; categoria?: string; se
 
             if (uploadError) throw uploadError;
 
-            const { data: { publicUrl } } = supabase.storage
-                .from('documentos')
-                .getPublicUrl(filePath);
-
             // 2. Insert into Table
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error("Usuário não autenticado");
@@ -105,11 +98,12 @@ export const useDocuments = (filters?: { obraId?: string; categoria?: string; se
                 .from("documentos")
                 .insert({
                     nome: data.nome,
-                    tipo: fileExt || 'bin', // The file extension/type
-                    categoria: data.categoria, // 'Projeto', 'Licença', etc.
+                    tipo: fileExt || 'bin',
+                    categoria: data.categoria,
                     tamanho: data.file.size,
-                    url: publicUrl,
+                    url: filePath,
                     uploaded_by: user.id,
+                    org_id: orgId,
                     obra_id: data.obra_id || null,
                     descricao: data.descricao
                 })
@@ -135,11 +129,8 @@ export const useDocuments = (filters?: { obraId?: string; categoria?: string; se
 
             if (doc) {
                 try {
-                    const urlParts = doc.url.split('/documentos/');
-                    if (urlParts.length > 1) {
-                        const filePath = urlParts[1];
-                        await supabase.storage.from('documentos').remove([filePath]);
-                    }
+                    const filePath = getStoragePath(doc.url, 'documentos');
+                    await supabase.storage.from('documentos').remove([filePath]);
                 } catch (e) {
                     console.warn("Could not delete file from storage", e);
                 }
@@ -162,10 +153,33 @@ export const useDocuments = (filters?: { obraId?: string; categoria?: string; se
         },
     });
 
+    const updateDocument = useMutation({
+        mutationFn: async ({ id, ...updateData }: { id: string; nome?: string; categoria?: string; descricao?: string }) => {
+            const { data, error } = await supabase
+                .from("documentos")
+                .update(updateData)
+                .eq("id", id)
+                .select()
+                .single();
+
+            if (error) throw error;
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["documentos", orgId] });
+            toast.success("Documento atualizado com sucesso!");
+        },
+        onError: (error) => {
+            console.error("Erro ao atualizar:", error);
+            toast.error("Erro ao atualizar documento.");
+        },
+    });
+
     return {
         documentos,
         isLoading,
         uploadDocument,
+        updateDocument,
         deleteDocument,
     };
 };

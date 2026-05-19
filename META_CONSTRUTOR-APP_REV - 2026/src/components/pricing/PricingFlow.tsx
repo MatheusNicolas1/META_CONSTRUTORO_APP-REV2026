@@ -12,6 +12,7 @@ import { useAuth } from "@/components/auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { usePlans } from "@/hooks/usePlans";
 
 type Step = "selection" | "data" | "checkout" | "success";
 
@@ -32,27 +33,26 @@ export function PricingFlow({ showHeader = true }: { showHeader?: boolean }) {
     const [priceId, setPriceId] = useState<string | null>(null);
 
     // Fetch Plans
-    const { data: plans, isLoading: plansLoading } = useQuery({
-        queryKey: ['plans'],
-        queryFn: async () => {
-            const { data, error } = await supabase
-                .from('plans')
-                .select('*')
-                .eq('active', true)
-                .order('price_monthly', { ascending: true });
-            if (error) throw error;
-            return data;
-        },
-    });
+    const { data: plans, isLoading: plansLoading } = usePlans();
 
     // Fetch Current Subscription
     const { data: subscription } = useQuery({
         queryKey: ['subscription', user?.id],
         queryFn: async () => {
+            const { data: orgMember, error: orgError } = await supabase
+                .from('org_members')
+                .select('org_id')
+                .eq('user_id', user?.id)
+                .eq('status', 'active')
+                .maybeSingle();
+
+            if (orgError) throw orgError;
+            if (!orgMember?.org_id) return null;
+
             const { data, error } = await supabase
                 .from('subscriptions')
                 .select('plan_id, status, billing_cycle')
-                .eq('user_id', user?.id)
+                .eq('org_id', orgMember.org_id)
                 .in('status', ['active', 'trialing'])
                 .maybeSingle();
             if (error) throw error;
@@ -220,7 +220,15 @@ export function PricingFlow({ showHeader = true }: { showHeader?: boolean }) {
 
                 {step === "selection" && (
                     <PlanCarousel
-                        plans={plans || []}
+                        plans={(plans || []).map(plan => ({
+                            id: plan.id,
+                            name: plan.name,
+                            description: plan.description || "",
+                            features: plan.features || [],
+                            price_monthly: plan.monthly_price_cents || 0,
+                            price_yearly: plan.yearly_price_cents || 0,
+                            recommended: plan.is_popular,
+                        }))}
                         billingCycle={billingCycle}
                         selectedPlanId={selectedPlanId}
                         currentPlanId={subscription?.plan_id}

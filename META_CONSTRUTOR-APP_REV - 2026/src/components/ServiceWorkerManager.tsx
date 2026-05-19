@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+﻿import { useEffect } from 'react';
 
 export const ServiceWorkerManager = () => {
   useEffect(() => {
@@ -7,7 +7,6 @@ export const ServiceWorkerManager = () => {
       navigator.serviceWorker.getRegistrations().then(function (registrations) {
         for (let registration of registrations) {
           registration.unregister();
-          console.log('Service Worker unregistered');
         }
       });
     }

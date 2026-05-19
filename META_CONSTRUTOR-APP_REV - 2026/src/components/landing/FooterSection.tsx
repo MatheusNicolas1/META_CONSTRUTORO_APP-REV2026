@@ -11,7 +11,7 @@ const FooterSection = () => {
       { name: 'Funcionalidades', href: '/sobre' },
       { name: 'Preços', href: '/preco' },
       { name: 'Atualizações', href: '/atualizacoes' },
-      { name: 'Integrações', href: '/integracoes' }
+      { name: 'Integrações', href: '/api' }
     ],
     empresa: [
       { name: 'Sobre Nós', href: '/sobre' },
@@ -63,15 +63,15 @@ const FooterSection = () => {
   };
 
   const renderLinkColumn = (title: string, links: { name: string; href: string }[]) => (
-    <div>
-      <h3 className="font-semibold text-foreground mb-4">{title}</h3>
+    <div className="min-w-0">
+      <h3 className="text-sm font-semibold leading-none text-foreground mb-4">{title}</h3>
       <ul className="space-y-3">
         {links.map((link, index) => (
           <li key={index}>
             {renderLink(
               link.href,
               link.name,
-              "text-muted-foreground hover:text-foreground transition-colors text-sm",
+              "text-muted-foreground hover:text-foreground transition-colors text-sm leading-relaxed break-words",
               index
             )}
           </li>
@@ -86,11 +86,11 @@ const FooterSection = () => {
         {/* Main Footer Content */}
         <div className="py-6 sm:py-8 md:py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 sm:gap-6 md:gap-8">
           {/* Logo and Description */}
-          <div className="lg:col-span-2">
+          <div className="min-w-0 lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
               <Logo size="sm" />
             </div>
-            <p className="text-muted-foreground mb-6 max-w-sm">
+            <p className="text-sm sm:text-base leading-relaxed text-muted-foreground mb-6 max-w-sm break-words">
               Revolucione a gestão das suas obras com a plataforma mais completa
               do mercado de construção civil.
             </p>
@@ -120,13 +120,12 @@ const FooterSection = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="py-3 sm:py-4 md:py-6 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 text-center sm:text-left">
-          <div className="text-sm text-muted-foreground">
+        <div className="py-3 sm:py-4 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4 text-center sm:text-left">
+          <div className="text-sm leading-relaxed text-muted-foreground">
             © {currentYear} Meta Construtor. Todos os direitos reservados.
           </div>
 
-          <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <span>Feito com ❤️ no Brasil</span>
+          <div className="flex items-center justify-center text-sm leading-relaxed text-muted-foreground">
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               <span>Todos os sistemas operacionais</span>

@@ -109,14 +109,14 @@ const EnhancedTestimonials = () => {
 
 
   return (
-    <section className="py-16 md:py-24 bg-background">
+    <section className="py-12 md:py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4">
             O que nossos clientes dizem
           </h2>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-base sm:text-lg leading-relaxed text-muted-foreground">
             Depoimentos verificados de quem usa o MetaConstrutor no dia a dia
           </p>
         </div>
@@ -125,21 +125,18 @@ const EnhancedTestimonials = () => {
         <AnimatedTestimonials 
           testimonials={testimonials}
           autoplay={true}
-          className="mb-12"
+          className="mb-8 sm:mb-10"
         />
 
         {/* CTA */}
         <div className="text-center">
           <Button 
             size="lg" 
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-xl"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-semibold leading-none rounded-xl"
             onClick={() => navigate('/login')}
           >
             Começar Gratuitamente
           </Button>
-          <p className="text-sm text-muted-foreground mt-2">
-            Sem cartão de crédito • Teste grátis por 14 dias
-          </p>
         </div>
       </div>
     </section>

@@ -75,7 +75,7 @@ export const useExpenses = (obraId?: string) => {
           title: 'Nova Despesa para Aprovação',
           message: `Uma nova despesa de R$ ${expenseData.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} foi submetida na obra "${obra?.nome || 'N/A'}" e aguarda sua aprovação.`,
           type: 'expense_approval',
-          route: '/despesas',
+          route: '/app/despesas',
         }));
 
         await supabase.from('notifications').insert(notifications);
@@ -158,7 +158,7 @@ export const useExpenses = (obraId?: string) => {
             title: 'Despesa Aguardando Aprovação Final',
             message: `Uma despesa de R$ ${expense?.amount?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} na obra "${obra?.nome || 'N/A'}" foi aprovada pelo gestor e aguarda sua aprovação final.`,
             type: 'expense_approval',
-            route: '/despesas',
+            route: '/app/despesas',
           }));
 
           await supabase.from('notifications').insert(notifications);
@@ -171,7 +171,7 @@ export const useExpenses = (obraId?: string) => {
           title: `Despesa ${statusText}`,
           message: `Sua despesa de R$ ${expense?.amount?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} na obra "${obra?.nome || 'N/A'}" foi ${statusText}.`,
           type: 'expense_status',
-          route: '/despesas',
+          route: '/app/despesas',
         });
       }
 

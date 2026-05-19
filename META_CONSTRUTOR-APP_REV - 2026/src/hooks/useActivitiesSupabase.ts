@@ -10,6 +10,7 @@ import { useQueryClient } from '@tanstack/react-query';
 export interface Activity {
   id: string;
   user_id: string;
+  org_id: string;
   obra_id?: string;
   titulo: string;
   descricao?: string;
@@ -42,6 +43,8 @@ type RegistryEntry = {
   status: 'CONNECTING' | 'SUBSCRIBED' | 'ERROR';
 };
 
+const ENABLE_ACTIVITY_REALTIME = import.meta.env.VITE_ENABLE_ACTIVITY_REALTIME === 'true';
+
 const getRegistry = (): Map<string, RegistryEntry> => {
   if (!(globalThis as any)[REGISTRY_KEY]) {
     (globalThis as any)[REGISTRY_KEY] = new Map<string, RegistryEntry>();
@@ -64,12 +67,9 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
   // Track mount status
   useEffect(() => {
     isMountedRef.current = true;
-    console.log(`[useActivitiesSupabase] Mounted. OrgId: ${orgId}, Auth: ${isAuthenticated}`);
-    console.log(`[useActivitiesSupabase] Mounted. OrgId: ${orgId}, Auth: ${isAuthenticated}, ObraFilter: ${filters?.obraId}`);
     setActivities([]); // Clear activities on org switch to prevent bleeding
     return () => {
       isMountedRef.current = false;
-      console.log(`[useActivitiesSupabase] Unmounted.`);
     };
   }, [orgId, isAuthenticated]);
 
@@ -84,6 +84,14 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
       return;
     }
 
+    if (orgLoading || !orgId) {
+      if (isMountedRef.current) {
+        setActivities([]);
+        setIsLoading(orgLoading);
+      }
+      return;
+    }
+
     // Checking mount ref before state updates
     if (!isMountedRef.current) return;
 
@@ -92,6 +100,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
       let query = supabase
         .from('atividades')
         .select('*')
+        .eq('org_id', orgId)
         .eq('user_id', user.id);
 
       if (filters?.obraId) {
@@ -122,9 +131,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
         error?.message?.includes('aborted') ||
         error?.message?.includes('signal');
 
-      if (isAbortError) {
-        console.log('[useActivitiesSupabase] Request aborted (normal during re-renders)');
-      } else {
+      if (!isAbortError) {
         console.error('Error loading activities:', error);
         if (isMountedRef.current) {
           toast({
@@ -139,7 +146,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
         setIsLoading(false);
       }
     }
-  }, [isAuthenticated, user?.id, toast, filters?.obraId]);
+  }, [isAuthenticated, user?.id, orgId, orgLoading, toast, filters?.obraId]);
 
   // Keep loadActivities ref updated
   useEffect(() => {
@@ -154,7 +161,6 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
     }
 
     reloadTimeoutRef.current = window.setTimeout(() => {
-      console.log('[Realtime] Debounced reload triggering...');
       if (loadActivitiesRef.current && isMountedRef.current) {
         loadActivitiesRef.current();
       }
@@ -174,7 +180,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
   // --------------------------------------------------------------------------
   useEffect(() => {
     // 1. Validate preconditions
-    if (!isAuthenticated || !user?.id || !orgId || orgLoading) {
+    if (!ENABLE_ACTIVITY_REALTIME || !isAuthenticated || !user?.id || !orgId || orgLoading) {
       return;
     }
 
@@ -188,8 +194,6 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
       let entry = registry.get(channelKey);
 
       if (!entry) {
-        console.log(`[Realtime] Creating NEW channel: ${channelKey}`);
-
         // Setup new channel
         const channel = supabase.channel(channelKey)
           .on(
@@ -201,7 +205,6 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
               filter: `user_id=eq.${user.id}`
             },
             (payload) => {
-              console.log('[Realtime] Change detected:', payload.eventType);
               // Broadcast event to ALL hooks
               window.dispatchEvent(new CustomEvent(`activities-changed-${channelKey}`));
             }
@@ -211,14 +214,11 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
             if (!currentEntry) return;
 
             if (status === 'SUBSCRIBED') {
-              console.log(`[Realtime] Subscribed: ${channelKey}`);
               currentEntry.status = 'SUBSCRIBED';
             } else if (status === 'CHANNEL_ERROR') {
-              console.error(`[Realtime] Error: ${channelKey}`);
               currentEntry.status = 'ERROR';
               // Optional: Implement backoff retry here if needed
             } else if (status === 'TIMED_OUT') {
-              console.error(`[Realtime] Timed out: ${channelKey}`);
               currentEntry.status = 'ERROR';
             }
           });
@@ -230,13 +230,10 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
           status: 'CONNECTING'
         };
         registry.set(channelKey, entry);
-      } else {
-        console.log(`[Realtime] Reusing channel: ${channelKey} (Status: ${entry.status})`);
       }
 
       // CANCEL any pending cleanup (The Grace Period logic)
       if (entry.cleanupTimeout) {
-        console.log(`[Realtime] Canceling pending cleanup for ${channelKey}. Resurrecting.`);
         window.clearTimeout(entry.cleanupTimeout);
         entry.cleanupTimeout = null;
       }
@@ -244,7 +241,6 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
       // Increment refCount
       entry.refCount++;
       didSubscribe = true;
-      console.log(`[Realtime] RefCount incremented: ${channelKey} -> ${entry.refCount}`);
     };
 
     setup();
@@ -261,22 +257,17 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
         const entry = registry.get(channelKey);
         if (entry) {
           entry.refCount--;
-          console.log(`[Realtime] RefCount decremented: ${channelKey} -> ${entry.refCount}`);
 
           if (entry.refCount <= 0) {
             // GRACE PERIOD: Don't remove immediately! Wait 1000ms.
             // If another component mounts (or StrictMode remounts) within this time, 
             // the cleanup will be canceled.
-            console.log(`[Realtime] RefCount is 0. Scheduling cleanup in 1000ms...`);
 
             entry.cleanupTimeout = window.setTimeout(() => {
               // Double check refCount is STILL 0
               if (entry.refCount <= 0) {
-                console.log(`[Realtime] Grace period over. Removing channel: ${channelKey}`);
                 supabase.removeChannel(entry.channel);
                 registry.delete(channelKey);
-              } else {
-                console.log(`[Realtime] Cleanup aborted! RefCount recovered to ${entry.refCount}`);
               }
             }, 1000);
           }
@@ -296,10 +287,20 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
       return null;
     }
 
+    if (orgLoading || !orgId) {
+      toast({
+        title: 'Organizacao nao carregada',
+        description: 'Aguarde a organizacao carregar antes de salvar a atividade.',
+        variant: 'destructive',
+      });
+      return null;
+    }
+
     try {
       // Normalizar dados para o formato do banco
       const activityData = {
         user_id: user.id,
+        org_id: orgId,
         obra_id: activity.obra_id || null,
         titulo: activity.titulo || activity.title || '',
         descricao: activity.descricao || activity.description || '',
@@ -322,6 +323,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
           .from('atividades')
           .update(activityData)
           .eq('id', activity.id)
+          .eq('org_id', orgId)
           .eq('user_id', user.id)
           .select()
           .single();
@@ -329,7 +331,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
         if (error) throw error;
         result = data;
 
-        await notifyActivityChange(user.id, activityData.titulo, 'updated', activityData.obra_id || undefined);
+        await notifyActivityChange(user.id, activityData.titulo, 'updated', activityData.obra_id || undefined, orgId);
         toast({ title: 'Atividade atualizada', description: `${activityData.titulo} foi atualizada com sucesso.` });
       } else {
         const { data, error } = await supabase
@@ -341,7 +343,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
         if (error) throw error;
         result = data;
 
-        await notifyActivityChange(user.id, activityData.titulo, 'created', activityData.obra_id || undefined);
+        await notifyActivityChange(user.id, activityData.titulo, 'created', activityData.obra_id || undefined, orgId);
         toast({ title: 'Atividade criada', description: `${activityData.titulo} foi criada com sucesso.` });
       }
 
@@ -357,7 +359,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
       });
       return null;
     }
-  }, [isAuthenticated, user?.id, toast, loadActivities, orgId, queryClient]);
+  }, [isAuthenticated, user?.id, orgLoading, toast, loadActivities, orgId, queryClient]);
 
   // Deletar atividade
   const deleteActivity = useCallback(async (activityId: string) => {
@@ -369,12 +371,13 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
         .from('atividades')
         .delete()
         .eq('id', activityId)
+        .eq('org_id', orgId)
         .eq('user_id', user.id);
 
       if (error) throw error;
 
       if (activityToDelete) {
-        await notifyActivityChange(user.id, activityToDelete.titulo, 'deleted', activityToDelete.obra_id);
+        await notifyActivityChange(user.id, activityToDelete.titulo, 'deleted', activityToDelete.obra_id, orgId);
       }
 
       toast({ title: 'Atividade excluída', description: 'A atividade foi removida com sucesso.' });

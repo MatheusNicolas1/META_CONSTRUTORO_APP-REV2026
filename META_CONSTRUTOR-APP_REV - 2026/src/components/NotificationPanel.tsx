@@ -53,6 +53,40 @@ const formatTimestamp = (timestamp: Date) => {
   }
 };
 
+const LEGACY_APP_ROUTE_PREFIXES = [
+  '/dashboard',
+  '/obras',
+  '/rdo',
+  '/atividades',
+  '/checklist',
+  '/equipes',
+  '/colaboradores',
+  '/equipamentos',
+  '/mais',
+  '/documentos',
+  '/fornecedores',
+  '/despesas',
+  '/relatorios',
+  '/integracoes',
+  '/configuracoes',
+  '/notificacoes',
+  '/feedback',
+  '/faq',
+  '/seguranca',
+];
+
+const normalizeNotificationRoute = (route: string) => {
+  if (route.startsWith('/app/') || route === '/home') {
+    return route;
+  }
+
+  const shouldUseAppShell = LEGACY_APP_ROUTE_PREFIXES.some(
+    (prefix) => route === prefix || route.startsWith(`${prefix}/`)
+  );
+
+  return shouldUseAppShell ? `/app${route}` : route;
+};
+
 export function NotificationPanel() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -89,9 +123,9 @@ export function NotificationPanel() {
               // console.warn('Realtime subscription error - continuing without realtime updates');
             }
           });
-      });
+      }).catch(() => undefined);
     } catch (error) {
-      console.warn('Could not establish realtime connection:', error);
+      // Realtime indisponivel nao bloqueia o painel.
     }
 
     return () => {
@@ -120,7 +154,7 @@ export function NotificationPanel() {
       if (error) throw error;
       setNotifications(data || []);
     } catch (error) {
-      console.error('Error loading notifications:', error);
+      // Falha transitoria ao buscar notificacoes nao deve poluir o console.
     }
   };
 
@@ -149,7 +183,7 @@ export function NotificationPanel() {
     }
 
     if (notification.route) {
-      navigate(notification.route);
+      navigate(normalizeNotificationRoute(notification.route));
       setIsOpen(false);
     }
   };
@@ -208,7 +242,7 @@ export function NotificationPanel() {
             variant="ghost"
             size="sm"
             onClick={() => {
-              navigate('/notificacoes');
+              navigate('/app/notificacoes');
               setIsOpen(false);
             }}
           >

@@ -120,15 +120,15 @@ const OptimizedLayout = memo(({ children }: LayoutProps) => {
   const locale = i18n.language || 'pt-BR';
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className="overflow-hidden max-w-full">
       <I18nProvider locale={locale}>
-        <div className="flex h-screen w-full bg-background overflow-hidden">
+        <div className="flex h-screen w-full max-w-full bg-background overflow-hidden">
           {/* Sidebar - oculta em PWA mobile, visível em desktop/tablet */}
           {!useMobileLayout && (
             <AppSidebar />
           )}
 
-          <div className="flex-1 flex flex-col min-w-0">
+          <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
             {/* Header - sempre visível exceto em PWA mobile */}
             {!useMobileLayout && <Header />}
 

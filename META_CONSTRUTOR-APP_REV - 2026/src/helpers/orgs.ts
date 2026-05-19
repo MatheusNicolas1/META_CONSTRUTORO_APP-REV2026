@@ -2,7 +2,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 export interface OrgMembership {
     org_id: string;
-    role: 'Administrador' | 'Gerente' | 'Colaborador';
+    role: 'Presidente' | 'Administrador' | 'Gerente' | 'Colaborador';
     status: string;
 }
 

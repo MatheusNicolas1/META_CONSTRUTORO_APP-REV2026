@@ -1,4 +1,4 @@
-// Sistema de tarefas em background para não bloquear UI
+﻿// Sistema de tarefas em background para nÃ£o bloquear UI
 class BackgroundTaskManager {
   private static instance: BackgroundTaskManager;
   private taskQueue: Array<() => Promise<any>> = [];
@@ -13,7 +13,7 @@ class BackgroundTaskManager {
     return BackgroundTaskManager.instance;
   }
 
-  // Adicionar tarefa à fila
+  // Adicionar tarefa Ã  fila
   addTask<T>(task: () => Promise<T>, priority: 'high' | 'medium' | 'low' = 'medium'): Promise<T> {
     return new Promise((resolve, reject) => {
       const wrappedTask = async () => {
@@ -65,9 +65,9 @@ class BackgroundTaskManager {
         this.currentTasks--;
         this.isProcessing = false;
         
-        // Processar próxima tarefa
+        // Processar prÃ³xima tarefa
         if (this.taskQueue.length > 0) {
-          // Pequeno delay para não sobrecarregar
+          // Pequeno delay para nÃ£o sobrecarregar
           setTimeout(() => this.processQueue(), 10);
         }
       }
@@ -77,10 +77,9 @@ class BackgroundTaskManager {
   // Limpar fila
   clearQueue() {
     this.taskQueue = [];
-    console.log('🧹 Fila de tarefas em background limpa');
   }
 
-  // Estatísticas
+  // EstatÃ­sticas
   getStats() {
     return {
       queueLength: this.taskQueue.length,
@@ -92,7 +91,7 @@ class BackgroundTaskManager {
 
 export const backgroundTaskManager = BackgroundTaskManager.getInstance();
 
-// Utilitários para uso comum
+// UtilitÃ¡rios para uso comum
 export const runInBackground = <T>(
   task: () => Promise<T>, 
   priority: 'high' | 'medium' | 'low' = 'medium'
@@ -100,7 +99,7 @@ export const runInBackground = <T>(
   return backgroundTaskManager.addTask(task, priority);
 };
 
-// Tarefas específicas para otimização
+// Tarefas especÃ­ficas para otimizaÃ§Ã£o
 export const backgroundOptimizations = {
   // Limpeza de cache antigo
   cleanupOldCache: () => runInBackground(async () => {
@@ -115,16 +114,15 @@ export const backgroundOptimizations = {
             localStorage.removeItem(key);
           }
         } catch {
-          // Remove se não conseguir parsear
+          // Remove se nÃ£o conseguir parsear
           localStorage.removeItem(key);
         }
       }
     });
     
-    console.log('🧹 Cache antigo limpo');
   }, 'low'),
 
-  // Preload de recursos críticos
+  // Preload de recursos crÃ­ticos
   preloadCriticalResources: () => runInBackground(async () => {
     const criticalUrls = [
       '/api/dashboard/stats',
@@ -134,20 +132,19 @@ export const backgroundOptimizations = {
 
     const promises = criticalUrls.map(url => 
       fetch(url, { method: 'HEAD' }).catch(() => {
-        // Ignorar erros - é apenas preload
+        // Ignorar erros - Ã© apenas preload
       })
     );
 
     await Promise.allSettled(promises);
-    console.log('📦 Recursos críticos preloaded');
   }, 'high'),
 
-  // Otimização de imagens carregadas
+  // OtimizaÃ§Ã£o de imagens carregadas
   optimizeLoadedImages: () => runInBackground(async () => {
     const images = document.querySelectorAll('img[src]');
     
     images.forEach((img: any) => {
-      // Lazy load para imagens que não estão visíveis
+      // Lazy load para imagens que nÃ£o estÃ£o visÃ­veis
       if (!img.loading && !isElementInViewport(img)) {
         img.loading = 'lazy';
       }
@@ -158,10 +155,9 @@ export const backgroundOptimizations = {
       }
     });
     
-    console.log(`🖼️ ${images.length} imagens otimizadas`);
   }, 'low'),
 
-  // Análise de performance da página
+  // AnÃ¡lise de performance da pÃ¡gina
   analyzePagePerformance: () => runInBackground(async () => {
     if ('performance' in window) {
       const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
@@ -177,28 +173,26 @@ export const backgroundOptimizations = {
       
       // Log apenas se performance estiver ruim
       if (metrics.totalLoadTime > 3000) {
-        console.warn('⚠️ Performance da página baixa:', metrics);
+        console.warn('âš ï¸ Performance da pÃ¡gina baixa:', metrics);
       } else {
-        console.log('✅ Performance da página boa:', metrics);
       }
       
       return metrics;
     }
   }, 'low'),
 
-  // Limpeza de event listeners não utilizados
+  // Limpeza de event listeners nÃ£o utilizados
   cleanupEventListeners: () => runInBackground(async () => {
-    // Remover listeners de elementos que não existem mais
+    // Remover listeners de elementos que nÃ£o existem mais
     const elements = document.querySelectorAll('[data-cleanup-listeners]');
     elements.forEach(element => {
       element.removeAttribute('data-cleanup-listeners');
     });
     
-    console.log('🧹 Event listeners desnecessários removidos');
   }, 'low')
 };
 
-// Função auxiliar para verificar se elemento está no viewport
+// FunÃ§Ã£o auxiliar para verificar se elemento estÃ¡ no viewport
 function isElementInViewport(el: Element): boolean {
   const rect = el.getBoundingClientRect();
   return (
@@ -209,23 +203,22 @@ function isElementInViewport(el: Element): boolean {
   );
 }
 
-// Inicializar otimizações em background
+// Inicializar otimizaÃ§Ãµes em background
 export const initializeBackgroundOptimizations = () => {
-  console.log('🚀 Inicializando otimizações em background...');
   
-  // Executar otimizações iniciais
+  // Executar otimizaÃ§Ãµes iniciais
   setTimeout(() => {
     backgroundOptimizations.preloadCriticalResources();
     backgroundOptimizations.optimizeLoadedImages();
   }, 2000);
   
-  // Executar limpezas periódicas
+  // Executar limpezas periÃ³dicas
   setTimeout(() => {
     backgroundOptimizations.cleanupOldCache();
     backgroundOptimizations.analyzePagePerformance();
   }, 5000);
   
-  // Limpezas periódicas
+  // Limpezas periÃ³dicas
   setInterval(() => {
     backgroundOptimizations.cleanupEventListeners();
     backgroundOptimizations.optimizeLoadedImages();
@@ -235,5 +228,4 @@ export const initializeBackgroundOptimizations = () => {
     backgroundOptimizations.cleanupOldCache();
   }, 300000); // A cada 5 minutos
   
-  console.log('✅ Otimizações em background configuradas');
 };

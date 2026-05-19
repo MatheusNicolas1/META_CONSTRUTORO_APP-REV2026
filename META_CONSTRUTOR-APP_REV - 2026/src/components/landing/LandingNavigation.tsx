@@ -55,14 +55,14 @@ const LandingNavigation = () => {
         className="fixed z-50 w-full px-2 group"
       >
         <div className={cn(
-          'mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12',
+          'mx-auto mt-2 max-w-6xl px-4 transition-all duration-300 sm:px-6 lg:px-12',
           isScrolled && 'bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5'
         )}>
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             {/* Logo */}
             <div className="flex w-full justify-between lg:w-auto">
               <button
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/home')}
                 aria-label="MetaConstrutor"
                 className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
               >
@@ -82,7 +82,7 @@ const LandingNavigation = () => {
 
             {/* Desktop Navigation */}
             <div className="absolute inset-0 m-auto hidden size-fit lg:block">
-              <ul className="flex gap-8 text-sm">
+              <ul className="flex gap-8 text-sm leading-none">
                 {menuItems.map((item, index) => (
                   <li key={index}>
                     <button
@@ -105,10 +105,10 @@ const LandingNavigation = () => {
             </div>
 
             {/* Desktop & Mobile Menu Actions */}
-            <div className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-4 sm:mb-6 hidden w-full flex-wrap items-center justify-end space-y-6 sm:space-y-8 rounded-2xl sm:rounded-3xl border p-4 sm:p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+            <div className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-4 sm:mb-6 hidden w-full max-w-full flex-wrap items-center justify-end space-y-6 sm:space-y-8 rounded-2xl sm:rounded-3xl border p-4 sm:p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
               {/* Mobile Navigation */}
               <div className="lg:hidden">
-                <ul className="space-y-6 text-base">
+                <ul className="space-y-6 text-base leading-none">
                   {menuItems.map((item, index) => (
                     <li key={index}>
                       <button
@@ -128,28 +128,28 @@ const LandingNavigation = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+              <div className="flex w-full min-w-0 flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
                 {!isAuthenticated ? (
                   <>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => navigate('/login')}
-                      className={cn(isScrolled && 'hidden', 'touch-manipulation h-10 sm:h-9')}
+                      className={cn(isScrolled && 'hidden', 'touch-manipulation h-10 sm:h-9 text-sm font-medium leading-none')}
                     >
                       <span>Login</span>
                     </Button>
                     <Button
                       size="sm"
                       onClick={() => navigate('/criar-conta')}
-                      className={cn(isScrolled && 'hidden', 'touch-manipulation h-10 sm:h-9')}
+                      className={cn(isScrolled && 'hidden', 'touch-manipulation h-10 sm:h-9 text-sm font-semibold leading-none')}
                     >
                       <span>Começar Gratuitamente</span>
                     </Button>
                     <Button
                       size="sm"
                       onClick={() => navigate('/criar-conta')}
-                      className={cn(isScrolled ? 'inline-flex' : 'hidden', 'touch-manipulation h-10 sm:h-9')}
+                      className={cn(isScrolled ? 'inline-flex' : 'hidden', 'touch-manipulation h-10 sm:h-9 text-sm font-semibold leading-none')}
                     >
                       <span>Começar</span>
                       <ArrowRight className="ml-1 h-4 w-4" />
@@ -161,7 +161,7 @@ const LandingNavigation = () => {
                       variant="outline"
                       size="sm"
                       onClick={() => signOut()}
-                      className="touch-manipulation h-10 sm:h-9"
+                      className="touch-manipulation h-10 sm:h-9 text-sm font-medium leading-none"
                     >
                       <LogOut className="h-4 w-4 mr-2" />
                       <span>Sair</span>
@@ -169,7 +169,7 @@ const LandingNavigation = () => {
                     <Button
                       size="sm"
                       onClick={() => navigate('/app/dashboard')}
-                      className="touch-manipulation h-10 sm:h-9"
+                      className="touch-manipulation h-10 sm:h-9 text-sm font-semibold leading-none"
                     >
                       <span>Dashboard</span>
                       <ArrowRight className="ml-1 h-4 w-4 hidden sm:inline-block" />

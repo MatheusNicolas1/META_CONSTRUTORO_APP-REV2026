@@ -53,37 +53,21 @@ export const useRDODownload = () => {
                 }
             }
 
-            if (contentType && contentType.includes('application/pdf')) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', filename);
-                document.body.appendChild(link);
-                link.click();
-                link.parentNode?.removeChild(link);
-                window.URL.revokeObjectURL(url);
-                toast.success('PDF gerado com sucesso!', { id: toastId });
-            } else {
-                // Fallback: Edge function returned HTML. Render locally to PDF.
-                const htmlText = await response.text();
-                toast.loading('Montando PDF no navegador...', { id: toastId });
-
-                // Dynamically import to reduce bundle size if not used
-                const html2pdf = (await import('html2pdf.js')).default;
-
-                const opt = {
-                    margin: [15, 15, 15, 15],
-                    filename: filename,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true, logging: false },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                };
-
-                // Execute client-side rendering
-                await html2pdf().set(opt).from(htmlText).save();
-                toast.success('PDF finalizado e baixado.', { id: toastId });
+            if (!contentType || !contentType.includes('application/pdf')) {
+                const errorText = await response.text();
+                throw new Error(`Resposta inesperada da Edge Function: ${contentType || 'sem content-type'} - ${errorText}`);
             }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode?.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            toast.success('PDF gerado com sucesso!', { id: toastId });
 
         } catch (err: any) {
             console.error('Erro ao baixar PDF do RDO:', err);

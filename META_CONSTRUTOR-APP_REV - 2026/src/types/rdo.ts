@@ -171,7 +171,7 @@ export interface RejectRDOData {
 
 // Interface para exportação
 export interface ExportRDOOptions {
-  format: 'pdf' | 'excel';
+  format: 'pdf';
   includeImages: boolean;
   includeDocuments: boolean;
   emailTo?: string[];

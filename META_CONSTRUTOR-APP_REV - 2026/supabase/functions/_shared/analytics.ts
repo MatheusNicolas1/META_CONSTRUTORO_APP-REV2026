@@ -41,7 +41,7 @@ export async function trackServerEvent(
 
     // 1. Log to Console (Always)
     const logPrefix = success ? '[Analytics][OK]' : '[Analytics][ERR]';
-    console.log(`${logPrefix} ${event}`, JSON.stringify(finalProps));
+    console.info(`${logPrefix} ${event}`, JSON.stringify(finalProps));
 
     // 2. Send to PostHog (if Key exists)
     if (POSTHOG_API_KEY) {

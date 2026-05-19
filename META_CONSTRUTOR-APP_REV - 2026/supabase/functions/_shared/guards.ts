@@ -9,7 +9,7 @@ export const logRequest = (
     result: 'success' | 'denied' | 'error',
     details?: string
 ) => {
-    console.log(JSON.stringify({
+    console.info(JSON.stringify({
         request_id: requestId,
         user_id,
         org_id,

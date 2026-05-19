@@ -10,7 +10,7 @@ import { requireAuth } from '../_shared/guards.ts';
  * - Authorization header (JWT do usuário logado)
  *
  * Retorna:
- * - JSON estruturado com TODOS os dados do usuário
+ * - JSON estruturado com todos os dados do usuário
  * - Não inclui dados de terceiros
  * - Campos internos são sanitizados
  */

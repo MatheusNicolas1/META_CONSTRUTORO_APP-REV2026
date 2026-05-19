@@ -14,21 +14,24 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, Check, Lock, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/components/auth/AuthContext';
 
 const Checkout = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
+  const { user, isAuthenticated } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState<'details' | 'payment'>('details');
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [defaultFormValues, setDefaultFormValues] = useState<Partial<CheckoutFormData>>({});
 
   const planKey = searchParams.get('plan') || 'basic';
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
     (searchParams.get('billing') as 'monthly' | 'yearly') || 'monthly'
   );
 
-  const { data: plans, isLoading: isPlansLoading } = usePlans();
+  const { data: plans, isLoading: isPlansLoading } = usePlans({ staticOnly: !isAuthenticated });
   const selectedPlan = plans?.find(p => p.slug === planKey);
 
   const rawMonthlyPrice = (selectedPlan?.monthly_price_cents || 0) / 100;
@@ -45,6 +48,39 @@ const Checkout = () => {
     }
   }, [planKey, selectedPlan, isPlansLoading, navigate]);
 
+  useEffect(() => {
+    if (!user) {
+      setDefaultFormValues({});
+      return;
+    }
+
+    setDefaultFormValues({
+      name: user.name || '',
+      email: user.email || '',
+    });
+
+    let isMounted = true;
+    supabase
+      .from('profiles')
+      .select('name, email, company, cpf_cnpj, phone')
+      .eq('id', user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!isMounted || !data) return;
+        setDefaultFormValues({
+          name: data.name || user.name || '',
+          email: data.email || user.email || '',
+          company: data.company || '',
+          cpf_cnpj: data.cpf_cnpj || '',
+          phone: data.phone || '',
+        });
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
+
   const createSubscriptionIntent = async (userId: string, email: string, cycle: 'monthly' | 'yearly') => {
     const { data, error } = await supabase.functions.invoke('create-subscription', {
       body: { plan: planKey, billing: cycle, user_id: userId, email }
@@ -56,6 +92,26 @@ const Checkout = () => {
   const handleDetailsSubmit = async (data: CheckoutFormData) => {
     setIsLoading(true);
     try {
+      if (isAuthenticated && user) {
+        await supabase.from('profiles').update({
+          name: data.name,
+          company: data.company || null,
+          cpf_cnpj: data.cpf_cnpj || null,
+          phone: data.phone || null
+        }).eq('id', user.id);
+
+        if (planKey === 'free') {
+          toast({ title: "Sucesso!", description: "Redirecionando para o dashboard..." });
+          setTimeout(() => navigate('/app/dashboard'), 1500);
+          return;
+        }
+
+        const secret = await createSubscriptionIntent(user.id, user.email, billingCycle);
+        setClientSecret(secret);
+        setStep('payment');
+        return;
+      }
+
       // 1. Sign Up
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
@@ -84,7 +140,7 @@ const Checkout = () => {
       // 2. Free Plan
       if (planKey === 'free') {
         toast({ title: "Sucesso!", description: "Redirecionando para o dashboard..." });
-        setTimeout(() => navigate('/dashboard'), 1500);
+        setTimeout(() => navigate('/app/dashboard'), 1500);
         return;
       }
 
@@ -153,7 +209,12 @@ const Checkout = () => {
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
                         >
-                          <CheckoutForm onSubmit={handleDetailsSubmit} loading={isLoading} defaultValues={{}} />
+                          <CheckoutForm
+                            onSubmit={handleDetailsSubmit}
+                            loading={isLoading}
+                            defaultValues={defaultFormValues}
+                            showPasswordFields={!isAuthenticated}
+                          />
                         </motion.div>
                       ) : (
                         <div className="text-center py-12">

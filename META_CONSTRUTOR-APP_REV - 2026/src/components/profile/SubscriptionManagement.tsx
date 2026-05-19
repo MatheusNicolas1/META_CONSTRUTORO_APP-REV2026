@@ -50,8 +50,8 @@ export function SubscriptionManagement() {
 
             // Find organization first (simplified for single org per user)
             const { data: orgMember } = await supabase
-                .from('organization_members')
-                .select('organization_id')
+                .from('org_members')
+                .select('org_id')
                 .eq('user_id', user.id)
                 .single();
 
@@ -70,7 +70,7 @@ export function SubscriptionManagement() {
                     metadata,
                     plan:plans(name, monthly_price_cents, yearly_price_cents)
                 `)
-                .eq('org_id', orgMember.organization_id)
+                .eq('org_id', orgMember.org_id)
                 .in('status', ['active', 'trialing', 'past_due'])
                 .single();
 

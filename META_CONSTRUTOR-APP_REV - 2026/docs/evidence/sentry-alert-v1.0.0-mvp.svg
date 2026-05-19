@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="720" viewBox="0 0 1180 720" role="img" aria-label="Sentry alert simulated screenshot">
+  <rect width="1180" height="720" fill="#f6f7f9"/>
+  <rect x="72" y="56" width="1036" height="608" rx="12" fill="#ffffff" stroke="#d8dde6"/>
+  <rect x="72" y="56" width="1036" height="72" rx="12" fill="#362d59"/>
+  <text x="112" y="103" fill="#ffffff" font-family="Arial, sans-serif" font-size="28" font-weight="700">Sentry Alert Rule</text>
+  <text x="112" y="174" fill="#1f2937" font-family="Arial, sans-serif" font-size="24" font-weight="700">Meta Construtor MVP - JS error frequency</text>
+  <text x="112" y="220" fill="#4b5563" font-family="Arial, sans-serif" font-size="18">Project: meta-construtor-web</text>
+  <text x="112" y="256" fill="#4b5563" font-family="Arial, sans-serif" font-size="18">Environment: production</text>
+  <text x="112" y="292" fill="#4b5563" font-family="Arial, sans-serif" font-size="18">Condition: JavaScript errors &gt; 1/min</text>
+  <text x="112" y="328" fill="#4b5563" font-family="Arial, sans-serif" font-size="18">Action: send email to time operacional</text>
+  <text x="112" y="364" fill="#4b5563" font-family="Arial, sans-serif" font-size="18">Release: v1.0.0-mvp</text>
+  <rect x="112" y="420" width="916" height="128" rx="8" fill="#fff7ed" stroke="#fed7aa"/>
+  <text x="144" y="468" fill="#9a3412" font-family="Arial, sans-serif" font-size="20" font-weight="700">Simulated evidence</text>
+  <text x="144" y="506" fill="#9a3412" font-family="Arial, sans-serif" font-size="17">Real Sentry rule requires project credentials and configured VITE_SENTRY_DSN.</text>
+  <rect x="112" y="584" width="192" height="42" rx="6" fill="#16a34a"/>
+  <text x="146" y="611" fill="#ffffff" font-family="Arial, sans-serif" font-size="17" font-weight="700">Ready to create</text>
+</svg>

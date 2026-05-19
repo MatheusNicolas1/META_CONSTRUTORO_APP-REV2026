@@ -31,11 +31,11 @@ export function FaqSection() {
     ];
 
     return (
-        <section className="py-24 bg-muted/30">
-            <div className="max-w-3xl mx-auto px-6 lg:px-8">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold tracking-tight mb-4">Dúvidas Frequentes</h2>
-                    <p className="text-muted-foreground">
+        <section className="py-16 md:py-24 bg-muted/30">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-12 md:mb-16">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight mb-4 break-words">Dúvidas Frequentes</h2>
+                    <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
                         Tudo o que você precisa saber sobre nossos planos e faturamento.
                     </p>
                 </div>
@@ -43,10 +43,10 @@ export function FaqSection() {
                 <Accordion type="single" collapsible className="w-full">
                     {faqs.map((faq, index) => (
                         <AccordionItem key={index} value={`item-${index}`}>
-                            <AccordionTrigger className="text-left text-lg">
+                            <AccordionTrigger className="text-left text-base sm:text-lg font-semibold leading-snug break-words">
                                 {faq.question}
                             </AccordionTrigger>
-                            <AccordionContent className="text-muted-foreground text-base leading-relaxed">
+                            <AccordionContent className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                                 {faq.answer}
                             </AccordionContent>
                         </AccordionItem>

@@ -114,14 +114,14 @@ export function UserProfile() {
           <span>Configurações</span>
         </DropdownMenuItem>
 
-        <DropdownMenuItem onClick={() => startTransition(() => navigate("/faq"))} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => startTransition(() => navigate("/app/faq"))} className="cursor-pointer">
           <HelpCircle className="mr-2 h-4 w-4" />
           <span>FAQ / Dúvidas</span>
         </DropdownMenuItem>
 
-        <DropdownMenuItem onClick={() => startTransition(() => navigate("/feedback"))} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => startTransition(() => navigate("/app/feedback"))} className="cursor-pointer">
           <MessageSquarePlus className="mr-2 h-4 w-4" />
-          <span>Feedback</span>
+          <span>Enviar feedback</span>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

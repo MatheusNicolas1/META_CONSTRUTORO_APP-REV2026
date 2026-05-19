@@ -10,8 +10,6 @@ import { initAnalytics } from './integrations/analytics'
 // Initialize Analytics (M9)
 initAnalytics()
 
-console.log('Main.tsx loaded - Cache Buster FINAL');
-
 // Basic QueryClient for the root. 
 // Note: PerformanceOptimizedApp creates its own client with specific config, which will override this for its children.
 // This one ensures App wrapper has a context if needed.

@@ -1,5 +1,32 @@
 import { supabase } from '@/integrations/supabase/client';
 
+export function getStoragePath(value: string, bucket = 'documentos'): string {
+    if (!value) return value;
+
+    try {
+        const decodedValue = decodeURIComponent(value);
+        const url = new URL(decodedValue);
+        const markers = [
+            `/storage/v1/object/public/${bucket}/`,
+            `/storage/v1/object/sign/${bucket}/`,
+            `/storage/v1/object/authenticated/${bucket}/`,
+        ];
+
+        for (const marker of markers) {
+            const markerIndex = url.pathname.indexOf(marker);
+            if (markerIndex >= 0) {
+                return url.pathname.slice(markerIndex + marker.length);
+            }
+        }
+    } catch {
+        // Already a storage path, not an absolute URL.
+    }
+
+    return value
+        .replace(new RegExp(`^/?${bucket}/`), '')
+        .replace(/^\/+/, '');
+}
+
 /**
  * Gera uma URL temporária assinada (signed URL) para um arquivo no Storage.
  * Usar sempre que o bucket for privado — nunca expor path diretamente.
@@ -13,15 +40,31 @@ export async function getSignedUrl(
     path: string,
     expiresIn = 600
 ): Promise<string | null> {
+    const storagePath = getStoragePath(path, bucket);
     const { data, error } = await supabase.storage
         .from(bucket)
-        .createSignedUrl(path, expiresIn);
+        .createSignedUrl(storagePath, expiresIn);
 
     if (error) {
-        console.error(`[storageUtils] getSignedUrl error (${bucket}/${path}):`, error.message);
+        console.error(`[storageUtils] getSignedUrl error (${bucket}/${storagePath}):`, error.message);
         return null;
     }
     return data?.signedUrl ?? null;
+}
+
+export async function downloadStorageFile(
+    bucket: string,
+    path: string
+): Promise<Blob | null> {
+    const storagePath = getStoragePath(path, bucket);
+    const { data, error } = await supabase.storage.from(bucket).download(storagePath);
+
+    if (error || !data) {
+        console.error(`[storageUtils] downloadStorageFile error (${bucket}/${storagePath}):`, error?.message);
+        return null;
+    }
+
+    return data;
 }
 
 /**
@@ -32,9 +75,10 @@ export async function getSignedUrl(
  * @returns true se removido com sucesso
  */
 export async function deleteStorageFile(bucket: string, path: string): Promise<boolean> {
-    const { error } = await supabase.storage.from(bucket).remove([path]);
+    const storagePath = getStoragePath(path, bucket);
+    const { error } = await supabase.storage.from(bucket).remove([storagePath]);
     if (error) {
-        console.error(`[storageUtils] deleteStorageFile error (${bucket}/${path}):`, error.message);
+        console.error(`[storageUtils] deleteStorageFile error (${bucket}/${storagePath}):`, error.message);
         return false;
     }
     return true;
@@ -82,7 +126,8 @@ export async function deleteDocumento(
  */
 export async function getFileAsBase64(bucket: string, path: string): Promise<string | null> {
     try {
-        const { data, error } = await supabase.storage.from(bucket).download(path);
+        const storagePath = getStoragePath(path, bucket);
+        const { data, error } = await supabase.storage.from(bucket).download(storagePath);
         if (error || !data) {
             console.error('[storageUtils] getFileAsBase64 download error:', error?.message);
             return null;

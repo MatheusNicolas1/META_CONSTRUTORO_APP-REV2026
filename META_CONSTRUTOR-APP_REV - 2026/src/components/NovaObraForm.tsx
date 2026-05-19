@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,25 +15,71 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CalendarIcon, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface NovaObraFormProps {
   isOpen: boolean;
   onClose: () => void;
+  obra?: {
+    id: string;
+    nome?: string;
+    cliente?: string;
+    localizacao?: string;
+    responsavel?: string;
+    tipo?: string;
+    data_inicio?: string;
+    previsao_termino?: string;
+    dataInicio?: string;
+    previsaoTermino?: string;
+    observacoes?: string;
+    descricao?: string;
+  } | null;
 }
 
-export const NovaObraForm = ({ isOpen, onClose }: NovaObraFormProps) => {
-  const { createObra } = useObras();
+const parseDate = (date?: string) => {
+  if (!date) return undefined;
+  if (date.includes("T")) return new Date(date);
+  return new Date(`${date}T00:00:00`);
+};
+
+const emptyFormData = {
+  nome: "",
+  cliente: "",
+  localizacao: "",
+  responsavel: "",
+  tipo: "",
+  dataInicio: undefined as Date | undefined,
+  previsaoTermino: undefined as Date | undefined,
+  observacoes: ""
+};
+
+export const NovaObraForm = ({ isOpen, onClose, obra }: NovaObraFormProps) => {
+  const { createObra, updateObra } = useObras();
+  const isEditing = Boolean(obra?.id);
   const [atividadesOrcamento, setAtividadesOrcamento] = useState<AtividadeOrcamento[]>([]);
-  const [formData, setFormData] = useState({
-    nome: "",
-    cliente: "",
-    localizacao: "",
-    responsavel: "",
-    tipo: "",
-    dataInicio: undefined as Date | undefined,
-    previsaoTermino: undefined as Date | undefined,
-    observacoes: ""
-  });
+  const [formData, setFormData] = useState(emptyFormData);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    if (obra) {
+      setFormData({
+        nome: obra.nome || "",
+        cliente: obra.cliente || "",
+        localizacao: obra.localizacao || "",
+        responsavel: obra.responsavel || "",
+        tipo: obra.tipo || "",
+        dataInicio: parseDate(obra.data_inicio || obra.dataInicio),
+        previsaoTermino: parseDate(obra.previsao_termino || obra.previsaoTermino),
+        observacoes: obra.observacoes || obra.descricao || ""
+      });
+      setAtividadesOrcamento([]);
+      return;
+    }
+
+    setFormData(emptyFormData);
+    setAtividadesOrcamento([]);
+  }, [isOpen, obra]);
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -43,10 +89,11 @@ export const NovaObraForm = ({ isOpen, onClose }: NovaObraFormProps) => {
     if (!formData.nome || !formData.cliente || !formData.localizacao ||
       !formData.responsavel || !formData.tipo || !formData.dataInicio ||
       !formData.previsaoTermino) {
+      toast.error("Preencha todos os campos obrigatorios da obra.");
       return;
     }
 
-    createObra.mutate({
+    const payload = {
       nome: formData.nome,
       cliente: formData.cliente,
       localizacao: formData.localizacao,
@@ -55,30 +102,42 @@ export const NovaObraForm = ({ isOpen, onClose }: NovaObraFormProps) => {
       data_inicio: formData.dataInicio ? format(formData.dataInicio, 'yyyy-MM-dd') : '',
       previsao_termino: formData.previsaoTermino ? format(formData.previsaoTermino, 'yyyy-MM-dd') : '',
       observacoes: formData.observacoes || undefined,
+      descricao: formData.observacoes || undefined,
+    };
+
+    if (isEditing && obra?.id) {
+      updateObra.mutate({
+        id: obra.id,
+        ...payload,
+      }, {
+        onSuccess: () => {
+          onClose();
+        }
+      });
+      return;
+    }
+
+    createObra.mutate({
+      ...payload,
       atividades: atividadesOrcamento,
     }, {
       onSuccess: () => {
         setAtividadesOrcamento([]);
-        setFormData({
-          nome: "",
-          cliente: "",
-          localizacao: "",
-          responsavel: "",
-          tipo: "",
-          dataInicio: undefined,
-          previsaoTermino: undefined,
-          observacoes: ""
-        });
+        setFormData(emptyFormData);
         onClose();
       }
     });
   };
 
+  const isSubmitting = createObra.isPending || updateObra.isPending;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent className="sm:max-w-[900px] w-[95vw] bg-card border-border h-[95vh] sm:h-[90vh] flex flex-col p-0">
         <DialogHeader className="p-4 sm:p-6 pb-3 sm:pb-4 flex-shrink-0 border-b">
-          <DialogTitle className="text-lg sm:text-xl font-semibold text-card-foreground">Cadastrar Nova Obra</DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl font-semibold text-card-foreground">
+            {isEditing ? "Editar Obra" : "Cadastrar Nova Obra"}
+          </DialogTitle>
           <DialogDescription className="text-xs sm:text-sm text-muted-foreground mt-1">
             Preencha as informações da nova obra
           </DialogDescription>
@@ -245,22 +304,22 @@ export const NovaObraForm = ({ isOpen, onClose }: NovaObraFormProps) => {
             variant="outline"
             onClick={onClose}
             className="w-full sm:w-auto order-2 sm:order-1 h-9 sm:h-10"
-            disabled={createObra.isPending}
+            disabled={isSubmitting}
           >
             Cancelar
           </Button>
           <Button
             className="gradient-construction border-0 w-full sm:w-auto order-1 sm:order-2 h-9 sm:h-10"
             onClick={handleSubmit}
-            disabled={createObra.isPending}
+            disabled={isSubmitting}
           >
-            {createObra.isPending ? (
+            {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Salvando...
               </>
             ) : (
-              'Cadastrar Obra'
+              isEditing ? 'Salvar Alteracoes' : 'Cadastrar Obra'
             )}
           </Button>
         </div>

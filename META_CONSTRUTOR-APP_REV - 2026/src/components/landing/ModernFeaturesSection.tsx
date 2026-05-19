@@ -27,7 +27,7 @@ const ModernFeaturesSection = () => {
       icon: LayoutDashboard,
       title: 'Obras & Cronograma',
       description: 'Planejamento por fases e marcos com linha do tempo e dependências automáticas',
-      href: '/obras',
+      href: '/login',
       benefits: [
         { title: 'Planejamento por fases e marcos', completed: true },
         { title: 'Linha do tempo e dependências', completed: true },
@@ -48,7 +48,7 @@ const ModernFeaturesSection = () => {
       icon: Building2,
       title: 'RDO Inteligente',
       description: 'Lançamento em minutos com assinatura e envio automático',
-      href: '/rdo',
+      href: '/login',
       benefits: [
         { title: 'Lançamento em minutos', completed: true },
         { title: 'Assinatura e envio automático', completed: true },
@@ -69,7 +69,7 @@ const ModernFeaturesSection = () => {
       icon: CheckSquare,
       title: 'Checklists QS',
       description: 'Qualidade e Segurança padronizadas com templates prontos e customizáveis',
-      href: '/checklist',
+      href: '/login',
       benefits: [
         { title: 'Templates prontos e customizáveis', completed: true },
         { title: 'Fotos e evidências digitais', completed: true },
@@ -90,7 +90,7 @@ const ModernFeaturesSection = () => {
       icon: Calendar,
       title: 'Atividades Kanban',
       description: 'Quadro Kanban com prioridades, duração estimada e responsáveis',
-      href: '/atividades',
+      href: '/login',
       benefits: [
         { title: 'Quadro Kanban e prioridades', completed: true },
         { title: 'Duração estimada e responsáveis', completed: true },
@@ -111,7 +111,7 @@ const ModernFeaturesSection = () => {
       icon: Users,
       title: 'Equipes & Colaboradores',
       description: 'Funções e times personalizados com controle de disponibilidade e produtividade',
-      href: '/equipes',
+      href: '/login',
       benefits: [
         { title: 'Funções e times personalizados', completed: true },
         { title: 'Disponibilidade e produtividade', completed: true },
@@ -132,7 +132,7 @@ const ModernFeaturesSection = () => {
       icon: Wrench,
       title: 'Equipamentos & Manutenção',
       description: 'Manutenção preventiva e corretiva com controle de horas e check-in',
-      href: '/equipamentos',
+      href: '/login',
       benefits: [
         { title: 'Preventiva e corretiva', completed: true },
         { title: 'Controle de horas e check-in', completed: true },
@@ -153,7 +153,7 @@ const ModernFeaturesSection = () => {
       icon: DollarSign,
       title: 'Orçamento & Financeiro',
       description: 'Orçamento analítico por obra com executado vs. pendente por RDO',
-      href: '/relatorios',
+      href: '/login',
       benefits: [
         { title: 'Orçamento analítico por obra', completed: true },
         { title: 'Executado vs. pendente por RDO', completed: true },
@@ -174,7 +174,7 @@ const ModernFeaturesSection = () => {
       icon: FileText,
       title: 'Documentos & Anexos',
       description: 'Central única por obra com versionamento e controle de permissões',
-      href: '/documentos',
+      href: '/login',
       benefits: [
         { title: 'Central única por obra', completed: true },
         { title: 'Versionamento e permissões', completed: true },
@@ -195,7 +195,7 @@ const ModernFeaturesSection = () => {
       icon: Handshake,
       title: 'Fornecedores & Contratos',
       description: 'Cadastro completo com SLA, anexos, status e histórico',
-      href: '/fornecedores',
+      href: '/login',
       benefits: [
         { title: 'Cadastro, SLA e anexos', completed: true },
         { title: 'Status e histórico', completed: true },
@@ -215,11 +215,11 @@ const ModernFeaturesSection = () => {
     {
       icon: BarChart3,
       title: 'Relatórios & Dashboards',
-      description: 'Indicadores em tempo real com exportação PDF/CSV automática',
-      href: '/relatorios',
+      description: 'Indicadores em tempo real com exportação PDF automática',
+      href: '/login',
       benefits: [
         { title: 'Indicadores em tempo real', completed: true },
-        { title: 'Exportação PDF/CSV', completed: true },
+        { title: 'Exportação PDF', completed: true },
         { title: 'Análises preditivas', completed: true },
       ],
       stats: {
@@ -237,7 +237,7 @@ const ModernFeaturesSection = () => {
       icon: Zap,
       title: 'Integrações & Automação',
       description: 'WhatsApp, Gmail, Drive, Agenda com fluxos n8n prontos para usar',
-      href: '/integracoes',
+      href: '/login',
       benefits: [
         { title: 'WhatsApp, Gmail, Drive, Agenda', completed: true },
         { title: 'Fluxos n8n prontos', completed: true },
@@ -258,7 +258,7 @@ const ModernFeaturesSection = () => {
       icon: MessageSquare,
       title: 'Comunicação & Alertas',
       description: 'Notificações multi-canal com comentários e menções @ em tempo real',
-      href: '/configuracoes',
+      href: '/login',
       benefits: [
         { title: 'Notificações multi-canal', completed: true },
         { title: 'Comentários e menções @', completed: true },
@@ -278,14 +278,14 @@ const ModernFeaturesSection = () => {
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-background">
+    <section className="py-12 md:py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4">
             Plataforma completa para gestão de obras
           </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-3xl mx-auto">
             Todas as ferramentas que você precisa para controlar suas obras do planejamento 
             à entrega, centralizadas em uma única plataforma intuitiva e poderosa.
           </p>
@@ -310,29 +310,29 @@ const ModernFeaturesSection = () => {
         {/* Stats Section */}
         <div className="bg-primary/5 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 lg:p-12 mb-8 sm:mb-12 mx-2 sm:mx-0">
           <div className="text-center mb-6 sm:mb-8">
-            <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
+            <h3 className="text-xl sm:text-2xl font-semibold leading-tight text-foreground mb-2">
               Números que comprovam nossa eficiência
             </h3>
-            <p className="text-muted-foreground text-sm sm:text-base px-2 sm:px-0">
+            <p className="text-sm sm:text-base leading-relaxed text-muted-foreground px-2 sm:px-0">
               Resultados reais de empresas que escolheram o MetaConstrutor
             </p>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             <div className="text-center">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1 sm:mb-2">500+</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-none text-primary mb-1 sm:mb-2">500+</div>
               <div className="text-xs sm:text-sm text-muted-foreground px-1">Obras Concluídas</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1 sm:mb-2">1.2K+</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-none text-primary mb-1 sm:mb-2">1.2K+</div>
               <div className="text-xs sm:text-sm text-muted-foreground px-1">Usuários Ativos</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1 sm:mb-2">40%</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-none text-primary mb-1 sm:mb-2">40%</div>
               <div className="text-xs sm:text-sm text-muted-foreground px-1">Redução de Tempo</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1 sm:mb-2">99.9%</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-none text-primary mb-1 sm:mb-2">99.9%</div>
               <div className="text-xs sm:text-sm text-muted-foreground px-1">Uptime</div>
             </div>
           </div>
@@ -342,7 +342,7 @@ const ModernFeaturesSection = () => {
         <div className="text-center">
           <Button 
             size="lg" 
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-xl"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-semibold leading-none rounded-xl"
             onClick={() => {
               // Analytics tracking
               if ((window as any).gtag) {
@@ -356,9 +356,6 @@ const ModernFeaturesSection = () => {
           >
             Começar Gratuitamente
           </Button>
-          <p className="text-sm text-muted-foreground mt-2">
-            Sem cartão de crédito • Teste grátis por 14 dias
-          </p>
         </div>
       </div>
     </section>

@@ -15,8 +15,7 @@ import SEO from '@/components/SEO';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useRequireOrg } from '@/hooks/requireOrg';
 import { toast } from 'sonner';
-import { useDownload } from '@/hooks/useDownload';
-import { generateStandardFilename } from '@/utils/downloadHelper';
+import { useReportPdfDownload } from '@/hooks/useReportPdfDownload';
 import { Loader2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -28,7 +27,7 @@ export default function Despesas() {
   const { expenses, isLoading } = useExpenses();
   const { rdo } = usePermissions();
   const { orgId, isLoading: orgLoading } = useRequireOrg();
-  const { isLoading: isDownloading, startDownload } = useDownload();
+  const { downloadReportPdf, isDownloading } = useReportPdfDownload();
 
   const { data: obras } = useQuery({
     queryKey: ['obras-list', orgId],
@@ -69,26 +68,68 @@ export default function Despesas() {
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
-  const exportToCSV = () => {
+  const handleExportPdf = () => {
     if (!filteredExpenses?.length) {
       toast.error("Não há despesas para exportar.");
       return;
     }
 
-    const headers = ['Data', 'Nota Fiscal', 'Fornecedor', 'Categoria', 'Valor', 'Status'];
-    const rows = filteredExpenses.map((expense) => [
-      new Date(expense.date_of_expense).toLocaleDateString('pt-BR'),
-      expense.invoice_number,
-      expense.supplier_name,
-      expense.cost_category,
-      expense.amount.toString(),
-      expense.approval_status,
-    ]);
-
-    const csv = [headers, ...rows].map((row) => row.join(',')).join('\n');
-    const filename = generateStandardFilename("despesas", null, "csv");
-
-    startDownload(Promise.resolve(csv), filename, 'text/csv;charset=utf-8;');
+    downloadReportPdf({
+      reportType: "DESPESAS",
+      title: "Relatorio de Despesas",
+      subtitle: "Controle financeiro e aprovacao de despesas",
+      meta: [
+        { label: "Total de despesas", value: filteredExpenses.length },
+        { label: "Status", value: filterStatus === "all" ? "Todos" : filterStatus },
+        { label: "Categoria", value: filterCategory === "all" ? "Todas" : filterCategory },
+      ],
+      sections: [
+        {
+          title: "Informacoes Basicas",
+          meta: [
+            { label: "Total aprovado", value: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalApproved) },
+            { label: "Total pendente", value: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalPending) },
+          ],
+        },
+        {
+          title: "Filtros Aplicados",
+          meta: [
+            { label: "Status", value: filterStatus === "all" ? "Todos" : filterStatus },
+            { label: "Categoria", value: filterCategory === "all" ? "Todas" : filterCategory },
+          ],
+        },
+        {
+          title: "Indicadores Financeiros",
+          meta: [
+            { label: "Quantidade", value: filteredExpenses.length },
+            { label: "Total geral", value: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(filteredExpenses.reduce((sum, expense) => sum + Number(expense.amount), 0)) },
+          ],
+        },
+        {
+          title: "Despesas",
+          columns: [
+            { key: "data", label: "Data" },
+            { key: "nota", label: "Nota Fiscal" },
+            { key: "fornecedor", label: "Fornecedor" },
+            { key: "categoria", label: "Categoria" },
+            { key: "valor", label: "Valor" },
+            { key: "status", label: "Status" },
+          ],
+          rows: filteredExpenses.map((expense) => ({
+            data: new Date(expense.date_of_expense).toLocaleDateString('pt-BR'),
+            nota: expense.invoice_number,
+            fornecedor: expense.supplier_name,
+            categoria: expense.cost_category,
+            valor: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(expense.amount)),
+            status: expense.approval_status,
+          })),
+        },
+        { title: "Aprovacoes" },
+        { title: "Problemas e Ocorrencias" },
+        { title: "Observacoes Gerais", notes: ["Relatorio de despesas gerado com dados financeiros reais filtrados."] },
+        { title: "Anexos" },
+      ],
+    });
   };
 
   return (
@@ -193,7 +234,7 @@ export default function Despesas() {
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={exportToCSV}
+                        onClick={handleExportPdf}
                         className="hidden sm:inline-flex"
                         disabled={isDownloading}
                       >
@@ -208,7 +249,7 @@ export default function Despesas() {
 
                 <Button
                   variant="outline"
-                  onClick={exportToCSV}
+                  onClick={handleExportPdf}
                   className="w-full sm:hidden"
                   disabled={isDownloading}
                 >
@@ -217,7 +258,7 @@ export default function Despesas() {
                   ) : (
                     <Download className="h-4 w-4 mr-2" />
                   )}
-                  Exportar CSV
+                  Exportar PDF
                 </Button>
               </div>
             </div>

@@ -42,10 +42,10 @@ const sanitize = (data: any): any => {
 
 export const logger = {
     info: (message: string, context: LogContext, data?: any) => {
-        console.log(formatLog('INFO', message, context, data));
+        console.info(formatLog('INFO', message, context, data));
     },
     warn: (message: string, context: LogContext, data?: any) => {
-        console.log(formatLog('WARN', message, context, data)); // console.log for Edge Functions usually captures stdout/stderr
+        console.warn(formatLog('WARN', message, context, data));
     },
     error: (message: string, context: LogContext, error?: any) => {
         console.error(formatLog('ERROR', message, context, {

@@ -2,12 +2,13 @@ import { SignInPage } from "@/components/ui/sign-in";
 import { authTestimonials } from "@/data/auth-testimonials";
 
 import { useAuth } from "@/components/auth/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { getAuthCallbackUrl } from "@/utils/authRedirect";
 
 
 
@@ -15,9 +16,21 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 const Login = () => {
   const { signIn } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   // V7: Removido rememberedEmail do localStorage (PII em plain text)
+
+  useEffect(() => {
+    const authError = searchParams.get("auth_error");
+    if (!authError) return;
+
+    toast({
+      title: "Erro ao fazer login com Google",
+      description: authError,
+      variant: "destructive",
+    });
+  }, [searchParams, toast]);
 
   const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -54,6 +67,7 @@ const Login = () => {
     } finally {
       setIsLoading(false);
     }
+
   };
 
   const handleGoogleSignIn = async () => {
@@ -63,7 +77,11 @@ const Login = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/app/dashboard`,
+          redirectTo: getAuthCallbackUrl(),
+          queryParams: {
+            access_type: "offline",
+            prompt: "select_account",
+          },
         },
       });
 

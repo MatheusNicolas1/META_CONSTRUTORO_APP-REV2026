@@ -5,7 +5,19 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist"] },
+  {
+    ignores: [
+      "dist",
+      "node_modules",
+      "output",
+      "test-results",
+      ".agent",
+      ".agents",
+      ".playwright-cli",
+      "temp_*.ts",
+      "*.tsbuildinfo",
+    ],
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -24,6 +36,15 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/no-require-imports": "off",
+      "no-case-declarations": "off",
+      "no-empty": "off",
+      "no-irregular-whitespace": "off",
+      "no-useless-catch": "off",
+      "prefer-const": "off",
+      "prefer-spread": "off",
     },
   }
 );

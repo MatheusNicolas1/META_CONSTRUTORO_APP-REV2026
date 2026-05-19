@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, memo, type ReactNode } from 'react';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { ThemeProvider } from '@/components/ThemeProvider';
@@ -49,15 +49,13 @@ const queryClient = new QueryClient({
 import Index from '@/pages/Index';
 
 import Login from '@/pages/Login';
+import AuthCallback from '@/pages/AuthCallback';
 import Logout from '@/pages/Logout';
 import RecuperarSenha from '@/pages/RecuperarSenha';
 import RedefinirSenha from '@/pages/RedefinirSenha';
 import CriarConta from '@/pages/CriarConta';
 import MFA from '@/pages/MFA';
 import RenovarSessao from '@/pages/RenovarSessao';
-import Checkout from '@/pages/Checkout';
-import CheckoutSuccess from '@/pages/CheckoutSuccess';
-import CheckoutCancel from '@/pages/CheckoutCancel';
 
 // Lazy loading otimizado com chunk específicos
 const Dashboard = lazy(() =>
@@ -306,6 +304,24 @@ const Preco = lazy(() =>
   }))
 );
 
+const Checkout = lazy(() =>
+  import('@/pages/Checkout').then(module => ({
+    default: module.default
+  }))
+);
+
+const CheckoutSuccess = lazy(() =>
+  import('@/pages/CheckoutSuccess').then(module => ({
+    default: module.default
+  }))
+);
+
+const CheckoutCancel = lazy(() =>
+  import('@/pages/CheckoutCancel').then(module => ({
+    default: module.default
+  }))
+);
+
 
 // Módulo de comunidade removido - substituído por compartilhamento social integrado
 
@@ -329,6 +345,19 @@ const ProtectedPage = memo(({
 ));
 
 ProtectedPage.displayName = 'ProtectedPage';
+
+const LegacyAppRedirect = memo(() => {
+  const location = useLocation();
+
+  return (
+    <Navigate
+      to={`/app${location.pathname}${location.search}${location.hash}`}
+      replace
+    />
+  );
+});
+
+LegacyAppRedirect.displayName = 'LegacyAppRedirect';
 
 export const PerformanceOptimizedApp = memo(() => (
   <ErrorBoundary>
@@ -357,6 +386,7 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/recuperar-senha" element={<PublicRoute><RecuperarSenha /></PublicRoute>} />
                       <Route path="/redefinir-senha" element={<PublicRoute><RedefinirSenha /></PublicRoute>} />
                       <Route path="/criar-conta" element={<PublicRoute><CriarConta /></PublicRoute>} />
+                      <Route path="/auth/callback" element={<SafeSuspense><AuthCallback /></SafeSuspense>} />
                       <Route path="/mfa" element={<PublicRoute><MFA /></PublicRoute>} />
                       <Route path="/renovar-sessao" element={<RenovarSessao />} />
                       <Route path="/home" element={<Index />} />
@@ -376,15 +406,38 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/status" element={<SafeSuspense><StatusPage /></SafeSuspense>} />
                       <Route path="/api" element={<SafeSuspense><APIPage /></SafeSuspense>} />
                       {/* Rotas de Checkout */}
-                      <Route path="/checkout" element={<PublicRoute><Checkout /></PublicRoute>} />
-                      <Route path="/checkout/success" element={<PublicRoute><CheckoutSuccess /></PublicRoute>} />
-                      <Route path="/checkout/cancel" element={<PublicRoute><CheckoutCancel /></PublicRoute>} />
+                      <Route path="/checkout" element={<PublicRoute allowAuthenticated><SafeSuspense><Checkout /></SafeSuspense></PublicRoute>} />
+                      <Route path="/checkout/success" element={<PublicRoute allowAuthenticated><SafeSuspense><CheckoutSuccess /></SafeSuspense></PublicRoute>} />
+                      <Route path="/checkout/cancel" element={<PublicRoute allowAuthenticated><SafeSuspense><CheckoutCancel /></SafeSuspense></PublicRoute>} />
+                      {/* Redirecionamentos legados: o produto autenticado vive em /app/... */}
+                      <Route path="/dashboard/*" element={<LegacyAppRedirect />} />
+                      <Route path="/obras/*" element={<LegacyAppRedirect />} />
+                      <Route path="/rdo/*" element={<LegacyAppRedirect />} />
+                      <Route path="/atividades/*" element={<LegacyAppRedirect />} />
+                      <Route path="/checklist/*" element={<LegacyAppRedirect />} />
+                      <Route path="/equipes/*" element={<LegacyAppRedirect />} />
+                      <Route path="/colaboradores/*" element={<LegacyAppRedirect />} />
+                      <Route path="/equipamentos/*" element={<LegacyAppRedirect />} />
+                      <Route path="/mais" element={<LegacyAppRedirect />} />
+                      <Route path="/documentos/*" element={<LegacyAppRedirect />} />
+                      <Route path="/fornecedores/*" element={<LegacyAppRedirect />} />
+                      <Route path="/despesas/*" element={<LegacyAppRedirect />} />
+                      <Route path="/relatorios/*" element={<LegacyAppRedirect />} />
+                      <Route path="/integracoes/*" element={<LegacyAppRedirect />} />
+                      <Route path="/configuracoes/*" element={<LegacyAppRedirect />} />
+                      <Route path="/perfil" element={<LegacyAppRedirect />} />
+                      <Route path="/notificacoes/*" element={<LegacyAppRedirect />} />
+                      <Route path="/feedback" element={<LegacyAppRedirect />} />
+                      <Route path="/faq" element={<LegacyAppRedirect />} />
+                      <Route path="/seguranca/*" element={<LegacyAppRedirect />} />
+                      <Route path="/admin/dashboard" element={<Navigate to="/app/admin/dashboard" replace />} />
+                      <Route path="/app" element={<Navigate to="/app/dashboard" replace />} />
                       {/* Dashboard protegido */}
                       <Route path="/app/dashboard" element={<ProtectedPage><Dashboard /></ProtectedPage>} />
                       {/* Obras */}
                       <Route path="/app/obras" element={<ProtectedPage><Obras /></ProtectedPage>} />
                       <Route path="/app/obras/:id" element={<ProtectedPage><ObraDetalhes /></ProtectedPage>} />
-                      <Route path="/app/obras/:id/editar" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Obras /></ProtectedPage>} />
+                      <Route path="/app/obras/:id/editar" element={<ProtectedPage roles={["Presidente", "Administrador", "Gerente"]}><ObraDetalhes /></ProtectedPage>} />
                       {/* RDO */}
                       <Route path="/app/rdo" element={<ProtectedPage><RDO /></ProtectedPage>} />
                       <Route path="/app/rdo/novo" element={<ProtectedPage><RDONovoPage /></ProtectedPage>} />

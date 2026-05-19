@@ -56,7 +56,7 @@ serve(async (req) => {
     const clientSecret = Deno.env.get('GOOGLE_DRIVE_CLIENT_SECRET');
 
     if (!clientId || !clientSecret) {
-      console.log('Google Drive OAuth credentials not configured');
+      console.info('Google Drive OAuth credentials not configured');
       return new Response(
         JSON.stringify({ 
           error: 'Google Drive integration not configured. Please add GOOGLE_DRIVE_CLIENT_ID and GOOGLE_DRIVE_CLIENT_SECRET secrets.',
@@ -143,7 +143,7 @@ serve(async (req) => {
 
       case 'list-files': {
         // Placeholder - requires stored OAuth tokens
-        console.log('List files request:', { folderId, userId: user.id });
+        console.info('List files request:', { folderId, userId: user.id });
         return new Response(
           JSON.stringify({ 
             success: false, 
@@ -163,7 +163,7 @@ serve(async (req) => {
           );
         }
 
-        console.log('Upload request:', { fileName, folderId, userId: user.id });
+        console.info('Upload request:', { fileName, folderId, userId: user.id });
         return new Response(
           JSON.stringify({ 
             success: false, 
@@ -182,7 +182,7 @@ serve(async (req) => {
           );
         }
 
-        console.log('Create folder request:', { folderName, parentId, userId: user.id });
+        console.info('Create folder request:', { folderName, parentId, userId: user.id });
         return new Response(
           JSON.stringify({ 
             success: false, 

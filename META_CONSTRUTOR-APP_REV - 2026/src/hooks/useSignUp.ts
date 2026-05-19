@@ -107,7 +107,7 @@ export const useSignUp = (): UseSignUpReturn => {
         email: data.email,
         password: data.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
+          emailRedirectTo: `${window.location.origin}/app/dashboard`,
           data: {
             name: data.name,
             phone: cleanPhone,

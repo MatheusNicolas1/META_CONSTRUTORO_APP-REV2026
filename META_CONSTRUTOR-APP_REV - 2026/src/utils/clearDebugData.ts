@@ -1,4 +1,4 @@
-// Utility para limpar dados de debug que podem estar causando problemas
+﻿// Utility para limpar dados de debug que podem estar causando problemas
 export const clearAllDebugData = () => {
   // Limpar localStorage completamente
   // localStorage.clear(); // COMMENTED OUT: Caused session loss on reload
@@ -11,7 +11,6 @@ export const clearAllDebugData = () => {
     }
   });
 
-  console.log("🧹 Dados de debug limpos completamente");
 };
 
 // Executar limpeza imediatamente

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Code2, Zap, Shield, Workflow } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,22 +11,22 @@ const APIPage = () => {
   const features = [
     {
       icon: Zap,
-      title: 'Rápida e Escalável',
+      title: 'RÃ¡pida e EscalÃ¡vel',
       description: 'Performance otimizada com respostas em menos de 50ms'
     },
     {
       icon: Shield,
       title: 'Segura',
-      description: 'Autenticação robusta e criptografia end-to-end'
+      description: 'AutenticaÃ§Ã£o robusta e criptografia end-to-end'
     },
     {
       icon: Workflow,
       title: 'RESTful',
-      description: 'Arquitetura REST padrão e fácil de integrar'
+      description: 'Arquitetura REST padrÃ£o e fÃ¡cil de integrar'
     },
     {
       icon: Code2,
-      title: 'SDKs Disponíveis',
+      title: 'SDKs DisponÃ­veis',
       description: 'Bibliotecas para JavaScript, Python, PHP e mais'
     }
   ];
@@ -47,11 +47,11 @@ const APIPage = () => {
                 API Meta Construtor
               </h1>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-                Integre a gestão de obras diretamente nos seus sistemas com nossa API RESTful robusta e escalável
+                Integre a gestÃ£o de obras diretamente nos seus sistemas com nossa API RESTful robusta e escalÃ¡vel
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" onClick={() => navigate('/documentacao')}>
-                  Ver Documentação
+                  Ver DocumentaÃ§Ã£o
                 </Button>
                 <Button size="lg" variant="outline">
                   Criar Conta
@@ -87,7 +87,7 @@ const APIPage = () => {
             <h2 className="text-3xl font-bold text-center mb-8">Comece em Minutos</h2>
             <Card>
               <CardHeader>
-                <CardTitle>Exemplo de Integração</CardTitle>
+                <CardTitle>Exemplo de IntegraÃ§Ã£o</CardTitle>
               </CardHeader>
               <CardContent>
                 <pre className="bg-muted p-6 rounded-lg overflow-x-auto">
@@ -114,8 +114,7 @@ const rdo = await client.rdos.create({
   clima: 'ensolarado',
   periodo: 'manha'
 });
-
-console.log('RDO criado:', rdo.id);`}
+const rdoId = rdo.id;`}
                   </code>
                 </pre>
               </CardContent>
@@ -125,16 +124,16 @@ console.log('RDO criado:', rdo.id);`}
           {/* Pricing CTA */}
           <Card className="mt-16 bg-primary text-primary-foreground">
             <CardContent className="p-12 text-center">
-              <h3 className="text-2xl font-bold mb-4">Pronto para começar?</h3>
+              <h3 className="text-2xl font-bold mb-4">Pronto para comeÃ§ar?</h3>
               <p className="text-lg mb-6 opacity-90 max-w-2xl mx-auto">
-                Acesso à API incluído em todos os planos. Comece gratuitamente e escale conforme necessário.
+                Acesso Ã  API incluÃ­do em todos os planos. Comece gratuitamente e escale conforme necessÃ¡rio.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button variant="secondary" size="lg" onClick={() => navigate('/preco')}>
                   Ver Planos
                 </Button>
                 <Button variant="secondary" size="lg" onClick={() => navigate('/documentacao')}>
-                  Documentação Completa
+                  DocumentaÃ§Ã£o Completa
                 </Button>
               </div>
             </CardContent>

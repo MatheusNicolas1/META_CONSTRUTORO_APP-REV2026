@@ -51,21 +51,21 @@ describe('Security System Tests', () => {
 
   describe('RBAC Matrix', () => {
     it('should allow Colaborador access to permitted routes', () => {
-      expect(hasRouteAccess('/home', 'Colaborador')).toBe(true);
-      expect(hasRouteAccess('/obras', 'Colaborador')).toBe(true);
-      expect(hasRouteAccess('/rdo', 'Colaborador')).toBe(true);
+      expect(hasRouteAccess('/app/dashboard', 'Colaborador')).toBe(true);
+      expect(hasRouteAccess('/app/obras', 'Colaborador')).toBe(true);
+      expect(hasRouteAccess('/app/rdo', 'Colaborador')).toBe(true);
     });
 
     it('should deny Colaborador access to restricted routes', () => {
-      expect(hasRouteAccess('/equipes', 'Colaborador')).toBe(false);
-      expect(hasRouteAccess('/integracoes', 'Colaborador')).toBe(false);
-      expect(hasRouteAccess('/configuracoes', 'Colaborador')).toBe(false);
+      expect(hasRouteAccess('/app/equipes', 'Colaborador')).toBe(false);
+      expect(hasRouteAccess('/app/integracoes', 'Colaborador')).toBe(false);
+      expect(hasRouteAccess('/app/configuracoes', 'Colaborador')).toBe(false);
     });
 
     it('should allow Admin access to all routes', () => {
-      expect(hasRouteAccess('/integracoes', 'Administrador')).toBe(true);
-      expect(hasRouteAccess('/seguranca', 'Administrador')).toBe(true);
-      expect(hasRouteAccess('/configuracoes', 'Administrador')).toBe(true);
+      expect(hasRouteAccess('/app/integracoes', 'Administrador')).toBe(true);
+      expect(hasRouteAccess('/app/seguranca', 'Administrador')).toBe(true);
+      expect(hasRouteAccess('/app/configuracoes', 'Administrador')).toBe(true);
     });
 
     it('should validate action permissions correctly', () => {

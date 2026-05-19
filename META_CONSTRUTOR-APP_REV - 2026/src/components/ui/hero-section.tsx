@@ -34,24 +34,22 @@ export function HeroSection() {
     }
 
     const handleTestLogin = async () => {
-        console.log("🧪 Test Login - Executando login direto...");
-        
-        // Simular login direto sem precisar ir para a página de login
+
+        // Simular login direto sem precisar ir para a pÃ¡gina de login
         const testUser = {
             id: "test_user_" + Date.now(),
-            name: "Usuário Teste",
+            name: "UsuÃ¡rio Teste",
             email: "teste@metaconstrutor.com",
             role: "Administrador" as const,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
         };
-        
+
         localStorage.setItem("auth_user", JSON.stringify(testUser));
         localStorage.setItem("auth_token", "test_token_" + Math.random().toString(36));
         localStorage.setItem("auth_refresh_token", "test_refresh_" + Math.random().toString(36));
-        
-        console.log("✅ Test Login - Dados salvos, redirecionando...");
-        window.location.replace("/dashboard");
+
+        window.location.replace("/app/dashboard");
     }
 
     return (
@@ -100,7 +98,7 @@ export function HeroSection() {
                             <div className="text-center sm:mx-auto lg:mr-auto lg:mt-0">
                                 <AnimatedGroup variants={transitionVariants}>
                                     <div className="hover:bg-background dark:hover:border-t-border bg-muted group mx-auto flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-black/5 transition-all duration-300 dark:border-t-white/5 dark:shadow-zinc-950">
-                                        <span className="text-foreground text-sm">🎯 Gestão de Obras Inteligente</span>
+                                        <span className="text-foreground text-sm">ðŸŽ¯ GestÃ£o de Obras Inteligente</span>
                                         <span className="dark:border-background block h-4 w-0.5 border-l bg-muted-foreground dark:bg-zinc-700"></span>
 
                                         <div className="bg-background group-hover:bg-muted size-6 overflow-hidden rounded-full duration-500">
@@ -114,15 +112,15 @@ export function HeroSection() {
                                             </div>
                                         </div>
                                     </div>
-                        
+
                                     <h1
                                         className="mt-8 max-w-4xl mx-auto text-balance text-6xl md:text-7xl lg:mt-16 xl:text-[5.25rem] font-bold bg-gradient-to-br from-foreground to-muted-foreground bg-clip-text text-transparent">
                                         Meta Construtor
                                     </h1>
                                     <p
                                         className="mx-auto mt-8 max-w-2xl text-balance text-lg text-muted-foreground">
-                                        Sistema completo para gestão de obras, RDO, checklists e relatórios. 
-                                        Controle total dos seus projetos de construção em uma plataforma moderna e eficiente.
+                                        Sistema completo para gestÃ£o de obras, RDO, checklists e relatÃ³rios.
+                                        Controle total dos seus projetos de construÃ§Ã£o em uma plataforma moderna e eficiente.
                                     </p>
                                 </AnimatedGroup>
 
@@ -155,7 +153,7 @@ export function HeroSection() {
                                         variant="ghost"
                                         onClick={handleTestLogin}
                                         className="h-12 rounded-xl px-8 text-base font-medium hover:bg-muted border border-border">
-                                        <span className="text-nowrap">🧪 Login Direto (Teste)</span>
+                                        <span className="text-nowrap">ðŸ§ª Login Direto (Teste)</span>
                                     </Button>
                                 </AnimatedGroup>
                             </div>
@@ -180,7 +178,7 @@ export function HeroSection() {
                                 />
                                 <div className="relative mx-auto max-w-6xl overflow-hidden rounded-2xl border border-border/50 bg-background/95 backdrop-blur-sm p-4 shadow-2xl shadow-primary/10 ring-1 ring-border/20">
                                     <div className="aspect-[16/10] relative rounded-xl overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-                                        {/* Simulação da interface do Meta Construtor */}
+                                        {/* SimulaÃ§Ã£o da interface do Meta Construtor */}
                                         <div className="absolute inset-0 p-6">
                                             {/* Header simulado */}
                                             <div className="flex items-center justify-between mb-6">
@@ -196,7 +194,7 @@ export function HeroSection() {
                                                     <div className="w-3 h-3 rounded-full bg-green-500/60"></div>
                                                 </div>
                                             </div>
-                                            
+
                                             {/* Grid de cards simulado */}
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                                                 <div className="bg-card/80 border border-border/50 rounded-lg p-4">
@@ -206,7 +204,7 @@ export function HeroSection() {
                                                     </div>
                                                     <div className="text-2xl font-bold text-primary">24</div>
                                                 </div>
-                                                
+
                                                 <div className="bg-card/80 border border-border/50 rounded-lg p-4">
                                                     <div className="flex items-center gap-3 mb-2">
                                                         <Users className="w-5 h-5 text-green-600" />
@@ -214,7 +212,7 @@ export function HeroSection() {
                                                     </div>
                                                     <div className="text-2xl font-bold text-green-600">12</div>
                                                 </div>
-                                                
+
                                                 <div className="bg-card/80 border border-border/50 rounded-lg p-4">
                                                     <div className="flex items-center gap-3 mb-2">
                                                         <FileCheck className="w-5 h-5 text-blue-600" />
@@ -223,8 +221,8 @@ export function HeroSection() {
                                                     <div className="text-2xl font-bold text-blue-600">156</div>
                                                 </div>
                                             </div>
-                                            
-                                            {/* Área de gráfico simulado */}
+
+                                            {/* Ãrea de grÃ¡fico simulado */}
                                             <div className="bg-card/60 border border-border/30 rounded-lg p-4 h-32">
                                                 <div className="flex items-center gap-2 mb-3">
                                                     <BarChart3 className="w-4 h-4 text-muted-foreground" />
@@ -232,9 +230,9 @@ export function HeroSection() {
                                                 </div>
                                                 <div className="flex items-end gap-2 h-16">
                                                     {[...Array(8)].map((_, i) => (
-                                                        <div 
-                                                            key={i} 
-                                                            className="bg-primary/40 rounded-t w-6" 
+                                                        <div
+                                                            key={i}
+                                                            className="bg-primary/40 rounded-t w-6"
                                                             style={{ height: `${Math.random() * 60 + 10}%` }}
                                                         />
                                                     ))}
@@ -262,7 +260,7 @@ export function HeroSection() {
                                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                                     <Building2 className="w-6 h-6 text-primary" />
                                 </div>
-                                <span className="text-sm font-medium text-foreground">Gestão de Obras</span>
+                                <span className="text-sm font-medium text-foreground">GestÃ£o de Obras</span>
                             </div>
 
                             <div className="flex flex-col items-center text-center gap-3">
@@ -283,7 +281,7 @@ export function HeroSection() {
                                 <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
                                     <BarChart3 className="w-6 h-6 text-purple-600" />
                                 </div>
-                                <span className="text-sm font-medium text-foreground">Relatórios</span>
+                                <span className="text-sm font-medium text-foreground">RelatÃ³rios</span>
                             </div>
 
                             <div className="flex flex-col items-center text-center gap-3">
@@ -297,7 +295,7 @@ export function HeroSection() {
                                 <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
                                     <Shield className="w-6 h-6 text-red-600" />
                                 </div>
-                                <span className="text-sm font-medium text-foreground">Segurança</span>
+                                <span className="text-sm font-medium text-foreground">SeguranÃ§a</span>
                             </div>
                         </div>
                     </div>
@@ -308,10 +306,10 @@ export function HeroSection() {
 }
 
 const menuItems = [
-    { name: 'Funcionalidades', href: '/dashboard' },
-    { name: 'Obras', href: '/obras' },
-    { name: 'RDO', href: '/rdo' },
-    { name: 'Relatórios', href: '/relatorios' },
+    { name: 'Funcionalidades', href: '/app/dashboard' },
+    { name: 'Obras', href: '/app/obras' },
+    { name: 'RDO', href: '/app/rdo' },
+    { name: 'RelatÃ³rios', href: '/app/relatorios' },
 ]
 
 const HeroHeader = () => {

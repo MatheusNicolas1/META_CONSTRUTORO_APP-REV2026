@@ -1,15 +1,16 @@
 import { useMemo } from 'react';
 import { UserRole, getUserPermissions, UserPermissions } from '@/types/user';
+import { useAuth } from '@/components/auth/AuthContext';
 
 // Hook para gerenciar permissões do usuário
-// TODO: Integrar com Supabase para obter dados reais do usuário
 export const useUserPermissions = () => {
-  // Mock - substituir pela integração real com Supabase
-  const currentUser = {
-    id: 'user-123',
-    name: 'Usuário Teste',
-    email: 'usuario@teste.com',
-    role: 'Colaborador' as UserRole, // Alterar conforme necessário para testes
+  const { user } = useAuth();
+
+  const currentUser = user || {
+    id: '',
+    name: 'Visitante',
+    email: '',
+    role: 'Colaborador' as UserRole,
   };
 
   const permissions = useMemo(
@@ -19,7 +20,7 @@ export const useUserPermissions = () => {
 
   const canApproveRDO = (rdoCreatorId: string): boolean => {
     // Não pode aprovar próprio RDO
-    if (rdoCreatorId === currentUser.id) return false;
+    if (!currentUser.id || rdoCreatorId === currentUser.id) return false;
     return permissions.canApproveRDO;
   };
 

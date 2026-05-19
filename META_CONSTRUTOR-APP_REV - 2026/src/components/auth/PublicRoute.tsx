@@ -5,9 +5,10 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 
 interface PublicRouteProps {
     children: React.ReactNode;
+    allowAuthenticated?: boolean;
 }
 
-const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
+const PublicRoute: React.FC<PublicRouteProps> = ({ children, allowAuthenticated = false }) => {
     const { isAuthenticated, loading } = useAuth();
     const location = useLocation();
 
@@ -21,7 +22,7 @@ const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
 
     // Se já está logado e tentando acessar a rota de login ou site institucional,
     // recusa o acesso e redireciona ao interior do sistema
-    if (isAuthenticated) {
+    if (isAuthenticated && !allowAuthenticated) {
         return <Navigate to="/app/dashboard" state={{ from: location }} replace />;
     }
 

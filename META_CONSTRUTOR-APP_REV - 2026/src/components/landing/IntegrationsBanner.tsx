@@ -30,10 +30,10 @@ const IntegrationsBanner = () => {
     <section className="py-10 md:py-14 bg-muted/30 border-y border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
-          <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">
+          <h2 className="text-xl md:text-2xl font-semibold leading-tight text-foreground mb-2">
             Integra com o que sua obra já usa
           </h2>
-          <p className="text-muted-foreground text-sm md:text-base">
+          <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
             Conecte suas ferramentas favoritas e mantenha a segurança em primeiro lugar
           </p>
         </div>
@@ -69,7 +69,7 @@ const IntegrationsBanner = () => {
                 className="flex items-center gap-2 py-2.5 px-4 bg-background border-border hover:bg-muted transition-colors"
               >
                 <seal.icon className={`h-4 w-4 ${seal.color}`} />
-                <span className="font-medium">{seal.text}</span>
+                <span className="font-medium leading-none">{seal.text}</span>
               </Badge>
             ))}
           </div>
@@ -100,10 +100,10 @@ const IntegrationsBanner = () => {
               <Badge
                 key={index}
                 variant="outline"
-                className="flex items-center gap-1.5 sm:gap-2 py-2 px-3 bg-background border-border text-xs"
+                className="flex items-center gap-1.5 sm:gap-2 py-2 px-3 bg-background border-border text-xs leading-none"
               >
                 <seal.icon className={`h-3.5 w-3.5 ${seal.color}`} />
-                <span className="font-medium">{seal.text}</span>
+                <span className="font-medium leading-none">{seal.text}</span>
               </Badge>
             ))}
           </div>

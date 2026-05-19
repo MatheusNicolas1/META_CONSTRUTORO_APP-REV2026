@@ -30,13 +30,13 @@ const InstitutionalTestimonials = () => {
   ];
 
   return (
-    <section className="py-20 bg-muted/30">
+    <section className="py-16 md:py-20 bg-muted/30 overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4 break-words">
             Depoimentos de Líderes do Setor
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto">
             Veja o que nossos parceiros dizem sobre o impacto do MetaConstrutor em suas empresas.
           </p>
         </div>
@@ -71,7 +71,7 @@ const InstitutionalTestimonials = () => {
 
                 {/* Author details */}
                 <div className="min-w-0 flex-1">
-                  <cite className="text-foreground font-semibold not-italic text-sm sm:text-base block mb-1 break-words">
+                  <cite className="text-foreground font-semibold leading-snug not-italic text-sm sm:text-base block mb-1 break-words">
                     {testimonial.author}
                   </cite>
                   <p className="text-xs sm:text-sm text-muted-foreground mb-1 break-words leading-tight">

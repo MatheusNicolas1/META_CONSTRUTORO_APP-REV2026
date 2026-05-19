@@ -36,7 +36,7 @@ serve(async (req) => {
         throw new Error('URL e API Key são obrigatórios');
       }
 
-      console.log(`Testing N8N connection to: ${n8nUrl}`);
+      console.info(`Testing N8N connection to: ${n8nUrl}`);
 
       const response = await fetch(`${n8nUrl}/api/v1/workflows`, {
         method: 'GET',

@@ -22,8 +22,8 @@ const CaseStudies = () => {
         { metric: '+28%', label: 'produtividade' },
         { metric: '1,2h', label: 'poupadas/dia' }
       ],
-      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop&auto=format&q=80',
-      alt: 'Case Construtora Horizonte - Edifício residencial'
+      image: '/prints-publicitarios/2026-05-06/15-obra-detalhes.png',
+      alt: 'Tela de detalhes da obra no MetaConstrutor'
     },
     {
       sector: 'Comercial', 
@@ -36,8 +36,8 @@ const CaseStudies = () => {
         { metric: '+40%', label: 'precisão' },
         { metric: '2,5h', label: 'economia/dia' }
       ],
-      image: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800&h=600&fit=crop&auto=format&q=80',
-      alt: 'Case Engenharia Silva - Complexo comercial'
+      image: '/prints-publicitarios/2026-05-06/04-rdo-visualizar.png',
+      alt: 'Tela de RDO digital do MetaConstrutor'
     },
     {
       sector: 'Industrial',
@@ -50,72 +50,62 @@ const CaseStudies = () => {
         { metric: '+45%', label: 'qualidade' },
         { metric: '3,1h', label: 'ganho semanal' }
       ],
-      image: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&h=600&fit=crop&auto=format&q=80',
-      alt: 'Case Incorporadora Moderna - Complexo industrial'
+      image: '/prints-publicitarios/2026-05-06/06-checklist.png',
+      alt: 'Tela de checklists de qualidade e seguranca do MetaConstrutor'
     }
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-muted/30">
+    <section className="py-12 md:py-20 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4">
             Resultados reais
           </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-3xl mx-auto">
             Conheça empresas que transformaram sua gestão com o MetaConstrutor e 
             alcançaram resultados extraordinários em diferentes segmentos.
           </p>
         </div>
 
         {/* Cases Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12 px-2 sm:px-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12 px-2 sm:px-0">
           {cases.map((case_item, index) => (
-            <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-border bg-card overflow-hidden">
-              <CardContent className="p-0">
+            <Card key={index} className="group h-full hover:shadow-xl transition-all duration-300 border-border bg-card overflow-hidden">
+              <CardContent className="flex h-full flex-col p-0">
                 {/* Image */}
-                <div className="relative aspect-[16/9] overflow-hidden">
-                  <picture>
-                    <source 
-                      srcSet={`${case_item.image}?format=avif&w=400 400w, ${case_item.image}?format=avif&w=800 800w`}
-                      type="image/avif"
-                    />
-                    <source 
-                      srcSet={`${case_item.image}?format=webp&w=400 400w, ${case_item.image}?format=webp&w=800 800w`}
-                      type="image/webp"
-                    />
-                    <img
-                      src={case_item.image}
-                      alt={case_item.alt}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
-                      decoding="async"
-                      width="400"
-                      height="225"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
-                    />
-                  </picture>
+                <div className="relative aspect-[16/10] overflow-hidden bg-[#06111f] p-2">
+                  <img
+                    src={case_item.image}
+                    alt={case_item.alt}
+                    className="h-full w-full rounded-md object-contain object-top group-hover:scale-[1.03] transition-transform duration-300"
+                    loading="lazy"
+                    decoding="async"
+                    width="1280"
+                    height="720"
+                    sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 1024px) 50vw, 400px"
+                  />
                   
                   {/* Overlay gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
                   
                   {/* Sector badge */}
                   <div className="absolute top-4 left-4">
-                    <Badge className="bg-primary text-primary-foreground">
+                    <Badge className="bg-primary text-primary-foreground text-xs font-medium leading-none">
                       {case_item.sector}
                     </Badge>
                   </div>
                 </div>
 
                 {/* Content */}
-                <div className="p-6">
+                <div className="flex flex-1 flex-col p-5 sm:p-6">
                   {/* Company and location */}
                   <div className="mb-4">
-                    <h3 className="text-lg font-bold text-foreground mb-1">
+                    <h3 className="text-lg font-semibold leading-snug text-foreground mb-1">
                       {case_item.company}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm leading-relaxed text-muted-foreground">
                       {case_item.location}
                     </p>
                   </div>
@@ -123,19 +113,19 @@ const CaseStudies = () => {
                   {/* Problem → Solution */}
                   <div className="mb-6 space-y-3">
                     <div>
-                      <div className="text-xs font-medium text-red-600 dark:text-red-400 mb-1">
+                      <div className="text-xs font-medium leading-none text-red-600 dark:text-red-400 mb-1">
                         PROBLEMA
                       </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
+                      <p className="text-sm leading-relaxed text-muted-foreground line-clamp-2">
                         {case_item.problem}
                       </p>
                     </div>
                     
                     <div>
-                      <div className="text-xs font-medium text-green-600 dark:text-green-400 mb-1">
+                      <div className="text-xs font-medium leading-none text-green-600 dark:text-green-400 mb-1">
                         SOLUÇÃO
                       </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
+                      <p className="text-sm leading-relaxed text-muted-foreground line-clamp-2">
                         {case_item.solution}
                       </p>
                     </div>
@@ -143,14 +133,14 @@ const CaseStudies = () => {
 
                   {/* Impact KPIs */}
                   <div className="mb-6">
-                    <div className="text-xs font-medium text-primary mb-2">
+                    <div className="text-xs font-medium leading-none text-primary mb-2">
                       IMPACTO
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {case_item.impact.map((kpi, kpiIndex) => (
-                        <div key={kpiIndex} className="flex items-center gap-1 text-xs">
+                        <div key={kpiIndex} className="flex items-center gap-1 text-xs leading-none">
                           <TrendingUp className="h-3 w-3 text-green-500" />
-                          <span className="font-bold text-foreground">{kpi.metric}</span>
+                          <span className="font-semibold text-foreground">{kpi.metric}</span>
                           <span className="text-muted-foreground">{kpi.label}</span>
                           {kpiIndex < case_item.impact.length - 1 && (
                             <span className="text-muted-foreground ml-1">•</span>
@@ -164,10 +154,10 @@ const CaseStudies = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="w-full justify-between hover:bg-primary/10 text-primary hover:text-primary group/btn"
+                    className="mt-auto w-full justify-between hover:bg-primary/10 text-primary hover:text-primary group/btn"
                     onClick={() => navigate(`/case-${case_item.company.toLowerCase().replace(/\s+/g, '-')}`)}
                   >
-                    <span className="text-sm font-medium">Ver estudo de caso</span>
+                    <span className="text-sm font-medium leading-none">Ver estudo de caso</span>
                     <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                   </Button>
                 </div>
@@ -180,12 +170,12 @@ const CaseStudies = () => {
         <div className="text-center">
           <Button 
             size="lg" 
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-xl"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-semibold leading-none rounded-xl"
             onClick={() => navigate('/login')}
           >
             Começar Gratuitamente
           </Button>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="text-sm leading-relaxed text-muted-foreground mt-2">
             Sem cartão de crédito • Teste grátis por 14 dias
           </p>
         </div>

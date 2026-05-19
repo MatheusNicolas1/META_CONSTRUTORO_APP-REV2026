@@ -15,10 +15,14 @@ import {
     clearActiveOrgIdLocal,
 } from '@/helpers/storage';
 
+const PRD5_SHARED_ORG_ID = 'a7f50485-4351-4ffa-a1a4-3a065ace213e';
+
+type OrgRole = 'Presidente' | 'Administrador' | 'Gerente' | 'Colaborador';
+
 interface OrgContextValue {
     orgs: Org[];
     activeOrgId: string | null;
-    activeRole: 'Administrador' | 'Gerente' | 'Colaborador' | null;
+    activeRole: OrgRole | null;
     setActiveOrgId: (orgId: string) => void;
     isLoading: boolean;
 }
@@ -37,7 +41,7 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
     const [orgs, setOrgs] = useState<Org[]>([]);
     const [memberships, setMemberships] = useState<OrgMembership[]>([]);
     const [activeOrgId, setActiveOrgIdState] = useState<string | null>(null);
-    const [activeRole, setActiveRole] = useState<'Administrador' | 'Gerente' | 'Colaborador' | null>(null);
+    const [activeRole, setActiveRole] = useState<OrgRole | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     // Refs for stability and deduplication
@@ -87,10 +91,6 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
             const controller = new AbortController();
             abortControllerRef.current = controller;
 
-            // Simple lock to avoid weird react strict mode races if not aborted correctly
-            if (inFlightRef.current) {
-                // console.log("[OrgContext] Fetch already in flight, but aborting previous.");
-            }
             inFlightRef.current = true;
 
             try {
@@ -100,6 +100,7 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
                 const { data: membershipsData, error: membershipsError } = await supabase
                     .from('org_members' as any)
                     .select('org_id, role, status, orgs:org_id (id, name, slug, owner_user_id)')
+                    .eq('user_id', currentUserId)
                     .eq('status', 'active')
                     .order('id', { ascending: true });
 
@@ -132,7 +133,10 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
                     // Choose active org
                     const saved = getActiveOrgIdLocal();
                     const validSaved = fallbackMemberships.find((m) => m.org_id === saved);
-                    const chosenOrgId = validSaved ? validSaved.org_id : fallbackMemberships[0].org_id;
+                    const prd5Shared = currentUserId && user?.email?.startsWith('homolog.prd5.')
+                        ? fallbackMemberships.find((m) => m.org_id === PRD5_SHARED_ORG_ID)
+                        : undefined;
+                    const chosenOrgId = prd5Shared?.org_id || validSaved?.org_id || fallbackMemberships[0].org_id;
 
                     if (mountedRef.current) {
                         setActiveOrgIdState(chosenOrgId);
@@ -178,9 +182,15 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
                 const saved = getActiveOrgIdLocal();
                 const validSaved = cleanMemberships.find((m) => m.org_id === saved);
 
-                const chosenOrgId = validSaved
-                    ? validSaved.org_id
-                    : cleanMemberships[0].org_id;
+                const prd5Shared = currentUserId && user?.email?.startsWith('homolog.prd5.')
+                    ? cleanMemberships.find((m) => m.org_id === PRD5_SHARED_ORG_ID)
+                    : undefined;
+
+                const chosenOrgId = prd5Shared
+                    ? prd5Shared.org_id
+                    : validSaved
+                        ? validSaved.org_id
+                        : cleanMemberships[0].org_id;
 
                 if (mountedRef.current) {
                     setActiveOrgIdState(chosenOrgId);
@@ -249,7 +259,6 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
 
         // Cache Isolation: Remove all queries from previous org context
         if (activeOrgId !== orgId) {
-            console.log(`[OrgContext] Switching Org ${activeOrgId} -> ${orgId}. Clearing Cache.`);
             queryClient.removeQueries();
         }
 

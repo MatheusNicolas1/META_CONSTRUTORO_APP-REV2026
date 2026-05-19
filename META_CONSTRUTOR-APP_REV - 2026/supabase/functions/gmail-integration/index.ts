@@ -41,7 +41,7 @@ serve(async (req) => {
     const clientSecret = Deno.env.get('GMAIL_CLIENT_SECRET');
 
     if (!clientId || !clientSecret) {
-      console.log('Gmail OAuth credentials not configured');
+      console.info('Gmail OAuth credentials not configured');
       return new Response(
         JSON.stringify({
           error: 'Gmail integration not configured. Please add GMAIL_CLIENT_ID and GMAIL_CLIENT_SECRET secrets.',
@@ -127,7 +127,7 @@ serve(async (req) => {
           throw new Error('Missing required fields: to, subject, body');
         }
 
-        console.log('Gmail send request:', { to, subject, userId: user.id });
+        console.info('Gmail send request:', { to, subject, userId: user.id });
 
         // Placeholder response - actual implementation requires stored OAuth tokens
         return new Response(

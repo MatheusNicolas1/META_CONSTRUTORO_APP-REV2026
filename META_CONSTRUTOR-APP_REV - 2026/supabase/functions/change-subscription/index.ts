@@ -1,8 +1,8 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
-import { corsHeaders } from "../_shared/cors.ts";
-import { createScopedClient } from "../_shared/supabase-client.ts";
+import { getCorsHeaders } from "../_shared/cors.ts";
+import { createAdminClient, createScopedClient } from "../_shared/supabase-client.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
     apiVersion: "2023-10-16",
@@ -10,12 +10,15 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
 });
 
 serve(async (req) => {
+    const corsHeaders = getCorsHeaders(req);
+
     if (req.method === "OPTIONS") {
         return new Response("ok", { headers: corsHeaders });
     }
 
     try {
         const supabaseClient = createScopedClient(req);
+        const supabaseAdmin = createAdminClient();
 
         const {
             data: { user },
@@ -31,23 +34,35 @@ serve(async (req) => {
             throw new Error("New Price ID is required");
         }
 
-        // Get current subscription
-        const { data: subscriptionData } = await supabaseClient
-            .from("subscriptions")
-            .select("stripe_subscription_id")
+        const { data: orgMember } = await supabaseAdmin
+            .from("org_members")
+            .select("org_id")
             .eq("user_id", user.id)
             .eq("status", "active")
-            .single();
+            .in("role", ["Presidente", "Administrador"])
+            .order("created_at", { ascending: true })
+            .limit(1)
+            .maybeSingle();
+
+        if (!orgMember?.org_id) throw new Error("Organization not found for user");
+
+        // Get current subscription
+        const { data: subscriptionData } = await supabaseAdmin
+            .from("subscriptions")
+            .select("stripe_subscription_id")
+            .eq("org_id", orgMember.org_id)
+            .in("status", ["active", "trialing", "past_due"])
+            .maybeSingle();
 
         // Fallback to checking profile if not found in subscriptions table
         let subscriptionId = subscriptionData?.stripe_subscription_id;
 
         if (!subscriptionId) {
-            const { data: profile } = await supabaseClient
+            const { data: profile } = await supabaseAdmin
                 .from("profiles")
                 .select("stripe_subscription_id")
                 .eq("id", user.id)
-                .single();
+                .maybeSingle();
             subscriptionId = profile?.stripe_subscription_id;
         }
 

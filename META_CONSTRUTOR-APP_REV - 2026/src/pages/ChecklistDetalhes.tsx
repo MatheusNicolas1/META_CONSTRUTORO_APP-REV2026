@@ -36,13 +36,14 @@ import { useChecklist } from "@/hooks/useChecklist";
 const ChecklistDetalhes = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { useChecklistDetail, updateChecklistItem } = useChecklist();
+  const { useChecklistDetail, updateChecklistItem, uploadChecklistItemAttachment } = useChecklist();
 
   const { data: checklist, isLoading, error } = useChecklistDetail(id || "");
 
   const [isSaving, setSaving] = useState(false);
   const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false);
   const [emailRecipients, setEmailRecipients] = useState("");
+  const [uploadingItemId, setUploadingItemId] = useState<string | null>(null);
 
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
@@ -103,6 +104,27 @@ const ChecklistDetalhes = () => {
       toastEnhanced.success("Salvo", "Observação atualizada.");
     } catch (error) {
       console.error("Failed to update observation", error);
+    }
+  };
+
+  const handleFileUpload = async (itemId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !checklist) return;
+
+    setUploadingItemId(itemId);
+    try {
+      await uploadChecklistItemAttachment.mutateAsync({
+        itemId,
+        file,
+        checklistId: checklist.id
+      });
+    } catch (error) {
+      console.error("Erro ao fazer upload da evidência", error);
+    } finally {
+      setUploadingItemId(null);
+      if (event.target) {
+        event.target.value = '';
+      }
     }
   };
 
@@ -171,7 +193,7 @@ const ChecklistDetalhes = () => {
             <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">Checklist não encontrado</h3>
             <p className="text-muted-foreground mb-4">O checklist solicitado não foi encontrado ou ocorreu um erro.</p>
-            <Button onClick={() => NavigationSafety.safeNavigate(navigate, '/checklist')}>
+            <Button onClick={() => NavigationSafety.safeNavigate(navigate, '/app/checklist')}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Voltar para Checklists
             </Button>
@@ -186,7 +208,7 @@ const ChecklistDetalhes = () => {
       {/* Header */}
       <div className="flex flex-col gap-4 mb-6 print:mb-4 print-hidden">
         <div className="flex items-center justify-between">
-          <Button variant="outline" onClick={() => NavigationSafety.safeNavigate(navigate, '/checklist')}>
+          <Button variant="outline" onClick={() => NavigationSafety.safeNavigate(navigate, '/app/checklist')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Voltar
           </Button>
@@ -374,18 +396,42 @@ const ChecklistDetalhes = () => {
                   <div className="print-hidden">
                     <Label className="text-sm font-medium flex items-center gap-2">
                       <Paperclip className="h-4 w-4" />
-                      Evidências
+                      Evidências (Requerido)
                     </Label>
                     <div className="mt-2 p-4 border-2 border-dashed border-muted-foreground/25 rounded-lg">
                       <div className="text-center">
                         <Camera className="h-8 w-8 mx-auto text-muted-foreground/50 mb-2" />
-                        <p className="text-sm text-muted-foreground mb-2">
+                        <p className="text-sm text-muted-foreground mb-4">
                           Adicione fotos ou documentos como evidência
                         </p>
-                        <Button variant="outline" size="sm">
-                          <Camera className="h-4 w-4 mr-2" />
-                          Adicionar Evidência
+
+                        {item.attachments && item.attachments.length > 0 && (
+                          <div className="flex flex-col gap-2 mb-4">
+                            {item.attachments.map((att, idx) => (
+                              <div key={idx} className="flex items-center justify-between bg-muted/50 p-2 rounded">
+                                <span className="text-sm truncate">{att.name || 'Anexo'}</span>
+                                <Badge variant="outline" className="text-xs">Salvo</Badge>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => document.getElementById(`upload-${item.id}`)?.click()}
+                          disabled={uploadingItemId === item.id}
+                        >
+                          {uploadingItemId === item.id ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Camera className="h-4 w-4 mr-2" />}
+                          {uploadingItemId === item.id ? "Enviando..." : "Adicionar Evidência"}
                         </Button>
+                        <input
+                          type="file"
+                          id={`upload-${item.id}`}
+                          className="hidden"
+                          accept="image/*,.pdf,.doc,.docx"
+                          onChange={(e) => handleFileUpload(item.id, e)}
+                        />
                       </div>
                     </div>
                   </div>

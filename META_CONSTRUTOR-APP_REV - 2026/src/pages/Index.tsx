@@ -18,7 +18,7 @@ const Home = () => {
       <SEO
         title="MetaConstrutor - Gestão Inteligente de Obras | Plataforma Completa"
         description="Plataforma completa para gestão de obras, RDO digital, controle de equipes e relatórios inteligentes. Aumente sua produtividade em até 40% e reduza retrabalhos."
-        canonical="https://metaconstrutor.com.br/"
+        canonical="https://metaconstrutor.com.br/home"
       />
 
       <LandingNavigation />

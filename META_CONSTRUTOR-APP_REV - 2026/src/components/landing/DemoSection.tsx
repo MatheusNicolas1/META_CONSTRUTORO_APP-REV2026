@@ -58,7 +58,7 @@ const DemoSection = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-muted/30">
+    <section className="py-12 md:py-20 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
@@ -163,7 +163,7 @@ const DemoSection = () => {
         </div>
 
         {/* CTA */}
-        <div className="text-center mt-12">
+        <div className="text-center mt-8 sm:mt-10">
           <Button 
             size="lg"
             className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-xl"
@@ -179,9 +179,6 @@ const DemoSection = () => {
             <Play className="mr-2 h-5 w-5" />
             Experimente Agora Grátis
           </Button>
-          <p className="text-sm text-muted-foreground mt-2">
-            Teste gratuito por 14 dias • Sem cartão de crédito
-          </p>
         </div>
       </div>
     </section>

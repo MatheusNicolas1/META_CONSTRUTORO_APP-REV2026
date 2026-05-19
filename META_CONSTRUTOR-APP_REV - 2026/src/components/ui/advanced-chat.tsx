@@ -55,7 +55,7 @@ export function AdvancedChat({ onClose }: AdvancedChatProps) {
     }
 
     if (lowerMessage.includes("relatório") || lowerMessage.includes("relatorio")) {
-      return "O sistema oferece vários tipos de relatórios: progresso de obras, produtividade, custos e análises personalizadas. Todos podem ser exportados em PDF ou Excel. Qual tipo específico você precisa?";
+      return "O sistema oferece vários tipos de relatórios: progresso de obras, produtividade, custos e análises personalizadas. Todos podem ser exportados em PDF. Qual tipo específico você precisa?";
     }
 
     return "Entendi sua dúvida. Para questões mais específicas, recomendo consultar nossa seção de FAQ ou entrar em contato com nossa equipe de suporte técnico. Posso ajudar com informações gerais sobre o sistema. O que mais você gostaria de saber?";

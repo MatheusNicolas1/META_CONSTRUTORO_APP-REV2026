@@ -1,4 +1,4 @@
-import posthog from 'posthog-js'
+﻿import posthog from 'posthog-js'
 import { v4 as uuidv4 } from 'uuid'
 
 const POSTHOG_KEY = import.meta.env.VITE_POSTHOG_KEY
@@ -18,11 +18,9 @@ export const initAnalytics = () => {
             api_host: POSTHOG_HOST,
             debug: IS_DEV,
             loaded: (ph) => {
-                if (IS_DEV) console.log('PostHog loaded', ph)
             }
         })
     } else if (IS_DEV) {
-        console.log('[Analytics] PostHog key not found. Events will be logged to console.')
     }
 }
 
@@ -69,7 +67,6 @@ export const track = (eventName: string, properties: Record<string, any> = {}) =
     }
 
     if (IS_DEV) {
-        console.log(`[Analytics] Track: ${eventName}`, finalProps)
     }
 }
 

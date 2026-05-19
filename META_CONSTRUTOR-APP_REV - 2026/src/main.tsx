@@ -1,46 +1,28 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import * as Sentry from "@sentry/react"
-import App from './App.tsx'
-import './index.css'
-import './lib/i18n'; // Import directly to execute side-effects
-import { initAnalytics } from './integrations/analytics'
+const isSupabaseAuthFetchNoise = (error: unknown) => {
+  const candidate = error as { message?: unknown; stack?: unknown };
+  const message = typeof candidate?.message === 'string' ? candidate.message : String(error ?? '');
+  const stack = typeof candidate?.stack === 'string' ? candidate.stack : String(error ?? '');
+  return message.includes('Failed to fetch') && stack.includes('_getUser');
+};
 
-// Initialize Analytics (M9)
-initAnalytics()
+const originalConsoleError = console.error.bind(console);
+console.error = (...args: unknown[]) => {
+  if (args.some(isSupabaseAuthFetchNoise)) {
+    return;
+  }
+  originalConsoleError(...args);
+};
 
-console.log('Main.tsx loaded - Cache Buster FINAL');
+window.addEventListener('unhandledrejection', (event) => {
+  if (isSupabaseAuthFetchNoise(event.reason)) {
+    event.preventDefault();
+  }
+});
 
-// Basic QueryClient for the root. 
-// Note: PerformanceOptimizedApp creates its own client with specific config, which will override this for its children.
-// This one ensures App wrapper has a context if needed.
-const queryClient = new QueryClient();
+window.addEventListener('error', (event) => {
+  if (isSupabaseAuthFetchNoise(event.error)) {
+    event.preventDefault();
+  }
+});
 
-// Inicialização do Sentry (Monitoramento)
-// Só ativa se DSN estiver presente (produção ou dev com env configurada)
-if (import.meta.env.VITE_SENTRY_DSN) {
-  Sentry.init({
-    dsn: import.meta.env.VITE_SENTRY_DSN,
-    integrations: [
-      Sentry.browserTracingIntegration(),
-      Sentry.replayIntegration(),
-    ],
-    // Performance Monitoring
-    tracesSampleRate: 0.1, // Capture 10% of the transactions
-    // Session Replay
-    replaysSessionSampleRate: 0.1,
-    replaysOnErrorSampleRate: 1.0,
-    release: import.meta.env.VITE_APP_VERSION, // Release tracking
-    environment: import.meta.env.MODE,
-  });
-}
-
-// Render da aplicação com StrictMode
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  </StrictMode>
-);
+void import('./bootstrap');

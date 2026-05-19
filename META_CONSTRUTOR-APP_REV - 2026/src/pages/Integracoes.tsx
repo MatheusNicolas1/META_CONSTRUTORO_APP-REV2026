@@ -12,14 +12,14 @@ import { IntegrationDashboard } from "@/components/integrations/IntegrationDashb
 import { useIntegrations } from "@/hooks/useIntegrations";
 import { IntegrationHelpers } from "@/utils/integrationHelpers";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  Settings, 
-  Zap, 
-  Cloud, 
-  Database, 
-  CreditCard, 
-  Calendar, 
-  FileText, 
+import {
+  Settings,
+  Zap,
+  Cloud,
+  Database,
+  CreditCard,
+  Calendar,
+  FileText,
   Mail,
   Smartphone,
   Users,
@@ -47,7 +47,9 @@ const Integracoes = () => {
     saveGoogleDriveConfig,
     testGoogleDriveConfig,
     connectGoogleDriveOAuth,
-    loadLogs
+    loadLogs,
+    statuses,
+    exportLogs
   } = useIntegrations();
 
   // Serviços disponíveis conforme blueprint
@@ -66,7 +68,7 @@ const Integracoes = () => {
     {
       id: 'gmail',
       nome: "Gmail",
-      categoria: "E-mail", 
+      categoria: "E-mail",
       descricao: "Relatórios de andamento, confirmações e alertas por e-mail",
       icon: Mail,
       conectado: false,
@@ -124,9 +126,19 @@ const Integracoes = () => {
   const [selectedCategoria, setSelectedCategoria] = useState("Todas");
   const [selectedIntegration, setSelectedIntegration] = useState<string | null>(null);
 
-  const filteredIntegracoes = selectedCategoria === "Todas" 
-    ? integracoes 
-    : integracoes.filter(i => i.categoria === selectedCategoria);
+  const enrichedIntegracoes = integracoes.map((integracao) => {
+    const saved = integrations.find((item) => item.id === integracao.id);
+    return {
+      ...integracao,
+      conectado: saved?.status === "connected",
+      config: saved?.configuration,
+      statusInfo: statuses[integracao.id],
+    };
+  });
+
+  const filteredIntegracoes = selectedCategoria === "Todas"
+    ? enrichedIntegracoes
+    : enrichedIntegracoes.filter(i => i.categoria === selectedCategoria);
 
   const sortedIntegracoes = filteredIntegracoes.sort((a, b) => a.priority - b.priority);
 
@@ -138,7 +150,7 @@ const Integracoes = () => {
       });
 
       const result = await IntegrationHelpers.testIntegrationChain();
-      
+
       toast({
         title: result.success ? "Teste concluído" : "Falha no teste",
         description: result.success ? result.message : result.error,
@@ -226,7 +238,7 @@ const Integracoes = () => {
                   <CardDescription className="text-sm text-muted-foreground">
                     {integracao.descricao}
                   </CardDescription>
-                  
+
                   {/* Fluxos suportados */}
                   <div>
                     <p className="text-xs font-medium text-muted-foreground mb-2">Fluxos suportados:</p>
@@ -242,8 +254,8 @@ const Integracoes = () => {
                   {/* Botão de ação */}
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button 
-                        className="w-full" 
+                      <Button
+                        className="w-full"
                         variant={integracao.conectado ? "outline" : "default"}
                         onClick={() => setSelectedIntegration(integracao.id)}
                       >
@@ -270,22 +282,28 @@ const Integracoes = () => {
                           Configure as credenciais e permissões para {integracao.nome}
                         </DialogDescription>
                       </DialogHeader>
-                      
+
                       {/* Renderizar componente de configuração específico */}
                       {selectedIntegration === 'n8n' && (
                         <N8NConfigCard
+                          config={integracao.config as any}
+                          status={integracao.statusInfo}
                           onSave={saveN8NConfig}
                           onTest={testN8NConfig}
                         />
                       )}
                       {selectedIntegration === 'whatsapp' && (
                         <WhatsAppConfigCard
+                          config={integracao.config as any}
+                          status={integracao.statusInfo}
                           onSave={saveWhatsAppConfig}
                           onTest={testWhatsAppConfig}
                         />
                       )}
                       {selectedIntegration === 'gmail' && (
                         <GmailConfigCard
+                          config={integracao.config as any}
+                          status={integracao.statusInfo}
                           onSave={saveGmailConfig}
                           onTest={testGmailConfig}
                           onOAuthConnect={connectGmailOAuth}
@@ -293,6 +311,8 @@ const Integracoes = () => {
                       )}
                       {selectedIntegration === 'googledrive' && (
                         <GoogleDriveConfigCard
+                          config={integracao.config as any}
+                          status={integracao.statusInfo}
                           onSave={saveGoogleDriveConfig}
                           onTest={testGoogleDriveConfig}
                           onOAuthConnect={connectGoogleDriveOAuth}
@@ -300,20 +320,21 @@ const Integracoes = () => {
                       )}
                       {selectedIntegration && !['n8n', 'whatsapp', 'gmail', 'googledrive'].includes(selectedIntegration) && (
                         <Card className="p-6">
-                          <div className="text-center space-y-4">
-                            <div className="mx-auto w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-3">
                               <integracao.icon className={`h-8 w-8 ${integracao.color}`} />
+                              <div>
+                                <h3 className="font-semibold text-lg">{integracao.nome}</h3>
+                                <p className="text-muted-foreground">{integracao.descricao}</p>
+                              </div>
                             </div>
-                            <div>
-                              <h3 className="font-semibold text-lg">{integracao.nome}</h3>
-                              <p className="text-muted-foreground">{integracao.descricao}</p>
+                            <div className="p-4 bg-muted rounded-lg text-sm text-muted-foreground">
+                              Configure este fluxo pela integracao N8N Automation usando os eventos da aba Blueprint. As credenciais e execucoes ficam salvas na tabela integrations da organizacao.
                             </div>
-                            <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                              <p className="text-sm text-blue-700 dark:text-blue-300">
-                                🚧 <strong>Em desenvolvimento</strong><br />
-                                Esta integração será disponibilizada em breve. Todas as credenciais serão salvas de forma segura e criptografada.
-                              </p>
-                            </div>
+                            <Button onClick={() => setSelectedIntegration('n8n')} className="gradient-construction border-0">
+                              <Settings className="h-4 w-4 mr-2" />
+                              Configurar via N8N
+                            </Button>
                           </div>
                         </Card>
                       )}
@@ -326,9 +347,10 @@ const Integracoes = () => {
         </TabsContent>
 
         <TabsContent value="dashboard">
-          <IntegrationDashboard 
+          <IntegrationDashboard
             logs={logs}
             onRefresh={loadLogs}
+            statuses={Object.values(statuses)}
           />
         </TabsContent>
 

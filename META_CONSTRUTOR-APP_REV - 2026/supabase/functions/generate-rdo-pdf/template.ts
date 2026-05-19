@@ -15,6 +15,11 @@ export const rdoTemplateHtml =
         @page {
             size: A4;
             margin: 15mm; /* Margens ajustadas para 1.5cm */
+            @bottom-right {
+                content: "P\\00C1GINA " counter(page) " DE " counter(pages) " | GERADO EM {{rdo.data_geracao}}";
+                font-size: 7pt;
+                color: #777;
+            }
         }
 
         body {
@@ -424,7 +429,7 @@ export const rdoTemplateHtml =
             <div class="header-right">
                 <div class="header-info"><span class="header-info-label">RDO Nº:</span> {{rdo.numero}}</div>
                 <div class="header-info"><span class="header-info-label">Código da Obra:</span> {{obra.codigo}}</div>
-                <div class="header-info"><span class="header-info-label">Data de Emissão:</span> 15/03/2024</div>
+                <div class="header-info"><span class="header-info-label">Data de Emissão:</span> {{rdo.data_emissao}}</div>
             </div>
         </div>
 
@@ -623,8 +628,8 @@ export const rdoTemplateHtml =
             </div>
         </div>
 
-        <div style="text-align: center; margin-top: 20px; font-size: 7pt; color: #999; border-top: 1px solid #ddd; padding-top: 10px;">
-            <p>Página <span class="page-number"></span> de <span class="total-pages"></span> | Gerado em {{rdo.data_geracao}}</p>
+        <div style="display: none; text-align: center; margin-top: 20px; font-size: 7pt; color: #999; border-top: 1px solid #ddd; padding-top: 10px;">
+            <p>P&Aacute;GINA <span class="page-number"></span> DE <span class="total-pages"></span> | GERADO EM {{rdo.data_geracao}}</p>
         </div>
     </div>
 </body>

@@ -15,13 +15,13 @@ const Obras = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { obras, isLoading } = useObras();
+  const { obras, isLoading, error, refetch } = useObras();
   const { obra: obraPerms, isLoading: isPermsLoading } = usePermissions();
 
   const filteredObras = obras.filter(obra =>
-    obra.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    obra.localizacao.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    obra.responsavel.toLowerCase().includes(searchTerm.toLowerCase())
+    String(obra.nome || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    String(obra.localizacao || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    String(obra.responsavel || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getStatusColor = (status: string) => {
@@ -52,6 +52,23 @@ const Obras = () => {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="responsive-spacing">
+        <Alert variant="destructive" className="bg-destructive/10 border-destructive/20 text-destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Erro ao carregar obras</AlertTitle>
+          <AlertDescription className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <span>Não foi possível carregar as obras. Verifique sua conexão e tente novamente.</span>
+            <Button size="sm" variant="outline" onClick={() => refetch()}>
+              Tentar novamente
+            </Button>
+          </AlertDescription>
+        </Alert>
       </div>
     );
   }
@@ -111,10 +128,10 @@ const Obras = () => {
             <ObraExpandableCard
               key={obra.id}
               id={obra.id}
-              nome={obra.nome}
-              localizacao={obra.localizacao}
-              responsavel={obra.responsavel}
-              cliente={obra.cliente}
+              nome={obra.nome || "Obra sem nome"}
+              localizacao={obra.localizacao || "Localização não informada"}
+              responsavel={obra.responsavel || "Responsável não informado"}
+              cliente={obra.cliente || "Cliente não informado"}
               tipo={obra.tipo || "Não especificado"}
               progresso={obra.progresso || 0}
               dataInicio={obra.data_inicio}

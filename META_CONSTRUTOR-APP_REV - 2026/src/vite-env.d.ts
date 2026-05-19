@@ -9,6 +9,7 @@ interface ImportMetaEnv {
     readonly VITE_POSTHOG_KEY: string
     readonly VITE_POSTHOG_HOST: string
     readonly VITE_STRIPE_PUBLISHABLE_KEY: string
+    readonly VITE_ENABLE_ACTIVITY_REALTIME?: string
     readonly MODE: string
     readonly BASE_URL: string
     readonly PROD: boolean

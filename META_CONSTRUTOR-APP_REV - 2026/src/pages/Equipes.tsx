@@ -13,20 +13,20 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
+const emptyFormData = { nome: "", funcao: "", telefone: "", email: "" };
+
 const Equipes = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const { equipe: equipePerms, isLoading: isPermsLoading } = usePermissions();
 
-  const [formData, setFormData] = useState({
-    nome: "",
-    funcao: "",
-    telefone: "",
-    email: "",
-  });
+  const [formData, setFormData] = useState(emptyFormData);
+  const [editFormData, setEditFormData] = useState(emptyFormData);
 
-  const { equipes, isLoading, createEquipe, deleteEquipe } = useEquipesSupabase();
+  const { equipes, isLoading, createEquipe, updateEquipe, deleteEquipe } = useEquipesSupabase();
 
   const [funcoesDisponiveis] = useState([
     "Engenheiro Civil",
@@ -44,7 +44,31 @@ const Equipes = () => {
   );
 
   const handleEditMembro = (membro: any) => {
-    console.log("Editando membro:", membro);
+    setEditingId(membro.id);
+    setEditFormData({
+      nome: membro.nome || "",
+      funcao: membro.funcao || "",
+      telefone: membro.telefone || "",
+      email: membro.email || "",
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleEditSubmit = () => {
+    if (!editingId || !editFormData.nome || !editFormData.funcao) return;
+    updateEquipe.mutate({
+      id: editingId,
+      nome: editFormData.nome,
+      funcao: editFormData.funcao,
+      telefone: editFormData.telefone || undefined,
+      email: editFormData.email || undefined,
+    }, {
+      onSuccess: () => {
+        setEditFormData(emptyFormData);
+        setEditingId(null);
+        setIsEditDialogOpen(false);
+      }
+    });
   };
 
   const handleDeleteMembro = (id: number | string) => {
@@ -231,6 +255,42 @@ const Equipes = () => {
           </div>
         )}
       </div>
+
+      {/* Modal de Edição */}
+      <Dialog open={isEditDialogOpen} onOpenChange={(open) => { setIsEditDialogOpen(open); if (!open) { setEditingId(null); setEditFormData(emptyFormData); } }}>
+        <DialogContent className="sm:max-w-[500px] bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="text-card-foreground">Editar Colaborador</DialogTitle>
+            <DialogDescription>Atualize os dados do colaborador</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-nome">Nome Completo *</Label>
+              <Input id="edit-nome" value={editFormData.nome} onChange={(e) => setEditFormData(prev => ({ ...prev, nome: e.target.value }))} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-funcao">Função *</Label>
+              <AutocompleteInput value={editFormData.funcao} onValueChange={(value) => setEditFormData(prev => ({ ...prev, funcao: value }))} placeholder="Digite ou selecione uma função" options={funcoesDisponiveis} onAddNewOption={() => { }} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-telefone">Telefone</Label>
+                <Input id="edit-telefone" value={editFormData.telefone} onChange={(e) => setEditFormData(prev => ({ ...prev, telefone: e.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-email">E-mail</Label>
+                <Input id="edit-email" type="email" value={editFormData.email} onChange={(e) => setEditFormData(prev => ({ ...prev, email: e.target.value }))} />
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end space-x-2">
+            <Button variant="outline" onClick={() => { setIsEditDialogOpen(false); setEditingId(null); setEditFormData(emptyFormData); }} disabled={updateEquipe.isPending}>Cancelar</Button>
+            <Button className="gradient-construction border-0" onClick={handleEditSubmit} disabled={updateEquipe.isPending}>
+              {updateEquipe.isPending ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>) : 'Salvar Alterações'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

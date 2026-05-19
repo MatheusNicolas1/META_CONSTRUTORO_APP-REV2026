@@ -220,21 +220,20 @@ const getStoredLogs = (): AuditLogEntry[] => {
 };
 
 const sendToAuditService = async (entry: AuditLogEntry): Promise<void> => {
-  // TODO: Implementar envio para serviço de auditoria externo
-  // Por enquanto, apenas armazenar localmente
-
-  // Exemplo de integração futura:
-  /*
   try {
-    await fetch('/api/audit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(entry),
+    const { supabase } = await import('@/integrations/supabase/client');
+
+    await supabase.from('audit_logs').insert({
+      user_id: entry.userId || null,
+      action: entry.event,
+      entity: entry.resource || 'system',
+      entity_id: entry.resourceId || null,
+      details: entry.details,
+      created_at: entry.timestamp
     });
   } catch (error) {
-    console.error('Failed to send audit log:', error);
+    console.error('Failed to send audit log to Supabase:', error);
   }
-  */
 };
 
 // API para consulta de logs (para página de segurança)

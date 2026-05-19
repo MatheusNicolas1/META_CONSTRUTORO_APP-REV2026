@@ -81,7 +81,7 @@ const PerfilPublico = () => {
             <p className="text-muted-foreground text-center">
               Este perfil não existe ou não está público.
             </p>
-            <Button onClick={() => navigate("/")}>
+        <Button onClick={() => navigate("/home")}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Voltar ao início
             </Button>
@@ -95,7 +95,7 @@ const PerfilPublico = () => {
     <div className="container mx-auto p-6 max-w-4xl">
       <Button
         variant="ghost"
-        onClick={() => navigate("/")}
+          onClick={() => navigate("/home")}
         className="mb-6"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />

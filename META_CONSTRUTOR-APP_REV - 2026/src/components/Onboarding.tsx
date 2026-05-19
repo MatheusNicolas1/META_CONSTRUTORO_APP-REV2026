@@ -74,11 +74,15 @@ export const Onboarding = ({ forceShow = false, onComplete }: OnboardingProps) =
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        const { data: profile } = await supabase
+        const { data: profile, error } = await supabase
           .from('profiles')
           .select('has_seen_onboarding')
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
+
+        if (error) {
+          return;
+        }
 
         if (profile && !profile.has_seen_onboarding) {
           // Pequeno delay para garantir que a página está totalmente renderizada

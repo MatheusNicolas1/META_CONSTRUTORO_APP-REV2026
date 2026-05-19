@@ -22,8 +22,9 @@ export const useFornecedores = () => {
   const { orgId } = useRequireOrg();
 
   const fornecedoresQuery = useQuery({
-    queryKey: ['fornecedores', userId],
+    queryKey: ['fornecedores', orgId],
     queryFn: async () => {
+      if (!orgId) return [];
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
 
@@ -36,7 +37,7 @@ export const useFornecedores = () => {
       if (error) throw error;
       return data || [];
     },
-    enabled: !!userId,
+    enabled: !!userId && !!orgId,
   });
 
   const createFornecedor = useMutation({
@@ -49,6 +50,7 @@ export const useFornecedores = () => {
         .insert({
           ...fornecedorData,
           user_id: user.id,
+          org_id: orgId,
           ativo: fornecedorData.ativo ?? true,
         })
         .select()
@@ -58,7 +60,7 @@ export const useFornecedores = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['fornecedores'], exact: false });
+      queryClient.invalidateQueries({ queryKey: ['fornecedores', orgId] });
       toast.success('Fornecedor cadastrado com sucesso!');
     },
     onError: (error) => {
@@ -80,7 +82,7 @@ export const useFornecedores = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['fornecedores'], exact: false });
+      queryClient.invalidateQueries({ queryKey: ['fornecedores', orgId] });
       toast.success('Fornecedor atualizado com sucesso!');
     },
     onError: (error) => {
@@ -99,7 +101,7 @@ export const useFornecedores = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['fornecedores'], exact: false });
+      queryClient.invalidateQueries({ queryKey: ['fornecedores', orgId] });
       toast.success('Fornecedor excluído com sucesso!');
     },
     onError: (error) => {

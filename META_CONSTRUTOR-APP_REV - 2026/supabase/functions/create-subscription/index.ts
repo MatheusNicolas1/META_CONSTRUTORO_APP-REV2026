@@ -1,23 +1,12 @@
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import Stripe from 'https://esm.sh/stripe@14.14.0?target=deno'
-import { corsHeaders } from '../_shared/cors.ts'
-import { createScopedClient } from '../_shared/supabase-client.ts'
-
-const getStripe = () => {
-    const key = Deno.env.get('STRIPE_SECRET_KEY');
-    if (!key) {
-        throw new Error('Missing STRIPE_SECRET_KEY');
-    }
-    return new Stripe(key, {
-        apiVersion: '2023-10-16',
-        httpClient: Stripe.createFetchHttpClient(),
-    });
-};
+import { getCorsHeaders } from '../_shared/cors.ts'
+import { createAdminClient, createScopedClient } from '../_shared/supabase-client.ts'
 
 Deno.serve(async (req) => {
     const start = performance.now();
     const requestId = crypto.randomUUID();
+    const corsHeaders = getCorsHeaders(req);
 
     // 1. Handle CORS
     if (req.method === 'OPTIONS') {
@@ -25,7 +14,7 @@ Deno.serve(async (req) => {
     }
 
     try {
-        console.log(`[${requestId}] Request: ${req.method} ${req.url}`);
+        console.info(`[${requestId}] Request: ${req.method} ${req.url}`);
 
         const stripeKey = Deno.env.get('STRIPE_SECRET_KEY');
         if (!stripeKey) {
@@ -47,41 +36,43 @@ Deno.serve(async (req) => {
         const { plan, billing = 'monthly', user_id: bodyUserId, email: bodyEmail } = body;
 
         if (!plan) throw new Error('Plan is required');
+        if (!['monthly', 'yearly'].includes(billing)) throw new Error('Invalid billing cycle');
 
         // 2. Authentication & Context
         const supabaseClient = createScopedClient(req); // Prioritize Auth header
+        const supabaseAdmin = createAdminClient();
 
         // Get User
         let userId = bodyUserId;
         let userEmail = bodyEmail;
 
         const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+        if (authError) throw authError;
         if (user) {
             userId = user.id;
             userEmail = user.email;
         } else if (!userId) {
             throw new Error('Unauthorized: No user found');
         }
+        if (!userEmail) throw new Error('User email not found');
 
         // 3. Get Organization (Critical for B2B/SaaS)
-        // Try to find an organization owned by this user
-        // We assume 1 main org per user for the subscription context for now
-        const { data: orgMember } = await supabaseClient
-            .from('organization_members')
-            .select('organization_id')
+        const { data: orgMember } = await supabaseAdmin
+            .from('org_members')
+            .select('org_id')
             .eq('user_id', userId)
-            .eq('role', 'owner') // Only owners should subscribe? Or at least member
+            .eq('status', 'active')
+            .in('role', ['Presidente', 'Administrador'])
+            .order('created_at', { ascending: true })
             .limit(1)
-            .single();
+            .maybeSingle();
 
-        // If no org found, we might need to create one or handle it. 
-        // For now, let's assume if no org, we use user_id as fallback or fail if org mandatory.
-        // But the previous code didn't handle orgs. We will Add org_id to metadata if matches.
-        const orgId = orgMember?.organization_id;
+        const orgId = orgMember?.org_id;
+        if (!orgId) throw new Error('Organization not found for user');
 
         // 4. Get Price ID from Database
         const priceField = billing === 'monthly' ? 'stripe_price_id_monthly' : 'stripe_price_id_yearly';
-        const { data: planData, error: planError } = await supabaseClient
+        const { data: planData, error: planError } = await supabaseAdmin
             .from('plans')
             .select(`id, ${priceField}`)
             .eq('slug', plan)
@@ -94,16 +85,16 @@ Deno.serve(async (req) => {
         if (!priceId) throw new Error(`Price ID missing for ${plan} (${billing})`);
 
         // 5. Get/Create Stripe Customer
-        const { data: profile } = await supabaseClient
+        const { data: profile } = await supabaseAdmin
             .from('profiles')
             .select('stripe_customer_id')
             .eq('id', userId)
-            .single();
+            .maybeSingle();
 
         let customerId = profile?.stripe_customer_id;
 
         if (!customerId) {
-            console.log(`[${requestId}] Creating new Stripe customer for ${userEmail}`);
+            console.info(`[${requestId}] Creating new Stripe customer for ${userEmail}`);
             const customer = await stripe.customers.create({
                 email: userEmail,
                 metadata: {
@@ -114,7 +105,7 @@ Deno.serve(async (req) => {
             customerId = customer.id;
 
             // Save to profile
-            await supabaseClient
+            await supabaseAdmin
                 .from('profiles')
                 .update({ stripe_customer_id: customerId })
                 .eq('id', userId);
@@ -122,7 +113,7 @@ Deno.serve(async (req) => {
 
         // 6. Create Subscription
         // usage: 'off_session' allows us to charge future payments automatically
-        console.log(`[${requestId}] Creating subscription for customer ${customerId} with price ${priceId}`);
+        console.info(`[${requestId}] Creating subscription for customer ${customerId} with price ${priceId}`);
 
         const subscription = await stripe.subscriptions.create({
             customer: customerId,
@@ -135,7 +126,7 @@ Deno.serve(async (req) => {
             metadata: {
                 request_id: requestId,
                 user_id: userId,
-                org_id: orgId || '', // Store org_id in metadata for webhook
+                org_id: orgId,
                 plan_slug: plan,
                 billing_cycle: billing
             }
@@ -144,7 +135,7 @@ Deno.serve(async (req) => {
         const invoice = subscription.latest_invoice as Stripe.Invoice;
         const paymentIntent = invoice.payment_intent as Stripe.PaymentIntent;
 
-        console.log(`[${requestId}] Subscription created: ${subscription.id}, ClientSecret: ${paymentIntent.client_secret ? 'Generated' : 'Missing'}`);
+        console.info(`[${requestId}] Subscription created: ${subscription.id}, ClientSecret: ${paymentIntent.client_secret ? 'Generated' : 'Missing'}`);
 
         return new Response(
             JSON.stringify({

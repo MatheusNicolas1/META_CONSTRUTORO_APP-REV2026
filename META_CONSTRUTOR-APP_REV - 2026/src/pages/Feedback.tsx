@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MessageSquarePlus, Send, FileText, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,77 +12,83 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { FileUpload } from "@/components/FileUpload";
 import { useUserPermissions } from "@/hooks/useUserPermissions";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuthUserId } from "@/hooks/useAuthUserId";
 
 const Feedback = () => {
   const { toast } = useToast();
   const { permissions } = useUserPermissions();
+  const { userId } = useAuthUserId();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Estado do formulário
   const [formData, setFormData] = useState({
     title: "",
     type: "",
+    rating: "",
     message: "",
     attachments: [] as File[]
   });
 
-  // Mock data para histórico de feedbacks do usuário
-  const [userFeedbacks] = useState([
-    {
-      id: "1",
-      title: "Melhoria na tela de RDO",
-      type: "Sugestão de melhoria",
-      message: "Seria interessante adicionar um campo para observações gerais no RDO.",
-      status: "Em análise",
-      createdAt: "2024-01-15T10:30:00Z",
-      updatedAt: "2024-01-16T14:20:00Z"
-    },
-    {
-      id: "2",
-      title: "Problema no calendário",
-      type: "Problema encontrado",
-      message: "O calendário não está salvando as datas selecionadas corretamente.",
-      status: "Implementado",
-      createdAt: "2024-01-10T09:15:00Z",
-      updatedAt: "2024-01-14T16:45:00Z"
-    }
-  ]);
+  // Feedbacks reais do banco
+  const [userFeedbacks, setUserFeedbacks] = useState<any[]>([]);
+  const [allFeedbacks, setAllFeedbacks] = useState<any[]>([]);
 
-  // Mock data para todos os feedbacks (admin)
-  const [allFeedbacks] = useState([
-    ...userFeedbacks,
-    {
-      id: "3",
-      title: "Interface mais intuitiva",
-      type: "Elogio",
-      message: "O sistema está muito bom, parabéns pela interface!",
-      status: "Recebido",
-      user: "Maria Santos",
-      createdAt: "2024-01-18T11:20:00Z",
-      updatedAt: "2024-01-18T11:20:00Z"
-    }
-  ]);
+  useEffect(() => {
+    if (!userId) return;
+    const fetchFeedbacks = async () => {
+      const { data } = await supabase
+        .from('feedbacks')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+      setUserFeedbacks(data || []);
+    };
+    fetchFeedbacks();
+  }, [userId]);
+
+  useEffect(() => {
+    if (!permissions?.canManageFeedbacks) return;
+    const fetchAll = async () => {
+      const { data } = await supabase
+        .from('feedbacks')
+        .select('*')
+        .order('created_at', { ascending: false });
+      setAllFeedbacks(data || []);
+    };
+    fetchAll();
+  }, [permissions?.canManageFeedbacks]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!userId) return;
     setIsSubmitting(true);
 
     try {
-      // TODO: Implementar envio real quando Supabase estiver conectado
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { error } = await supabase.functions.invoke('send-feedback', {
+        body: {
+          title: formData.title,
+          type: formData.type,
+          rating: formData.rating ? Number(formData.rating) : undefined,
+          message: formData.message,
+        },
+      });
+
+      if (error) throw error;
 
       toast({
         title: "Feedback enviado com sucesso!",
         description: "Seu feedback foi enviado com sucesso, obrigado por contribuir com melhorias para o Meta Construtor!",
       });
 
-      // Limpar formulário
-      setFormData({
-        title: "",
-        type: "",
-        message: "",
-        attachments: []
-      });
+      setFormData({ title: "", type: "", rating: "", message: "", attachments: [] });
+
+      // Refresh feedbacks
+      const { data } = await supabase
+        .from('feedbacks')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+      setUserFeedbacks(data || []);
     } catch (error) {
       toast({
         title: "Erro ao enviar feedback",
@@ -98,11 +104,11 @@ const Feedback = () => {
     switch (status) {
       case "Recebido":
         return "default";
-      case "Em análise":
+      case "Em anÃ¡lise":
         return "secondary";
       case "Implementado":
         return "default";
-      case "Não será implementado":
+      case "NÃ£o serÃ¡ implementado":
         return "destructive";
       default:
         return "default";
@@ -113,11 +119,11 @@ const Feedback = () => {
     switch (status) {
       case "Recebido":
         return <Clock className="h-3 w-3" />;
-      case "Em análise":
+      case "Em anÃ¡lise":
         return <AlertCircle className="h-3 w-3" />;
       case "Implementado":
         return <CheckCircle className="h-3 w-3" />;
-      case "Não será implementado":
+      case "NÃ£o serÃ¡ implementado":
         return <XCircle className="h-3 w-3" />;
       default:
         return <Clock className="h-3 w-3" />;
@@ -133,7 +139,7 @@ const Feedback = () => {
       <div>
         <h1 className="text-3xl font-bold text-foreground">Feedback</h1>
         <p className="text-muted-foreground mt-2">
-          Compartilhe suas sugestões, relate problemas ou envie elogios
+          Compartilhe suas sugestÃµes, relate problemas ou envie elogios
         </p>
       </div>
 
@@ -154,19 +160,19 @@ const Feedback = () => {
                 Enviar Feedback
               </CardTitle>
               <CardDescription>
-                Conte-nos sua experiência, sugestões ou problemas encontrados
+                Conte-nos sua experiÃªncia, sugestÃµes ou problemas encontrados
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="title">Título (Opcional)</Label>
+                    <Label htmlFor="title">TÃ­tulo (Opcional)</Label>
                     <Input
                       id="title"
                       value={formData.title}
                       onChange={(e) => setFormData({...formData, title: e.target.value})}
-                      placeholder="Digite um título para seu feedback"
+                      placeholder="Digite um tÃ­tulo para seu feedback"
                     />
                   </div>
                   <div className="space-y-2">
@@ -176,10 +182,25 @@ const Feedback = () => {
                         <SelectValue placeholder="Selecione o tipo" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="sugestao">Sugestão de melhoria</SelectItem>
+                        <SelectItem value="sugestao">SugestÃ£o de melhoria</SelectItem>
                         <SelectItem value="problema">Problema encontrado</SelectItem>
                         <SelectItem value="elogio">Elogio</SelectItem>
                         <SelectItem value="outro">Outro</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="rating">Satisfacao</Label>
+                    <Select value={formData.rating} onValueChange={(value) => setFormData({...formData, rating: value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Nota de 1 a 5" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="5">5 - Excelente</SelectItem>
+                        <SelectItem value="4">4 - Bom</SelectItem>
+                        <SelectItem value="3">3 - Regular</SelectItem>
+                        <SelectItem value="2">2 - Ruim</SelectItem>
+                        <SelectItem value="1">1 - Critico</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -210,13 +231,13 @@ const Feedback = () => {
                     uploadType="all"
                   />
                   <p className="text-sm text-muted-foreground">
-                    Anexe imagens, prints ou documentos para exemplificar (máximo 5 arquivos)
+                    Anexe imagens, prints ou documentos para exemplificar (mÃ¡ximo 5 arquivos)
                   </p>
                 </div>
 
                 <div className="flex justify-end">
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     disabled={isSubmitting || !formData.message || !formData.type}
                     className="flex items-center gap-2"
                   >
@@ -249,7 +270,7 @@ const Feedback = () => {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <h4 className="font-medium text-foreground">
-                              {feedback.title || feedback.message.substring(0, 50) + "..."}
+                              {feedback.titulo || (feedback.mensagem || "").substring(0, 50) + "..."}
                             </h4>
                             <Badge variant={getStatusColor(feedback.status)} className="flex items-center gap-1">
                               {getStatusIcon(feedback.status)}
@@ -257,16 +278,21 @@ const Feedback = () => {
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground mb-2">
-                            Tipo: {feedback.type}
+                            Tipo: {feedback.tipo}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            {feedback.message}
+                            {feedback.mensagem}
                           </p>
+                          {feedback.nota_satisfacao && (
+                            <p className="text-sm text-muted-foreground mt-2">
+                              Satisfacao: {feedback.nota_satisfacao}/5
+                            </p>
+                          )}
                         </div>
                         <div className="text-xs text-muted-foreground text-right">
-                          <p>Enviado: {formatDate(feedback.createdAt)}</p>
-                          {feedback.updatedAt !== feedback.createdAt && (
-                            <p>Atualizado: {formatDate(feedback.updatedAt)}</p>
+                          <p>Enviado: {formatDate(feedback.created_at)}</p>
+                          {feedback.updated_at !== feedback.created_at && (
+                            <p>Atualizado: {formatDate(feedback.updated_at)}</p>
                           )}
                         </div>
                       </div>
@@ -278,7 +304,7 @@ const Feedback = () => {
                   <div className="text-center py-8">
                     <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground">
-                      Você ainda não enviou nenhum feedback
+                      VocÃª ainda nÃ£o enviou nenhum feedback
                     </p>
                   </div>
                 )}
@@ -296,7 +322,7 @@ const Feedback = () => {
                   Gerenciar Feedbacks
                 </CardTitle>
                 <CardDescription>
-                  Visualize e gerencie todos os feedbacks dos usuários
+                  Visualize e gerencie todos os feedbacks dos usuÃ¡rios
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -309,53 +335,68 @@ const Feedback = () => {
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
                                 <h4 className="font-medium text-foreground">
-                                  {feedback.title || feedback.message.substring(0, 50) + "..."}
+                                  {feedback.titulo || (feedback.mensagem || "").substring(0, 50) + "..."}
                                 </h4>
                                 <Badge variant={getStatusColor(feedback.status)} className="flex items-center gap-1">
                                   {getStatusIcon(feedback.status)}
                                   {feedback.status}
                                 </Badge>
                               </div>
-                              {(feedback as any).user && (
+                              {feedback.user_id && (
                                 <p className="text-sm text-muted-foreground mb-1">
-                                  Usuário: {(feedback as any).user}
+                                  UsuÃ¡rio: {feedback.user_id}
                                 </p>
                               )}
                               <p className="text-sm text-muted-foreground mb-2">
-                                Tipo: {feedback.type}
+                                Tipo: {feedback.tipo}
                               </p>
                               <p className="text-sm text-muted-foreground">
-                                {feedback.message}
+                                {feedback.mensagem}
                               </p>
+                              {feedback.nota_satisfacao && (
+                                <p className="text-sm text-muted-foreground mt-2">
+                                  Satisfacao: {feedback.nota_satisfacao}/5
+                                </p>
+                              )}
                             </div>
                             <div className="text-xs text-muted-foreground text-right">
-                              <p>Enviado: {formatDate(feedback.createdAt)}</p>
-                              {feedback.updatedAt !== feedback.createdAt && (
-                                <p>Atualizado: {formatDate(feedback.updatedAt)}</p>
+                              <p>Enviado: {formatDate(feedback.created_at)}</p>
+                              {feedback.updated_at !== feedback.created_at && (
+                                <p>Atualizado: {formatDate(feedback.updated_at)}</p>
                               )}
                             </div>
                           </div>
-                          
+
                           <Separator />
-                          
+
                           <div className="flex flex-col md:flex-row gap-2">
-                            <Select defaultValue={feedback.status}>
+                            <Select
+                              defaultValue={feedback.status}
+                              onValueChange={async (value) => {
+                                const { error } = await supabase
+                                  .from('feedbacks')
+                                  .update({ status: value })
+                                  .eq('id', feedback.id);
+                                if (error) {
+                                  toast({ title: "Erro", description: "Falha ao atualizar status", variant: "destructive" });
+                                } else {
+                                  toast({ title: "Sucesso", description: "Status atualizado!" });
+                                  // Update local state if needed or force re-fetch
+                                  const { data } = await supabase.from('feedbacks').select('*').order('created_at', { ascending: false });
+                                  setAllFeedbacks(data || []);
+                                }
+                              }}
+                            >
                               <SelectTrigger className="w-full md:w-[200px]">
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="Recebido">Recebido</SelectItem>
-                                <SelectItem value="Em análise">Em análise</SelectItem>
+                                <SelectItem value="Em anÃ¡lise">Em anÃ¡lise</SelectItem>
                                 <SelectItem value="Implementado">Implementado</SelectItem>
-                                <SelectItem value="Não será implementado">Não será implementado</SelectItem>
+                                <SelectItem value="NÃ£o serÃ¡ implementado">NÃ£o serÃ¡ implementado</SelectItem>
                               </SelectContent>
                             </Select>
-                            <Button variant="outline" size="sm">
-                              Salvar Status
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              Adicionar Comentário
-                            </Button>
                           </div>
                         </div>
                       </CardContent>

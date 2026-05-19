@@ -29,7 +29,7 @@ export function AnimatedLogin() {
   const { signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation() as any;
-  const from = location.state?.from?.pathname || "/home";
+  const from = location.state?.from?.pathname || "/app/dashboard";
 
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");

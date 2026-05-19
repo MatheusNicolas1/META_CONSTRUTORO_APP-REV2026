@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { AutoScrollTestimonials, type Testimonial as AutoScrollTestimonial } from './auto-scroll-testimonials';
 
 // --- HELPER COMPONENTS (ICONS) ---
@@ -102,7 +103,7 @@ export const SignInPage: React.FC<SignInPageProps> = ({
                   <input type="checkbox" name="rememberMe" className="custom-checkbox" />
                   <span className="text-foreground/90">Manter-me conectado</span>
                 </label>
-                <a href="#" onClick={(e) => { e.preventDefault(); onResetPassword?.(); }} className="hover:underline text-construction-orange transition-colors">Esqueceu a senha?</a>
+                <Link to="/recuperar-senha" onClick={onResetPassword} className="hover:underline text-construction-orange transition-colors">Esqueceu a senha?</Link>
               </div>
 
               <button type="submit" className="animate-element animate-delay-600 w-full rounded-2xl bg-primary py-4 font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled={isLoading}>
@@ -129,7 +130,7 @@ export const SignInPage: React.FC<SignInPageProps> = ({
             </button>
 
             <p className="animate-element animate-delay-900 text-center text-sm text-muted-foreground">
-              Novo na plataforma? <a href="#" onClick={(e) => { e.preventDefault(); onCreateAccount?.(); }} className="text-construction-orange hover:underline transition-colors">Criar conta</a>
+              Novo na plataforma? <Link to="/criar-conta" onClick={onCreateAccount} className="text-construction-orange hover:underline transition-colors">Criar conta</Link>
             </p>
           </div>
         </div>

@@ -1,54 +1,61 @@
+import { supabase } from '@/integrations/supabase/client';
 import { eventManager } from '@/services/eventManager';
 import { integrationService } from '@/services/integrationService';
-import { IntegrationEvent } from '@/types/integration';
 
-/**
- * Utility functions to help with common integration workflows
- * following the integration blueprint requirements
- */
+const asArray = <T>(value: T[] | null | undefined): T[] => Array.isArray(value) ? value : [];
+
+const getCurrentUserEmail = async () => {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user?.email ?? null;
+};
+
+const getTodayRange = () => {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 1);
+  return {
+    start: start.toISOString(),
+    end: end.toISOString(),
+  };
+};
 
 export class IntegrationHelpers {
-  
-  /**
-   * Fluxo 1: Obra Criada
-   * Dispara notificações para WhatsApp, e-mail e sincroniza com Google Drive
-   */
   static async handleObraCriada(obraData: any) {
     try {
-      // Disparar evento principal
       const result = await eventManager.dispatchObraCreated(obraData.id, obraData);
-      
-      if (result.success) {
-        // Executar integrações específicas em paralelo
-        const promises = [
-          // WhatsApp: Notificar responsáveis
-          integrationService.sendWhatsAppMessage(
-            obraData.responsavel?.telefone,
-            `🏗️ Nova obra criada: ${obraData.nome}\nResponsável: ${obraData.responsavel?.nome}\nPrazo: ${obraData.prazo}`
-          ),
-          
-          // Gmail: Enviar resumo para gestores
-          integrationService.sendEmail(
-            obraData.gestores || [],
-            `Nova Obra: ${obraData.nome}`,
-            `Uma nova obra foi cadastrada no sistema:\n\nNome: ${obraData.nome}\nResponsável: ${obraData.responsavel?.nome}\nData de Início: ${obraData.dataInicio}\nPrazo: ${obraData.prazo}`
-          )
-        ];
 
-        // Aguardar resultados
-        const results = await Promise.allSettled(promises);
-        
-        // Log dos resultados
-        results.forEach((result, index) => {
-          const service = index === 0 ? 'WhatsApp' : 'Gmail';
-          if (result.status === 'fulfilled') {
-            console.log(`✅ ${service} notification sent successfully`);
-          } else {
-            console.error(`❌ ${service} notification failed:`, result.reason);
-          }
-        });
+      if (result.success) {
+        const tasks: Promise<unknown>[] = [];
+        const telefone = obraData.responsavel?.telefone;
+        const gestores = asArray<string>(obraData.gestores);
+
+        if (telefone) {
+          tasks.push(
+            integrationService.sendWhatsAppMessage(
+              telefone,
+              `Nova obra criada: ${obraData.nome}\nResponsavel: ${obraData.responsavel?.nome ?? 'Nao informado'}\nPrazo: ${obraData.prazo ?? 'Nao informado'}`
+            )
+          );
+        }
+
+        if (gestores.length > 0) {
+          tasks.push(
+            integrationService.sendEmail(
+              gestores,
+              `Nova Obra: ${obraData.nome}`,
+              `Uma nova obra foi cadastrada no sistema:\n\nNome: ${obraData.nome}\nResponsavel: ${obraData.responsavel?.nome ?? 'Nao informado'}\nData de Inicio: ${obraData.dataInicio ?? 'Nao informada'}\nPrazo: ${obraData.prazo ?? 'Nao informado'}`
+            )
+          );
+        }
+
+        const results = await Promise.allSettled(tasks);
+        const failed = results.filter((item) => item.status === 'rejected');
+        if (failed.length > 0) {
+          throw new Error(`${failed.length} integracao(oes) falharam no fluxo de obra criada`);
+        }
       }
-      
+
       return result;
     } catch (error) {
       console.error('Erro no fluxo de obra criada:', error);
@@ -56,36 +63,43 @@ export class IntegrationHelpers {
     }
   }
 
-  /**
-   * Fluxo 2: RDO Aprovado
-   * Envia relatório por e-mail e notifica equipe via WhatsApp
-   */
   static async handleRDOAprovado(rdoData: any) {
     try {
-      // Disparar evento
       const result = await eventManager.dispatchRDOApproved(rdoData.id, rdoData);
-      
-      if (result.success) {
-        const promises = [
-          // E-mail com relatório detalhado
-          integrationService.sendEmail(
-            rdoData.supervisores || [],
-            `RDO Aprovado - ${rdoData.obra?.nome}`,
-            `RDO aprovado com sucesso!\n\nObra: ${rdoData.obra?.nome}\nData: ${rdoData.data}\nAtividades: ${rdoData.atividades?.length || 0}\nEquipe: ${rdoData.equipe?.length || 0} colaboradores`
-          ),
-          
-          // WhatsApp para equipe
-          ...(rdoData.equipe || []).map((colaborador: any) => 
-            integrationService.sendWhatsAppMessage(
-              colaborador.telefone,
-              `✅ RDO aprovado para ${rdoData.obra?.nome} em ${rdoData.data}. Bom trabalho!`
-            )
-          )
-        ];
 
-        await Promise.allSettled(promises);
+      if (result.success) {
+        const tasks: Promise<unknown>[] = [];
+        const supervisores = asArray<string>(rdoData.supervisores);
+        const equipe = asArray<any>(rdoData.equipe);
+
+        if (supervisores.length > 0) {
+          tasks.push(
+            integrationService.sendEmail(
+              supervisores,
+              `RDO Aprovado - ${rdoData.obra?.nome ?? 'Obra'}`,
+              `RDO aprovado com sucesso!\n\nObra: ${rdoData.obra?.nome ?? 'Obra'}\nData: ${rdoData.data ?? 'Nao informada'}\nAtividades: ${rdoData.atividades?.length ?? 0}\nEquipe: ${equipe.length} colaboradores`
+            )
+          );
+        }
+
+        equipe.forEach((colaborador) => {
+          if (colaborador.telefone) {
+            tasks.push(
+              integrationService.sendWhatsAppMessage(
+                colaborador.telefone,
+                `RDO aprovado para ${rdoData.obra?.nome ?? 'obra'} em ${rdoData.data ?? 'data nao informada'}.`
+              )
+            );
+          }
+        });
+
+        const results = await Promise.allSettled(tasks);
+        const failed = results.filter((item) => item.status === 'rejected');
+        if (failed.length > 0) {
+          throw new Error(`${failed.length} integracao(oes) falharam no fluxo de RDO aprovado`);
+        }
       }
-      
+
       return result;
     } catch (error) {
       console.error('Erro no fluxo de RDO aprovado:', error);
@@ -93,35 +107,39 @@ export class IntegrationHelpers {
     }
   }
 
-  /**
-   * Fluxo 3: Documento Carregado
-   * Upload automático para Google Drive
-   */
   static async handleDocumentoUpload(file: File, obraId: string, tipo: string) {
     try {
-      // Upload para Google Drive
       const driveResult = await integrationService.uploadToGoogleDrive(
-        file, 
+        file,
         `/MetaConstrutor/Obras/${obraId}/${tipo}`
       );
-      
+
       if (driveResult.success) {
-        // Disparar evento de documento carregado
+        const { data: obra } = await supabase
+          .from('obras')
+          .select('nome, responsavel')
+          .eq('id', obraId)
+          .maybeSingle();
+
         await eventManager.dispatchDocumentoUploaded(driveResult.data.fileId, {
           fileName: file.name,
           obraId,
+          obraNome: (obra as any)?.nome ?? null,
+          responsavel: (obra as any)?.responsavel ?? null,
           tipo,
           url: driveResult.data.url,
           uploadedAt: new Date().toISOString()
         });
-        
-        // Notificar responsáveis
-        await integrationService.sendWhatsAppMessage(
-          '+5511999999999', // TODO: Get from obra data
-          `📎 Novo documento carregado: ${file.name}\nObra: ${obraId}\nTipo: ${tipo}`
-        );
+
+        const notifyPhone = driveResult.data?.responsavelTelefone || driveResult.data?.notifyPhone;
+        if (notifyPhone) {
+          await integrationService.sendWhatsAppMessage(
+            notifyPhone,
+            `Novo documento carregado: ${file.name}\nObra: ${(obra as any)?.nome ?? obraId}\nTipo: ${tipo}`
+          );
+        }
       }
-      
+
       return driveResult;
     } catch (error) {
       console.error('Erro no upload de documento:', error);
@@ -129,13 +147,8 @@ export class IntegrationHelpers {
     }
   }
 
-  /**
-   * Fluxo 4: Atividade Atrasada
-   * Notificação urgente para responsáveis
-   */
   static async handleAtividadeAtrasada(atividadeData: any) {
     try {
-      // Disparar evento urgente
       await eventManager.dispatch({
         event: 'notification.urgent',
         entityId: atividadeData.id,
@@ -147,48 +160,65 @@ export class IntegrationHelpers {
           reason: 'overdue'
         }
       });
-      
-      // Notificações urgentes simultâneas
-      const promises = [
-        // WhatsApp para responsável
-        integrationService.sendWhatsAppMessage(
-          atividadeData.responsavel?.telefone,
-          `⚠️ ATIVIDADE ATRASADA\n\n${atividadeData.nome}\nObra: ${atividadeData.obra?.nome}\nPrazo: ${atividadeData.prazo}\n\nAção necessária!`
-        ),
-        
-        // E-mail para gestores
-        integrationService.sendEmail(
-          atividadeData.gestores || [],
-          `🚨 Atividade Atrasada: ${atividadeData.nome}`,
-          `ALERTA: A atividade "${atividadeData.nome}" da obra "${atividadeData.obra?.nome}" está atrasada.\n\nPrazo original: ${atividadeData.prazo}\nResponsável: ${atividadeData.responsavel?.nome}\n\nAcompanhe o progresso no sistema.`
-        )
-      ];
-      
-      await Promise.allSettled(promises);
+
+      const tasks: Promise<unknown>[] = [];
+      if (atividadeData.responsavel?.telefone) {
+        tasks.push(
+          integrationService.sendWhatsAppMessage(
+            atividadeData.responsavel.telefone,
+            `ATIVIDADE ATRASADA\n\n${atividadeData.nome}\nObra: ${atividadeData.obra?.nome ?? 'Nao informada'}\nPrazo: ${atividadeData.prazo ?? 'Nao informado'}\n\nAcao necessaria.`
+          )
+        );
+      }
+
+      const gestores = asArray<string>(atividadeData.gestores);
+      if (gestores.length > 0) {
+        tasks.push(
+          integrationService.sendEmail(
+            gestores,
+            `Atividade Atrasada: ${atividadeData.nome}`,
+            `ALERTA: A atividade "${atividadeData.nome}" da obra "${atividadeData.obra?.nome ?? 'Nao informada'}" esta atrasada.\n\nPrazo original: ${atividadeData.prazo ?? 'Nao informado'}\nResponsavel: ${atividadeData.responsavel?.nome ?? 'Nao informado'}\n\nAcompanhe o progresso no sistema.`
+          )
+        );
+      }
+
+      await Promise.allSettled(tasks);
     } catch (error) {
       console.error('Erro no fluxo de atividade atrasada:', error);
       throw error;
     }
   }
 
-  /**
-   * Fluxo 5: Relatório Diário Automático
-   */
   static async handleRelatorioDaily(obraId?: string) {
     try {
-      // Gerar dados do relatório (mock para exemplo)
+      const { start, end } = getTodayRange();
+      let query: any = supabase
+        .from('rdos')
+        .select('id, data, obra_id, status, rdo_atividades(id, status), rdo_equipes(id, presente)')
+        .gte('data', start)
+        .lt('data', end);
+
+      if (obraId) {
+        query = query.eq('obra_id', obraId);
+      }
+
+      const { data: rdos, error } = await query;
+      if (error) throw error;
+
+      const atividades = asArray<any>(rdos).flatMap((rdo) => asArray<any>(rdo.rdo_atividades));
+      const equipes = asArray<any>(rdos).flatMap((rdo) => asArray<any>(rdo.rdo_equipes));
       const relatorioData = {
         data: new Date().toISOString(),
         obraId,
         resumo: {
-          atividades: 15,
-          concluidas: 12,
-          atrasadas: 2,
-          equipePresente: 25
+          rdos: asArray<any>(rdos).length,
+          atividades: atividades.length,
+          concluidas: atividades.filter((atividade) => String(atividade.status ?? '').toLowerCase().includes('conclu')).length,
+          atrasadas: atividades.filter((atividade) => String(atividade.status ?? '').toLowerCase().includes('atras')).length,
+          equipePresente: equipes.filter((equipe) => equipe.presente !== false).length
         }
       };
-      
-      // Disparar evento
+
       await eventManager.dispatch({
         event: 'report.daily',
         entityId: `relatorio-${Date.now()}`,
@@ -196,57 +226,42 @@ export class IntegrationHelpers {
         data: relatorioData,
         timestamp: new Date().toISOString()
       });
-      
-      // Enviar relatório por e-mail
-      const emailResult = await integrationService.sendEmail(
-        ['gestor@empresa.com'], // TODO: Get from configuration
-        `Relatório Diário ${obraId ? `- Obra ${obraId}` : '- Geral'}`,
-        `Resumo das atividades do dia:\n\n• Atividades: ${relatorioData.resumo.atividades}\n• Concluídas: ${relatorioData.resumo.concluidas}\n• Atrasadas: ${relatorioData.resumo.atrasadas}\n• Equipe presente: ${relatorioData.resumo.equipePresente}\n\nAcesse o sistema para mais detalhes.`
+
+      const userEmail = await getCurrentUserEmail();
+      if (!userEmail) {
+        return {
+          success: false,
+          error: 'Usuario sem email autenticado para receber o relatorio'
+        };
+      }
+
+      return integrationService.sendEmail(
+        [userEmail],
+        `Relatorio Diario ${obraId ? `- Obra ${obraId}` : '- Geral'}`,
+        `Resumo das atividades do dia:\n\nRDOs: ${relatorioData.resumo.rdos}\nAtividades: ${relatorioData.resumo.atividades}\nConcluidas: ${relatorioData.resumo.concluidas}\nAtrasadas: ${relatorioData.resumo.atrasadas}\nEquipe presente: ${relatorioData.resumo.equipePresente}\n\nAcesse o sistema para mais detalhes.`
       );
-      
-      return emailResult;
     } catch (error) {
-      console.error('Erro no relatório diário:', error);
+      console.error('Erro no relatorio diario:', error);
       throw error;
     }
   }
 
-  /**
-   * Utilitário para testar toda a cadeia de integrações
-   */
   static async testIntegrationChain() {
-    console.log('🧪 Iniciando teste completo da cadeia de integrações...');
-    
     try {
-      // Teste 1: Criar obra de teste
-      console.log('1️⃣ Testando criação de obra...');
-      await this.handleObraCriada({
-        id: 'obra-teste-123',
-        nome: 'Obra Teste - Integração',
-        responsavel: { nome: 'João Silva', telefone: '+5511999999999' },
-        gestores: ['gestor@teste.com'],
-        prazo: '2025-12-31'
-      });
-      
-      // Teste 2: Aprovar RDO
-      console.log('2️⃣ Testando aprovação de RDO...');
-      await this.handleRDOAprovado({
-        id: 'rdo-teste-456',
-        data: new Date().toISOString().split('T')[0],
-        obra: { nome: 'Obra Teste' },
-        supervisores: ['supervisor@teste.com']
-      });
-      
-      // Teste 3: Relatório diário
-      console.log('3️⃣ Testando relatório diário...');
-      await this.handleRelatorioDaily('obra-teste-123');
-      
-      console.log('✅ Teste completo finalizado com sucesso!');
-      return { success: true, message: 'Cadeia de integrações testada com sucesso' };
-      
+      const dailyReport = await this.handleRelatorioDaily();
+      return {
+        success: dailyReport.success,
+        message: dailyReport.success
+          ? 'Cadeia de integracoes validada com dados reais do dia'
+          : dailyReport.error,
+        data: { dailyReport },
+        error: dailyReport.error
+      };
     } catch (error) {
-      console.error('❌ Falha no teste da cadeia:', error);
-      return { success: false, error: error instanceof Error ? error.message : 'Erro desconhecido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Erro desconhecido'
+      };
     }
   }
 }

@@ -1,7 +1,7 @@
 # P0.4 - Monitoramento Sentry
 
 Data: 2026-05-19, atualizado em 2026-05-20
-Status: variaveis de producao cadastradas; validacao real pendente de redeploy seguro e evento no painel
+Status: variaveis de producao cadastradas e redeploy concluido; validacao final pendente de confirmacao no painel Sentry
 
 ## Comandos executados
 
@@ -13,6 +13,7 @@ $env:DSN='https://588d5dbe6f98fee9354d02c7fe85cecf@o4511422743576576.ingest.us.s
 'production' | npx vercel env add VITE_SENTRY_ENVIRONMENT production
 'v1.0.1-release-candidate' | npx vercel env add VITE_APP_VERSION production
 npx vercel env ls production
+npx vercel --prod --yes
 ```
 
 ## Resultado
@@ -23,6 +24,7 @@ npx vercel env ls production
 - Codigo: Sentry ja era inicializado quando `VITE_SENTRY_DSN` existe.
 - `@sentry/react@8.55.0` confirmado instalado no repositorio.
 - Vercel `production`: `VITE_SENTRY_DSN`, `VITE_SENTRY_ENVIRONMENT` e `VITE_APP_VERSION` cadastradas e listadas como `Encrypted`.
+- Vercel `production`: `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` tambem precisaram ser cadastradas; sem elas o primeiro redeploy limpo carregou sem Supabase e a aplicacao apresentou `supabaseUrl is required`.
 - Ajuste aplicado: inicializacao centralizada em `src/integrations/sentry.ts`, com `sendDefaultPii: false`, Session Replay sem captura de texto (`maskAllText`) e sem midia (`blockAllMedia`), e redacao de campos sensiveis antes do envio.
 - Ajuste adicional: criado teste controlado por console com `window.__META_SENTRY_TEST__()`, que envia `captureException(new Error('Meta Construtor Sentry validation error'))`.
 - O snippet do onboarding da Sentry nao foi aplicado literalmente porque `sendDefaultPii: true` contraria a decisao de privacidade do projeto. A opcao `enableLogs` tambem nao compila com `@sentry/react@8.55.0` (`BrowserOptions` nao reconhece essa propriedade).
@@ -31,11 +33,15 @@ npx vercel env ls production
 
 - `npm run lint`: passou com `0 errors` e `34 warnings` conhecidos.
 - `npm run build`: passou.
+- Vercel build remoto: passou.
+- Deployment final: `dpl_6NkNA6y5i8MdF4mJKUs2DzNJGBGg`.
+- URL de producao final: `https://meta-construtor-app-rev-2026-r5ii4p4tk.vercel.app`, aliased para `https://www.metaconstrutor.app.br`.
+- Bundle publicado: contem DSN Sentry, DSN Supabase e `window.__META_SENTRY_TEST__`.
 
 ## Bloqueio
 
-Nao foi feito redeploy de producao nesta etapa porque o working tree local contem varias alteracoes nao relacionadas. Rodar `npx vercel --prod` a partir deste diretório poderia publicar codigo fora do escopo da configuracao Sentry.
+Nao foi possivel executar automaticamente `window.__META_SENTRY_TEST__()` pelo navegador automatizado, porque a politica de seguranca bloqueou navegacao `javascript:`. A confirmacao final precisa ser feita manualmente no console do navegador em producao ou diretamente no painel Sentry.
 
 ## Proxima acao
 
-Proxima acao segura: fazer redeploy a partir de uma arvore limpa ou apos reconciliar as alteracoes locais. Depois abrir o site em producao, executar no console `window.__META_SENTRY_TEST__()` e confirmar o evento `Meta Construtor Sentry validation error` no painel Sentry.
+Abrir `https://www.metaconstrutor.app.br`, executar no console `window.__META_SENTRY_TEST__()` e confirmar o evento `Meta Construtor Sentry validation error` no painel Sentry. Depois criar/registar a regra de alerta para erros JS.

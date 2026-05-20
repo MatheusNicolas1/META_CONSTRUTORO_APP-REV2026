@@ -510,7 +510,11 @@ Use esta area para registrar o andamento entre atividades.
 - [x] Mantido `sendDefaultPii: false`; o snippet do onboarding com `sendDefaultPii: true` nao foi aplicado para nao enviar PII por padrao.
 - [x] `npm run build` passou.
 - [x] `npm run lint` passou com `0 errors` e `34 warnings`.
-- [ ] Redeploy de producao nao executado nesta etapa porque o working tree contem varias alteracoes nao relacionadas; publicar localmente poderia levar codigo fora do escopo para producao.
+- [x] Redeploy de producao executado a partir de worktree limpa no commit `1dd28c0`, sem incluir alteracoes locais nao relacionadas.
+- [x] Corrigido bloqueio de ambiente em producao: `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` estavam ausentes na Vercel e foram cadastradas como variaveis de `production`.
+- [x] Deployment final `dpl_6NkNA6y5i8MdF4mJKUs2DzNJGBGg` publicado em `https://meta-construtor-app-rev-2026-r5ii4p4tk.vercel.app` e aliased para `https://www.metaconstrutor.app.br`.
+- [x] Validado que o bundle publicado contem DSN Sentry, DSN Supabase e `window.__META_SENTRY_TEST__`.
+- [ ] Validacao final no painel Sentry pendente: automacao nao pode executar `javascript:` por politica de seguranca do navegador; executar manualmente `window.__META_SENTRY_TEST__()` no console da producao e confirmar evento no painel.
 
 ## 7. Proxima atividade recomendada
 
@@ -523,7 +527,7 @@ Passos da proxima atividade:
 - [x] Cadastrar `VITE_SENTRY_DSN` em `production` na Vercel.
 - [x] Cadastrar `VITE_SENTRY_ENVIRONMENT=production` em `production` na Vercel.
 - [x] Cadastrar ou revisar `VITE_APP_VERSION=v1.0.1-release-candidate` em `production` na Vercel.
-- [ ] Fazer redeploy de producao apos configurar as variaveis.
+- [x] Fazer redeploy de producao apos configurar as variaveis.
 - [ ] Gerar evento controlado no frontend.
 - [ ] Confirmar chegada do evento no painel Sentry.
 - [ ] Criar regra de alerta para erro JS e cadastrar responsaveis.

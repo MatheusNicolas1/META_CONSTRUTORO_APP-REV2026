@@ -2,6 +2,14 @@ import * as Sentry from '@sentry/react';
 
 const SENSITIVE_FIELD_PATTERN = /(authorization|cookie|token|secret|password|senha|email|phone|telefone|cpf|cnpj|document|documento|address|endereco)/i;
 const REDACTED_VALUE = '[Filtered]';
+const PROD_ORIGIN = 'https://metaconstrutor.app.br';
+const PROD_WWW_ORIGIN = 'https://www.metaconstrutor.app.br';
+
+declare global {
+  interface Window {
+    __META_SENTRY_TEST__?: () => string;
+  }
+}
 
 const redactSensitiveData = (value: unknown): unknown => {
   if (!value || typeof value !== 'object') {
@@ -56,6 +64,7 @@ export const initSentry = () => {
       }),
     ],
     tracesSampleRate: 0.1,
+    tracePropagationTargets: ['localhost', PROD_ORIGIN, PROD_WWW_ORIGIN],
     replaysSessionSampleRate: 0,
     replaysOnErrorSampleRate: 1.0,
     release: import.meta.env.VITE_APP_VERSION || undefined,
@@ -64,6 +73,18 @@ export const initSentry = () => {
     beforeSend: sanitizeEvent,
     beforeSendTransaction: sanitizeEvent,
   });
+
+  window.__META_SENTRY_TEST__ = () => {
+    Sentry.addBreadcrumb({
+      category: 'qa',
+      level: 'info',
+      message: 'User triggered Sentry test error',
+      data: { action: 'sentry_test_console' },
+    });
+
+    Sentry.captureException(new Error('Meta Construtor Sentry validation error'));
+    return 'Sentry validation error captured';
+  };
 
   return true;
 };

@@ -159,9 +159,9 @@ Motivo: usuarios reais exigem visibilidade de erros, falhas de frontend e incide
 
 Checks:
 
-- [ ] Criar/confirmar projeto Sentry.
-- [ ] Configurar `VITE_SENTRY_DSN` em producao na Vercel.
-- [ ] Configurar ambiente `production` na Vercel/Sentry.
+- [x] Criar/confirmar projeto Sentry.
+- [x] Configurar `VITE_SENTRY_DSN` em producao na Vercel.
+- [x] Configurar ambiente `production` na Vercel/Sentry.
 - [ ] Criar regra de alerta para erros JS.
 - [ ] Definir emails/canais do time que receberao alertas.
 - [ ] Simular erro controlado ou validar evento real de teste.
@@ -496,7 +496,21 @@ Use esta area para registrar o andamento entre atividades.
 - [x] `npm run lint` passou com `0 errors` e `33 warnings`.
 - [x] `npm run build` passou.
 - [x] Evidencia criada em `docs/evidence/sentry-p0-4-monitoring-2026-05-19.md`.
-- [ ] P0.4 bloqueado para validacao real: falta criar/confirmar projeto Sentry, obter DSN, cadastrar `VITE_SENTRY_DSN` na Vercel e validar evento/alerta no painel.
+- [x] P0.4 desbloqueado parcialmente: projeto/DSN confirmados e variaveis cadastradas na Vercel.
+- [ ] P0.4 pendente de validacao real: falta redeploy seguro de producao, gerar evento controlado e validar evento/alerta no painel.
+
+### 2026-05-20 - P0.4 Sentry cadastrado na Vercel
+
+- [x] Confirmado que `@sentry/react@8.55.0` esta instalado no repositorio.
+- [x] Cadastrado `VITE_SENTRY_DSN` em `production` na Vercel com o DSN do projeto `meta-construtor-web`.
+- [x] Cadastrado `VITE_SENTRY_ENVIRONMENT=production` em `production` na Vercel.
+- [x] Cadastrado `VITE_APP_VERSION=v1.0.1-release-candidate` em `production` na Vercel.
+- [x] Executado `npx vercel env ls production` e confirmadas as tres variaveis como `Encrypted`.
+- [x] Adicionado teste controlado via console: `window.__META_SENTRY_TEST__()`.
+- [x] Mantido `sendDefaultPii: false`; o snippet do onboarding com `sendDefaultPii: true` nao foi aplicado para nao enviar PII por padrao.
+- [x] `npm run build` passou.
+- [x] `npm run lint` passou com `0 errors` e `34 warnings`.
+- [ ] Redeploy de producao nao executado nesta etapa porque o working tree contem varias alteracoes nao relacionadas; publicar localmente poderia levar codigo fora do escopo para producao.
 
 ## 7. Proxima atividade recomendada
 
@@ -504,11 +518,11 @@ Continuar P0.4 configurando o monitoramento real. P0.1 foi concluido com drift r
 
 Passos da proxima atividade:
 
-- [ ] Criar ou confirmar o projeto Sentry do frontend.
-- [ ] Obter o DSN publico do projeto Sentry.
-- [ ] Cadastrar `VITE_SENTRY_DSN` em `production` na Vercel.
-- [ ] Cadastrar `VITE_SENTRY_ENVIRONMENT=production` em `production` na Vercel.
-- [ ] Cadastrar ou revisar `VITE_APP_VERSION=v1.0.1-release-candidate` em `production` na Vercel.
+- [x] Criar ou confirmar o projeto Sentry do frontend.
+- [x] Obter o DSN publico do projeto Sentry.
+- [x] Cadastrar `VITE_SENTRY_DSN` em `production` na Vercel.
+- [x] Cadastrar `VITE_SENTRY_ENVIRONMENT=production` em `production` na Vercel.
+- [x] Cadastrar ou revisar `VITE_APP_VERSION=v1.0.1-release-candidate` em `production` na Vercel.
 - [ ] Fazer redeploy de producao apos configurar as variaveis.
 - [ ] Gerar evento controlado no frontend.
 - [ ] Confirmar chegada do evento no painel Sentry.

@@ -163,14 +163,14 @@ Checks:
 - [x] Configurar `VITE_SENTRY_DSN` em producao na Vercel.
 - [x] Configurar ambiente `production` na Vercel/Sentry.
 - [ ] Criar regra de alerta para erros JS.
-- [ ] Definir emails/canais do time que receberao alertas.
-- [ ] Simular erro controlado ou validar evento real de teste.
-- [ ] Confirmar chegada do evento no painel Sentry.
-- [x] Confirmar que nenhum dado sensivel esta sendo enviado nos eventos. Parcial tecnico: codigo endurecido com `sendDefaultPii: false`, replay mascarado e redacao de campos sensiveis; falta validar evento real.
+- [x] Definir emails/canais do time que receberao alertas. Responsavel inicial: Matheus (`matheusnicolas.org@gmail.com`).
+- [x] Simular erro controlado ou validar evento real de teste.
+- [x] Confirmar chegada do evento no painel Sentry.
+- [x] Confirmar que nenhum dado sensivel esta sendo enviado nos eventos. Codigo endurecido com `sendDefaultPii: false`, replay mascarado e redacao de campos sensiveis; evento de validacao enviado sem PII real.
 
 Criterio de aceite:
 
-- [ ] Erros de frontend aparecem no Sentry.
+- [x] Erros de frontend aparecem no Sentry.
 - [ ] Alertas chegam ao responsavel correto.
 - [ ] Runbook de incidente aponta para o painel correto.
 
@@ -516,6 +516,19 @@ Use esta area para registrar o andamento entre atividades.
 - [x] Validado que o bundle publicado contem DSN Sentry, DSN Supabase e `window.__META_SENTRY_TEST__`.
 - [ ] Validacao final no painel Sentry pendente: automacao nao pode executar `javascript:` por politica de seguranca do navegador; executar manualmente `window.__META_SENTRY_TEST__()` no console da producao e confirmar evento no painel.
 
+### 2026-05-20 - P0.4 Sentry validado via MCP
+
+- [x] MCP Sentry conectado e autenticado como `Matheus (matheusnicolas.org@gmail.com)`.
+- [x] Projeto Sentry renomeado de `javascript-react` para `meta-construtor-web`.
+- [x] DSN real do projeto `meta-construtor-web` confirmado via MCP: projeto `4511422758256640`.
+- [x] `VITE_SENTRY_DSN` de producao na Vercel substituido pelo DSN confirmado no projeto Sentry.
+- [x] Redeploy seguro executado a partir de worktree limpa no commit `5f10b87`.
+- [x] Deployment final `dpl_GjhdCrEkX5HE69vLpGn1Mqnw8mE4` publicado em `https://meta-construtor-app-rev-2026-j3i8kqzux.vercel.app` e aliased para `https://www.metaconstrutor.app.br`.
+- [x] Bundle publicado validado com DSN Sentry novo, sem DSN antigo, com Supabase e com `window.__META_SENTRY_TEST__`.
+- [x] Evento de validacao aceito pela ingestao Sentry: `173d44f3a040f412a30e980cd912a2b5`.
+- [x] Evento confirmado pelo MCP no projeto `meta-construtor-web`: issue `META-CONSTRUTOR-WEB-2`.
+- [ ] Criacao de regra de alerta nao concluida: as ferramentas MCP Sentry disponiveis nesta sessao nao expõem criacao/edicao de alert rules.
+
 ## 7. Proxima atividade recomendada
 
 Continuar P0.4 configurando o monitoramento real. P0.1 foi concluido com drift residual aceito/documentado, P0.2 foi concluido com lint sem erros fatais e P0.3 foi concluido com commit/tag/push de release candidate.
@@ -528,10 +541,10 @@ Passos da proxima atividade:
 - [x] Cadastrar `VITE_SENTRY_ENVIRONMENT=production` em `production` na Vercel.
 - [x] Cadastrar ou revisar `VITE_APP_VERSION=v1.0.1-release-candidate` em `production` na Vercel.
 - [x] Fazer redeploy de producao apos configurar as variaveis.
-- [ ] Gerar evento controlado no frontend.
-- [ ] Confirmar chegada do evento no painel Sentry.
+- [x] Gerar evento controlado no Sentry para o projeto de frontend.
+- [x] Confirmar chegada do evento no painel Sentry.
 - [ ] Criar regra de alerta para erro JS e cadastrar responsaveis.
-- [ ] Atualizar este PRD com o resultado.
+- [x] Atualizar este PRD com o resultado.
 
 ## 8. Como retomar este trabalho
 

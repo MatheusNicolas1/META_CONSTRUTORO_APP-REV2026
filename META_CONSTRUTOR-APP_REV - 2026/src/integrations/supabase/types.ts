@@ -47,7 +47,7 @@ export type Database = {
       admin_audit_logs: {
         Row: {
           action: string
-          admin_id: string
+          admin_id: string | null
           created_at: string
           details: Json | null
           id: string
@@ -55,7 +55,7 @@ export type Database = {
         }
         Insert: {
           action: string
-          admin_id: string
+          admin_id?: string | null
           created_at?: string
           details?: Json | null
           id?: string
@@ -63,13 +63,100 @@ export type Database = {
         }
         Update: {
           action?: string
-          admin_id?: string
+          admin_id?: string | null
           created_at?: string
           details?: Json | null
           id?: string
           target_user_id?: string | null
         }
         Relationships: []
+      }
+      analytics_events: {
+        Row: {
+          anonymous_id: string | null
+          created_at: string | null
+          environment: string | null
+          error: string | null
+          event: string | null
+          id: string
+          org_id: string | null
+          properties: Json | null
+          ref: string | null
+          referrer: string | null
+          request_id: string | null
+          role: string | null
+          session_id: string | null
+          source: string | null
+          success: boolean | null
+          user_id: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+        }
+        Insert: {
+          anonymous_id?: string | null
+          created_at?: string | null
+          environment?: string | null
+          error?: string | null
+          event?: string | null
+          id?: string
+          org_id?: string | null
+          properties?: Json | null
+          ref?: string | null
+          referrer?: string | null
+          request_id?: string | null
+          role?: string | null
+          session_id?: string | null
+          source?: string | null
+          success?: boolean | null
+          user_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Update: {
+          anonymous_id?: string | null
+          created_at?: string | null
+          environment?: string | null
+          error?: string | null
+          event?: string | null
+          id?: string
+          org_id?: string | null
+          properties?: Json | null
+          ref?: string | null
+          referrer?: string | null
+          request_id?: string | null
+          role?: string | null
+          session_id?: string | null
+          source?: string | null
+          success?: boolean | null
+          user_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_events_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
+          },
+          {
+            foreignKeyName: "analytics_events_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "orgs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       atividades: {
         Row: {
@@ -136,6 +223,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "obras"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atividades_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
           },
           {
             foreignKeyName: "atividades_org_id_fkey"
@@ -309,6 +403,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "obras"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checklists_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
           },
           {
             foreignKeyName: "checklists_org_id_fkey"
@@ -602,6 +703,13 @@ export type Database = {
             foreignKeyName: "credit_transactions_org_id_fkey"
             columns: ["org_id"]
             isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
+          },
+          {
+            foreignKeyName: "credit_transactions_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
             referencedRelation: "orgs"
             referencedColumns: ["id"]
           },
@@ -682,6 +790,13 @@ export type Database = {
             foreignKeyName: "documentos_org_id_fkey"
             columns: ["org_id"]
             isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
+          },
+          {
+            foreignKeyName: "documentos_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
             referencedRelation: "orgs"
             referencedColumns: ["id"]
           },
@@ -733,6 +848,13 @@ export type Database = {
             foreignKeyName: "equipamentos_org_id_fkey"
             columns: ["org_id"]
             isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
+          },
+          {
+            foreignKeyName: "equipamentos_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
             referencedRelation: "orgs"
             referencedColumns: ["id"]
           },
@@ -776,6 +898,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "equipes_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
+          },
           {
             foreignKeyName: "equipes_org_id_fkey"
             columns: ["org_id"]
@@ -867,6 +996,13 @@ export type Database = {
             foreignKeyName: "expenses_org_id_fkey"
             columns: ["org_id"]
             isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
+          },
+          {
+            foreignKeyName: "expenses_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
             referencedRelation: "orgs"
             referencedColumns: ["id"]
           },
@@ -914,6 +1050,13 @@ export type Database = {
             foreignKeyName: "feedbacks_org_id_fkey"
             columns: ["org_id"]
             isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
+          },
+          {
+            foreignKeyName: "feedbacks_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
             referencedRelation: "orgs"
             referencedColumns: ["id"]
           },
@@ -943,6 +1086,20 @@ export type Database = {
             foreignKeyName: "follows_follower_id_fkey"
             columns: ["follower_id"]
             isOneToOne: false
+            referencedRelation: "admin_churn_risk_view"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_segments_view"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
             referencedRelation: "admin_users_view"
             referencedColumns: ["id"]
           },
@@ -966,6 +1123,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_profiles_safe"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "follows_following_id_fkey"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "admin_churn_risk_view"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "follows_following_id_fkey"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_segments_view"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "follows_following_id_fkey"
@@ -1047,6 +1218,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "fornecedores_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
+          },
           {
             foreignKeyName: "fornecedores_org_id_fkey"
             columns: ["org_id"]
@@ -1145,6 +1323,13 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "integrations_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
+          },
           {
             foreignKeyName: "integrations_org_id_fkey"
             columns: ["org_id"]
@@ -1315,6 +1500,13 @@ export type Database = {
             foreignKeyName: "obras_org_id_fkey"
             columns: ["org_id"]
             isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
+          },
+          {
+            foreignKeyName: "obras_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
             referencedRelation: "orgs"
             referencedColumns: ["id"]
           },
@@ -1349,6 +1541,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "org_credits_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: true
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
+          },
           {
             foreignKeyName: "org_credits_org_id_fkey"
             columns: ["org_id"]
@@ -1396,6 +1595,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "org_members_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
+          },
           {
             foreignKeyName: "org_members_org_id_fkey"
             columns: ["org_id"]
@@ -1633,6 +1839,7 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           company: string | null
+          company_address: string | null
           cpf_cnpj: string | null
           created_at: string
           email: string
@@ -1650,6 +1857,9 @@ export type Database = {
           referral_bonus_days: number
           referral_code: string | null
           slug: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_status: string | null
           terms_accepted_at: string
           terms_accepted_ip: string | null
           updated_at: string
@@ -1660,6 +1870,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           company?: string | null
+          company_address?: string | null
           cpf_cnpj?: string | null
           created_at?: string
           email: string
@@ -1677,6 +1888,9 @@ export type Database = {
           referral_bonus_days?: number
           referral_code?: string | null
           slug?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
           terms_accepted_at?: string
           terms_accepted_ip?: string | null
           updated_at?: string
@@ -1687,6 +1901,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           company?: string | null
+          company_address?: string | null
           cpf_cnpj?: string | null
           created_at?: string
           email?: string
@@ -1704,6 +1919,9 @@ export type Database = {
           referral_bonus_days?: number
           referral_code?: string | null
           slug?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
           terms_accepted_at?: string
           terms_accepted_ip?: string | null
           updated_at?: string
@@ -2030,6 +2248,13 @@ export type Database = {
             foreignKeyName: "rdo_notas_org_id_fkey"
             columns: ["org_id"]
             isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
+          },
+          {
+            foreignKeyName: "rdo_notas_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
             referencedRelation: "orgs"
             referencedColumns: ["id"]
           },
@@ -2039,6 +2264,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "rdos"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rdo_notas_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_churn_risk_view"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "rdo_notas_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_segments_view"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "rdo_notas_user_id_fkey"
@@ -2072,6 +2311,8 @@ export type Database = {
       }
       rdos: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
           aprovado_por_id: string | null
           clima: string
           created_at: string
@@ -2087,11 +2328,14 @@ export type Database = {
           observacoes: string | null
           org_id: string
           periodo: string
+          rejection_reason: string | null
           status: string
           tempo_ocioso: number | null
           updated_at: string
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
           aprovado_por_id?: string | null
           clima: string
           created_at?: string
@@ -2107,11 +2351,14 @@ export type Database = {
           observacoes?: string | null
           org_id: string
           periodo: string
+          rejection_reason?: string | null
           status?: string
           tempo_ocioso?: number | null
           updated_at?: string
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
           aprovado_por_id?: string | null
           clima?: string
           created_at?: string
@@ -2127,6 +2374,7 @@ export type Database = {
           observacoes?: string | null
           org_id?: string
           periodo?: string
+          rejection_reason?: string | null
           status?: string
           tempo_ocioso?: number | null
           updated_at?: string
@@ -2138,6 +2386,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "obras"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rdos_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
           },
           {
             foreignKeyName: "rdos_org_id_fkey"
@@ -2297,6 +2552,7 @@ export type Database = {
       subscriptions: {
         Row: {
           billing_cycle: string | null
+          cancel_at_period_end: boolean
           canceled_at: string | null
           created_at: string
           current_period_end: string | null
@@ -2307,12 +2563,14 @@ export type Database = {
           plan_id: string
           status: Database["public"]["Enums"]["subscription_status"]
           stripe_customer_id: string | null
+          stripe_price_id: string | null
           stripe_subscription_id: string | null
           trial_end: string | null
           updated_at: string
         }
         Insert: {
           billing_cycle?: string | null
+          cancel_at_period_end?: boolean
           canceled_at?: string | null
           created_at?: string
           current_period_end?: string | null
@@ -2323,12 +2581,14 @@ export type Database = {
           plan_id: string
           status?: Database["public"]["Enums"]["subscription_status"]
           stripe_customer_id?: string | null
+          stripe_price_id?: string | null
           stripe_subscription_id?: string | null
           trial_end?: string | null
           updated_at?: string
         }
         Update: {
           billing_cycle?: string | null
+          cancel_at_period_end?: boolean
           canceled_at?: string | null
           created_at?: string
           current_period_end?: string | null
@@ -2339,11 +2599,19 @@ export type Database = {
           plan_id?: string
           status?: Database["public"]["Enums"]["subscription_status"]
           stripe_customer_id?: string | null
+          stripe_price_id?: string | null
           stripe_subscription_id?: string | null
           trial_end?: string | null
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "subscriptions_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
+          },
           {
             foreignKeyName: "subscriptions_org_id_fkey"
             columns: ["org_id"]
@@ -2572,6 +2840,143 @@ export type Database = {
       }
     }
     Views: {
+      admin_analytics_events_unified_view: {
+        Row: {
+          anonymous_id: string | null
+          created_at: string | null
+          environment: string | null
+          error: string | null
+          event: string | null
+          event_id: string | null
+          org_id: string | null
+          origin_table: string | null
+          properties: Json | null
+          ref: string | null
+          referrer: string | null
+          request_id: string | null
+          role: string | null
+          route: string | null
+          session_id: string | null
+          source: string | null
+          success: boolean | null
+          user_id: string | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Relationships: []
+      }
+      admin_campaign_performance_view: {
+        Row: {
+          anonymous_visitors: number | null
+          auth_events: number | null
+          billing_events: number | null
+          first_seen_at: string | null
+          identified_users: number | null
+          last_seen_at: string | null
+          page_views: number | null
+          ref: string | null
+          total_events: number | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Relationships: []
+      }
+      admin_checkout_funnel_view: {
+        Row: {
+          anonymous_visitors: number | null
+          billing_events: number | null
+          checkout_views: number | null
+          event_date: string | null
+          identified_users: number | null
+          pricing_views: number | null
+        }
+        Relationships: []
+      }
+      admin_churn_risk_view: {
+        Row: {
+          activity_segment: string | null
+          first_event_at: string | null
+          interactions: number | null
+          last_event_at: string | null
+          plan_type: string | null
+          risk_level: string | null
+          roles: string[] | null
+          route_views: number | null
+          total_events: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
+      admin_funnel_daily_view: {
+        Row: {
+          active_users: number | null
+          checkout_events: number | null
+          coupon_events: number | null
+          event_date: string | null
+          interactions: number | null
+          route_views: number | null
+          signups: number | null
+          subscription_events: number | null
+        }
+        Relationships: []
+      }
+      admin_org_usage_summary_view: {
+        Row: {
+          active_members: number | null
+          interactions: number | null
+          last_event_at: string | null
+          org_created_at: string | null
+          org_id: string | null
+          org_name: string | null
+          org_slug: string | null
+          route_views: number | null
+          total_events: number | null
+          total_members: number | null
+        }
+        Relationships: []
+      }
+      admin_route_metrics_view: {
+        Row: {
+          event_date: string | null
+          first_seen_at: string | null
+          last_seen_at: string | null
+          route: string | null
+          total_views: number | null
+          unique_users: number | null
+        }
+        Relationships: []
+      }
+      admin_user_activity_summary_view: {
+        Row: {
+          distinct_routes: number | null
+          failed_events: number | null
+          first_event_at: string | null
+          interactions: number | null
+          last_event_at: string | null
+          org_id: string | null
+          route_views: number | null
+          total_events: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
+      admin_user_segments_view: {
+        Row: {
+          activity_segment: string | null
+          first_event_at: string | null
+          interactions: number | null
+          last_event_at: string | null
+          plan_type: string | null
+          roles: string[] | null
+          route_views: number | null
+          total_events: number | null
+          user_created_at: string | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
       admin_users_view: {
         Row: {
           avatar_url: string | null
@@ -2612,19 +3017,18 @@ export type Database = {
         Row: {
           atividade: string | null
           atividade_id: string | null
-          categoria: string | null
           data_planejada: string | null
           data_realizada: string | null
           dias_desvio: number | null
           obra_id: string | null
           obra_nome: string | null
           org_id: string | null
-          percentual_realizado: number | null
           quantidade_prevista: number | null
           quantidade_realizada: number | null
           situacao: string | null
           status_planejado: string | null
           status_realizado: string | null
+          unidade_medida: string | null
         }
         Relationships: [
           {
@@ -2633,6 +3037,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "obras"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atividades_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
           },
           {
             foreignKeyName: "atividades_org_id_fkey"
@@ -2663,6 +3074,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "obras"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "admin_org_usage_summary_view"
+            referencedColumns: ["org_id"]
           },
           {
             foreignKeyName: "expenses_org_id_fkey"
@@ -2859,6 +3277,14 @@ export type Database = {
           template_id: string
           titulo: string
           updated_at: string
+        }[]
+      }
+      get_org_plan_limits: {
+        Args: { p_org_id: string }
+        Returns: {
+          max_obras: number
+          max_users: number
+          plan_slug: string
         }[]
       }
       has_any_role: {

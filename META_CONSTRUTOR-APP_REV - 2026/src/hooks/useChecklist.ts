@@ -13,6 +13,7 @@ type ResponsibleProfile = {
 const COMPLETED_STATUS = "Conclu\u00eddo";
 const NOT_STARTED_STATUS = "N\u00e3o iniciado";
 const MEDIUM_PRIORITY = "M\u00e9dia";
+const TERMINAL_ITEM_STATUSES = new Set([COMPLETED_STATUS, "N\u00e3o conforme", "N\u00e3o aplic\u00e1vel"]);
 
 const stripUndefined = (payload: Record<string, unknown>) =>
     Object.fromEntries(Object.entries(payload).filter(([, value]) => value !== undefined));
@@ -29,6 +30,9 @@ const normalizeChecklistItemUpdates = (updates: Record<string, any>) =>
         descricao: updates.descricao ?? updates.description,
         titulo: updates.titulo ?? updates.title,
     });
+
+const isPersistedId = (id?: string) =>
+    Boolean(id && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id));
 
 export function useChecklist() {
     const queryClient = useQueryClient();
@@ -54,7 +58,7 @@ export function useChecklist() {
 
     const calculateProgress = (items: any[]) => {
         if (!items.length) return { total: 0, completed: 0, percentage: 0 };
-        const completed = items.filter((item) => item.status === COMPLETED_STATUS).length;
+        const completed = items.filter((item) => TERMINAL_ITEM_STATUSES.has(item.status)).length;
         return {
             total: items.length,
             completed,
@@ -100,10 +104,10 @@ export function useChecklist() {
             obra: { id: item.obras?.id, name: item.obras?.nome },
             responsible: responsible ? {
                 id: responsible.id,
-                name: responsible.name || 'N/A',
+                name: responsible.name || 'Nao informado',
                 email: responsible.email || '',
                 role: 'Respons\u00e1vel'
-            } : { id: item.responsavel_id || '', name: 'N/A', email: '', role: '' },
+            } : { id: item.responsavel_id || '', name: 'Nao informado', email: '', role: '' },
             items: (item.checklist_items || []).map(mapChecklistItem),
             progress: calculateProgress(item.checklist_items || [])
         };
@@ -118,6 +122,7 @@ export function useChecklist() {
         checklist_items (*)
       `)
             .eq('org_id', orgId)
+            .is('deleted_at' as any, null)
             .order('created_at', { ascending: false });
 
         if (filters) {
@@ -135,6 +140,12 @@ export function useChecklist() {
             }
             if (filters.responsible && filters.responsible !== 'all') {
                 query = query.eq('responsavel_id', filters.responsible);
+            }
+            if (filters.dateRange?.start) {
+                query = query.gte('data_vencimento', filters.dateRange.start);
+            }
+            if (filters.dateRange?.end) {
+                query = query.lte('data_vencimento', filters.dateRange.end);
             }
         }
 
@@ -195,10 +206,10 @@ export function useChecklist() {
             obra: { id: data.obras?.id, name: data.obras?.nome },
             responsible: responsible ? {
                 id: responsible.id,
-                name: responsible.name || 'N/A',
+                name: responsible.name || 'Nao informado',
                 email: responsible.email || '',
                 role: 'Respons\u00e1vel'
-            } : { id: data.responsavel_id || '', name: 'N/A', email: '', role: '' },
+            } : { id: data.responsavel_id || '', name: 'Nao informado', email: '', role: '' },
             items: (data.checklist_items?.sort((a: any, b: any) => (a.order || 0) - (b.order || 0)) || []).map((item: any) => ({
                 ...mapChecklistItem(item),
                 attachments: (item.documentos || []).map((documento: any) => ({
@@ -223,6 +234,8 @@ export function useChecklist() {
 
     const createChecklist = useMutation({
         mutationFn: async (formData: ChecklistFormData) => {
+            if (!orgId) throw new Error('Organizacao ativa nao encontrada');
+
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error('User not authenticated');
 
@@ -236,6 +249,7 @@ export function useChecklist() {
                     descricao: formData.description,
                     categoria: formData.category,
                     data_vencimento: formData.dueDate,
+                    template_id: formData.templateId || null,
                     status: 'Rascunho'
                 })
                 .select()
@@ -272,6 +286,118 @@ export function useChecklist() {
         }
     });
 
+    const updateChecklist = useMutation({
+        mutationFn: async ({ checklistId, formData }: { checklistId: string, formData: ChecklistFormData }) => {
+            if (!orgId) throw new Error('Organizacao ativa nao encontrada');
+
+            const { error: checklistError } = await supabase
+                .from('checklists')
+                .update({
+                    obra_id: formData.obraId,
+                    responsavel_id: formData.responsibleId,
+                    titulo: formData.title,
+                    descricao: formData.description,
+                    categoria: formData.category,
+                    data_vencimento: formData.dueDate,
+                    template_id: formData.templateId || null,
+                    updated_at: new Date().toISOString()
+                } as any)
+                .eq('id', checklistId)
+                .eq('org_id', orgId);
+
+            if (checklistError) throw checklistError;
+
+            const { data: existingItems, error: existingError } = await supabase
+                .from('checklist_items')
+                .select('id')
+                .eq('checklist_id', checklistId);
+
+            if (existingError) throw existingError;
+
+            const existingIds = (existingItems || []).map((item) => item.id);
+            const submittedPersistedIds = formData.items
+                .map((item) => item.id)
+                .filter((id) => isPersistedId(id));
+            const removedIds = existingIds.filter((id) => !submittedPersistedIds.includes(id));
+
+            if (removedIds.length) {
+                const { error } = await supabase
+                    .from('checklist_items')
+                    .delete()
+                    .in('id', removedIds);
+                if (error) throw error;
+            }
+
+            for (const item of formData.items) {
+                const payload = {
+                    titulo: item.title,
+                    descricao: item.description || null,
+                    prioridade: item.priority || MEDIUM_PRIORITY,
+                    status: item.status || NOT_STARTED_STATUS,
+                    obrigatorio: item.isObligatory || false,
+                    requer_anexo: item.requiresAttachment || false,
+                };
+
+                if (isPersistedId(item.id)) {
+                    const { error } = await supabase
+                        .from('checklist_items')
+                        .update(payload)
+                        .eq('id', item.id)
+                        .eq('checklist_id', checklistId);
+                    if (error) throw error;
+                } else {
+                    const { error } = await supabase
+                        .from('checklist_items')
+                        .insert({
+                            checklist_id: checklistId,
+                            ...payload,
+                        });
+                    if (error) throw error;
+                }
+            }
+        },
+        onSuccess: (_data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['checklists', orgId] });
+            queryClient.invalidateQueries({ queryKey: ['checklist', variables.checklistId] });
+            toast({ title: "Sucesso", description: "Checklist atualizado com sucesso." });
+        },
+        onError: (error) => {
+            toast({ title: "Erro", description: "Erro ao atualizar checklist: " + error.message, variant: "destructive" });
+        }
+    });
+
+    const updateChecklistStatus = useMutation({
+        mutationFn: async ({ checklistId, updates }: { checklistId: string, updates: Record<string, any> }) => {
+            let query = supabase
+                .from('checklists')
+                .update(stripUndefined({
+                    status: updates.status,
+                    started_at: updates.started_at ?? updates.startedAt,
+                    completed_at: updates.completed_at ?? updates.completedAt,
+                    aprovado_por_id: updates.aprovado_por_id ?? updates.approvedById,
+                    data_aprovacao: updates.data_aprovacao ?? updates.approvedAt,
+                    signature_name: updates.signature_name ?? updates.signatureName,
+                    signature_email: updates.signature_email ?? updates.signatureEmail,
+                    signature_data: updates.signature_data ?? updates.signatureData,
+                    signed_at: updates.signed_at ?? updates.signedAt,
+                    updated_at: new Date().toISOString(),
+                }) as any)
+                .eq('id', checklistId);
+
+            if (orgId) {
+                query = query.eq('org_id', orgId);
+            }
+
+            const { error } = await query;
+
+            if (error) throw error;
+        },
+        onSuccess: (_data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['checklists', orgId] });
+            queryClient.invalidateQueries({ queryKey: ['checklist', variables.checklistId] });
+        }
+    });
+
     const updateChecklistItem = useMutation({
         mutationFn: async ({ itemId, updates }: { itemId: string, updates: Record<string, any> }) => {
             const { error } = await supabase
@@ -292,12 +418,23 @@ export function useChecklist() {
 
     const deleteChecklist = useMutation({
         mutationFn: async (id: string) => {
-            const { error } = await supabase.from('checklists').delete().eq('id', id);
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error('Usuario nao autenticado');
+
+            const { error } = await (supabase as any)
+                .from('checklists')
+                .update({
+                    deleted_at: new Date().toISOString(),
+                    deleted_by: user.id,
+                    delete_origin: 'checklists',
+                })
+                .eq('id', id)
+                .eq('org_id', orgId);
             if (error) throw error;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['checklists', orgId] });
-            toast({ title: "Sucesso", description: "Checklist removido." });
+            toast({ title: "Checklist movido para a Lixeira", description: "Voce pode restaurar por ate 30 dias." });
         }
     });
 
@@ -352,6 +489,8 @@ export function useChecklist() {
         useChecklistsQuery,
         useChecklistDetail,
         createChecklist,
+        updateChecklist,
+        updateChecklistStatus,
         updateChecklistItem,
         deleteChecklist,
         uploadChecklistItemAttachment

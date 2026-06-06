@@ -5,6 +5,8 @@ import type { User as AuthUser, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, UserRole } from "@/types/user";
 import { toast } from "sonner";
+import { useTheme } from "@/components/ThemeProvider";
+import { resetUser, setAnalyticsSession } from "@/integrations/analytics";
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -13,7 +15,7 @@ interface AuthContextValue {
   roles: UserRole[];
   attributes: Record<string, any>;
   mfaEnabled: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string, redirectTo?: string) => Promise<void>;
   signOut: () => Promise<void>;
   hasRole: (role: UserRole) => boolean;
   hasAnyRole: (roles: UserRole[]) => boolean;
@@ -27,6 +29,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
+  const { setTheme } = useTheme();
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [roles, setRoles] = useState<UserRole[]>([]);
@@ -35,8 +38,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Carregar dados do usuário
   const loadUserData = useCallback(async (authUser: AuthUser) => {
     try {
-      // Buscar perfil E role global em paralelo
-      const [profileResult, roleResult] = await Promise.all([
+      // Buscar perfil, role global e preferências em paralelo
+      const [profileResult, roleResult, settingsResult] = await Promise.all([
         supabase
           .from("profiles")
           .select("*")
@@ -47,6 +50,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           .select("role")
           .eq("user_id", authUser.id)
           .maybeSingle(),
+        supabase
+          .from("user_settings")
+          .select("theme")
+          .eq("user_id", authUser.id)
+          .maybeSingle(),
       ]);
 
       // Profile may not exist yet for new users — that's OK
@@ -54,6 +62,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Perfil ausente ou falha transitoria nao deve bloquear login.
       }
       const profile = profileResult.data;
+      const savedTheme = settingsResult.data?.theme;
+
+      if (savedTheme === "light" || savedTheme === "dark") {
+        setTheme(savedTheme);
+      }
 
       const globalRole = roleResult.data?.role as UserRole | undefined;
 
@@ -72,6 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Se for Presidente, define logo
       setRoles([initialRole]);
+      setAnalyticsSession({ user_id: authUser.id, role: initialRole });
 
     } catch (error) {
       console.error("Erro ao carregar dados do usuário:", error);
@@ -86,8 +100,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updatedAt: authUser.created_at,
       });
       setRoles(["Colaborador"]);
+      setAnalyticsSession({ user_id: authUser.id, role: "Colaborador" });
     }
-  }, []);
+  }, [setTheme]);
 
   // Método para OrgContext atualizar roles
   const updateRoles = useCallback((newRoles: UserRole[]) => {
@@ -146,6 +161,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(null);
         setUser(null);
         setRoles([]);
+        resetUser();
         setLoading(false);
         return;
       }
@@ -163,6 +179,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(null);
         setUser(null);
         setRoles([]);
+        resetUser();
         setLoading(false);
       }
     });
@@ -180,6 +197,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setSession(null);
           setUser(null);
           setRoles([]);
+          resetUser();
         }
       } else {
         // Sessão zombie — limpar para evitar estado fantasma
@@ -187,6 +205,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(null);
         setUser(null);
         setRoles([]);
+        resetUser();
       }
       setLoading(false);
       initialLoadDone = true;
@@ -202,7 +221,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => subscription.unsubscribe();
   }, [loadUserData]);
 
-  const signIn = useCallback(async (emailOrPhone: string, password: string) => {
+  const signIn = useCallback(async (emailOrPhone: string, password: string, redirectTo?: string) => {
     try {
       let email = emailOrPhone;
 
@@ -240,7 +259,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (data.session) {
         toast.success("Login realizado com sucesso!");
-        navigate("/app/dashboard", { replace: true });
+        const safeRedirect = redirectTo?.startsWith("/") && !redirectTo.startsWith("//")
+          ? redirectTo
+          : "/app/dashboard";
+        navigate(safeRedirect, { replace: true });
       }
     } catch (error: unknown) {
       // Log sanitizado: sem PII
@@ -263,6 +285,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null);
       setSession(null);
       setRoles([]);
+      resetUser();
       toast.success("Logout realizado com sucesso!");
       navigate("/login");
     }

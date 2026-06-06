@@ -197,6 +197,19 @@ All colors MUST be HSL.
 */
 
 @layer base {
+  body.marketing-surface {
+    font-family: "Noto Sans", Inter, system-ui, sans-serif;
+  }
+
+  body.marketing-surface h1,
+  body.marketing-surface h2,
+  body.marketing-surface h3,
+  body.marketing-surface nav,
+  body.marketing-surface button,
+  body.marketing-surface .marketing-display {
+    font-family: Archivo, "Noto Sans", Inter, system-ui, sans-serif;
+  }
+
   :root {
     /* MetaConstrutor Design System - Light Mode */
     --background: 0 0% 100%;
@@ -208,7 +221,7 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 210 63% 11%;
 
-    --primary: 14 100% 57%;
+    --primary: 14 80% 42%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 202 76% 44%;
@@ -225,13 +238,13 @@ All colors MUST be HSL.
 
     --border: 158 13% 85%;
     --input: 158 13% 90%;
-    --ring: 14 100% 57%;
+    --ring: 14 80% 42%;
 
     --radius: 0.75rem;
 
     /* Construction-specific colors */
-    --construction-orange: 14 100% 57%;
-    --construction-orange-light: 14 100% 67%;
+    --construction-orange: 14 80% 42%;
+    --construction-orange-light: 14 84% 52%;
     --construction-green: 81 67% 48%;
     --construction-green-light: 81 67% 58%;
     --construction-blue: 204 65% 11%;
@@ -246,33 +259,33 @@ All colors MUST be HSL.
     /* Sidebar Light Mode */
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 210 63% 11%;
-    --sidebar-primary: 14 100% 57%;
+    --sidebar-primary: 14 80% 42%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 158 13% 95%;
     --sidebar-accent-foreground: 210 63% 11%;
     --sidebar-border: 158 13% 85%;
-    --sidebar-ring: 14 100% 57%;
+    --sidebar-ring: 14 80% 42%;
   }
 
   .dark {
     /* MetaConstrutor Dark Mode */
-    --background: 210 63% 11%;
-    --foreground: 0 0% 100%;
+    --background: 216 24% 9%;
+    --foreground: 210 22% 96%;
 
-    --card: 210 63% 8%;
-    --card-foreground: 0 0% 100%;
+    --card: 216 20% 12%;
+    --card-foreground: 210 22% 96%;
 
-    --popover: 210 63% 11%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 216 20% 11%;
+    --popover-foreground: 210 22% 96%;
 
-    --primary: 14 100% 57%;
+    --primary: 14 80% 42%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 202 76% 44%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 63% 15%;
-    --muted-foreground: 158 13% 70%;
+    --muted: 216 18% 15%;
+    --muted-foreground: 210 14% 72%;
 
     --accent: 202 76% 44%;
     --accent-foreground: 0 0% 100%;
@@ -280,13 +293,13 @@ All colors MUST be HSL.
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 63% 20%;
-    --input: 210 63% 15%;
-    --ring: 14 100% 57%;
+    --border: 216 16% 20%;
+    --input: 216 16% 16%;
+    --ring: 14 80% 42%;
 
     /* Construction colors for dark mode */
-    --construction-orange: 14 100% 57%;
-    --construction-orange-light: 14 100% 67%;
+    --construction-orange: 14 80% 42%;
+    --construction-orange-light: 14 84% 52%;
     --construction-green: 81 67% 48%;
     --construction-green-light: 81 67% 58%;
     --construction-blue: 204 65% 11%;
@@ -299,14 +312,14 @@ All colors MUST be HSL.
     --success-foreground: 0 0% 100%;
 
     /* Sidebar dark mode */
-    --sidebar-background: 210 63% 11%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 14 100% 57%;
+    --sidebar-background: 216 22% 10%;
+    --sidebar-foreground: 210 22% 96%;
+    --sidebar-primary: 14 80% 42%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 63% 15%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 210 63% 20%;
-    --sidebar-ring: 14 100% 57%;
+    --sidebar-accent: 216 18% 15%;
+    --sidebar-accent-foreground: 210 22% 96%;
+    --sidebar-border: 216 16% 20%;
+    --sidebar-ring: 14 80% 42%;
   }
 
   /* Enhanced color variations for better contrast */
@@ -346,6 +359,12 @@ All colors MUST be HSL.
 
   .gradient-login-card {
     background: linear-gradient(135deg, hsl(var(--construction-orange)) 0%, hsl(210 63% 11%) 100%);
+  }
+
+  body.marketing-surface .gradient-construction,
+  body.marketing-surface .gradient-success,
+  body.marketing-surface .gradient-info {
+    background: hsl(var(--primary));
   }
 }
 

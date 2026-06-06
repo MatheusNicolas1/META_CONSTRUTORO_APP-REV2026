@@ -24,6 +24,14 @@ const LandingNavigation = () => {
   const { isAuthenticated, signOut } = useAuth();
 
   useEffect(() => {
+    document.body.classList.add('marketing-surface');
+
+    return () => {
+      document.body.classList.remove('marketing-surface');
+    };
+  }, []);
+
+  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
@@ -55,8 +63,8 @@ const LandingNavigation = () => {
         className="fixed z-50 w-full px-2 group"
       >
         <div className={cn(
-          'mx-auto mt-2 max-w-6xl px-4 transition-all duration-300 sm:px-6 lg:px-12',
-          isScrolled && 'bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5'
+          'mx-auto mt-2 max-w-6xl px-4 transition-colors duration-200 sm:px-6 lg:px-12',
+          isScrolled && 'border bg-background/95'
         )}>
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             {/* Logo */}
@@ -75,8 +83,8 @@ const LandingNavigation = () => {
                 aria-label={menuState ? 'Fechar Menu' : 'Abrir Menu'}
                 className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
               >
-                <Menu className="group-data-[state=active]:rotate-180 group-data-[state=active]:scale-0 group-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
-                <X className="group-data-[state=active]:rotate-0 group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
+                <Menu className="group-data-[state=active]:opacity-0 m-auto size-6 transition-opacity duration-200" />
+                <X className="group-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 opacity-0 transition-opacity duration-200" />
               </button>
             </div>
 
@@ -88,7 +96,7 @@ const LandingNavigation = () => {
                     <button
                       onClick={() => handleNavigation(item.href)}
                       className={cn(
-                        "block duration-150 relative",
+                        "block relative transition-colors duration-150",
                         isActive(item.href)
                           ? "text-primary font-medium"
                           : "text-muted-foreground hover:text-accent-foreground"
@@ -105,7 +113,7 @@ const LandingNavigation = () => {
             </div>
 
             {/* Desktop & Mobile Menu Actions */}
-            <div className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-4 sm:mb-6 hidden w-full max-w-full flex-wrap items-center justify-end space-y-6 sm:space-y-8 rounded-2xl sm:rounded-3xl border p-4 sm:p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+            <div className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-4 hidden w-full max-w-full flex-wrap items-center justify-end space-y-6 border p-4 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-0 lg:bg-transparent lg:p-0 dark:lg:bg-transparent">
               {/* Mobile Navigation */}
               <div className="lg:hidden">
                 <ul className="space-y-6 text-base leading-none">
@@ -114,7 +122,7 @@ const LandingNavigation = () => {
                       <button
                         onClick={() => handleNavigation(item.href)}
                         className={cn(
-                          "block duration-150",
+                          "block transition-colors duration-150",
                           isActive(item.href)
                             ? "text-primary font-medium"
                             : "text-muted-foreground hover:text-accent-foreground"

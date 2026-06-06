@@ -54,26 +54,15 @@ export const PersonalDataCard = ({ initialData }: PersonalDataCardProps) => {
         setUploading(true);
         try {
             const fileExt = file.name.split(".").pop();
-            const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+            const fileName = `${Date.now()}.${fileExt}`;
+            const bucket = 'community_media';
+            const path = `${user.id}/avatars/${fileName}`;
 
-            // Tentar bucket 'avatars' (padrão)
-            let bucket = 'avatars';
-            let path = fileName;
-
-            let { error: uploadError } = await supabase.storage
+            const { error: uploadError } = await supabase.storage
                 .from(bucket)
                 .upload(path, file, { upsert: true });
 
-            if (uploadError) {
-                // Fallback para 'community_media'
-                bucket = 'community_media';
-                path = `avatars/${fileName}`;
-                const { error: fallbackError } = await supabase.storage
-                    .from(bucket)
-                    .upload(path, file, { upsert: true });
-
-                if (fallbackError) throw fallbackError;
-            }
+            if (uploadError) throw uploadError;
 
             const { data: urlData } = supabase.storage
                 .from(bucket)
@@ -180,6 +169,7 @@ export const PersonalDataCard = ({ initialData }: PersonalDataCardProps) => {
                             ref={fileInputRef}
                             className="hidden"
                             accept="image/*"
+                            data-testid="profile-avatar-input"
                             onChange={handleAvatarUpload}
                         />
 
@@ -211,7 +201,7 @@ export const PersonalDataCard = ({ initialData }: PersonalDataCardProps) => {
                         <Input
                             id="name"
                             value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                             placeholder="Seu nome completo"
                         />
                     </div>
@@ -239,7 +229,7 @@ export const PersonalDataCard = ({ initialData }: PersonalDataCardProps) => {
                         <Input
                             id="phone"
                             value={formData.phone || ""}
-                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
                             placeholder="(00) 00000-0000"
                         />
                     </div>
@@ -253,7 +243,7 @@ export const PersonalDataCard = ({ initialData }: PersonalDataCardProps) => {
                         <Input
                             id="company"
                             value={formData.company || ""}
-                            onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                            onChange={(e) => setFormData((prev) => ({ ...prev, company: e.target.value }))}
                             placeholder="Nome da sua empresa"
                         />
                     </div>
@@ -267,7 +257,7 @@ export const PersonalDataCard = ({ initialData }: PersonalDataCardProps) => {
                         <Input
                             id="cpf_cnpj"
                             value={formData.cpf_cnpj || ""}
-                            onChange={(e) => setFormData({ ...formData, cpf_cnpj: e.target.value })}
+                            onChange={(e) => setFormData((prev) => ({ ...prev, cpf_cnpj: e.target.value }))}
                             placeholder="000.000.000-00"
                         />
                     </div>

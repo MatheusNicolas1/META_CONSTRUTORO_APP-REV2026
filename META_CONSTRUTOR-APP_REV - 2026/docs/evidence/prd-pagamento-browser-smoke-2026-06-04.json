@@ -1,0 +1,93 @@
+{
+  "environment": {
+    "baseUrl": "https://www.metaconstrutor.app.br",
+    "viewport": "1366x768",
+    "browserPath": "Playwright isolated context fallback after in-app Browser screenshot/session isolation limits"
+  },
+  "smoke": [
+    {
+      "route": "/preco",
+      "finalUrl": "https://www.metaconstrutor.app.br/preco",
+      "title": "Planos e precos | Meta Construtor",
+      "notBlank": true,
+      "frameworkOverlay": false,
+      "relevantConsole": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/checkout?plan=basic&billing=monthly",
+      "finalUrl": "https://www.metaconstrutor.app.br/checkout?plan=basic&billing=monthly",
+      "title": "Finalizar assinatura | Meta Construtor",
+      "notBlank": true,
+      "frameworkOverlay": false,
+      "relevantConsole": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/criar-conta",
+      "finalUrl": "https://www.metaconstrutor.app.br/criar-conta",
+      "title": "Criar conta | Meta Construtor",
+      "notBlank": true,
+      "frameworkOverlay": false,
+      "relevantConsole": [],
+      "pageErrors": []
+    },
+    {
+      "route": "/contato",
+      "finalUrl": "https://www.metaconstrutor.app.br/contato",
+      "title": "Contato - Meta Construtor | Fale Conosco",
+      "notBlank": true,
+      "frameworkOverlay": false,
+      "relevantConsole": [],
+      "pageErrors": []
+    }
+  ],
+  "interaction": {
+    "route": "/checkout?plan=master&billing=monthly",
+    "email": "codex.playwright.payment.master.1780608189374@example.com",
+    "finalUrlHost": "checkout.stripe.com",
+    "title": "Meta Construtor",
+    "reachedStripe": true,
+    "stripeSnapshotHasPlan": true,
+    "relevantConsole": [
+      {
+        "type": "warning",
+        "text": "[OrgContext] Usuário sem organizações ativas",
+        "location": {
+          "url": "https://www.metaconstrutor.app.br/assets/vendor-observability-CywOljmp.js",
+          "line": 17,
+          "column": 2626,
+          "lineNumber": 17,
+          "columnNumber": 2626
+        }
+      },
+      {
+        "type": "warning",
+        "text": "<link rel=preload> uses an unsupported `as` value",
+        "location": {
+          "url": "https://checkout.stripe.com/c/pay/cs_live_b1aTKIUsDY9C8qQ0wglr4Vsz2Of4vHcuk7bRzevR4TKkx0nJeUTUc220bC#fidnandhYHdWcXxpYCc%2FJ2FgY2RwaXEnKSdicGRmZGhqaWBTZHdsZGtxJz8nZmprcXdqaScpJ2R1bE5gfCc%2FJ3VuWmlsc2BaMDRXREAxY0ZNY0thSjxvfUthZ2ttYEsxT2Z0UTVJdTNzQ1xIdHFCaGhwN3Jhcn98V0NRdzVuSFNCZ0NPc25hVjxPVDJsZnNJfzVMR0F8c2E1VUh1YTcyZ1Q1NV9ydzE2T29CJyknY3dqaFZgd3Ngdyc%2FcXdwYCknZ2RmbmJ3anBrYUZqaWp3Jz8nJmNjY2NjYycpJ2lkfGpwcVF8dWAnPydocGlxbFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+          "line": 0,
+          "column": 0,
+          "lineNumber": 0,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "warning",
+        "text": "<link rel=preload> uses an unsupported `as` value",
+        "location": {
+          "url": "https://checkout.stripe.com/c/pay/cs_live_b1aTKIUsDY9C8qQ0wglr4Vsz2Of4vHcuk7bRzevR4TKkx0nJeUTUc220bC#fidnandhYHdWcXxpYCc%2FJ2FgY2RwaXEnKSdicGRmZGhqaWBTZHdsZGtxJz8nZmprcXdqaScpJ2R1bE5gfCc%2FJ3VuWmlsc2BaMDRXREAxY0ZNY0thSjxvfUthZ2ttYEsxT2Z0UTVJdTNzQ1xIdHFCaGhwN3Jhcn98V0NRdzVuSFNCZ0NPc25hVjxPVDJsZnNJfzVMR0F8c2E1VUh1YTcyZ1Q1NV9ydzE2T29CJyknY3dqaFZgd3Ngdyc%2FcXdwYCknZ2RmbmJ3anBrYUZqaWp3Jz8nJmNjY2NjYycpJ2lkfGpwcVF8dWAnPydocGlxbFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+          "line": 0,
+          "column": 0,
+          "lineNumber": 0,
+          "columnNumber": 0
+        }
+      }
+    ],
+    "pageErrors": []
+  },
+  "screenshots": [
+    "docs/evidence/prd-pagamento-browser-checkout-basic-2026-06-04.png",
+    "docs/evidence/prd-pagamento-browser-stripe-master-2026-06-04.png"
+  ]
+}

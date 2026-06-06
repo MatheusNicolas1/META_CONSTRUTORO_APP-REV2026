@@ -1,0 +1,29 @@
+{
+  "email": "codex.edge.payment.foundation.1780608287191@example.com",
+  "userId": "3405b239-25bd-44bc-a854-76be72e5616a",
+  "checkoutHost": "checkout.stripe.com",
+  "checkoutUrlCreated": true,
+  "hasProfile": true,
+  "hasStripeCustomer": true,
+  "phonePersisted": true,
+  "cpfPersisted": true,
+  "companyPersisted": true,
+  "orgMembers": [
+    {
+      "role": "Administrador",
+      "status": "active",
+      "org": "Smoke Foundation Edge",
+      "slug": "org-583dc698"
+    }
+  ],
+  "userRoles": [
+    "Administrador"
+  ],
+  "userSettingsCount": 1,
+  "userCredits": [
+    {
+      "credits_balance": 50,
+      "plan_type": "free"
+    }
+  ]
+}

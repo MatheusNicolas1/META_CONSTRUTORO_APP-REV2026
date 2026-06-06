@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { PlayCircle, User, Shield, CreditCard } from "lucide-react";
+import { BarChart3, PlayCircle, User, Shield, CreditCard } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Onboarding } from "@/components/Onboarding";
@@ -9,13 +10,16 @@ import { PersonalDataCard } from "@/components/profile/PersonalDataCard";
 import { SecurityCard } from "@/components/profile/SecurityCard";
 import { SubscriptionTab } from "@/components/profile/SubscriptionTab";
 import SEO from "@/components/SEO";
+import { isPlatformPresidentUser } from "@/utils/adminAccess";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Perfil = () => {
   const { toast } = useToast();
   const [showTour, setShowTour] = useState(false);
-  const { user } = useAuth();
+  const { user, roles } = useAuth();
+  const userRole = roles?.[0];
+  const canAccessMetrics = userRole === "Presidente" || userRole === "Administrador";
 
   const [userData, setUserData] = useState({
     name: "",
@@ -104,7 +108,7 @@ const Perfil = () => {
 
         {/* Content Tabs */}
         <Tabs defaultValue="personal" className="w-full space-y-8">
-          <TabsList className="w-full md:max-w-lg grid grid-cols-3 h-auto p-1 bg-muted/50 rounded-xl">
+          <TabsList className={`w-full grid h-auto p-1 bg-muted/50 rounded-xl ${canAccessMetrics ? "md:max-w-2xl grid-cols-2 sm:grid-cols-4" : "md:max-w-lg grid-cols-3"}`}>
             <TabsTrigger value="personal" className="gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
               <User className="h-4 w-4" />
               <span className="hidden sm:inline">Dados Pessoais</span>
@@ -120,6 +124,12 @@ const Perfil = () => {
               <span className="hidden sm:inline">Segurança</span>
               <span className="sm:hidden">Segurança</span>
             </TabsTrigger>
+            {canAccessMetrics && (
+              <TabsTrigger value="metrics" className="gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
+                <BarChart3 className="h-4 w-4" />
+                <span>Métricas</span>
+              </TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="personal" className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-300 focus-visible:outline-none focus-visible:ring-0">
@@ -135,6 +145,27 @@ const Perfil = () => {
           <TabsContent value="security" className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 focus-visible:outline-none focus-visible:ring-0">
             <SecurityCard />
           </TabsContent>
+
+          {canAccessMetrics && (
+            <TabsContent value="metrics" className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 focus-visible:outline-none focus-visible:ring-0">
+              <div className="max-w-3xl rounded-xl border bg-card p-6 shadow-sm">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="space-y-1">
+                    <h2 className="text-2xl font-bold text-foreground">Métricas do app</h2>
+                    <p className="text-muted-foreground">
+                      Acesse o painel de marketing, usuarios, rotas e utilizacao.
+                    </p>
+                  </div>
+                  <Button asChild className="gap-2">
+                    <Link to="/app/admin/dashboard">
+                      <BarChart3 className="h-4 w-4" />
+                      Abrir painel
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </>

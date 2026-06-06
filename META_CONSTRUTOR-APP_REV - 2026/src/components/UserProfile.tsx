@@ -1,4 +1,4 @@
-import { User, Settings, LogOut, ChevronDown, HelpCircle, MessageSquarePlus } from "lucide-react";
+import { User, Settings, LogOut, ChevronDown, HelpCircle, MessageSquarePlus, CreditCard } from "lucide-react";
 import { useState, startTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -15,11 +15,17 @@ import { useToast } from "@/hooks/use-toast";
 
 import { useAuth } from "@/components/auth/AuthContext";
 
-export function UserProfile() {
+interface UserProfileProps {
+  compact?: boolean;
+  align?: "start" | "center" | "end";
+}
+
+export function UserProfile({ compact = false, align = "end" }: UserProfileProps) {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, signOut } = useAuth();
+  const { user, signOut, roles } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const canManageBilling = roles.some((role) => ["Presidente", "Administrador"].includes(role));
 
   // Fallback data if user is loading or not present (shouldn't happen in protected routes)
   const userData = {
@@ -67,7 +73,7 @@ export function UserProfile() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="flex items-center space-x-2 h-auto p-2 hover:bg-accent/50"
+          className={`flex items-center hover:bg-accent/50 ${compact ? "h-10 w-10 justify-center rounded-2xl p-1" : "h-auto space-x-2 p-2"}`}
           aria-label="Menu do perfil do usuário"
           data-tour="perfil"
         >
@@ -77,7 +83,7 @@ export function UserProfile() {
               {getInitials(userData.name)}
             </AvatarFallback>
           </Avatar>
-          <div className="hidden md:flex flex-col items-start text-left">
+          <div className={`${compact ? "hidden" : "hidden md:flex"} flex-col items-start text-left`}>
             <span className="text-sm font-medium text-foreground truncate max-w-[120px]">
               {userData.name}
             </span>
@@ -85,11 +91,11 @@ export function UserProfile() {
               {userData.role}
             </span>
           </div>
-          <ChevronDown className="h-4 w-4 text-muted-foreground hidden md:block" />
+          {!compact && <ChevronDown className="h-4 w-4 text-muted-foreground hidden md:block" />}
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="w-64 max-w-[90vw] bg-popover border-border" align="end" forceMount>
+      <DropdownMenuContent className="w-64 max-w-[90vw] bg-popover border-border" align={align} forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{userData.name}</p>
@@ -108,6 +114,13 @@ export function UserProfile() {
           <User className="mr-2 h-4 w-4" />
           <span>Meu Perfil</span>
         </DropdownMenuItem>
+
+        {canManageBilling && (
+          <DropdownMenuItem onClick={() => startTransition(() => navigate("/app/planos"))} className="cursor-pointer">
+            <CreditCard className="mr-2 h-4 w-4" />
+            <span>Planos e assinatura</span>
+          </DropdownMenuItem>
+        )}
 
         <DropdownMenuItem onClick={() => startTransition(() => navigate("/app/configuracoes"))} className="cursor-pointer">
           <Settings className="mr-2 h-4 w-4" />

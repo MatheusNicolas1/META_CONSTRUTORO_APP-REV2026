@@ -58,7 +58,7 @@ export interface WhatsAppConfig extends IntegrationConfig {
 
 export interface WhatsAppMessage {
   to: string;
-  type: 'text' | 'template' | 'image' | 'document';
+  type: 'text' | 'template' | 'image' | 'document' | 'audio';
   content: {
     text?: string;
     templateName?: string;
@@ -218,11 +218,14 @@ export interface IntegrationStatus {
   name: string;
   type: IntegrationType;
   isHealthy: boolean;
+  hasEvidence: boolean;
   lastCheck: string;
   latency?: number;
   errorCount: number;
-  successRate: number;
-  uptime: number;
+  successRate?: number;
+  uptime?: number;
+  evidenceCount: number;
+  successfulEvents: number;
 }
 
 // Configuration Validation

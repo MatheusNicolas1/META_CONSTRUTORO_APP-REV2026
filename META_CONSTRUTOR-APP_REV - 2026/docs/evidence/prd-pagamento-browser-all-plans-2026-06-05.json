@@ -1,0 +1,48 @@
+{
+  "environment": {
+    "baseUrl": "https://www.metaconstrutor.app.br",
+    "viewport": "1366x768",
+    "note": "No card data entered; validation stops at Stripe-hosted Checkout."
+  },
+  "results": [
+    {
+      "plan": "basic",
+      "billing": "monthly",
+      "email": "codex.payment.basic.17806604874750@example.com",
+      "checkoutRouteRendered": true,
+      "hasBackToPlans": true,
+      "reachedStripe": true,
+      "finalUrlHost": "checkout.stripe.com",
+      "title": "Meta Construtor",
+      "stripeSnapshotHasPlan": true,
+      "relevantConsole": [],
+      "pageErrors": []
+    },
+    {
+      "plan": "professional",
+      "billing": "monthly",
+      "email": "codex.payment.professional.17806604996711@example.com",
+      "checkoutRouteRendered": true,
+      "hasBackToPlans": true,
+      "reachedStripe": true,
+      "finalUrlHost": "checkout.stripe.com",
+      "title": "Meta Construtor",
+      "stripeSnapshotHasPlan": true,
+      "relevantConsole": [],
+      "pageErrors": []
+    },
+    {
+      "plan": "master",
+      "billing": "monthly",
+      "email": "codex.payment.master.17806605099102@example.com",
+      "checkoutRouteRendered": true,
+      "hasBackToPlans": true,
+      "reachedStripe": true,
+      "finalUrlHost": "checkout.stripe.com",
+      "title": "Meta Construtor",
+      "stripeSnapshotHasPlan": true,
+      "relevantConsole": [],
+      "pageErrors": []
+    }
+  ]
+}

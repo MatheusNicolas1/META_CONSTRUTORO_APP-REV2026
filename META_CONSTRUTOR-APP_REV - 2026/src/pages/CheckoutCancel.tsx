@@ -5,12 +5,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import SEO from '@/components/SEO';
 import LandingNavigation from '@/components/landing/LandingNavigation';
+import { useAuth } from '@/components/auth/AuthContext';
 
 const CheckoutCancel = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { isAuthenticated } = useAuth();
 
   const planKey = searchParams.get('plan') || 'basic';
+  const billingParam = searchParams.get('billing');
+  const billingCycle = billingParam === 'yearly' ? 'yearly' : 'monthly';
 
   const planNames = {
     free: 'FREE',
@@ -23,7 +27,7 @@ const CheckoutCancel = () => {
   const planName = planNames[planKey as keyof typeof planNames] || 'BÁSICO';
 
   const handleRetryCheckout = () => {
-    navigate(`/checkout?plan=${planKey}`);
+    navigate(`/checkout?plan=${encodeURIComponent(planKey)}&billing=${billingCycle}`);
   };
 
   const handleBackToPlans = () => {
@@ -251,7 +255,7 @@ const CheckoutCancel = () => {
                   Você terá acesso completo a todas as funcionalidades.
                 </p>
                 <Button
-                  onClick={() => navigate('/checkout?plan=free')}
+                  onClick={() => navigate(isAuthenticated ? '/app/planos?plan=free' : '/login')}
                   variant="outline"
                 >
                   Começar Teste Grátis

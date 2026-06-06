@@ -28,8 +28,8 @@ export function useEquipamentos() {
       const { data, error } = await supabase
         .from('equipamentos')
         .select('*')
-
-        .eq('created_by', user.id)
+        .eq('org_id', orgId)
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;

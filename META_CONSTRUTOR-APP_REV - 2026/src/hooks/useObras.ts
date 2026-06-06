@@ -7,6 +7,7 @@ import { usePermissions } from './usePermissions';
 import { useRequireOrg } from '@/hooks/requireOrg';
 import { track } from '@/integrations/analytics';
 import { useAuthUserId } from './useAuthUserId';
+import { triggerSuccessFeedback } from '@/hooks/useSuccessFeedback';
 
 export interface CreateObraData {
   nome: string;
@@ -118,6 +119,7 @@ export const useObras = () => {
       let query = supabase
         .from('obras')
         .select('*')
+        .is('deleted_at' as any, null)
         .order('created_at', { ascending: false })
         .limit(50);
 
@@ -211,6 +213,7 @@ export const useObras = () => {
       queryClient.invalidateQueries({ queryKey: ['obras', orgId] });
       queryClient.invalidateQueries({ queryKey: ['recent-obras', orgId] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
+      triggerSuccessFeedback('Obra criada');
       toast.success('Obra criada com sucesso!');
     },
     onError: (error) => {
@@ -251,6 +254,7 @@ export const useObras = () => {
       queryClient.invalidateQueries({ queryKey: ['recent-obras', orgId] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
       queryClient.invalidateQueries({ queryKey: ['obra'] });
+      triggerSuccessFeedback('Obra atualizada');
       toast.success('Obra atualizada com sucesso!');
     },
     onError: (error) => {
@@ -272,9 +276,13 @@ export const useObras = () => {
         .eq('org_id', orgId)
         .single();
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('obras')
-        .delete()
+        .update({
+          deleted_at: new Date().toISOString(),
+          deleted_by: user.id,
+          delete_origin: 'obras',
+        })
         .eq('id', id)
         .eq('org_id', orgId);
 
@@ -295,7 +303,7 @@ export const useObras = () => {
       queryClient.invalidateQueries({ queryKey: ['obras', orgId] });
       queryClient.invalidateQueries({ queryKey: ['recent-obras', orgId] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
-      toast.success('Obra excluída com sucesso!');
+      toast.success('Obra movida para a Lixeira. Voce pode restaurar por ate 30 dias.');
     },
     onError: (error) => {
       console.error('Erro ao excluir obra:', error);

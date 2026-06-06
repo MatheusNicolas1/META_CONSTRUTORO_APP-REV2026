@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { getActiveOrgIdLocal } from '@/helpers/storage';
 import { eventManager } from '@/services/eventManager';
 import { integrationService } from '@/services/integrationService';
 
@@ -18,6 +19,44 @@ const getTodayRange = () => {
     start: start.toISOString(),
     end: end.toISOString(),
   };
+};
+
+const persistChainTestLog = async (
+  status: 'success' | 'error',
+  message: string,
+  data?: Record<string, any>,
+  error?: string
+) => {
+  const { data: { session } } = await supabase.auth.getSession();
+  const orgId = getActiveOrgIdLocal();
+
+  if (!session?.user?.id || !orgId) {
+    return false;
+  }
+
+  const { error: insertError } = await supabase
+    .from('analytics_events' as any)
+    .insert({
+      event: 'integrations.chain.test',
+      org_id: orgId,
+      user_id: session.user.id,
+      source: 'frontend',
+      success: status === 'success',
+      error,
+      properties: {
+        orgId,
+        userId: session.user.id,
+        source: 'integration-helpers',
+        integrationId: 'integration-chain',
+        integrationType: 'webhook',
+        status,
+        message,
+        data,
+        error
+      }
+    });
+
+  return !insertError;
 };
 
 export class IntegrationHelpers {
@@ -121,7 +160,7 @@ export class IntegrationHelpers {
           .eq('id', obraId)
           .maybeSingle();
 
-        await eventManager.dispatchDocumentoUploaded(driveResult.data.fileId, {
+        const dispatchResult = await eventManager.dispatchDocumentoUploaded(driveResult.data.fileId, {
           fileName: file.name,
           obraId,
           obraNome: (obra as any)?.nome ?? null,
@@ -130,6 +169,13 @@ export class IntegrationHelpers {
           url: driveResult.data.url,
           uploadedAt: new Date().toISOString()
         });
+
+        if (!dispatchResult.success) {
+          return {
+            success: false,
+            error: dispatchResult.error || 'Evento de documento nao foi persistido'
+          };
+        }
 
         const notifyPhone = driveResult.data?.responsavelTelefone || driveResult.data?.notifyPhone;
         if (notifyPhone) {
@@ -149,7 +195,7 @@ export class IntegrationHelpers {
 
   static async handleAtividadeAtrasada(atividadeData: any) {
     try {
-      await eventManager.dispatch({
+      const dispatchResult = await eventManager.dispatch({
         event: 'notification.urgent',
         entityId: atividadeData.id,
         entityType: 'atividade',
@@ -160,6 +206,10 @@ export class IntegrationHelpers {
           reason: 'overdue'
         }
       });
+
+      if (!dispatchResult.success) {
+        return dispatchResult;
+      }
 
       const tasks: Promise<unknown>[] = [];
       if (atividadeData.responsavel?.telefone) {
@@ -219,13 +269,20 @@ export class IntegrationHelpers {
         }
       };
 
-      await eventManager.dispatch({
+      const dispatchResult = await eventManager.dispatch({
         event: 'report.daily',
         entityId: `relatorio-${Date.now()}`,
         entityType: 'relatorio',
         data: relatorioData,
         timestamp: new Date().toISOString()
       });
+
+      if (!dispatchResult.success) {
+        return {
+          success: false,
+          error: dispatchResult.error || 'Evento do relatorio diario nao foi persistido'
+        };
+      }
 
       const userEmail = await getCurrentUserEmail();
       if (!userEmail) {
@@ -249,18 +306,35 @@ export class IntegrationHelpers {
   static async testIntegrationChain() {
     try {
       const dailyReport = await this.handleRelatorioDaily();
+      const message = dailyReport.success
+        ? 'Cadeia de integracoes validada com dados reais do dia'
+        : dailyReport.error || 'Falha na cadeia de integracoes';
+      const logPersisted = await persistChainTestLog(
+        dailyReport.success ? 'success' : 'error',
+        message,
+        { dailyReport },
+        dailyReport.error
+      );
+
+      if (dailyReport.success && !logPersisted) {
+        return {
+          success: false,
+          error: 'Teste executado, mas a evidencia persistida nao foi registrada'
+        };
+      }
+
       return {
         success: dailyReport.success,
-        message: dailyReport.success
-          ? 'Cadeia de integracoes validada com dados reais do dia'
-          : dailyReport.error,
+        message,
         data: { dailyReport },
         error: dailyReport.error
       };
     } catch (error) {
+      const message = error instanceof Error ? error.message : 'Erro desconhecido';
+      await persistChainTestLog('error', message, undefined, message);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido'
+        error: message
       };
     }
   }

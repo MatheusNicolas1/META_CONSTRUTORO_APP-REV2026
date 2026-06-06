@@ -1,3 +1,0 @@
-1: Force dev server to fully rebuild due to optimizeDeps changes and React debug logs
-2: Timestamp: 2025-11-07T10:18:00Z
-3: Changes: exclude react/react-dom from optimizeDeps; added React debug logs in main.tsx

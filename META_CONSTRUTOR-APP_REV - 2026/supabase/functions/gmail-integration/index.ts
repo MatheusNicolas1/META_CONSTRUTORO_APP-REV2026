@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { corsHeaders } from "../_shared/cors.ts";
+import { getCorsHeaders } from "../_shared/cors.ts";
 import { createScopedClient } from "../_shared/supabase-client.ts";
 import { requireAuth, logRequest } from "../_shared/guards.ts";
 
@@ -17,6 +17,8 @@ interface GmailSendRequest {
 
 serve(async (req) => {
   const requestId = crypto.randomUUID();
+  const corsHeaders = getCorsHeaders(req);
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -44,10 +46,12 @@ serve(async (req) => {
       console.info('Gmail OAuth credentials not configured');
       return new Response(
         JSON.stringify({
+          success: false,
           error: 'Gmail integration not configured. Please add GMAIL_CLIENT_ID and GMAIL_CLIENT_SECRET secrets.',
+          message: 'Gmail integration is blocked until OAuth secrets are configured.',
           configured: false
         }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 

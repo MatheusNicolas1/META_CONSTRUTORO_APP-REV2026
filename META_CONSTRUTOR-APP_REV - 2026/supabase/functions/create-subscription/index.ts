@@ -2,6 +2,7 @@
 import Stripe from 'https://esm.sh/stripe@14.14.0?target=deno'
 import { getCorsHeaders } from '../_shared/cors.ts'
 import { createAdminClient, createScopedClient } from '../_shared/supabase-client.ts'
+import { ensureBillingUserFoundation, saveStripeCustomerId } from '../_shared/billing-user-foundation.ts'
 
 Deno.serve(async (req) => {
     const start = performance.now();
@@ -33,7 +34,7 @@ Deno.serve(async (req) => {
             throw new Error('Invalid JSON body');
         }
 
-        const { plan, billing = 'monthly', user_id: bodyUserId, email: bodyEmail } = body;
+        const { plan, billing = 'monthly', user_id: bodyUserId, email: bodyEmail, profile: checkoutProfile = {} } = body;
 
         if (!plan) throw new Error('Plan is required');
         if (!['monthly', 'yearly'].includes(billing)) throw new Error('Invalid billing cycle');
@@ -56,19 +57,11 @@ Deno.serve(async (req) => {
         }
         if (!userEmail) throw new Error('User email not found');
 
-        // 3. Get Organization (Critical for B2B/SaaS)
-        const { data: orgMember } = await supabaseAdmin
-            .from('org_members')
-            .select('org_id')
-            .eq('user_id', userId)
-            .eq('status', 'active')
-            .in('role', ['Presidente', 'Administrador'])
-            .order('created_at', { ascending: true })
-            .limit(1)
-            .maybeSingle();
-
+        // 3. Get or repair the account foundation required by billing.
+        const foundationUser = user ?? { id: userId, email: userEmail, user_metadata: {} };
+        const { profile, orgMember } = await ensureBillingUserFoundation(supabaseAdmin, foundationUser, checkoutProfile);
         const orgId = orgMember?.org_id;
-        if (!orgId) throw new Error('Organization not found for user');
+        if (!orgId) throw new Error('Organization not found for user after signup provisioning');
 
         // 4. Get Price ID from Database
         const priceField = billing === 'monthly' ? 'stripe_price_id_monthly' : 'stripe_price_id_yearly';
@@ -85,12 +78,6 @@ Deno.serve(async (req) => {
         if (!priceId) throw new Error(`Price ID missing for ${plan} (${billing})`);
 
         // 5. Get/Create Stripe Customer
-        const { data: profile } = await supabaseAdmin
-            .from('profiles')
-            .select('stripe_customer_id')
-            .eq('id', userId)
-            .maybeSingle();
-
         let customerId = profile?.stripe_customer_id;
 
         if (!customerId) {
@@ -104,11 +91,7 @@ Deno.serve(async (req) => {
             });
             customerId = customer.id;
 
-            // Save to profile
-            await supabaseAdmin
-                .from('profiles')
-                .update({ stripe_customer_id: customerId })
-                .eq('id', userId);
+            await saveStripeCustomerId(supabaseAdmin, userId, customerId);
         }
 
         // 6. Create Subscription

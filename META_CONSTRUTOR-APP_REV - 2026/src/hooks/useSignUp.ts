@@ -19,9 +19,13 @@ interface UseSignUpReturn {
 // Rate limit frontend: max 3 tentativas em 60 segundos
 const RATE_LIMIT_MAX = 3;
 const RATE_LIMIT_WINDOW_MS = 60_000;
+const PROFILE_LOOKUP_ATTEMPTS = 5;
+const PROFILE_LOOKUP_RETRY_MS = 400;
 
 // Mensagem genérica para qualquer erro de signup (enumeration protection)
 const GENERIC_SIGNUP_ERROR = 'Não foi possível concluir o cadastro. Verifique os dados e tente novamente.';
+
+const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
 
 export const useSignUp = (): UseSignUpReturn => {
   const [isLoading, setIsLoading] = useState(false);
@@ -141,21 +145,31 @@ export const useSignUp = (): UseSignUpReturn => {
         throw new Error(GENERIC_SIGNUP_ERROR);
       }
 
-      // Aguardar a criação do perfil via trigger
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      let profile: { id: string } | null = null;
+      let profileError: unknown = null;
 
-      // Verificar se o perfil foi criado
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', authData.user.id)
-        .maybeSingle();
+      for (let attempt = 1; attempt <= PROFILE_LOOKUP_ATTEMPTS; attempt += 1) {
+        const { data: profileData, error: lookupError } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('id', authData.user.id)
+          .maybeSingle();
 
-      if (profileError || !profile) {
-        throw new Error('Conta criada, mas houve um problema ao configurar o perfil. Entre em contato com o suporte.');
+        profile = profileData;
+        profileError = lookupError;
+
+        if (profile || profileError || attempt === PROFILE_LOOKUP_ATTEMPTS) {
+          break;
+        }
+
+        await wait(PROFILE_LOOKUP_RETRY_MS);
       }
 
-      // Login automático após cadastro
+      if (profileError || !profile) {
+        throw new Error(GENERIC_SIGNUP_ERROR);
+      }
+
+      // Login automatico apos cadastro.
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
@@ -163,10 +177,10 @@ export const useSignUp = (): UseSignUpReturn => {
 
       if (signInError) {
         toast.success('Conta criada com sucesso! Faça login para continuar.');
-        return true;
+        return false;
       }
 
-      toast.success('Conta criada com sucesso! Redirecionando...');
+      toast.success('Conta criada com sucesso! Entrando na sua conta...');
       return true;
 
     } catch (err: unknown) {

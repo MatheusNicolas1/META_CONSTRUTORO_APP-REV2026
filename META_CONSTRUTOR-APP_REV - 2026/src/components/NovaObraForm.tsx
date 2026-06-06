@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { OrcamentoAnalitico, AtividadeOrcamento } from "./OrcamentoAnalitico";
 import { DocumentosObra } from "./DocumentosObra";
 import { useObras } from "@/hooks/useObras";
+import { useDocuments } from "@/hooks/useDocuments";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
@@ -55,8 +56,10 @@ const emptyFormData = {
 
 export const NovaObraForm = ({ isOpen, onClose, obra }: NovaObraFormProps) => {
   const { createObra, updateObra } = useObras();
+  const { uploadDocument } = useDocuments({ enabled: false });
   const isEditing = Boolean(obra?.id);
   const [atividadesOrcamento, setAtividadesOrcamento] = useState<AtividadeOrcamento[]>([]);
+  const [documentosObra, setDocumentosObra] = useState<File[]>([]);
   const [formData, setFormData] = useState(emptyFormData);
 
   useEffect(() => {
@@ -74,15 +77,29 @@ export const NovaObraForm = ({ isOpen, onClose, obra }: NovaObraFormProps) => {
         observacoes: obra.observacoes || obra.descricao || ""
       });
       setAtividadesOrcamento([]);
+      setDocumentosObra([]);
       return;
     }
 
     setFormData(emptyFormData);
     setAtividadesOrcamento([]);
+    setDocumentosObra([]);
   }, [isOpen, obra]);
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const uploadPendingDocuments = async (obraId: string) => {
+    for (const file of documentosObra) {
+      await uploadDocument.mutateAsync({
+        nome: file.name,
+        categoria: file.type.startsWith('image/') ? 'Outros' : 'Projeto',
+        obra_id: obraId,
+        descricao: 'Documento anexado pela tela da obra',
+        file,
+      });
+    }
   };
 
   const handleSubmit = async () => {
@@ -106,30 +123,36 @@ export const NovaObraForm = ({ isOpen, onClose, obra }: NovaObraFormProps) => {
     };
 
     if (isEditing && obra?.id) {
-      updateObra.mutate({
-        id: obra.id,
-        ...payload,
-      }, {
-        onSuccess: () => {
-          onClose();
-        }
-      });
+      try {
+        await updateObra.mutateAsync({
+          id: obra.id,
+          ...payload,
+        });
+        await uploadPendingDocuments(obra.id);
+        setDocumentosObra([]);
+        onClose();
+      } catch {
+        // Mutations already show Supabase error context in toasts.
+      }
       return;
     }
 
-    createObra.mutate({
-      ...payload,
-      atividades: atividadesOrcamento,
-    }, {
-      onSuccess: () => {
-        setAtividadesOrcamento([]);
-        setFormData(emptyFormData);
-        onClose();
-      }
-    });
+    try {
+      const novaObra = await createObra.mutateAsync({
+        ...payload,
+        atividades: atividadesOrcamento,
+      });
+      await uploadPendingDocuments(novaObra.id);
+      setAtividadesOrcamento([]);
+      setDocumentosObra([]);
+      setFormData(emptyFormData);
+      onClose();
+    } catch {
+      // Mutations already show Supabase error context in toasts.
+    }
   };
 
-  const isSubmitting = createObra.isPending || updateObra.isPending;
+  const isSubmitting = createObra.isPending || updateObra.isPending || uploadDocument.isPending;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
@@ -146,7 +169,7 @@ export const NovaObraForm = ({ isOpen, onClose, obra }: NovaObraFormProps) => {
         <div className="flex-1 overflow-hidden">
           <Tabs defaultValue="basico" className="h-full flex flex-col">
             <div className="px-4 sm:px-6 pt-4 flex-shrink-0">
-              <TabsList className="grid w-full grid-cols-3 h-9 sm:h-10">
+              <TabsList className="grid h-auto min-h-9 w-full grid-cols-3 sm:min-h-10">
                 <TabsTrigger value="basico" className="text-xs sm:text-sm px-2 sm:px-3">Dados Básicos</TabsTrigger>
                 <TabsTrigger value="orcamento" className="text-xs sm:text-sm px-2 sm:px-3">Orçamento</TabsTrigger>
                 <TabsTrigger value="documentos" className="text-xs sm:text-sm px-2 sm:px-3">Documentos</TabsTrigger>
@@ -293,7 +316,7 @@ export const NovaObraForm = ({ isOpen, onClose, obra }: NovaObraFormProps) => {
               </TabsContent>
 
               <TabsContent value="documentos" className="mt-0">
-                <DocumentosObra />
+                <DocumentosObra onFilesChange={setDocumentosObra} disabled={isSubmitting} />
               </TabsContent>
             </div>
           </Tabs>

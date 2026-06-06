@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,18 +31,31 @@ interface Subscription {
 export function SubscriptionTab() {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { toast } = useToast();
+    const requestedPlanSlug = searchParams.get('plan');
+    const requestedBillingCycle = searchParams.get('billing') === 'yearly'
+        ? 'yearly'
+        : searchParams.get('billing') === 'monthly'
+            ? 'monthly'
+            : null;
     const [loading, setLoading] = useState(true);
     const [subscription, setSubscription] = useState<Subscription | null>(null);
     const [isPortalLoading, setIsPortalLoading] = useState(false);
     const [checkoutPlanId, setCheckoutPlanId] = useState<string | null>(null);
-    const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+    const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(requestedBillingCycle || 'monthly');
 
     const { data: plans, isLoading: plansLoading } = usePlans();
 
     useEffect(() => {
         loadSubscription();
     }, [user]);
+
+    useEffect(() => {
+        if (requestedBillingCycle) {
+            setBillingCycle(requestedBillingCycle);
+        }
+    }, [requestedBillingCycle]);
 
     const loadSubscription = async () => {
         if (!user) return;
@@ -82,7 +95,7 @@ export function SubscriptionTab() {
                     ...sub,
                     cancel_at_period_end: false
                 } as any);
-                setBillingCycle(sub.billing_cycle as 'monthly' | 'yearly');
+                setBillingCycle(requestedBillingCycle || (sub.billing_cycle as 'monthly' | 'yearly'));
             }
         } catch (error) {
             console.error("Erro ao carregar assinatura:", error);
@@ -91,12 +104,21 @@ export function SubscriptionTab() {
         }
     };
 
-    const handleManageSubscription = async () => {
+    const handleManageSubscription = async (planSlug?: string, cycle: 'monthly' | 'yearly' = billingCycle) => {
         setIsPortalLoading(true);
 
         try {
+            const body: Record<string, string> = {
+                returnUrl: `${window.location.origin}/app/planos`
+            };
+
+            if (planSlug) {
+                body.plan = planSlug;
+                body.billing = cycle;
+            }
+
             const { data, error } = await supabase.functions.invoke('create-portal-session', {
-                body: { returnUrl: window.location.href }
+                body
             });
 
             if (error) throw error;
@@ -110,6 +132,7 @@ export function SubscriptionTab() {
                 description: "Nao foi possivel abrir o portal. Tente novamente.",
                 variant: "destructive"
             });
+            setCheckoutPlanId(null);
             setIsPortalLoading(false);
         }
     };
@@ -140,13 +163,35 @@ export function SubscriptionTab() {
         navigate(`/checkout?plan=${encodeURIComponent(plan.slug)}&billing=${cycle}`);
     };
 
-    const handleSelectPlan = (planId: string) => {
-        if (subscription && ['active', 'trialing'].includes(subscription.status)) {
+    const handleSelectPlan = async (planId: string) => {
+        const plan = plans?.find(p => p.id === planId);
+        if (!plan) return;
+
+        if (plan.slug === 'business' || (!plan.monthly_price_cents && plan.slug !== 'free')) {
+            toast({
+                title: "Plano sob consulta",
+                description: "Este plano precisa ser contratado com a equipe comercial.",
+            });
+            navigate('/contato');
+            return;
+        }
+
+        if (!plan.slug) {
+            toast({
+                title: "Plano indisponivel",
+                description: "Nao foi possivel identificar este plano. Tente novamente.",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        if (subscription && ['active', 'trialing', 'past_due'].includes(subscription.status)) {
+            setCheckoutPlanId(planId);
             toast({
                 title: "Alteracao de plano",
-                description: "Voce sera redirecionado para o portal seguro para alterar seu plano.",
+                description: "Voce sera redirecionado para o portal seguro para confirmar a mudanca.",
             });
-            handleManageSubscription();
+            await handleManageSubscription(plan.slug, billingCycle);
             return;
         }
 
@@ -161,7 +206,8 @@ export function SubscriptionTab() {
         );
     }
 
-    const hasActiveSubscription = subscription && ['active', 'trialing'].includes(subscription.status);
+    const hasActiveSubscription = subscription && ['active', 'trialing', 'past_due'].includes(subscription.status);
+    const requestedPlanId = plans?.find((plan) => plan.slug === requestedPlanSlug)?.id || null;
     const activePlanPrice = ((subscription?.billing_cycle === 'yearly'
         ? subscription?.plan?.yearly_price_cents
         : subscription?.plan?.monthly_price_cents) || 0) / 100;
@@ -207,7 +253,7 @@ export function SubscriptionTab() {
 
                         {hasActiveSubscription && (
                             <Button
-                                onClick={handleManageSubscription}
+                                onClick={() => handleManageSubscription()}
                                 disabled={isPortalLoading}
                                 variant="outline"
                                 className="gap-2 shrink-0"
@@ -249,8 +295,8 @@ export function SubscriptionTab() {
                             price_yearly: p.yearly_price_cents || 0
                         }))}
                         billingCycle={billingCycle}
-                        selectedPlanId={null}
-                        currentPlanId={subscription?.plan?.id}
+                        selectedPlanId={requestedPlanId}
+                        currentPlanId={subscription?.billing_cycle === billingCycle ? subscription?.plan?.id : undefined}
                         onSelectPlan={handleSelectPlan}
                         isLoadingPlanId={checkoutPlanId}
                     />

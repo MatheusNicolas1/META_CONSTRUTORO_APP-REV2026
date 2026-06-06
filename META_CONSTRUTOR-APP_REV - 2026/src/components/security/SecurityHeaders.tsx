@@ -89,6 +89,7 @@ const buildCSP = (nonce: string): string => {
       // Supabase project (REST, Auth, Realtime)
       import.meta.env.VITE_SUPABASE_URL || "https://bgdvlhttyjeuprrfxgun.supabase.co",
       (import.meta.env.VITE_SUPABASE_URL ? import.meta.env.VITE_SUPABASE_URL.replace('https://', 'wss://') : "wss://bgdvlhttyjeuprrfxgun.supabase.co"),
+      "https://o4511422743576576.ingest.us.sentry.io",
       // Local dev (only used when isDevelopment === true)
       ...(isDevelopment ? ["ws://localhost:*", "http://localhost:*"] : []),
     ].join(' '),

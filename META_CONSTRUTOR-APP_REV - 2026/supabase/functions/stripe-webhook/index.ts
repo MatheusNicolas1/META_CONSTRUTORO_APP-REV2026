@@ -12,6 +12,55 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
 
 const cryptoProvider = Stripe.createSubtleCryptoProvider()
 
+const toStripeTimestampIso = (value: unknown): string | null => {
+    if (typeof value !== 'number' || !Number.isFinite(value)) {
+        return null
+    }
+
+    const date = new Date(value * 1000)
+    return Number.isNaN(date.getTime()) ? null : date.toISOString()
+}
+
+const getSubscriptionPeriod = (subscription: Stripe.Subscription) => {
+    const subscriptionWithPeriod = subscription as Stripe.Subscription & {
+        current_period_start?: number | null
+        current_period_end?: number | null
+    }
+    const firstItem = subscription.items?.data?.[0] as (Stripe.SubscriptionItem & {
+        current_period_start?: number | null
+        current_period_end?: number | null
+    }) | undefined
+
+    return {
+        current_period_start: toStripeTimestampIso(subscriptionWithPeriod.current_period_start ?? firstItem?.current_period_start),
+        current_period_end: toStripeTimestampIso(subscriptionWithPeriod.current_period_end ?? firstItem?.current_period_end),
+        trial_end: toStripeTimestampIso(subscription.trial_end),
+    }
+}
+
+const getPlanForSubscription = async (supabaseAdmin: any, subscription: Stripe.Subscription) => {
+    const priceId = subscription.items.data[0]?.price.id
+    if (!priceId) return { plan: null, billingCycle: null, priceId: null }
+
+    const { data: monthlyPlan } = await supabaseAdmin
+        .from('plans')
+        .select('id, slug, stripe_price_id_monthly, stripe_price_id_yearly')
+        .eq('stripe_price_id_monthly', priceId)
+        .eq('is_active', true)
+        .maybeSingle()
+
+    if (monthlyPlan) return { plan: monthlyPlan, billingCycle: 'monthly', priceId }
+
+    const { data: yearlyPlan } = await supabaseAdmin
+        .from('plans')
+        .select('id, slug, stripe_price_id_monthly, stripe_price_id_yearly')
+        .eq('stripe_price_id_yearly', priceId)
+        .eq('is_active', true)
+        .maybeSingle()
+
+    return { plan: yearlyPlan || null, billingCycle: yearlyPlan ? 'yearly' : null, priceId }
+}
+
 serve(async (req) => {
     const start = performance.now()
     const requestId = crypto.randomUUID()
@@ -120,6 +169,8 @@ serve(async (req) => {
                     const billingCycle = monthlyPlan ? 'monthly' : 'yearly';
 
                     if (plan && orgId) {
+                        const period = getSubscriptionPeriod(subscription);
+
                         // Upsert Subscription
                         // M4.5: Write subscription truth to DB
                         const subscriptionData = {
@@ -130,9 +181,9 @@ serve(async (req) => {
                             status: subscription.status,
                             plan_id: plan.id,
                             billing_cycle: billingCycle,
-                            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-                            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-                            trial_end: subscription.trial_end ? new Date(subscription.trial_end * 1000).toISOString() : null,
+                            current_period_start: period.current_period_start,
+                            current_period_end: period.current_period_end,
+                            trial_end: period.trial_end,
                             metadata: subscription.metadata
                         };
 
@@ -220,6 +271,8 @@ serve(async (req) => {
                         user_id: userId
                     })
 
+                    const period = getSubscriptionPeriod(subscription)
+
                     // M4.5: Write subscription truth to DB
                     const { error: subError } = await supabaseAdmin
                         .from('subscriptions')
@@ -229,9 +282,9 @@ serve(async (req) => {
                             stripe_subscription_id: subscription.id,
                             stripe_customer_id: session.customer as string,
                             status: subscription.status as any,
-                            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-                            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-                            trial_end: subscription.trial_end ? new Date(subscription.trial_end * 1000).toISOString() : null,
+                            current_period_start: period.current_period_start,
+                            current_period_end: period.current_period_end,
+                            trial_end: period.trial_end,
                             billing_cycle: billingCycle,
                         }, { onConflict: 'stripe_subscription_id' })
 
@@ -282,14 +335,42 @@ serve(async (req) => {
 
                 case 'customer.subscription.updated': {
                     const subscription = event.data.object as Stripe.Subscription;
+                    const period = getSubscriptionPeriod(subscription);
+                    const { plan, billingCycle, priceId } = await getPlanForSubscription(supabaseAdmin, subscription);
+
+                    const subscriptionUpdate: Record<string, unknown> = {
+                        status: subscription.status,
+                        current_period_start: period.current_period_start,
+                        current_period_end: period.current_period_end,
+                        canceled_at: toStripeTimestampIso(subscription.canceled_at),
+                    };
+
+                    if (plan && billingCycle && priceId) {
+                        subscriptionUpdate.plan_id = plan.id;
+                        subscriptionUpdate.billing_cycle = billingCycle;
+                        subscriptionUpdate.stripe_price_id = priceId;
+                    }
+
                     await supabaseAdmin
                         .from('subscriptions')
-                        .update({
-                            status: subscription.status,
-                            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-                            canceled_at: subscription.canceled_at ? new Date(subscription.canceled_at * 1000).toISOString() : null,
-                        })
+                        .update(subscriptionUpdate)
                         .eq('stripe_subscription_id', subscription.id);
+
+                    if (plan) {
+                        const customerId = typeof subscription.customer === 'string'
+                            ? subscription.customer
+                            : subscription.customer.id;
+
+                        await supabaseAdmin
+                            .from('profiles')
+                            .update({
+                                stripe_customer_id: customerId,
+                                stripe_subscription_id: subscription.id,
+                                subscription_status: subscription.status,
+                                plan_type: plan.slug,
+                            })
+                            .eq('stripe_customer_id', customerId);
+                    }
                     break;
                 }
 

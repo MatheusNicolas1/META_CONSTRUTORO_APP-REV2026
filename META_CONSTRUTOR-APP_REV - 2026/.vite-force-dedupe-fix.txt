@@ -1,5 +1,0 @@
-Force Vite cache rebuild - React dedupe fix
-Timestamp: 2025-11-18T12:00:00Z
-- Added dedupe for react, react-dom, react/jsx-runtime
-- Force optimizeDeps rebuild
-- This fixes "Cannot read properties of null (reading 'useState')" error

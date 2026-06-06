@@ -26,14 +26,14 @@ export type ReportPdfPayload = {
   sections: ReportPdfSection[];
 };
 
-const getFilenameFromDisposition = (contentDisposition: string | null, fallback: string) => {
+export const getFilenameFromDisposition = (contentDisposition: string | null, fallback: string) => {
   if (!contentDisposition) return fallback;
   const match = contentDisposition.match(/filename="?([^"]+)"?/i);
   return match?.[1] || fallback;
 };
 
-const fallbackFilename = (reportType: string) => {
-  const data = new Date().toISOString().slice(0, 10);
+export const fallbackFilename = (reportType: string, generatedAt = new Date()) => {
+  const data = generatedAt.toISOString().slice(0, 10);
   const tipo = reportType
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
@@ -42,6 +42,14 @@ const fallbackFilename = (reportType: string) => {
     .toUpperCase();
   return `RELATORIO_${tipo || 'GERAL'}_${data}.PDF`;
 };
+
+export const buildReportPdfRequestBody = (payload: ReportPdfPayload, generatedAt = new Date().toISOString()) => ({
+  reportType: payload.reportType,
+  report: {
+    ...payload,
+    generatedAt: payload.generatedAt || generatedAt,
+  },
+});
 
 export const useReportPdfDownload = () => {
   const [isDownloading, setIsDownloading] = useState(false);
@@ -67,13 +75,7 @@ export const useReportPdfDownload = () => {
       const response = await fetch(functionUrl, {
         method: 'POST',
         headers,
-        body: JSON.stringify({
-          reportType: payload.reportType,
-          report: {
-            ...payload,
-            generatedAt: payload.generatedAt || new Date().toLocaleString('pt-BR'),
-          },
-        }),
+        body: JSON.stringify(buildReportPdfRequestBody(payload)),
       });
 
       if (!response.ok) {

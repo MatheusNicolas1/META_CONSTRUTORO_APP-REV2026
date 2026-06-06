@@ -1,5 +1,13 @@
-// Status do RDO para fluxo de aprovação
-export type RDOStatus = 'Em elaboração' | 'Aguardando aprovação' | 'Aprovado' | 'Rejeitado';
+// Status do RDO para fluxo de aprovacao. Mantem legados em portugues durante a migracao.
+export type RDOStatus =
+  | 'DRAFT'
+  | 'SUBMITTED'
+  | 'APPROVED'
+  | 'REJECTED'
+  | 'Em elaboração'
+  | 'Aguardando aprovação'
+  | 'Aprovado'
+  | 'Rejeitado';
 
 export interface RDO {
   id: string; // UUID

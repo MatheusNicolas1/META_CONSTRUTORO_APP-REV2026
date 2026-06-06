@@ -1,56 +1,36 @@
-import React from 'react';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { motion } from 'framer-motion';
+import React from "react";
+import { CheckCircle2 } from "lucide-react";
+
+const points = ["Sem fidelidade", "Plano gratuito", "Evolucao por necessidade"];
 
 export function PricingHero() {
-    return (
-        <section className="relative overflow-hidden pt-24 pb-12 md:pt-32 md:pb-20">
-            {/* Background elements - more subtle */}
-            <div className="absolute inset-0 -z-10">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-primary/10 blur-[100px] rounded-full opacity-40" />
-            </div>
+  return (
+    <section className="relative overflow-hidden border-b border-border bg-[#fbfaf7] px-2 pb-12 pt-24 md:pb-20 md:pt-32">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl space-y-4">
+          <div className="text-xs font-semibold uppercase leading-none text-primary">
+            Precos
+          </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-                <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="space-y-4 max-w-4xl mx-auto"
-                >
-                    <Badge variant="outline" className="px-3 py-1 text-xs font-medium leading-none border-primary/20 bg-primary/5 text-primary/80 rounded-full">
-                        Preços
-                    </Badge>
+          <h1 className="text-3xl font-semibold leading-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
+            Planos simples para grandes obras.
+          </h1>
 
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground leading-tight break-words">
-                        Planos simples para <br />
-                        <span className="text-primary">
-                            grandes obras
-                        </span>
-                    </h1>
+          <p className="mx-auto max-w-[64ch] text-base leading-8 text-muted-foreground sm:text-lg">
+            Comece pelo plano gratuito, valide a rotina da equipe e evolua quando a obra exigir
+            mais controle.
+          </p>
 
-                    <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-[20rem] mx-auto sm:max-w-xl">
-                        Transparência e flexibilidade para sua gestão.
-                        Comece grátis e escale sem complicações.
-                    </p>
-
-                    <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 pt-4 sm:gap-x-8">
-                        <div className="flex items-center gap-2 text-xs font-medium leading-none text-muted-foreground/80 uppercase">
-                            <CheckCircle2 className="h-4 w-4 text-primary/60" />
-                            <span>Sem fidelidade</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-xs font-medium leading-none text-muted-foreground/80 uppercase">
-                            <CheckCircle2 className="h-4 w-4 text-primary/60" />
-                            <span>Suporte premium</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-xs font-medium leading-none text-muted-foreground/80 uppercase">
-                            <CheckCircle2 className="h-4 w-4 text-primary/60" />
-                            <span>Upgrade instantâneo</span>
-                        </div>
-                    </div>
-                </motion.div>
-            </div>
-        </section>
-    );
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 pt-4 sm:gap-x-8">
+            {points.map((point) => (
+              <div key={point} className="flex items-center gap-2 text-xs font-medium uppercase leading-none text-muted-foreground">
+                <CheckCircle2 className="h-4 w-4 text-primary" />
+                <span>{point}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

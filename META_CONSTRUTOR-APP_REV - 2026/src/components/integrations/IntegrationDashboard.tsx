@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,27 +20,18 @@ import { IntegrationLog, IntegrationStatus } from "@/types/integration";
 
 interface IntegrationDashboardProps {
   logs: IntegrationLog[];
-  onRefresh: () => void;
+  onRefresh: () => void | Promise<void>;
   statuses?: IntegrationStatus[];
 }
 
 export const IntegrationDashboard = ({ logs, onRefresh, statuses = [] }: IntegrationDashboardProps) => {
-  const [stats, setStats] = useState({
-    totalEvents: 0,
-    successRate: 0,
-    errorCount: 0,
-    lastHourEvents: 0
-  });
-
   const integrationStatuses = statuses;
+  const statusesWithEvidence = integrationStatuses.filter(status => status.hasEvidence && typeof status.uptime === 'number');
+  const aggregateUptime = statusesWithEvidence.length > 0
+    ? Math.round(statusesWithEvidence.reduce((sum, status) => sum + (status.uptime || 0), 0) / statusesWithEvidence.length)
+    : null;
 
-  useEffect(() => {
-    calculateStats();
-    const interval = setInterval(calculateStats, 30000); // Update every 30 seconds
-    return () => clearInterval(interval);
-  }, [logs]);
-
-  const calculateStats = () => {
+  const stats = useMemo(() => {
     const now = new Date();
     const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
     
@@ -48,13 +39,13 @@ export const IntegrationDashboard = ({ logs, onRefresh, statuses = [] }: Integra
     const successLogs = logs.filter(log => log.status === 'success');
     const errorLogs = logs.filter(log => log.status === 'error');
 
-    setStats({
+    return {
       totalEvents: logs.length,
-      successRate: logs.length > 0 ? Math.round((successLogs.length / logs.length) * 100) : 0,
+      successRate: logs.length > 0 ? Math.round((successLogs.length / logs.length) * 100) : null,
       errorCount: errorLogs.length,
       lastHourEvents: recentLogs.length
-    });
-  };
+    };
+  }, [logs]);
 
   const getIntegrationIcon = (type: string) => {
     switch (type) {
@@ -66,13 +57,26 @@ export const IntegrationDashboard = ({ logs, onRefresh, statuses = [] }: Integra
     }
   };
 
-  const getStatusColor = (isHealthy: boolean) => {
-    return isHealthy ? "text-green-600" : "text-red-600";
+  const testIntegration = async () => {
+    await onRefresh();
   };
 
-  const testIntegration = async () => {
-    onRefresh();
+  const getEvidenceLabel = (status: IntegrationStatus) => {
+    if (!status.hasEvidence) return "Sem evidencia";
+    return status.isHealthy ? "Saudavel" : "Erro";
   };
+
+  const getEvidenceBadgeVariant = (status: IntegrationStatus) => {
+    if (!status.hasEvidence) return "secondary";
+    return status.isHealthy ? "default" : "destructive";
+  };
+
+  const formatLastCheck = (status: IntegrationStatus) => {
+    if (!status.lastCheck) return "Sem teste registrado";
+    return new Date(status.lastCheck).toLocaleTimeString();
+  };
+
+  const formatPercent = (value?: number) => typeof value === "number" ? `${value}%` : "-";
 
   return (
     <div className="space-y-6">
@@ -97,8 +101,11 @@ export const IntegrationDashboard = ({ logs, onRefresh, statuses = [] }: Integra
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.successRate}%</div>
-            <Progress value={stats.successRate} className="mt-2" />
+            <div className="text-2xl font-bold">{formatPercent(stats.successRate ?? undefined)}</div>
+            <Progress value={stats.successRate ?? 0} className="mt-2" />
+            <p className="text-xs text-muted-foreground mt-1">
+              {stats.successRate === null ? "Sem logs persistidos" : "Calculado a partir dos logs"}
+            </p>
           </CardContent>
         </Card>
 
@@ -121,9 +128,11 @@ export const IntegrationDashboard = ({ logs, onRefresh, statuses = [] }: Integra
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">99.2%</div>
+            <div className="text-2xl font-bold text-green-600">
+              {aggregateUptime === null ? "-" : `${aggregateUptime}%`}
+            </div>
             <p className="text-xs text-muted-foreground">
-              Last 30 days
+              {aggregateUptime === null ? "Sem evidencias de teste" : "Media dos logs reais"}
             </p>
           </CardContent>
         </Card>
@@ -155,7 +164,7 @@ export const IntegrationDashboard = ({ logs, onRefresh, statuses = [] }: Integra
                       <div>
                         <h4 className="font-medium">{status.name}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Last check: {new Date(status.lastCheck).toLocaleTimeString()}
+                          Ultima evidencia: {formatLastCheck(status)}
                         </p>
                       </div>
                     </div>
@@ -163,24 +172,24 @@ export const IntegrationDashboard = ({ logs, onRefresh, statuses = [] }: Integra
                     <div className="flex items-center space-x-4">
                       <div className="text-right">
                         <div className="text-sm font-medium">
-                          Success Rate: {status.successRate}%
+                          Taxa de sucesso: {formatPercent(status.successRate)}
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          Latency: {status.latency}ms
+                          Eventos reais: {status.evidenceCount}
                         </div>
                       </div>
                       
                       <div className="flex items-center space-x-2">
                         <Badge 
-                          variant={status.isHealthy ? "default" : "destructive"}
+                          variant={getEvidenceBadgeVariant(status)}
                           className="flex items-center gap-1"
                         >
-                          {status.isHealthy ? (
+                          {status.hasEvidence && status.isHealthy ? (
                             <CheckCircle className="h-3 w-3" />
                           ) : (
                             <AlertCircle className="h-3 w-3" />
                           )}
-                          {status.isHealthy ? "Healthy" : "Error"}
+                          {getEvidenceLabel(status)}
                         </Badge>
                         
                         <Button 
@@ -194,10 +203,18 @@ export const IntegrationDashboard = ({ logs, onRefresh, statuses = [] }: Integra
                     </div>
                   </div>
                   
-                  {!status.isHealthy && (
+                  {!status.hasEvidence && (
+                    <div className="mt-3 p-3 bg-muted border border-border rounded-lg">
+                      <p className="text-sm text-muted-foreground">
+                        Nenhum teste ou execucao persistida em logs para esta integracao.
+                      </p>
+                    </div>
+                  )}
+
+                  {status.hasEvidence && !status.isHealthy && (
                     <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
                       <p className="text-sm text-red-700">
-                        Integration is experiencing issues. Error count: {status.errorCount}
+                        Integracao com falhas registradas. Erros persistidos: {status.errorCount}
                       </p>
                     </div>
                   )}
@@ -268,21 +285,28 @@ export const IntegrationDashboard = ({ logs, onRefresh, statuses = [] }: Integra
                   <div className="grid gap-4 md:grid-cols-3">
                     <div>
                       <div className="text-sm text-muted-foreground">Uptime</div>
-                      <div className="text-2xl font-bold">{status.uptime}%</div>
-                      <Progress value={status.uptime} className="mt-1" />
+                      <div className="text-2xl font-bold">{formatPercent(status.uptime)}</div>
+                      <Progress value={status.uptime ?? 0} className="mt-1" />
+                      {!status.hasEvidence && (
+                        <div className="text-xs text-muted-foreground mt-1">Sem evidencias reais</div>
+                      )}
                     </div>
                     
                     <div>
                       <div className="text-sm text-muted-foreground">Success Rate</div>
-                      <div className="text-2xl font-bold">{status.successRate}%</div>
-                      <Progress value={status.successRate} className="mt-1" />
+                      <div className="text-2xl font-bold">{formatPercent(status.successRate)}</div>
+                      <Progress value={status.successRate ?? 0} className="mt-1" />
+                      <div className="text-xs text-muted-foreground mt-1">
+                        {status.hasEvidence ? `${status.successfulEvents}/${status.evidenceCount} eventos com sucesso` : 'Sem logs persistidos'}
+                      </div>
                     </div>
                     
                     <div>
                       <div className="text-sm text-muted-foreground">Avg. Latency</div>
-                      <div className="text-2xl font-bold">{status.latency}ms</div>
+                      <div className="text-2xl font-bold">{status.latency == null ? "-" : `${status.latency}ms`}</div>
                       <div className="text-xs text-muted-foreground mt-1">
-                        {status.latency < 300 ? 'Excellent' : 
+                        {status.latency == null ? 'No latency data' :
+                         status.latency < 300 ? 'Excellent' :
                          status.latency < 600 ? 'Good' : 'Needs attention'}
                       </div>
                     </div>

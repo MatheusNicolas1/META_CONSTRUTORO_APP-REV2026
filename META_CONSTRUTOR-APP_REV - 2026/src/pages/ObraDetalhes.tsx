@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Building2,
   MapPin,
@@ -27,20 +32,31 @@ import { SocialShare } from "@/components/SocialShare";
 import { NovaObraForm } from "@/components/NovaObraForm";
 import { useObraDetails } from "@/hooks/useObraDetails";
 import { useRDOsByObra } from "@/hooks/useRDOsByObra";
+import { DocumentType, useDocuments } from "@/hooks/useDocuments";
 import { FileText as FileTextIcon, Clock, CheckCircle, AlertCircle, Wrench as WrenchIcon } from "lucide-react";
 import { useReportPdfDownload } from "@/hooks/useReportPdfDownload";
+import { DOCUMENT_UPLOAD_ACCEPT, DOCUMENT_UPLOAD_HELP_TEXT } from "@/utils/documentUploadValidation";
 
 const ObraDetalhes = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("geral");
   const isEditRoute = location.pathname.endsWith("/editar");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(isEditRoute);
+  const [isDocumentDialogOpen, setIsDocumentDialogOpen] = useState(false);
+  const [documentForm, setDocumentForm] = useState<{
+    nome: string;
+    categoria: DocumentType | "";
+    descricao: string;
+    file: File | null;
+  }>({ nome: "", categoria: "", descricao: "", file: null });
 
   const { data: obra, isLoading, error } = useObraDetails(id || '');
   const { data: rdosReais = [], isLoading: rdosLoading } = useRDOsByObra(id);
   const { downloadReportPdf, isDownloading } = useReportPdfDownload();
+  const { uploadDocument } = useDocuments({ obraId: id || undefined, enabled: false });
 
   useEffect(() => {
     setIsEditDialogOpen(isEditRoute);
@@ -202,6 +218,36 @@ const ObraDetalhes = () => {
     });
   };
 
+  const tiposDocumento: DocumentType[] = [
+    "Projeto",
+    "Licença",
+    "Relatório",
+    "Memorial",
+    "Cronograma",
+    "Contrato",
+    "Certificado",
+    "Laudo",
+    "Outros",
+  ];
+
+  const handleUploadDocumentoObra = async () => {
+    if (!id || !documentForm.file || !documentForm.nome || !documentForm.categoria) return;
+
+    uploadDocument.mutate({
+      nome: documentForm.nome,
+      categoria: documentForm.categoria,
+      obra_id: id,
+      descricao: documentForm.descricao,
+      file: documentForm.file,
+    }, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['obra', id] });
+        setDocumentForm({ nome: "", categoria: "", descricao: "", file: null });
+        setIsDocumentDialogOpen(false);
+      }
+    });
+  };
+
   return (
     <div className="responsive-spacing">
       {/* Header */}
@@ -336,7 +382,7 @@ const ObraDetalhes = () => {
                   <CardTitle className="text-card-foreground">Documentos da Obra</CardTitle>
                   <CardDescription>Documentos anexados da obra e RDOs</CardDescription>
                 </div>
-                <Button variant="outline">
+                <Button variant="outline" onClick={() => setIsDocumentDialogOpen(true)}>
                   <Upload className="mr-2 h-4 w-4" />
                   Anexar Documento
                 </Button>
@@ -804,6 +850,80 @@ const ObraDetalhes = () => {
         onClose={handleCloseEdit}
         obra={obra}
       />
+
+      <Dialog open={isDocumentDialogOpen} onOpenChange={setIsDocumentDialogOpen}>
+        <DialogContent className="sm:max-w-[560px] bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="text-card-foreground">Anexar Documento</DialogTitle>
+            <DialogDescription>Envie um arquivo vinculado a esta obra.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="documento-nome">Nome *</Label>
+              <Input
+                id="documento-nome"
+                value={documentForm.nome}
+                onChange={(event) => setDocumentForm(prev => ({ ...prev, nome: event.target.value }))}
+                placeholder="Ex: Alvara de construcao"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Categoria *</Label>
+              <Select
+                value={documentForm.categoria}
+                onValueChange={(value) => setDocumentForm(prev => ({ ...prev, categoria: value as DocumentType }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione a categoria" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tiposDocumento.map((tipo) => (
+                    <SelectItem key={tipo} value={tipo}>{tipo}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="documento-arquivo">Arquivo *</Label>
+              <Input
+                id="documento-arquivo"
+                type="file"
+                accept={DOCUMENT_UPLOAD_ACCEPT}
+                onChange={(event) => {
+                  const file = event.target.files?.[0] ?? null;
+                  setDocumentForm(prev => ({
+                    ...prev,
+                    file,
+                    nome: prev.nome || file?.name || "",
+                  }));
+                }}
+              />
+              <p className="text-xs text-muted-foreground">{DOCUMENT_UPLOAD_HELP_TEXT}</p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="documento-descricao">Descricao</Label>
+              <Input
+                id="documento-descricao"
+                value={documentForm.descricao}
+                onChange={(event) => setDocumentForm(prev => ({ ...prev, descricao: event.target.value }))}
+                placeholder="Observacao opcional"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setIsDocumentDialogOpen(false)} disabled={uploadDocument.isPending}>
+              Cancelar
+            </Button>
+            <Button
+              className="gradient-construction border-0"
+              onClick={handleUploadDocumentoObra}
+              disabled={uploadDocument.isPending || !documentForm.file || !documentForm.nome || !documentForm.categoria}
+            >
+              {uploadDocument.isPending ? "Enviando..." : "Enviar"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

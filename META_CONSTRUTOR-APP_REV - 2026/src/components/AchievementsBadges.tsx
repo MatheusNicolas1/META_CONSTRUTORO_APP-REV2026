@@ -52,11 +52,15 @@ export const AchievementsBadges = () => {
   };
 
   const shareOnLinkedIn = (achievement: Achievement) => {
-    const message = `Conquistei o selo "${achievement.title}" no MetaConstrutor — tecnologia e eficiência na gestão de obras!`;
-    window.open(
+    const message = `Selo registrado no MetaConstrutor: "${achievement.title}".`;
+    const popup = window.open(
       `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.origin)}&summary=${encodeURIComponent(message)}`,
-      "_blank"
+      "_blank",
+      "noopener,noreferrer"
     );
+    if (!popup) {
+      toast.error("O navegador bloqueou a janela do LinkedIn.");
+    }
   };
 
   if (achievements.length === 0) {
@@ -67,7 +71,7 @@ export const AchievementsBadges = () => {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-sm">
-            Você ainda não tem conquistas. Continue usando o MetaConstrutor para desbloquear selos!
+            Nenhuma conquista registrada ainda. Quando houver selos confirmados, eles aparecerão aqui.
           </p>
         </CardContent>
       </Card>

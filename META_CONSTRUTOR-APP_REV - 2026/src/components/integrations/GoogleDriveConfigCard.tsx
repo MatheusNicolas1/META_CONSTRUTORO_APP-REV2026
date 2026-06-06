@@ -54,7 +54,7 @@ export const GoogleDriveConfigCard = ({ config, status, onSave, onTest, onOAuthC
       setIsEditing(false);
       toast({
         title: "Configuração salva",
-        description: "Integração com Google Drive configurada com sucesso",
+        description: "Credenciais salvas. Execute um teste real antes de considerar a integracao conectada.",
       });
     } catch (error) {
       toast({
@@ -71,13 +71,13 @@ export const GoogleDriveConfigCard = ({ config, status, onSave, onTest, onOAuthC
       const newConfig = await onOAuthConnect();
       setFormData(newConfig);
       toast({
-        title: "Conectado com sucesso",
-        description: "Google Drive conectado via OAuth2",
+        title: "OAuth iniciado",
+        description: "Conclua a autorizacao do Google Drive na janela aberta antes de considerar a integracao conectada.",
       });
     } catch (error) {
       toast({
-        title: "Erro na conexão",
-        description: "Falha ao conectar com o Google Drive",
+        title: "Google Drive bloqueado",
+        description: error instanceof Error ? error.message : "Falha ao conectar com o Google Drive",
         variant: "destructive",
       });
     } finally {
@@ -92,8 +92,8 @@ export const GoogleDriveConfigCard = ({ config, status, onSave, onTest, onOAuthC
       toast({
         title: success ? "Teste realizado" : "Falha no teste",
         description: success 
-          ? "Conexão com Google Drive estabelecida com sucesso" 
-          : "Não foi possível conectar com o Google Drive",
+          ? "Google Drive validado com evidencia real persistida." 
+          : "Google Drive nao sincronizou arquivo; verifique secrets OAuth e autorizacao real.",
         variant: success ? "default" : "destructive",
       });
     } catch (error) {
@@ -110,6 +110,8 @@ export const GoogleDriveConfigCard = ({ config, status, onSave, onTest, onOAuthC
   const getStatusBadge = () => {
     if (!status) return <Badge variant="secondary">Não configurado</Badge>;
     
+    if (!status.hasEvidence) return <Badge variant="secondary"><AlertCircle className="w-3 h-3 mr-1" />Sem evidencia</Badge>;
+
     switch (status.isHealthy) {
       case true:
         return <Badge variant="default" className="bg-construction-green"><CheckCircle className="w-3 h-3 mr-1" />Conectado</Badge>;
@@ -121,6 +123,12 @@ export const GoogleDriveConfigCard = ({ config, status, onSave, onTest, onOAuthC
   };
 
   const isConfigured = config?.accessToken && config?.refreshToken;
+  const formatLastCheck = () => status?.lastCheck ? new Date(status.lastCheck).toLocaleString() : "Sem teste registrado";
+  const formatPercent = () => typeof status?.successRate === "number" ? `${status.successRate.toFixed(1)}%` : "-";
+  const formatOperationalStatus = () => {
+    if (!status?.hasEvidence) return "Sem evidencia real";
+    return status.isHealthy ? "Ativo" : "Com erro";
+  };
 
   return (
     <Card>
@@ -141,7 +149,7 @@ export const GoogleDriveConfigCard = ({ config, status, onSave, onTest, onOAuthC
           </Button>
         </div>
         <CardDescription>
-          Configure a integração com Google Drive para backup automático de documentos e arquivos
+          Configure o Google Drive para organizar arquivos quando o fluxo real estiver conectado.
         </CardDescription>
       </CardHeader>
       
@@ -194,7 +202,7 @@ export const GoogleDriveConfigCard = ({ config, status, onSave, onTest, onOAuthC
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label htmlFor="autoSync">Sincronização Automática</Label>
+                <Label htmlFor="autoSync">Permitir sincronizacao quando houver rotina real</Label>
                 <Switch
                   id="autoSync"
                   checked={formData.settings.autoSync}
@@ -292,19 +300,19 @@ export const GoogleDriveConfigCard = ({ config, status, onSave, onTest, onOAuthC
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground">Status</p>
-                  <p className="font-medium">{status.isHealthy ? 'Ativo' : 'Inativo'}</p>
+                  <p className="font-medium">{formatOperationalStatus()}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Última sincronização</p>
-                  <p className="font-medium">{new Date(status.lastCheck).toLocaleString()}</p>
+                  <p className="font-medium">{formatLastCheck()}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Taxa de sucesso</p>
-                  <p className="font-medium">{status.successRate.toFixed(1)}%</p>
+                  <p className="font-medium">{formatPercent()}</p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Arquivos sincronizados</p>
-                  <p className="font-medium">{status.errorCount || 0}</p>
+                  <p className="text-muted-foreground">Eventos reais</p>
+                  <p className="font-medium">{status.evidenceCount}</p>
                 </div>
               </div>
             )}
@@ -315,7 +323,7 @@ export const GoogleDriveConfigCard = ({ config, status, onSave, onTest, onOAuthC
                   <div>
                     <p className="font-medium">Google Drive conectado</p>
                     <p className="text-sm text-muted-foreground">
-                      {config?.settings.autoSync ? 'Sincronização automática ativada' : 'Sincronização manual'}
+                      {config?.settings.autoSync ? 'Sincronizacao condicionada a rotina real' : 'Sincronizacao manual'}
                     </p>
                   </div>
                   <Button variant="outline" size="sm" asChild>

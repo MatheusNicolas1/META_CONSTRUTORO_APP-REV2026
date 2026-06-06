@@ -5,32 +5,45 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 import SEO from "@/components/SEO";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield } from "lucide-react";
-import AdminMetrics from "@/components/admin/AdminMetrics";
+import AdminOverviewMetrics from "@/components/admin/AdminOverviewMetrics";
+import AdminAcquisitionMetrics from "@/components/admin/AdminAcquisitionMetrics";
+import AdminOperationalMetrics from "@/components/admin/AdminOperationalMetrics";
+import AdminEngagementMetrics from "@/components/admin/AdminEngagementMetrics";
+import AdminRetentionMetrics from "@/components/admin/AdminRetentionMetrics";
+import AdminRevenueMetrics from "@/components/admin/AdminRevenueMetrics";
 import AdminUsers from "@/components/admin/AdminUsers";
 import AdminCoupons from "@/components/admin/AdminCoupons";
 import AdminManagers from "@/components/admin/AdminManagers";
 import AdminHeatmap from "@/components/admin/AdminHeatmap";
+import AdminHealthMetrics from "@/components/admin/AdminHealthMetrics";
+import AdminOrganizationsMetrics from "@/components/admin/AdminOrganizationsMetrics";
+import AdminRoutesMetrics from "@/components/admin/AdminRoutesMetrics";
+import AdminReferralsMetrics from "@/components/admin/AdminReferralsMetrics";
+import AdminAuditLogs from "@/components/admin/AdminAuditLogs";
+import { AdminFiltersBar, AdminFiltersProvider } from "@/components/admin/AdminFilters";
 
 const AdminDashboard = () => {
-  const { user, loading, hasRole } = useAuth();
+  const { user, roles, loading } = useAuth();
   const navigate = useNavigate();
+  const userRole = roles?.[0];
+  const canAccessAdmin = userRole === "Presidente" || userRole === "Administrador";
+  const canManageAdmins = canAccessAdmin;
 
   useEffect(() => {
-    // Verificar se o usuário está autenticado e tem role de Administrador (ou superior)
-    if (!loading && (!user || !hasRole('Administrador'))) {
-      navigate('/app/dashboard');
+    if (!loading && (!user || !canAccessAdmin)) {
+      navigate("/app/dashboard");
     }
-  }, [user, loading, navigate, hasRole]);
+  }, [user, loading, navigate, canAccessAdmin]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
         <LoadingSpinner />
       </div>
     );
   }
 
-  if (!hasRole('Administrador')) {
+  if (!canAccessAdmin) {
     return null;
   }
 
@@ -38,56 +51,100 @@ const AdminDashboard = () => {
     <>
       <SEO
         title="Painel Administrativo | Meta Construtor"
-        description="Painel de controle administrativo do Meta Construtor"
+        description="Painel administrativo de marketing, usuarios, rotas e uso do app"
         canonical={window.location.href}
       />
 
-      <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+      <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
+          <div className="mb-2 flex items-center gap-3">
             <Shield className="h-8 w-8 text-primary" />
             <h1 className="text-3xl font-bold text-foreground">Painel Administrativo</h1>
           </div>
           <p className="text-muted-foreground">
-            Gestão completa da plataforma Meta Construtor
+            Metricas de marketing, usuarios, rotas e uso do app.
           </p>
         </div>
 
-        {/* Tabs */}
-        <Tabs defaultValue="metrics" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
-            <TabsTrigger value="metrics">Métricas</TabsTrigger>
-            <TabsTrigger value="users">Usuários</TabsTrigger>
-            <TabsTrigger value="coupons">Cupons</TabsTrigger>
-            <TabsTrigger value="heatmap">Mapa de Calor</TabsTrigger>
-            {user?.email === 'matheusnicolas.org@gmail.com' && (
-              <TabsTrigger value="managers">Administradores</TabsTrigger>
-            )}
-          </TabsList>
+        <AdminFiltersProvider>
+          <div className="mb-6">
+            <AdminFiltersBar />
+          </div>
 
-          <TabsContent value="metrics" className="space-y-6">
-            <AdminMetrics />
+          <Tabs defaultValue="overview" className="space-y-6">
+            <div className="w-full overflow-x-auto pb-1 scrollbar-thin">
+              <TabsList className="inline-flex h-auto w-max justify-start gap-2 bg-muted/60 p-2">
+                <TabsTrigger value="overview" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Visao geral</TabsTrigger>
+                <TabsTrigger value="acquisition" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Aquisicao</TabsTrigger>
+                <TabsTrigger value="activation" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Ativacao</TabsTrigger>
+                <TabsTrigger value="engagement" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Engajamento</TabsTrigger>
+                <TabsTrigger value="retention" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Retencao</TabsTrigger>
+                <TabsTrigger value="revenue" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Receita</TabsTrigger>
+                <TabsTrigger value="users" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Usuarios</TabsTrigger>
+                <TabsTrigger value="organizations" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Organizacoes</TabsTrigger>
+                <TabsTrigger value="routes" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Rotas</TabsTrigger>
+                <TabsTrigger value="campaigns" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Campanhas</TabsTrigger>
+                <TabsTrigger value="referrals" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Indicações</TabsTrigger>
+                <TabsTrigger value="health" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Saude</TabsTrigger>
+                <TabsTrigger value="audit" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Auditoria</TabsTrigger>
+              </TabsList>
+            </div>
+
+          <TabsContent value="overview" className="space-y-6">
+            <AdminOverviewMetrics />
+          </TabsContent>
+
+          <TabsContent value="acquisition" className="space-y-6">
+            <AdminAcquisitionMetrics />
+          </TabsContent>
+
+          <TabsContent value="activation" className="space-y-6">
+            <AdminOperationalMetrics />
+          </TabsContent>
+
+          <TabsContent value="engagement" className="space-y-6">
+            <AdminEngagementMetrics />
+            <AdminHeatmap />
+          </TabsContent>
+
+          <TabsContent value="retention" className="space-y-6">
+            <AdminRetentionMetrics />
+          </TabsContent>
+
+          <TabsContent value="revenue" className="space-y-6">
+            <AdminRevenueMetrics />
           </TabsContent>
 
           <TabsContent value="users" className="space-y-6">
             <AdminUsers />
           </TabsContent>
 
-          <TabsContent value="coupons" className="space-y-6">
+          <TabsContent value="organizations" className="space-y-6">
+            <AdminOrganizationsMetrics />
+          </TabsContent>
+
+          <TabsContent value="routes" className="space-y-6">
+            <AdminRoutesMetrics />
+          </TabsContent>
+
+          <TabsContent value="campaigns" className="space-y-6">
             <AdminCoupons />
           </TabsContent>
 
-          <TabsContent value="heatmap" className="space-y-6">
-            <AdminHeatmap />
+          <TabsContent value="referrals" className="space-y-6">
+            <AdminReferralsMetrics />
           </TabsContent>
 
-          {user?.email === 'matheusnicolas.org@gmail.com' && (
-            <TabsContent value="managers" className="space-y-6">
-              <AdminManagers />
-            </TabsContent>
-          )}
-        </Tabs>
+          <TabsContent value="health" className="space-y-6">
+            <AdminHealthMetrics />
+          </TabsContent>
+
+          <TabsContent value="audit" className="space-y-6">
+            <AdminAuditLogs />
+            {canManageAdmins && <AdminManagers />}
+          </TabsContent>
+          </Tabs>
+        </AdminFiltersProvider>
       </div>
     </>
   );

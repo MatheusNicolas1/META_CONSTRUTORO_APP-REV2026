@@ -1,8 +1,0 @@
-[dotenv@17.3.1] injecting env (3) from .env.local -- tip: ⚙️  enable debug logging with { debug: true }
-[36m🔍 Testando isolamento RLS...[0m
-
-[36m🔍 Testando isolamento multi-tenant...[0m
-
-[34m📌 Criando dados de teste...[0m
-🏢 Org A: Organização A (4e4f44a0-4646-4212-b97d-bfd02010dbaa)
-🏢 Org B: Organização B (da17f188-4e42-43aa-b779-093dbc34e680)

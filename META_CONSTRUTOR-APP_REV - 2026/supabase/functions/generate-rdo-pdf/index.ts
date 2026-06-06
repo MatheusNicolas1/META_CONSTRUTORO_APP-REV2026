@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { PDFDocument, StandardFonts, rgb } from "https://esm.sh/pdf-lib@1.17.1?target=deno";
 import { rdoTemplateHtml } from "./template.ts";
 import { buildGenericReportHtml, makeReportFilename } from "./report-template.ts";
 
@@ -419,7 +420,7 @@ serve(async (req: Request) => {
 });
 
 async function convertHtmlToPdf(templateHtml: string, filename: string, generatedAt: string): Promise<Response> {
-  console.info('[generate-rdo-pdf] Converting HTML to PDF via Gotenberg...');
+  console.info('[generate-rdo-pdf] Converting HTML to PDF...');
 
   const formData = new FormData();
   const htmlFile = new File([templateHtml], "index.html", { type: "text/html" });
@@ -432,20 +433,35 @@ async function convertHtmlToPdf(templateHtml: string, filename: string, generate
   formData.append('marginLeft', '0.59in');
   formData.append('marginRight', '0.59in');
 
-  const response = await fetch('https://demo.gotenberg.dev/forms/chromium/convert/html', {
-    method: 'POST',
-    body: formData
-  });
+  const gotenbergUrl = getGotenbergUrl();
+  try {
+    const response = await fetch(`${gotenbergUrl}/forms/chromium/convert/html`, {
+      method: 'POST',
+      body: formData,
+    });
 
-  if (!response.ok) {
-    const errText = await response.text();
-    console.error('[generate-rdo-pdf] Gotenberg error:', errText);
-    throw new Error(`Falha ao converter HTML para PDF: ${response.status} - ${errText}`);
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`${response.status} - ${errText}`);
+    }
+
+    const pdfBuffer = await response.arrayBuffer();
+    console.info(`[generate-rdo-pdf] PDF generated through Gotenberg. Size: ${pdfBuffer.byteLength} bytes`);
+    return pdfResponse(pdfBuffer, filename);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('[generate-rdo-pdf] Gotenberg unavailable, using embedded PDF fallback:', message);
+    const fallbackPdf = await generateTextFallbackPdf(templateHtml, filename, generatedAt, message);
+    return pdfResponse(fallbackPdf, filename);
   }
+}
 
-  const pdfBuffer = await response.arrayBuffer();
-  console.info(`[generate-rdo-pdf] PDF generated successfully. Size: ${pdfBuffer.byteLength} bytes`);
+function getGotenbergUrl(): string {
+  const configured = Deno.env.get('GOTENBERG_URL') || Deno.env.get('GOTENBERG_ENDPOINT');
+  return (configured || 'https://demo.gotenberg.dev').replace(/\/+$/, '');
+}
 
+function pdfResponse(pdfBuffer: ArrayBuffer | Uint8Array, filename: string): Response {
   return new Response(pdfBuffer, {
     headers: {
       ...corsHeaders,
@@ -453,6 +469,136 @@ async function convertHtmlToPdf(templateHtml: string, filename: string, generate
       'Content-Disposition': `attachment; filename="${filename}"`
     },
   });
+}
+
+async function generateTextFallbackPdf(
+  html: string,
+  filename: string,
+  generatedAt: string,
+  converterError: string,
+): Promise<Uint8Array> {
+  const pdfDoc = await PDFDocument.create();
+  const regularFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const pageWidth = 595.28;
+  const pageHeight = 841.89;
+  const margin = 42;
+  const lineHeight = 13;
+  const fontSize = 9;
+  let page = pdfDoc.addPage([pageWidth, pageHeight]);
+  let y = pageHeight - margin;
+
+  const drawTextLine = (line: string, options?: { bold?: boolean; color?: ReturnType<typeof rgb> }) => {
+    if (y < margin) {
+      page = pdfDoc.addPage([pageWidth, pageHeight]);
+      y = pageHeight - margin;
+    }
+    page.drawText(line, {
+      x: margin,
+      y,
+      size: fontSize,
+      font: options?.bold ? boldFont : regularFont,
+      color: options?.color || rgb(0.12, 0.12, 0.12),
+      lineHeight,
+    });
+    y -= lineHeight;
+  };
+
+  drawTextLine(filename.replace(/\.pdf$/i, ''), { bold: true });
+  drawTextLine(`Gerado em: ${generatedAt}`);
+  drawTextLine('Modo degradado: conversor HTML indisponivel; conteudo textual preservado.', {
+    color: rgb(0.55, 0.22, 0.03),
+  });
+  drawTextLine(`Falha do conversor: ${sanitizePdfText(converterError).slice(0, 120)}`);
+  y -= 8;
+
+  const contentLines = htmlToPlainText(html)
+    .flatMap((line) => wrapPdfLine(line, 94))
+    .slice(0, 1800);
+
+  for (const line of contentLines) {
+    drawTextLine(line);
+  }
+
+  const totalPages = pdfDoc.getPageCount();
+  pdfDoc.getPages().forEach((pdfPage, index) => {
+    pdfPage.drawText(`Pagina ${index + 1} de ${totalPages}`, {
+      x: pageWidth - margin - 85,
+      y: 22,
+      size: 8,
+      font: regularFont,
+      color: rgb(0.45, 0.45, 0.45),
+    });
+  });
+
+  return await pdfDoc.save();
+}
+
+function htmlToPlainText(html: string): string[] {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<\/(h1|h2|h3|h4|p|div|section|article|table|thead|tbody|tr|li)>/gi, '\n')
+    .replace(/<\/t[dh]>/gi, ' | ')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .split(/\r?\n/)
+    .map((line) => decodeHtmlEntities(line).replace(/\s+/g, ' ').trim())
+    .filter(Boolean)
+    .map(sanitizePdfText);
+}
+
+function decodeHtmlEntities(value: string): string {
+  return value
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&aacute;/gi, 'a')
+    .replace(/&agrave;/gi, 'a')
+    .replace(/&atilde;/gi, 'a')
+    .replace(/&acirc;/gi, 'a')
+    .replace(/&eacute;/gi, 'e')
+    .replace(/&ecirc;/gi, 'e')
+    .replace(/&iacute;/gi, 'i')
+    .replace(/&oacute;/gi, 'o')
+    .replace(/&otilde;/gi, 'o')
+    .replace(/&ocirc;/gi, 'o')
+    .replace(/&uacute;/gi, 'u')
+    .replace(/&ccedil;/gi, 'c')
+    .replace(/&#(\d+);/g, (_, code) => {
+      const parsed = Number(code);
+      return Number.isFinite(parsed) ? String.fromCharCode(parsed) : '';
+    });
+}
+
+function sanitizePdfText(value: string): string {
+  return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\x20-\x7E]/g, '');
+}
+
+function wrapPdfLine(line: string, maxLength: number): string[] {
+  if (line.length <= maxLength) return [line];
+  const words = line.split(' ');
+  const wrapped: string[] = [];
+  let current = '';
+
+  for (const word of words) {
+    if (!current) {
+      current = word;
+      continue;
+    }
+    if (`${current} ${word}`.length > maxLength) {
+      wrapped.push(current);
+      current = word;
+    } else {
+      current += ` ${word}`;
+    }
+  }
+
+  if (current) wrapped.push(current);
+  return wrapped;
 }
 
 /**

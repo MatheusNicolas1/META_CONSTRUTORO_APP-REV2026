@@ -16,24 +16,29 @@ export interface CreateEquipeData {
 export const useEquipesSupabase = () => {
   const queryClient = useQueryClient();
   const { equipe: equipePerms } = usePermissions();
-  const { orgId } = useRequireOrg();
+  const { orgId, isLoading: orgLoading } = useRequireOrg();
   const { userId, isLoading: userLoading } = useAuthUserId();
 
   const equipesQuery = useQuery({
-    queryKey: ['equipes', orgId], // Org-Bound Cache Key covers schema drift
+    queryKey: ['equipes', orgId, userId], // Org-Bound Cache Key covers schema drift
     queryFn: async () => {
       if (!userId) throw new Error('Usuário não autenticado');
 
-      const { data, error } = await supabase
+      let query = supabase
         .from('equipes')
         .select('*')
-        .eq('user_id', userId)
         .order('created_at', { ascending: false });
+
+      query = orgId
+        ? query.eq('org_id', orgId)
+        : query.eq('user_id', userId);
+
+      const { data, error } = await query;
 
       if (error) throw error;
       return data || [];
     },
-    enabled: !!orgId && !!userId,
+    enabled: !orgLoading && !!userId,
     // Start with empty data to avoid flash of content
     placeholderData: [],
     // Avoid refetching immediately if we just got an error
@@ -123,7 +128,7 @@ export const useEquipesSupabase = () => {
 
   return {
     equipes: equipesQuery.data || [],
-    isLoading: equipesQuery.isLoading || userLoading,
+    isLoading: equipesQuery.isLoading || userLoading || orgLoading,
     error: equipesQuery.error,
     createEquipe,
     updateEquipe,

@@ -1,3 +1,0 @@
-1: Force dev server restart due to alias and cacheDir changes for React dedupe
-2: Timestamp: 2025-11-07T18:00:00Z
-3: Notes: Added resolve.alias for react/react-dom and custom cacheDir to invalidate old optimized chunks

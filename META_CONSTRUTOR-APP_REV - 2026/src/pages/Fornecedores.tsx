@@ -2,6 +2,16 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,6 +38,7 @@ const Fornecedores = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; nome: string } | null>(null);
   
   const [formData, setFormData] = useState(emptyFormData);
   const [editFormData, setEditFormData] = useState(emptyFormData);
@@ -94,9 +105,18 @@ const Fornecedores = () => {
   };
 
   const handleDeleteFornecedor = (id: number | string) => {
-    if (confirm("Tem certeza que deseja excluir este fornecedor?")) {
-      deleteFornecedor.mutate(String(id));
-    }
+    const fornecedor = fornecedores.find((item) => String(item.id) === String(id));
+    setPendingDelete({
+      id: String(id),
+      nome: fornecedor?.nome || "este fornecedor",
+    });
+  };
+
+  const confirmDeleteFornecedor = () => {
+    if (!pendingDelete) return;
+    deleteFornecedor.mutate(pendingDelete.id, {
+      onSuccess: () => setPendingDelete(null),
+    });
   };
 
   const handleSubmit = () => {
@@ -425,6 +445,27 @@ const Fornecedores = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!pendingDelete} onOpenChange={(open) => !open && setPendingDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir fornecedor?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acao vai excluir {pendingDelete?.nome || "este fornecedor"} do cadastro. A operacao usa a exclusao real do Supabase e nao sera confirmada se a requisicao falhar.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteFornecedor.isPending}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteFornecedor}
+              disabled={deleteFornecedor.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleteFornecedor.isPending ? "Excluindo..." : "Excluir"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

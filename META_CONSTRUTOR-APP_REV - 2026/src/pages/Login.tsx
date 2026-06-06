@@ -6,9 +6,10 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
+import { seoPages } from '@/config/seo';
 import { supabase } from "@/integrations/supabase/client";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
-import { getAuthCallbackUrl } from "@/utils/authRedirect";
+import { getGoogleOAuthRedirectUrl } from "@/utils/authRedirect";
 
 
 
@@ -19,6 +20,8 @@ const Login = () => {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const redirectTo = searchParams.get("redirect") || undefined;
+  const initialEmail = searchParams.get("email") || "";
   // V7: Removido rememberedEmail do localStorage (PII em plain text)
 
   useEffect(() => {
@@ -50,7 +53,7 @@ const Login = () => {
         return;
       }
 
-      await signIn(emailOrPhone, password);
+      await signIn(emailOrPhone, password, redirectTo);
 
       // V7: Não armazenamos email em localStorage (segurança)
 
@@ -77,7 +80,7 @@ const Login = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: getAuthCallbackUrl(),
+          redirectTo: getGoogleOAuthRedirectUrl(),
           queryParams: {
             access_type: "offline",
             prompt: "select_account",
@@ -115,11 +118,7 @@ const Login = () => {
 
   return (
     <>
-      <SEO
-        title="Login | Meta Construtor"
-        description="Acesse sua conta no Meta Construtor e gerencie suas obras com facilidade."
-        canonical="https://metaconstrutor.com.br/login"
-      />
+      <SEO {...seoPages.login} />
       <SignInPage
         title={<span className="font-light text-foreground tracking-tighter">Bem-vindo</span>}
         description="Acesse sua conta usando e-mail ou celular cadastrado"
@@ -130,7 +129,7 @@ const Login = () => {
         onResetPassword={handleResetPassword}
         onCreateAccount={handleCreateAccount}
         isLoading={isLoading}
-        initialEmail=""
+        initialEmail={initialEmail}
       />
     </>
   );

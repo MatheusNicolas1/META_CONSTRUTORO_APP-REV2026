@@ -110,3 +110,41 @@ Backend events also include:
 - **Schema**: `id, created_at, event, org_id, user_id, role, source, properties, environment, request_id, success, error`
 - **Security**: RLS Enabled. Service Role: ALL. Auth Users: SELECT (Own Org). INSERT blocked for Auth Users (Service Role only).
 - **Immutability**: UPDATE/DELETE blocked by Trigger.
+
+---
+
+## 4. Admin Metrics Restructure Notes (PRD_ADMIN P0)
+
+Target direction for the Admin dashboard is to treat `analytics_events` as the canonical event store for marketing, product usage, backend, checkout, and admin-facing aggregations.
+
+Current compatibility sources:
+- `user_activity`: legacy named activity events, currently used by Admin engagement/user views.
+- `user_interactions`: page views/clicks/items, currently used by Admin heatmap views.
+- PostHog: external analytics destination.
+
+P0 schema reconciliation:
+- The linked remote `analytics_events` table was expanded by `supabase/migrations/20260528120000_prd_admin_analytics_events_contract.sql` to include `org_id`, `user_id`, `role`, `source`, `environment`, `request_id`, `success`, and `error`.
+- Supabase types were regenerated after the remote migration.
+- `supabase/migrations/20260528133000_prd_admin_analytics_aggregation_views.sql` added compatibility views for Admin reads:
+  - `admin_analytics_events_unified_view`
+  - `admin_route_metrics_view`
+  - `admin_user_activity_summary_view`
+  - `admin_funnel_daily_view`
+  - `admin_user_segments_view`
+- Frontend `track()` now writes authenticated events to `analytics_events`, while `user_activity` and `user_interactions` remain legacy compatibility sources.
+- `supabase/migrations/20260528222800_prd_admin_marketing_attribution.sql` added public attribution fields to `analytics_events`: `anonymous_id`, `session_id`, UTMs, `ref`, and `referrer`.
+- Public anonymous page views use `app.public_page_viewed` and are allowed by the restricted `analytics_events_anon_insert_public` insert policy.
+- Additional Admin views created for the next dashboard iterations:
+  - `admin_org_usage_summary_view`
+  - `admin_campaign_performance_view`
+  - `admin_checkout_funnel_view`
+  - `admin_churn_risk_view`
+
+PRD_ADMIN event namespaces to add before the Admin rebuild:
+- `marketing.*`
+- `auth.*`
+- `onboarding.*`
+- `activation.*`
+- `app.*`
+- `billing.*`
+- `admin.*`

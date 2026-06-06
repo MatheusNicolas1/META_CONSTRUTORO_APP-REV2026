@@ -1,15 +1,33 @@
-const productionOrigin = 'https://metaconstrutor.com.br';
+const productionOrigins = [
+    'https://www.metaconstrutor.app.br',
+    'https://metaconstrutor.app.br',
+    'https://www.metaconstrutor.com.br',
+    'https://metaconstrutor.com.br',
+];
 
 const isLocalOrigin = (origin: string) => {
     return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 };
 
+const configuredOrigins = () => {
+    const envOrigins = [
+        Deno.env.get('ALLOWED_ORIGIN'),
+        Deno.env.get('ALLOWED_ORIGINS'),
+    ]
+        .filter(Boolean)
+        .flatMap((value) => value!.split(','))
+        .map((origin) => origin.trim())
+        .filter(Boolean);
+
+    return [...new Set([...productionOrigins, ...envOrigins])];
+};
+
 export const getCorsHeaders = (req?: Request) => {
     const requestOrigin = req?.headers.get('origin') || '';
-    const allowedOrigin = Deno.env.get('ALLOWED_ORIGIN') || productionOrigin;
-    const origin = requestOrigin === allowedOrigin || isLocalOrigin(requestOrigin)
+    const allowedOrigins = configuredOrigins();
+    const origin = allowedOrigins.includes(requestOrigin) || isLocalOrigin(requestOrigin)
         ? requestOrigin
-        : allowedOrigin;
+        : productionOrigins[0];
 
     return {
         'Access-Control-Allow-Origin': origin,

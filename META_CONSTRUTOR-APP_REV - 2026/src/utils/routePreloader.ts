@@ -13,7 +13,7 @@ class RoutePreloader {
     return RoutePreloader.instance;
   }
 
-  // Preload de rota com import dinÃ¢mico
+  // Preload de rota com import dinâmico
   async preloadRoute(routePath: string): Promise<void> {
     if (this.preloadedRoutes.has(routePath) || this.preloadPromises.has(routePath)) {
       return this.preloadPromises.get(routePath) || Promise.resolve();
@@ -43,7 +43,7 @@ class RoutePreloader {
 
     const importFn = routeMap[routePath];
     if (!importFn) {
-      console.warn(`Route preloader: Rota nÃ£o encontrada: ${routePath}`);
+      console.warn(`Route preloader: Rota não encontrada: ${routePath}`);
       return;
     }
 
@@ -53,7 +53,7 @@ class RoutePreloader {
         return module;
       })
       .catch((error) => {
-        console.error(`âŒ Erro ao preload da rota ${routePath}:`, error);
+        console.error(`❌ Erro ao preload da rota ${routePath}:`, error);
         throw error;
       })
       .finally(() => {
@@ -64,9 +64,9 @@ class RoutePreloader {
     return preloadPromise;
   }
 
-  // Preload inteligente baseado em padrÃµes de navegaÃ§Ã£o
+  // Preload inteligente baseado em padrões de navegação
   async intelligentPreload(currentRoute: string): Promise<void> {
-    // Adicionar rota atual ao histÃ³rico
+    // Adicionar rota atual ao histórico
     this.addToHistory(currentRoute);
 
     // Preload de rotas relacionadas baseado na atual
@@ -78,7 +78,7 @@ class RoutePreloader {
     // Combinar e preload
     const routesToPreload = [...new Set([...relatedRoutes, ...frequentRoutes])];
 
-    // Preload em background com delay para nÃ£o impactar performance
+    // Preload em background com delay para não impactar performance
     setTimeout(() => {
       routesToPreload.forEach(route => {
         this.preloadRoute(route).catch(() => {
@@ -89,16 +89,16 @@ class RoutePreloader {
   }
 
   private addToHistory(route: string): void {
-    // Remover rota se jÃ¡ existe
+    // Remover rota se já existe
     const index = this.navigationHistory.indexOf(route);
     if (index > -1) {
       this.navigationHistory.splice(index, 1);
     }
 
-    // Adicionar no inÃ­cio
+    // Adicionar no início
     this.navigationHistory.unshift(route);
 
-    // Manter tamanho do histÃ³rico
+    // Manter tamanho do histórico
     if (this.navigationHistory.length > this.maxHistorySize) {
       this.navigationHistory.pop();
     }
@@ -132,7 +132,7 @@ class RoutePreloader {
   }
 
   private getFrequentRoutes(): string[] {
-    // Rotas mais frequentemente acessadas (baseado no histÃ³rico)
+    // Rotas mais frequentemente acessadas (baseado no histórico)
     const routeFrequency: Record<string, number> = {};
 
     this.navigationHistory.forEach(route => {
@@ -146,13 +146,13 @@ class RoutePreloader {
       .map(([route]) => route);
   }
 
-  // Preload de rotas crÃ­ticas na inicializaÃ§Ã£o
+  // Preload de rotas críticas na inicialização
   async preloadCriticalRoutes(): Promise<void> {
     const criticalRoutes = ['/app/dashboard', '/app/obras', '/app/rdo'];
 
     const promises = criticalRoutes.map(route =>
       this.preloadRoute(route).catch(() => {
-        // Ignorar erros para nÃ£o bloquear a inicializaÃ§Ã£o
+        // Ignorar erros para não bloquear a inicialização
       })
     );
 
@@ -161,7 +161,7 @@ class RoutePreloader {
 
   // Preload baseado em hover/focus
   onRouteHover(routePath: string): void {
-    // Delay pequeno para evitar preload desnecessÃ¡rio
+    // Delay pequeno para evitar preload desnecessário
     setTimeout(() => {
       this.preloadRoute(routePath).catch(() => {
         // Ignorar erros
@@ -169,14 +169,14 @@ class RoutePreloader {
     }, 200);
   }
 
-  // Limpar cache quando necessÃ¡rio
+  // Limpar cache quando necessário
   clearCache(): void {
     this.preloadedRoutes.clear();
     this.preloadPromises.clear();
     this.navigationHistory = [];
   }
 
-  // EstatÃ­sticas
+  // Estatísticas
   getStats() {
     return {
       preloadedRoutes: Array.from(this.preloadedRoutes),
@@ -201,9 +201,9 @@ export const useRoutePreloader = () => {
   };
 };
 
-// Inicializar preload crÃ­tico
+// Inicializar preload crítico
 export const initializeRoutePreloader = () => {
-  // Preload de rotas crÃ­ticas apÃ³s inicializaÃ§Ã£o
+  // Preload de rotas críticas após inicialização
   setTimeout(() => {
     routePreloader.preloadCriticalRoutes();
   }, 1500);

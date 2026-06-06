@@ -1,4 +1,4 @@
-﻿// Sistema de tarefas em background para nÃ£o bloquear UI
+﻿// Sistema de tarefas em background para não bloquear UI
 class BackgroundTaskManager {
   private static instance: BackgroundTaskManager;
   private taskQueue: Array<() => Promise<any>> = [];
@@ -13,7 +13,7 @@ class BackgroundTaskManager {
     return BackgroundTaskManager.instance;
   }
 
-  // Adicionar tarefa Ã  fila
+  // Adicionar tarefa à fila
   addTask<T>(task: () => Promise<T>, priority: 'high' | 'medium' | 'low' = 'medium'): Promise<T> {
     return new Promise((resolve, reject) => {
       const wrappedTask = async () => {
@@ -65,9 +65,9 @@ class BackgroundTaskManager {
         this.currentTasks--;
         this.isProcessing = false;
         
-        // Processar prÃ³xima tarefa
+        // Processar próxima tarefa
         if (this.taskQueue.length > 0) {
-          // Pequeno delay para nÃ£o sobrecarregar
+          // Pequeno delay para não sobrecarregar
           setTimeout(() => this.processQueue(), 10);
         }
       }
@@ -79,7 +79,7 @@ class BackgroundTaskManager {
     this.taskQueue = [];
   }
 
-  // EstatÃ­sticas
+  // Estatísticas
   getStats() {
     return {
       queueLength: this.taskQueue.length,
@@ -91,7 +91,7 @@ class BackgroundTaskManager {
 
 export const backgroundTaskManager = BackgroundTaskManager.getInstance();
 
-// UtilitÃ¡rios para uso comum
+// Utilitários para uso comum
 export const runInBackground = <T>(
   task: () => Promise<T>, 
   priority: 'high' | 'medium' | 'low' = 'medium'
@@ -99,7 +99,7 @@ export const runInBackground = <T>(
   return backgroundTaskManager.addTask(task, priority);
 };
 
-// Tarefas especÃ­ficas para otimizaÃ§Ã£o
+// Tarefas específicas para otimização
 export const backgroundOptimizations = {
   // Limpeza de cache antigo
   cleanupOldCache: () => runInBackground(async () => {
@@ -114,7 +114,7 @@ export const backgroundOptimizations = {
             localStorage.removeItem(key);
           }
         } catch {
-          // Remove se nÃ£o conseguir parsear
+          // Remove se não conseguir parsear
           localStorage.removeItem(key);
         }
       }
@@ -122,7 +122,7 @@ export const backgroundOptimizations = {
     
   }, 'low'),
 
-  // Preload de recursos crÃ­ticos
+  // Preload de recursos críticos
   preloadCriticalResources: () => runInBackground(async () => {
     const criticalUrls = [
       '/api/dashboard/stats',
@@ -132,19 +132,19 @@ export const backgroundOptimizations = {
 
     const promises = criticalUrls.map(url => 
       fetch(url, { method: 'HEAD' }).catch(() => {
-        // Ignorar erros - Ã© apenas preload
+        // Ignorar erros - é apenas preload
       })
     );
 
     await Promise.allSettled(promises);
   }, 'high'),
 
-  // OtimizaÃ§Ã£o de imagens carregadas
+  // Otimização de imagens carregadas
   optimizeLoadedImages: () => runInBackground(async () => {
     const images = document.querySelectorAll('img[src]');
     
     images.forEach((img: any) => {
-      // Lazy load para imagens que nÃ£o estÃ£o visÃ­veis
+      // Lazy load para imagens que não estão visíveis
       if (!img.loading && !isElementInViewport(img)) {
         img.loading = 'lazy';
       }
@@ -157,7 +157,7 @@ export const backgroundOptimizations = {
     
   }, 'low'),
 
-  // AnÃ¡lise de performance da pÃ¡gina
+  // Análise de performance da página
   analyzePagePerformance: () => runInBackground(async () => {
     if ('performance' in window) {
       const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
@@ -173,7 +173,7 @@ export const backgroundOptimizations = {
       
       // Log apenas se performance estiver ruim
       if (metrics.totalLoadTime > 3000) {
-        console.warn('âš ï¸ Performance da pÃ¡gina baixa:', metrics);
+        console.warn('⚠️ Performance da página baixa:', metrics);
       } else {
       }
       
@@ -181,9 +181,9 @@ export const backgroundOptimizations = {
     }
   }, 'low'),
 
-  // Limpeza de event listeners nÃ£o utilizados
+  // Limpeza de event listeners não utilizados
   cleanupEventListeners: () => runInBackground(async () => {
-    // Remover listeners de elementos que nÃ£o existem mais
+    // Remover listeners de elementos que não existem mais
     const elements = document.querySelectorAll('[data-cleanup-listeners]');
     elements.forEach(element => {
       element.removeAttribute('data-cleanup-listeners');
@@ -192,7 +192,7 @@ export const backgroundOptimizations = {
   }, 'low')
 };
 
-// FunÃ§Ã£o auxiliar para verificar se elemento estÃ¡ no viewport
+// Função auxiliar para verificar se elemento está no viewport
 function isElementInViewport(el: Element): boolean {
   const rect = el.getBoundingClientRect();
   return (
@@ -203,22 +203,22 @@ function isElementInViewport(el: Element): boolean {
   );
 }
 
-// Inicializar otimizaÃ§Ãµes em background
+// Inicializar otimizações em background
 export const initializeBackgroundOptimizations = () => {
   
-  // Executar otimizaÃ§Ãµes iniciais
+  // Executar otimizações iniciais
   setTimeout(() => {
     backgroundOptimizations.preloadCriticalResources();
     backgroundOptimizations.optimizeLoadedImages();
   }, 2000);
   
-  // Executar limpezas periÃ³dicas
+  // Executar limpezas periódicas
   setTimeout(() => {
     backgroundOptimizations.cleanupOldCache();
     backgroundOptimizations.analyzePagePerformance();
   }, 5000);
   
-  // Limpezas periÃ³dicas
+  // Limpezas periódicas
   setInterval(() => {
     backgroundOptimizations.cleanupEventListeners();
     backgroundOptimizations.optimizeLoadedImages();

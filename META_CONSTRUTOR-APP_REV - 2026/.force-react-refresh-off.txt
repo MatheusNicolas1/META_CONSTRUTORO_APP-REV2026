@@ -1,7 +1,0 @@
-Disable React Fast Refresh to resolve RefreshRuntime.register error
-Timestamp: 2025-11-08T00:24:00Z
-Changes:
-- vite.config.ts: react({ fastRefresh: false })
-- index.html: cache-bust script src to v=react-refresh-off-1
-Notes:
-- This disables HMR Fast Refresh but keeps standard Vite HMR (full module reload).

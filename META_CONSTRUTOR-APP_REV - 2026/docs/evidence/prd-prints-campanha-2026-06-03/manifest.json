@@ -1,0 +1,303 @@
+{
+  "prd": "PRD_PRINTS.md",
+  "updated_at": "2026-06-04T21:23:03.636Z",
+  "status": "captured",
+  "safe_folder": "docs/evidence/prd-prints-campanha-2026-06-03/",
+  "seed_summary": "seed-summary.json",
+  "screenshots": [
+    {
+      "index": 1,
+      "file": "prd-prints-2026-06-04-01-login-limpo-desktop.png",
+      "route": "/login?email=campanha%2Bprdprints10%40metaconstrutor.test",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Login limpo sem senha preenchida"
+    },
+    {
+      "index": 2,
+      "file": "prd-prints-2026-06-04-02-obras-lista-desktop.png",
+      "route": "/app/obras",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Obras com grid/lista preenchida"
+    },
+    {
+      "index": 3,
+      "file": "prd-prints-2026-06-04-03-obra-detalhe-desktop.png",
+      "route": "/app/obras/2278bbc8-2016-4843-8926-921bd303f731",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Detalhe da primeira obra demonstrativa"
+    },
+    {
+      "index": 4,
+      "file": "prd-prints-2026-06-04-04-atividades-lista-desktop.png",
+      "route": "/app/atividades",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Atividades demonstrativas preenchidas"
+    },
+    {
+      "index": 5,
+      "file": "prd-prints-2026-06-04-05-rdo-lista-desktop.png",
+      "route": "/app/rdo",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "RDOs recentes preenchidos"
+    },
+    {
+      "index": 6,
+      "file": "prd-prints-2026-06-04-06-checklist-lista-desktop.png",
+      "route": "/app/checklist",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Checklists com progresso visual"
+    },
+    {
+      "index": 7,
+      "file": "prd-prints-2026-06-04-07-documentos-lista-desktop.png",
+      "route": "/app/documentos",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Biblioteca de documentos demonstrativos"
+    },
+    {
+      "index": 8,
+      "file": "prd-prints-2026-06-04-08-equipes-lista-desktop.png",
+      "route": "/app/equipes",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Equipes demonstrativas"
+    },
+    {
+      "index": 9,
+      "file": "prd-prints-2026-06-04-09-equipamentos-lista-desktop.png",
+      "route": "/app/equipamentos",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Equipamentos com status variados"
+    },
+    {
+      "index": 10,
+      "file": "prd-prints-2026-06-04-10-fornecedores-lista-desktop.png",
+      "route": "/app/fornecedores",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Fornecedores demonstrativos"
+    },
+    {
+      "index": 11,
+      "file": "prd-prints-2026-06-04-11-despesas-lista-desktop.png",
+      "route": "/app/despesas",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Despesas demonstrativas"
+    },
+    {
+      "index": 12,
+      "file": "prd-prints-2026-06-04-12-relatorios-resumo-desktop.png",
+      "route": "/app/relatorios",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Relatorios com dados persistidos"
+    },
+    {
+      "index": 13,
+      "file": "prd-prints-2026-06-04-13-integracoes-status-desktop.png",
+      "route": "/app/integracoes",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Estados honestos de integracoes"
+    },
+    {
+      "index": 14,
+      "file": "prd-prints-2026-06-04-14-atividade-nova-modal-desktop.png",
+      "route": "/app/atividades",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Modal de nova atividade com campos relevantes"
+    },
+    {
+      "index": 15,
+      "file": "prd-prints-2026-06-04-15-rdo-visualizacao-desktop.png",
+      "route": "/app/rdo/02a4ea48-5aa9-4901-b69c-a23aa852fcaa/visualizar",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Visualizacao de RDO com atividades e evidencias"
+    },
+    {
+      "index": 16,
+      "file": "prd-prints-2026-06-04-16-checklist-detalhe-desktop.png",
+      "route": "/app/checklist/1e96510f-8bb8-4327-b81d-563cc8417bd4",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Detalhe de checklist com itens marcados"
+    },
+    {
+      "index": 17,
+      "file": "prd-prints-2026-06-04-17-perfil-conta-desktop.png",
+      "route": "/app/perfil",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Perfil da conta demonstrativa"
+    },
+    {
+      "index": 18,
+      "file": "prd-prints-2026-06-04-18-configuracoes-desktop.png",
+      "route": "/app/configuracoes",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Configuracoes da organizacao demonstrativa"
+    },
+    {
+      "index": 19,
+      "file": "prd-prints-2026-06-04-19-notificacoes-desktop.png",
+      "route": "/app/notificacoes",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Notificacoes e filtros da conta demonstrativa"
+    },
+    {
+      "index": 20,
+      "file": "prd-prints-2026-06-04-20-faq-desktop.png",
+      "route": "/app/faq",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "FAQ autenticado de apoio"
+    },
+    {
+      "index": 21,
+      "file": "prd-prints-2026-06-04-21-feedback-desktop.png",
+      "route": "/app/feedback",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Formulario de feedback autenticado"
+    },
+    {
+      "index": 22,
+      "file": "prd-prints-2026-06-04-22-dashboard-tablet.png",
+      "route": "/app/dashboard",
+      "device": "tablet",
+      "viewport": "820x1180",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Dashboard em tablet"
+    },
+    {
+      "index": 23,
+      "file": "prd-prints-2026-06-04-23-obras-tablet.png",
+      "route": "/app/obras",
+      "device": "tablet",
+      "viewport": "820x1180",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Obras em tablet"
+    },
+    {
+      "index": 24,
+      "file": "prd-prints-2026-06-04-24-checklist-tablet.png",
+      "route": "/app/checklist",
+      "device": "tablet",
+      "viewport": "820x1180",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Checklist em tablet"
+    },
+    {
+      "index": 25,
+      "file": "prd-prints-2026-06-04-25-rdo-mobile.png",
+      "route": "/app/rdo",
+      "device": "mobile",
+      "viewport": "390x844",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "RDO em mobile"
+    },
+    {
+      "index": 26,
+      "file": "prd-prints-2026-06-04-26-obras-mobile.png",
+      "route": "/app/obras",
+      "device": "mobile",
+      "viewport": "390x844",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Obras em mobile"
+    },
+    {
+      "index": 27,
+      "file": "prd-prints-2026-06-04-27-atividade-mobile.png",
+      "route": "/app/atividades",
+      "device": "mobile",
+      "viewport": "390x844",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Atividades em mobile"
+    },
+    {
+      "index": 28,
+      "file": "prd-prints-2026-06-04-28-dashboard-resumo-final-desktop.png",
+      "route": "/app/dashboard",
+      "device": "desktop",
+      "viewport": "1440x900",
+      "account": "campanha+prdprints10@metaconstrutor.test",
+      "status": "captured",
+      "notes": "Ultimo print obrigatorio: dashboard consolidado apos seed"
+    }
+  ],
+  "console_events": [],
+  "transient_console_events": [
+    {
+      "type": "error",
+      "text": "TypeError: Failed to fetch\n    at http://127.0.0.1:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=ab3a8ce1:12757:23\n    at _handleRequest2 (http://127.0.0.1:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=ab3a8ce1:13065:20)\n    at _request (http://127.0.0.1:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=ab3a8ce1:13055:22)\n    at http://127.0.0.1:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=ab3a8ce1:17535:22\n    at SupabaseAuthClient._useSession (http://127.0.",
+      "url": "http://127.0.0.1:5173/app/atividades"
+    }
+  ],
+  "safety": {
+    "password_recorded": false,
+    "real_customer_data": false,
+    "external_integrations_called": false,
+    "final_screenshot": "prd-prints-2026-06-04-28-dashboard-resumo-final-desktop.png"
+  }
+}

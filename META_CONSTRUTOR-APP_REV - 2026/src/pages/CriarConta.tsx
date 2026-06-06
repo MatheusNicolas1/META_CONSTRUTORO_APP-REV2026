@@ -3,10 +3,11 @@ import { authTestimonials } from "@/data/auth-testimonials";
 
 import { useNavigate } from "react-router-dom";
 import SEO from "@/components/SEO";
+import { seoPages } from '@/config/seo';
 import { useSignUp } from "@/hooks/useSignUp";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { getAuthCallbackUrl } from "@/utils/authRedirect";
+import { getGoogleOAuthRedirectUrl } from "@/utils/authRedirect";
 
 
 
@@ -20,9 +21,7 @@ const CriarConta = () => {
 
     if (success) {
       // Redirecionar para dashboard após sucesso
-      setTimeout(() => {
-        navigate("/app/dashboard");
-      }, 1500);
+      navigate("/app/dashboard");
     }
   };
 
@@ -31,7 +30,7 @@ const CriarConta = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: getAuthCallbackUrl(),
+          redirectTo: getGoogleOAuthRedirectUrl(),
           queryParams: {
             access_type: "offline",
             prompt: "select_account",
@@ -52,11 +51,7 @@ const CriarConta = () => {
 
   return (
     <>
-      <SEO
-        title="Criar conta | Meta Construtor"
-        description="Cadastre-se no Meta Construtor e gerencie suas obras com facilidade."
-        canonical="https://metaconstrutor.com.br/criar-conta"
-      />
+      <SEO {...seoPages.criarConta} />
       <SignUpPage
         heroImageSrc="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1200&h=800&fit=crop"
         testimonials={authTestimonials}

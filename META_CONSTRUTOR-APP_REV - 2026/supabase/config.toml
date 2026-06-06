@@ -52,3 +52,27 @@ verify_jwt = true
 
 [functions.send-contact]
 verify_jwt = false
+
+[functions.send-rdo-email]
+verify_jwt = true
+
+[functions.send-email-rdo]
+verify_jwt = true
+
+[functions.invite-member]
+verify_jwt = true
+
+[functions.accept-invite]
+verify_jwt = true
+
+[functions.suspend-user]
+verify_jwt = true
+
+[functions.record-audit-log]
+verify_jwt = true
+
+[functions.generate-checklist-pdf]
+verify_jwt = true
+
+[functions.send-checklist-email]
+verify_jwt = true

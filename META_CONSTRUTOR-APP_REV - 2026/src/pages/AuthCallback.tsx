@@ -40,6 +40,15 @@ const AuthCallback = () => {
         }
 
         if (active) {
+          setMessage("Ativando convites pendentes...");
+        }
+
+        const { error: inviteError } = await supabase.functions.invoke("accept-invite");
+        if (inviteError) {
+          console.warn("Nao foi possivel ativar convites pendentes:", inviteError.message);
+        }
+
+        if (active) {
           navigate(next, { replace: true });
         }
       } catch (error) {

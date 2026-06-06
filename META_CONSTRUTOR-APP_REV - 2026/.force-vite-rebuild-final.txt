@@ -1,5 +1,0 @@
-Force complete Vite rebuild - Remove React namespace imports
-Timestamp: 2025-11-07T02:48:30Z
-- Removed React import, using direct named imports
-- Type-only import for ReactNode
-- Should resolve duplicate React instances

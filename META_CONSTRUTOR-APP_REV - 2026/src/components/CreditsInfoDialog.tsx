@@ -22,39 +22,35 @@ export const CreditsInfoDialog = () => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Coins className="h-5 w-5 text-primary" />
-            Como funciona o Sistema de Créditos?
+            Como funciona o sistema de créditos?
           </DialogTitle>
           <DialogDescription>
-            Sistema de gamificação para usuários do Plano Free
+            Controle de uso para usuários do Plano Free
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
-          {/* Visão Geral */}
           <div className="space-y-3">
-            <h3 className="font-semibold text-lg">📊 Visão Geral</h3>
+            <h3 className="font-semibold text-lg">Visão geral</h3>
             <p className="text-sm text-muted-foreground">
-              O sistema de créditos foi criado para incentivar o compartilhamento de suas obras e RDOs nas redes sociais,
-              aumentando a visibilidade do seu trabalho enquanto você ganha benefícios!
+              O sistema de créditos controla o uso de recursos no Plano Free e registra benefícios somente quando houver uma ação confirmada.
             </p>
           </div>
 
-          {/* Créditos Iniciais */}
           <Card className="p-4 bg-primary/5 border-primary/20">
             <div className="flex items-start gap-3">
               <div className="p-2 rounded-lg bg-primary/10">
                 <Coins className="h-5 w-5 text-primary" />
               </div>
               <div className="flex-1">
-                <h4 className="font-semibold text-sm mb-1">Créditos Iniciais</h4>
+                <h4 className="font-semibold text-sm mb-1">Créditos iniciais</h4>
                 <p className="text-sm text-muted-foreground">
-                  Você começa com <strong className="text-foreground">7 créditos gratuitos</strong> ao criar sua conta. A plataforma é 100% gratuita!
+                  Você começa com <strong className="text-foreground">7 créditos gratuitos</strong> ao criar sua conta no Plano Free.
                 </p>
               </div>
             </div>
           </Card>
 
-          {/* Como Usar */}
           <div className="space-y-3">
             <h3 className="font-semibold text-lg flex items-center gap-2">
               <FileText className="h-5 w-5" />
@@ -66,17 +62,16 @@ export const CreditsInfoDialog = () => {
                   <strong>Criação de RDO:</strong> -1 crédito por novo relatório
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Cada vez que você criar um novo RDO (Relatório Diário de Obra), será consumido 1 crédito.
+                  Cada vez que você criar um novo RDO, será consumido 1 crédito.
                 </p>
               </div>
             </Card>
           </div>
 
-          {/* Como Ganhar */}
           <div className="space-y-3">
             <h3 className="font-semibold text-lg flex items-center gap-2">
               <Share2 className="h-5 w-5" />
-              Como ganhar mais créditos
+              Créditos extras
             </h3>
             <Card className="p-4 bg-green-500/5 border-green-500/20">
               <div className="space-y-3">
@@ -85,7 +80,7 @@ export const CreditsInfoDialog = () => {
                   <div className="flex-1">
                     <h4 className="font-semibold text-sm mb-1">Instagram</h4>
                     <p className="text-xs text-muted-foreground">
-                      Compartilhe suas obras ou RDOs no Instagram e ganhe <strong className="text-foreground">+1 crédito</strong>
+                      Quando houver registro real confirmado, compartilhamentos no Instagram podem adicionar <strong className="text-foreground">+1 crédito</strong>.
                     </p>
                   </div>
                 </div>
@@ -94,7 +89,7 @@ export const CreditsInfoDialog = () => {
                   <div className="flex-1">
                     <h4 className="font-semibold text-sm mb-1">LinkedIn</h4>
                     <p className="text-xs text-muted-foreground">
-                      Compartilhe no LinkedIn e ganhe <strong className="text-foreground">+1 crédito</strong>
+                      Quando houver registro real confirmado, compartilhamentos no LinkedIn podem adicionar <strong className="text-foreground">+1 crédito</strong>.
                     </p>
                   </div>
                 </div>
@@ -102,27 +97,24 @@ export const CreditsInfoDialog = () => {
             </Card>
           </div>
 
-          {/* Planos Premium */}
           <Card className="p-4 bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
             <div className="space-y-2">
-              <h4 className="font-semibold text-sm">✨ Créditos Ilimitados</h4>
+              <h4 className="font-semibold text-sm">Planos pagos</h4>
               <p className="text-xs text-muted-foreground">
-                Usuários dos planos <strong className="text-foreground">Premium</strong> têm créditos ilimitados e podem criar quantos RDOs quiserem!
+                Os limites variam conforme o plano ativo da sua conta.
               </p>
               <Button variant="outline" size="sm" className="mt-2 w-full">
-                Ver Planos Premium
+                Ver planos
               </Button>
             </div>
           </Card>
 
-          {/* Dicas */}
           <div className="space-y-2 p-4 bg-muted/50 rounded-lg border">
-            <h4 className="font-semibold text-sm">💡 Dicas</h4>
+            <h4 className="font-semibold text-sm">Observações</h4>
             <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
-              <li>Compartilhe regularmente para manter seus créditos sempre positivos</li>
-              <li>Use hashtags relevantes para aumentar o alcance dos seus posts</li>
-              <li>O sistema valida automaticamente seus compartilhamentos</li>
-              <li>Seu histórico de compartilhamentos fica salvo no sistema</li>
+              <li>Créditos extras dependem de registro real do compartilhamento.</li>
+              <li>Use legendas e hashtags compatíveis com o conteúdo que você realmente publicou.</li>
+              <li>Seu histórico aparece apenas quando houver dados persistidos no sistema.</li>
             </ul>
           </div>
         </div>

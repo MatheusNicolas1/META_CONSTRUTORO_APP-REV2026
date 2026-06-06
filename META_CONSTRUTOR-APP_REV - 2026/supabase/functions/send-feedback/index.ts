@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { corsHeaders } from "../_shared/cors.ts";
+import { getCorsHeaders } from "../_shared/cors.ts";
 
 type FeedbackRequest = {
   title?: string;
@@ -10,7 +10,16 @@ type FeedbackRequest = {
   org_id?: string;
 };
 
-const jsonResponse = (body: unknown, status = 200) =>
+const FEEDBACK_TYPE_MAP: Record<string, string> = {
+  sugestao: "Sugestão",
+  problema: "Bug",
+  elogio: "Elogio",
+  duvida: "Dúvida",
+  reclamacao: "Reclamação",
+  outro: "Outro",
+};
+
+const jsonResponse = (body: unknown, corsHeaders: Record<string, string>, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -30,12 +39,14 @@ const createAdminClient = () =>
   );
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
+
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
   if (req.method !== "POST") {
-    return jsonResponse({ error: { code: "METHOD_NOT_ALLOWED", message: "Use POST" } }, 405);
+    return jsonResponse({ error: { code: "METHOD_NOT_ALLOWED", message: "Use POST" } }, corsHeaders, 405);
   }
 
   try {
@@ -47,18 +58,20 @@ serve(async (req) => {
     } = await userClient.auth.getUser();
 
     if (authError || !user) {
-      return jsonResponse({ error: { code: "UNAUTHORIZED", message: "Login obrigatorio" } }, 401);
+      return jsonResponse({ error: { code: "UNAUTHORIZED", message: "Login obrigatorio" } }, corsHeaders, 401);
     }
 
     const payload: FeedbackRequest = await req.json();
     const message = payload.message?.trim();
-    const type = payload.type?.trim() || "outro";
+    const rawType = payload.type?.trim() || "outro";
+    const type = FEEDBACK_TYPE_MAP[rawType.toLowerCase()] ?? rawType;
     const title = payload.title?.trim() || null;
     const rating = typeof payload.rating === "number" ? payload.rating : null;
 
     if (!message) {
       return jsonResponse(
         { error: { code: "VALIDATION_ERROR", message: "Mensagem e obrigatoria" } },
+        corsHeaders,
         400,
       );
     }
@@ -66,6 +79,7 @@ serve(async (req) => {
     if (rating !== null && (rating < 1 || rating > 5)) {
       return jsonResponse(
         { error: { code: "VALIDATION_ERROR", message: "Rating deve estar entre 1 e 5" } },
+        corsHeaders,
         400,
       );
     }
@@ -79,7 +93,7 @@ serve(async (req) => {
       });
 
       if (membershipError || isMember !== true) {
-        return jsonResponse({ error: { code: "FORBIDDEN", message: "Organizacao invalida" } }, 403);
+        return jsonResponse({ error: { code: "FORBIDDEN", message: "Organizacao invalida" } }, corsHeaders, 403);
       }
     } else {
       const { data: membership } = await admin
@@ -102,8 +116,6 @@ serve(async (req) => {
         tipo: type,
         mensagem: message,
         status: "Recebido",
-        rating,
-        comment: message,
         nota_satisfacao: rating,
       })
       .select("id, created_at")
@@ -111,9 +123,9 @@ serve(async (req) => {
 
     if (error) throw error;
 
-    return jsonResponse({ success: true, feedback_id: data.id, created_at: data.created_at });
+    return jsonResponse({ success: true, feedback_id: data.id, created_at: data.created_at }, corsHeaders);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Erro interno";
-    return jsonResponse({ error: { code: "INTERNAL_ERROR", message } }, 500);
+    return jsonResponse({ error: { code: "INTERNAL_ERROR", message } }, corsHeaders, 500);
   }
 });

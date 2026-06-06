@@ -1,6 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { corsHeaders } from "../_shared/cors.ts";
+import { getCorsHeaders } from "../_shared/cors.ts";
 import { createScopedClient } from "../_shared/supabase-client.ts";
 import { requireAuth, logRequest } from "../_shared/guards.ts";
 
@@ -14,6 +14,8 @@ interface N8NTestRequest {
 
 serve(async (req) => {
   const requestId = crypto.randomUUID();
+  const corsHeaders = getCorsHeaders(req);
+
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -33,7 +35,14 @@ serve(async (req) => {
     if (action === 'test') {
       const { n8nUrl, apiKey } = body;
       if (!n8nUrl || !apiKey) {
-        throw new Error('URL e API Key são obrigatórios');
+        return new Response(
+          JSON.stringify({
+            success: false,
+            configured: false,
+            error: 'URL e API Key do N8N sao obrigatorios para teste real.',
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
       }
 
       console.info(`Testing N8N connection to: ${n8nUrl}`);
@@ -42,53 +51,76 @@ serve(async (req) => {
         method: 'GET',
         headers: {
           'X-N8N-API-KEY': apiKey,
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
 
       if (response.ok) {
         return new Response(
-          JSON.stringify({ success: true, message: 'Conexão com N8N estabelecida com sucesso' }),
+          JSON.stringify({ success: true, configured: true, message: 'Conexao com N8N estabelecida com sucesso' }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
-      } else {
-        const errorText = await response.text();
-        throw new Error(`Falha na conexão: ${response.status} - Verifique a URL e API Key`);
       }
+
+      await response.text().catch(() => '');
+      return new Response(
+        JSON.stringify({
+          success: false,
+          configured: true,
+          error: `Falha na conexao: ${response.status} - verifique a URL e API Key.`,
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     if (action === 'trigger') {
       const { webhookUrl, payload } = body;
 
       if (!webhookUrl) {
-        throw new Error('URL do webhook é obrigatória');
+        return new Response(
+          JSON.stringify({
+            success: false,
+            configured: false,
+            error: 'URL do webhook N8N e obrigatoria para disparo real.',
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
       }
 
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ...payload,
           timestamp: new Date().toISOString(),
-          userId: user.id
-        })
+          userId: user.id,
+        }),
       });
 
       if (response.ok) {
         const responseData = await response.json().catch(() => ({}));
         return new Response(
-          JSON.stringify({ success: true, data: responseData }),
+          JSON.stringify({ success: true, configured: true, data: responseData }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
-      } else {
-        throw new Error(`Webhook retornou erro: ${response.status}`);
       }
+
+      return new Response(
+        JSON.stringify({
+          success: false,
+          configured: true,
+          error: `Webhook retornou erro: ${response.status}`,
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    throw new Error('Ação inválida');
-
+    return new Response(
+      JSON.stringify({ success: false, error: 'Acao invalida' }),
+      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   } catch (error: any) {
     logRequest(requestId, user_id, null, 'n8n-integration', 'error', error.message);
     const status = error.message.includes('Unauthorized') ? 401 : 500;

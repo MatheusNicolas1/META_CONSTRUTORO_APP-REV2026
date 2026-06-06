@@ -1,5 +1,15 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +23,7 @@ import { toast } from "sonner";
 import { useDownload } from "@/hooks/useDownload";
 import { generateStandardFilename } from "@/utils/downloadHelper";
 import { downloadStorageFile, getSignedUrl } from "@/utils/storageUtils";
+import { DOCUMENT_UPLOAD_ACCEPT, DOCUMENT_UPLOAD_HELP_TEXT } from "@/utils/documentUploadValidation";
 
 const Documentos = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,6 +32,7 @@ const Documentos = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingDoc, setEditingDoc] = useState<{ id: string; nome: string; categoria: string; descricao: string } | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; nome: string } | null>(null);
 
   // Form State
   const [newDocData, setNewDocData] = useState<{
@@ -112,9 +124,18 @@ const Documentos = () => {
   };
 
   const handleDeleteDocumento = (id: string) => {
-    if (confirm("Tem certeza que deseja excluir este documento?")) {
-      deleteDocument.mutate(id);
-    }
+    const documento = documentos.find((item) => item.id === id);
+    setPendingDelete({
+      id,
+      nome: documento?.nome || "este documento",
+    });
+  };
+
+  const confirmDeleteDocumento = () => {
+    if (!pendingDelete) return;
+    deleteDocument.mutate(pendingDelete.id, {
+      onSuccess: () => setPendingDelete(null),
+    });
   };
 
   const handleDownloadDocumento = async (documento: Documento) => {
@@ -222,14 +243,14 @@ const Documentos = () => {
                     type="file"
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     onChange={handleFileChange}
-                    accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                    accept={DOCUMENT_UPLOAD_ACCEPT}
                   />
                   <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
                   <p className="text-sm text-foreground">
                     {newDocData.file ? newDocData.file.name : "Clique para selecionar ou arraste o arquivo aqui"}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    PDF, DOC, XLS, JPG, PNG (máx. 50MB)
+                    {DOCUMENT_UPLOAD_HELP_TEXT}
                   </p>
                 </div>
               </div>
@@ -390,6 +411,27 @@ const Documentos = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!pendingDelete} onOpenChange={(open) => !open && setPendingDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Mover documento para a Lixeira?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acao vai mover {pendingDelete?.nome || "este documento"} para a Lixeira. Ele podera ser restaurado por ate 30 dias, e a acao so sera confirmada se a mutation real concluir.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteDocument.isPending}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteDocumento}
+              disabled={deleteDocument.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleteDocument.isPending ? "Movendo..." : "Mover para Lixeira"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

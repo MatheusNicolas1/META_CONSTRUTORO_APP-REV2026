@@ -18,7 +18,7 @@ import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useObras } from "@/hooks/useObras";
-import { useEquipesSupabase } from "@/hooks/useEquipesSupabase";
+import { useOrgResponsibles } from "@/hooks/useOrgResponsibles";
 
 interface ChecklistFormProps {
   isOpen: boolean;
@@ -26,12 +26,24 @@ interface ChecklistFormProps {
   onSubmit: (data: ChecklistFormData) => Promise<void>;
   initialData?: Partial<ChecklistFormData>;
   isLoading?: boolean;
+  dialogTitle?: string;
+  dialogDescription?: string;
+  submitLabel?: string;
 }
 
-export function ChecklistForm({ isOpen, onClose, onSubmit, initialData, isLoading = false }: ChecklistFormProps) {
+export function ChecklistForm({
+  isOpen,
+  onClose,
+  onSubmit,
+  initialData,
+  isLoading = false,
+  dialogTitle = "Criar Novo Checklist",
+  dialogDescription = "Configure um novo checklist para controle de qualidade e segurança",
+  submitLabel = "Criar Checklist"
+}: ChecklistFormProps) {
   const { toast } = useToast();
   const { obras } = useObras();
-  const { equipes } = useEquipesSupabase(); // Use real teams for responsibles
+  const { responsibles } = useOrgResponsibles();
 
   const [activeTab, setActiveTab] = useState("basic");
   const [formData, setFormData] = useState<ChecklistFormData>({
@@ -46,10 +58,19 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData, isLoadin
   });
 
   useEffect(() => {
-    if (initialData) {
+    if (isOpen && initialData) {
       setFormData(prev => ({ ...prev, ...initialData }));
+      setActiveTab("basic");
     }
-  }, [initialData]);
+  }, [initialData, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen || formData.responsibleId || responsibles.length === 0) return;
+    setFormData(prev => ({
+      ...prev,
+      responsibleId: prev.responsibleId || responsibles[0].id,
+    }));
+  }, [formData.responsibleId, isOpen, responsibles]);
 
   const resetForm = () => {
     setFormData({
@@ -99,7 +120,7 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData, isLoadin
       return;
     }
 
-    if (!formData.responsibleId) {
+    if (!formData.responsibleId && responsibles.length > 0) {
       toast({
         title: "Campo obrigatório",
         description: "Selecione um responsável para o checklist.",
@@ -157,7 +178,7 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData, isLoadin
     return formData.title.trim() &&
       formData.category &&
       formData.obraId &&
-      formData.responsibleId &&
+      (formData.responsibleId || responsibles.length === 0) &&
       formData.dueDate &&
       formData.items.length > 0;
   };
@@ -168,10 +189,10 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData, isLoadin
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-foreground">
             <Plus className="h-5 w-5" />
-            Criar Novo Checklist
+            {dialogTitle}
           </DialogTitle>
           <DialogDescription>
-            Configure um novo checklist para controle de qualidade e segurança
+            {dialogDescription}
           </DialogDescription>
         </DialogHeader>
 
@@ -211,7 +232,7 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData, isLoadin
                           setFormData({ ...formData, category: value })
                         }
                       >
-                        <SelectTrigger>
+                        <SelectTrigger aria-label="Categoria do checklist">
                           <SelectValue placeholder="Selecione a categoria" />
                         </SelectTrigger>
                         <SelectContent>
@@ -230,7 +251,7 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData, isLoadin
                         value={formData.obraId}
                         onValueChange={(value) => setFormData({ ...formData, obraId: value })}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger aria-label="Obra do checklist">
                           <SelectValue placeholder="Selecione a obra" />
                         </SelectTrigger>
                         <SelectContent>
@@ -251,11 +272,11 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData, isLoadin
                         value={formData.responsibleId}
                         onValueChange={(value) => setFormData({ ...formData, responsibleId: value })}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger aria-label="Responsavel do checklist">
                           <SelectValue placeholder="Selecione o responsável" />
                         </SelectTrigger>
                         <SelectContent>
-                          {equipes.map((membro) => ( // Use real members from useEquipes
+                          {responsibles.map((membro) => (
                             <SelectItem key={membro.id} value={membro.id || "unknown"}>
                               {membro.nome} - {membro.funcao}
                             </SelectItem>
@@ -270,6 +291,7 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData, isLoadin
                         <PopoverTrigger asChild>
                           <Button
                             variant="outline"
+                            aria-label="Prazo do checklist"
                             className={cn(
                               "w-full justify-start text-left font-normal",
                               !formData.dueDate && "text-muted-foreground"
@@ -398,7 +420,7 @@ export function ChecklistForm({ isOpen, onClose, onSubmit, initialData, isLoadin
               ) : (
                 <>
                   <Save className="h-4 w-4 mr-2" />
-                  Criar Checklist
+                  {submitLabel}
                 </>
               )}
             </Button>

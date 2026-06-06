@@ -20,6 +20,8 @@ import { OrgProvider } from '@/contexts/OrgContext';
 import SecurityHeaders from '@/components/security/SecurityHeaders';
 import { ServiceWorkerManager } from '@/components/ServiceWorkerManager';
 import { InteractionTracker } from '@/components/InteractionTracker';
+import { SuccessCheck } from '@/components/Feedback/SuccessCheck';
+import PublicMarketingTracker from '@/components/analytics/PublicMarketingTracker';
 
 // Query client configuration
 const queryClient = new QueryClient({
@@ -166,6 +168,12 @@ const Perfil = lazy(() =>
   }))
 );
 
+const Planos = lazy(() =>
+  import('@/pages/Planos').then(module => ({
+    default: module.default
+  }))
+);
+
 const Feedback = lazy(() =>
   import('@/pages/Feedback').then(module => ({
     default: module.default
@@ -184,8 +192,56 @@ const Seguranca = lazy(() =>
   }))
 );
 
+const DDS = lazy(() =>
+  import('@/pages/DDS').then(module => ({
+    default: module.default
+  }))
+);
+
 const NotFound = lazy(() =>
   import('@/pages/NotFound').then(module => ({
+    default: module.default
+  }))
+);
+
+const PortalClientePublico = lazy(() =>
+  import('@/pages/PortalClientePublico').then(module => ({
+    default: module.default
+  }))
+);
+
+const ClientesPortal = lazy(() =>
+  import('@/pages/ClientesPortal').then(module => ({
+    default: module.default
+  }))
+);
+
+const FluxoCaixa = lazy(() =>
+  import('@/pages/FluxoCaixa').then(module => ({
+    default: module.default
+  }))
+);
+
+const OrdensServico = lazy(() =>
+  import('@/pages/OrdensServico').then(module => ({
+    default: module.default
+  }))
+);
+
+const ContratosPage = lazy(() =>
+  import('@/pages/Contratos').then(module => ({
+    default: module.default
+  }))
+);
+
+const IntegracaoERPPage = lazy(() =>
+  import('@/pages/IntegracaoERP').then(module => ({
+    default: module.default
+  }))
+);
+
+const PublicPortal = lazy(() =>
+  import('@/pages/publicPortal').then((module) => ({
     default: module.default
   }))
 );
@@ -228,6 +284,12 @@ const Carreiras = lazy(() =>
 
 const Blog = lazy(() =>
   import('@/pages/Blog').then(module => ({
+    default: module.default
+  }))
+);
+
+const BlogArticle = lazy(() =>
+  import('@/pages/BlogArticle').then(module => ({
     default: module.default
   }))
 );
@@ -288,6 +350,12 @@ const AdminDashboard = lazy(() =>
 
 const Despesas = lazy(() =>
   import('@/pages/Despesas').then(module => ({
+    default: module.default
+  }))
+);
+
+const Lixeira = lazy(() =>
+  import('@/pages/Lixeira').then(module => ({
     default: module.default
   }))
 );
@@ -361,12 +429,13 @@ LegacyAppRedirect.displayName = 'LegacyAppRedirect';
 
 export const PerformanceOptimizedApp = memo(() => (
   <ErrorBoundary>
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
       <HelmetProvider>
         <TooltipProvider>
           <ServiceWorkerManager />
           <Toaster />
           <Sonner />
+          <SuccessCheck />
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
 
 
@@ -374,6 +443,7 @@ export const PerformanceOptimizedApp = memo(() => (
             <QueryClientProvider client={queryClient}>
               <AuthWrapper>
                 <InteractionTracker />
+                <PublicMarketingTracker />
                 <OrgProvider>
                   <AuditProvider>
                     <SecurityHeaders />
@@ -390,21 +460,24 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/mfa" element={<PublicRoute><MFA /></PublicRoute>} />
                       <Route path="/renovar-sessao" element={<RenovarSessao />} />
                       <Route path="/home" element={<Index />} />
-                      <Route path="/sobre" element={<SafeSuspense><Sobre /></SafeSuspense>} />
-                      <Route path="/contato" element={<SafeSuspense><Contato /></SafeSuspense>} />
-                      <Route path="/preco" element={<SafeSuspense><Preco /></SafeSuspense>} />
+                      <Route path="/sobre" element={<SafeSuspense fallback={null}><Sobre /></SafeSuspense>} />
+                      <Route path="/contato" element={<SafeSuspense fallback={null}><Contato /></SafeSuspense>} />
+                      <Route path="/preco" element={<SafeSuspense fallback={null}><Preco /></SafeSuspense>} />
                       {/* Rotas públicas do rodapé */}
-                      <Route path="/atualizacoes" element={<SafeSuspense><Atualizacoes /></SafeSuspense>} />
-                      <Route path="/carreiras" element={<SafeSuspense><Carreiras /></SafeSuspense>} />
-                      <Route path="/blog" element={<SafeSuspense><Blog /></SafeSuspense>} />
-                      <Route path="/legal/privacidade" element={<SafeSuspense><PrivacyPolicy /></SafeSuspense>} />
-                      <Route path="/legal/termos" element={<SafeSuspense><TermsOfService /></SafeSuspense>} />
-                      <Route path="/legal/cookies" element={<SafeSuspense><CookiePolicy /></SafeSuspense>} />
-                      <Route path="/legal/lgpd" element={<SafeSuspense><LGPDPage /></SafeSuspense>} />
-                      <Route path="/central-ajuda" element={<SafeSuspense><CentralAjuda /></SafeSuspense>} />
-                      <Route path="/documentacao" element={<SafeSuspense><Documentacao /></SafeSuspense>} />
-                      <Route path="/status" element={<SafeSuspense><StatusPage /></SafeSuspense>} />
-                      <Route path="/api" element={<SafeSuspense><APIPage /></SafeSuspense>} />
+                      <Route path="/atualizacoes" element={<SafeSuspense fallback={null}><Atualizacoes /></SafeSuspense>} />
+                      <Route path="/carreiras" element={<SafeSuspense fallback={null}><Carreiras /></SafeSuspense>} />
+                      <Route path="/blog" element={<SafeSuspense fallback={null}><Blog /></SafeSuspense>} />
+                      <Route path="/blog/:slug" element={<SafeSuspense fallback={null}><BlogArticle /></SafeSuspense>} />
+                      <Route path="/legal/privacidade" element={<SafeSuspense fallback={null}><PrivacyPolicy /></SafeSuspense>} />
+                      <Route path="/legal/termos" element={<SafeSuspense fallback={null}><TermsOfService /></SafeSuspense>} />
+                      <Route path="/legal/cookies" element={<SafeSuspense fallback={null}><CookiePolicy /></SafeSuspense>} />
+                      <Route path="/legal/lgpd" element={<SafeSuspense fallback={null}><LGPDPage /></SafeSuspense>} />
+                      <Route path="/central-ajuda" element={<SafeSuspense fallback={null}><CentralAjuda /></SafeSuspense>} />
+                      {/* Portal do Cliente - página pública */}
+                      <Route path="/portal/:token" element={<SafeSuspense fallback={null}><PortalClientePublico /></SafeSuspense>} />
+                      <Route path="/documentacao" element={<SafeSuspense fallback={null}><Documentacao /></SafeSuspense>} />
+                      <Route path="/status" element={<SafeSuspense fallback={null}><StatusPage /></SafeSuspense>} />
+                      <Route path="/api" element={<SafeSuspense fallback={null}><APIPage /></SafeSuspense>} />
                       {/* Rotas de Checkout */}
                       <Route path="/checkout" element={<PublicRoute allowAuthenticated><SafeSuspense><Checkout /></SafeSuspense></PublicRoute>} />
                       <Route path="/checkout/success" element={<PublicRoute allowAuthenticated><SafeSuspense><CheckoutSuccess /></SafeSuspense></PublicRoute>} />
@@ -422,14 +495,22 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/documentos/*" element={<LegacyAppRedirect />} />
                       <Route path="/fornecedores/*" element={<LegacyAppRedirect />} />
                       <Route path="/despesas/*" element={<LegacyAppRedirect />} />
+                      <Route path="/lixeira/*" element={<LegacyAppRedirect />} />
                       <Route path="/relatorios/*" element={<LegacyAppRedirect />} />
                       <Route path="/integracoes/*" element={<LegacyAppRedirect />} />
                       <Route path="/configuracoes/*" element={<LegacyAppRedirect />} />
                       <Route path="/perfil" element={<LegacyAppRedirect />} />
+                      <Route path="/planos" element={<LegacyAppRedirect />} />
                       <Route path="/notificacoes/*" element={<LegacyAppRedirect />} />
                       <Route path="/feedback" element={<LegacyAppRedirect />} />
                       <Route path="/faq" element={<LegacyAppRedirect />} />
                       <Route path="/seguranca/*" element={<LegacyAppRedirect />} />
+                      <Route path="/clientes-portal/*" element={<LegacyAppRedirect />} />
+                      <Route path="/fluxo-caixa/*" element={<LegacyAppRedirect />} />
+                      <Route path="/ordens-servico/*" element={<LegacyAppRedirect />} />
+                      <Route path="/dds/*" element={<LegacyAppRedirect />} />
+                      <Route path="/contratos/*" element={<LegacyAppRedirect />} />
+                      <Route path="/erp/*" element={<LegacyAppRedirect />} />
                       <Route path="/admin/dashboard" element={<Navigate to="/app/admin/dashboard" replace />} />
                       <Route path="/app" element={<Navigate to="/app/dashboard" replace />} />
                       {/* Dashboard protegido */}
@@ -466,6 +547,8 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/app/fornecedores" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Fornecedores /></ProtectedPage>} />
                       {/* Despesas */}
                       <Route path="/app/despesas" element={<ProtectedPage><Despesas /></ProtectedPage>} />
+                      {/* Lixeira */}
+                      <Route path="/app/lixeira" element={<ProtectedPage roles={["Presidente", "Administrador", "Gerente"]}><Lixeira /></ProtectedPage>} />
                       {/* Relatórios */}
                       <Route path="/app/relatorios" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Relatorios /></ProtectedPage>} />
                       {/* Integrações */}
@@ -473,8 +556,13 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/app/integracoes/*" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Integracoes /></ProtectedPage>} />
                       {/* Configurações */}
                       <Route path="/app/configuracoes" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Configuracoes /></ProtectedPage>} />
+                      {/* Portal do Cliente - tela interna */}
+                      <Route path="/app/clientes-portal" element={<ProtectedPage roles={["Presidente", "Administrador", "Gerente"]}><ClientesPortal /></ProtectedPage>} />
+                      {/* Fluxo de Caixa */}
+                      <Route path="/app/fluxo-caixa" element={<ProtectedPage><FluxoCaixa /></ProtectedPage>} />
                       {/* Perfil */}
                       <Route path="/app/perfil" element={<ProtectedPage><Perfil /></ProtectedPage>} />
+                      <Route path="/app/planos" element={<ProtectedPage><Planos /></ProtectedPage>} />
                       {/* Notificações */}
                       <Route path="/app/notificacoes" element={<ProtectedPage><Notificacoes /></ProtectedPage>} />
                       {/* Feedback e FAQ */}
@@ -482,8 +570,16 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/app/faq" element={<ProtectedPage><FAQ /></ProtectedPage>} />
                       {/* Segurança */}
                       <Route path="/app/seguranca" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Seguranca /></ProtectedPage>} />
+                      {/* DDS - Diálogo Diário de Segurança */}
+                      <Route path="/app/dds" element={<ProtectedPage><DDS /></ProtectedPage>} />
+                      {/* Ordens de Serviço */}
+                      <Route path="/app/ordens-servico" element={<ProtectedPage><OrdensServico /></ProtectedPage>} />
+                      {/* Contratos e Medições */}
+                      <Route path="/app/contratos" element={<ProtectedPage roles={["Presidente", "Administrador", "Gerente"]}><ContratosPage /></ProtectedPage>} />
+                      {/* Integração ERP */}
+                      <Route path="/app/integracoes/erp" element={<ProtectedPage roles={["Presidente", "Administrador"]}><IntegracaoERPPage /></ProtectedPage>} />
                       {/* Painel Administrativo */}
-                      <Route path="/app/admin/dashboard" element={<ProtectedPage roles={["Presidente"]}><AdminDashboard /></ProtectedPage>} />
+                      <Route path="/app/admin/dashboard" element={<ProtectedPage><AdminDashboard /></ProtectedPage>} />
                       {/* Perfil Público e Configurações */}
                       <Route path="/perfil/:slug" element={<PerfilPublico />} />
                       <Route path="/app/configurar-perfil" element={<ProtectedPage><ConfigurarPerfil /></ProtectedPage>} />

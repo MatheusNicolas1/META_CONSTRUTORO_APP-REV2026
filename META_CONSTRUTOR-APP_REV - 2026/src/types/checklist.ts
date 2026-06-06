@@ -13,6 +13,7 @@ export type ChecklistItemStatus =
   | 'Não iniciado' 
   | 'Em andamento' 
   | 'Concluído' 
+  | 'Não conforme'
   | 'Não aplicável';
 
 export type ChecklistStatus = 

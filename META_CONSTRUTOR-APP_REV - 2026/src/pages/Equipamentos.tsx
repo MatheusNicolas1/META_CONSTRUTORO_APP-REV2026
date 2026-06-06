@@ -2,6 +2,16 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EquipamentoExpandableCard } from "@/components/EquipamentoExpandableCard";
@@ -16,6 +26,7 @@ const Equipamentos = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; nome: string } | null>(null);
   
   const [formData, setFormData] = useState(emptyFormData);
   const [editFormData, setEditFormData] = useState(emptyFormData);
@@ -57,9 +68,18 @@ const Equipamentos = () => {
   };
 
   const handleDeleteEquipamento = (id: number | string) => {
-    if (confirm("Tem certeza que deseja excluir este equipamento?")) {
-      deleteEquipamento.mutate(String(id));
-    }
+    const equipamento = equipamentos.find((item) => String(item.id) === String(id));
+    setPendingDelete({
+      id: String(id),
+      nome: equipamento?.nome || "este equipamento",
+    });
+  };
+
+  const confirmDeleteEquipamento = () => {
+    if (!pendingDelete) return;
+    deleteEquipamento.mutate(pendingDelete.id, {
+      onSuccess: () => setPendingDelete(null),
+    });
   };
 
   const handleSubmit = () => {
@@ -292,6 +312,27 @@ const Equipamentos = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!pendingDelete} onOpenChange={(open) => !open && setPendingDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir equipamento?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acao vai excluir {pendingDelete?.nome || "este equipamento"} do cadastro. A operacao usa a exclusao real do Supabase e nao sera confirmada se a requisicao falhar.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteEquipamento.isPending}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteEquipamento}
+              disabled={deleteEquipamento.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleteEquipamento.isPending ? "Excluindo..." : "Excluir"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

@@ -2,37 +2,33 @@ import React from "react"
 import { Moon, Sun } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { useTheme } from "@/components/ThemeProvider"
+import { useAuth } from "@/components/auth/AuthContext"
+import { persistUserThemePreference, resolvePersistedTheme } from "@/utils/themePreference"
+import { toast } from "sonner"
 
 export function ThemeToggle() {
   const [mounted, setMounted] = React.useState(false)
-  const [theme, setTheme] = React.useState<"light" | "dark">("light")
+  const { theme, setTheme, systemTheme } = useTheme()
+  const { user } = useAuth()
 
   React.useEffect(() => {
-    if (typeof window === "undefined") return
-
-    const storedTheme = window.localStorage.getItem("vite-ui-theme") as
-      | "light"
-      | "dark"
-      | null
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-    const initialTheme = storedTheme || (systemPrefersDark ? "dark" : "light")
-
-    setTheme(initialTheme)
-    const root = window.document.documentElement
-    root.classList.remove("light", "dark")
-    root.classList.add(initialTheme)
-
     setMounted(true)
   }, [])
 
-  const toggleTheme = () => {
-    if (typeof window === "undefined") return
-    const nextTheme = theme === "light" ? "dark" : "light"
+  const toggleTheme = async () => {
+    const activeTheme = resolvePersistedTheme(theme, systemTheme)
+    const nextTheme = activeTheme === "light" ? "dark" : "light"
     setTheme(nextTheme)
-    const root = window.document.documentElement
-    root.classList.remove("light", "dark")
-    root.classList.add(nextTheme)
-    window.localStorage.setItem("vite-ui-theme", nextTheme)
+
+    if (user?.id) {
+      try {
+        await persistUserThemePreference(user.id, nextTheme)
+      } catch (error) {
+        console.error("Erro ao salvar tema:", error)
+        toast.error("Nao foi possivel salvar o tema. Tente novamente.")
+      }
+    }
   }
 
   if (!mounted) return null

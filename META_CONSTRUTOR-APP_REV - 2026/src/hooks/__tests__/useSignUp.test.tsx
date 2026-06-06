@@ -38,6 +38,15 @@ vi.mock('sonner', () => ({
 }));
 
 describe('useSignUp', () => {
+  const validData = {
+    name: 'Usuario Teste',
+    email: 'novo@teste.com',
+    phone: '(11) 99999-9999',
+    password: 'SenhaForte1!',
+    confirmPassword: 'SenhaForte1!',
+  };
+  const genericSignupError = 'Não foi possível concluir o cadastro. Verifique os dados e tente novamente.';
+
   beforeEach(() => {
     mocks.invoke.mockReset().mockResolvedValue({ data: { allowed: true }, error: null });
     mocks.authSignUp.mockReset().mockResolvedValue({
@@ -55,13 +64,7 @@ describe('useSignUp', () => {
 
     let success = false;
     await act(async () => {
-      success = await result.current.signUp({
-        name: 'Usuario Teste',
-        email: 'novo@teste.com',
-        phone: '(11) 99999-9999',
-        password: 'SenhaForte1!',
-        confirmPassword: 'SenhaForte1!',
-      });
+      success = await result.current.signUp(validData);
     });
 
     expect(success).toBe(true);
@@ -85,5 +88,40 @@ describe('useSignUp', () => {
         password: 'SenhaForte1!',
       });
     });
+  });
+
+  it('exibe erro generico quando o Supabase reporta email ja cadastrado', async () => {
+    mocks.authSignUp.mockResolvedValue({
+      data: { user: null },
+      error: { message: 'User already registered' },
+    });
+    const { result } = renderHook(() => useSignUp());
+
+    let success = true;
+    await act(async () => {
+      success = await result.current.signUp(validData);
+    });
+
+    expect(success).toBe(false);
+    expect(mocks.toastError).toHaveBeenCalledWith(genericSignupError);
+    expect(mocks.signInWithPassword).not.toHaveBeenCalled();
+  });
+
+  it('exibe erro generico quando cadastro duplicado nao gera perfil acessivel', async () => {
+    mocks.authSignUp.mockResolvedValue({
+      data: { user: { id: 'existing-user' } },
+      error: null,
+    });
+    mocks.maybeSingle.mockResolvedValue({ data: null, error: null });
+    const { result } = renderHook(() => useSignUp());
+
+    let success = true;
+    await act(async () => {
+      success = await result.current.signUp(validData);
+    });
+
+    expect(success).toBe(false);
+    expect(mocks.toastError).toHaveBeenCalledWith(genericSignupError);
+    expect(mocks.signInWithPassword).not.toHaveBeenCalled();
   });
 });

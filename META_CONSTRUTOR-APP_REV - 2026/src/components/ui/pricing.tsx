@@ -5,13 +5,11 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
 import { Check, Star, ArrowLeft, ArrowRight } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
-import confetti from "canvas-confetti";
+import { useState, useEffect } from "react";
 import NumberFlow from "@number-flow/react";
 import { useNavigate } from "react-router-dom";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
 
 interface PricingPlan {
   name: string;
@@ -38,14 +36,13 @@ export function Pricing({
 }: PricingProps) {
   const [isMonthly, setIsMonthly] = useState(true);
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  const switchRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
   const [api, setApi] = useState<CarouselApi>();
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
 
-  // Atualiza estados dos botões quando o carousel muda
+  // Atualiza estados dos botoes quando o carousel muda.
   useEffect(() => {
     if (!api) return;
 
@@ -56,7 +53,7 @@ export function Pricing({
 
     api.on("select", updateButtons);
     api.on("reInit", updateButtons);
-    updateButtons(); // Atualiza imediatamente
+    updateButtons();
 
     return () => {
       api.off("select", updateButtons);
@@ -64,19 +61,19 @@ export function Pricing({
     };
   }, [api]);
 
-  // Centralizar no plano correto ao carregar
+  // Centraliza no plano correto ao carregar.
   useEffect(() => {
     if (api && plans.length > 0) {
-      // Verifica se veio de botão "Começar" através da URL ou localStorage
+      // Verifica se veio de botao "Comecar" pela URL ou localStorage.
       const urlParams = new URLSearchParams(window.location.search);
       const targetPlan = urlParams.get('plan') || localStorage.getItem('targetPlan');
 
       let targetIndex;
       if (targetPlan === 'free') {
         targetIndex = plans.findIndex(plan => plan.name === "FREE");
-        localStorage.removeItem('targetPlan'); // Limpa após uso
+        localStorage.removeItem('targetPlan');
 
-        // Remove o parâmetro da URL após uso para limpar
+        // Remove o parametro da URL apos uso.
         if (urlParams.has('plan')) {
           window.history.replaceState({}, '', window.location.pathname);
         }
@@ -127,31 +124,6 @@ export function Pricing({
 
   const handleToggle = (checked: boolean) => {
     setIsMonthly(!checked);
-    if (checked && switchRef.current) {
-      const rect = switchRef.current.getBoundingClientRect();
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2;
-
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: {
-          x: x / window.innerWidth,
-          y: y / window.innerHeight,
-        },
-        colors: [
-          "hsl(var(--primary))",
-          "hsl(var(--accent))",
-          "hsl(var(--secondary))",
-          "hsl(var(--muted))",
-        ],
-        ticks: 200,
-        gravity: 1.2,
-        decay: 0.94,
-        startVelocity: 30,
-        shapes: ["circle"],
-      });
-    }
   };
 
   return (
@@ -176,7 +148,6 @@ export function Pricing({
         <span className="text-xs sm:text-sm font-medium leading-none">Mensal</span>
         <Label>
           <Switch
-            ref={switchRef as any}
             checked={!isMonthly}
             onCheckedChange={handleToggle}
           />
@@ -192,7 +163,7 @@ export function Pricing({
           <button
             onClick={handlePrevious}
             disabled={!canScrollPrev || isNavigating}
-            className="h-12 w-12 rounded-full border-2 border-border hover:border-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed bg-background shadow-lg hover:shadow-xl active:scale-95"
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground disabled:cursor-not-allowed disabled:opacity-30"
             aria-label="Plano anterior"
             type="button"
           >
@@ -201,7 +172,7 @@ export function Pricing({
           <button
             onClick={handleNext}
             disabled={!canScrollNext || isNavigating}
-            className="h-12 w-12 rounded-full border-2 border-border hover:border-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed bg-background shadow-lg hover:shadow-xl active:scale-95"
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground disabled:cursor-not-allowed disabled:opacity-30"
             aria-label="Próximo plano"
             type="button"
           >
@@ -240,28 +211,18 @@ export function Pricing({
                   "basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
                 )}
               >
-                <motion.div
-                  initial={{ y: 0, opacity: 1 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  viewport={{ once: true, margin: "160px" }}
-                  transition={{
-                    duration: 0.4,
-                    type: "spring",
-                    stiffness: 120,
-                    damping: 25,
-                    delay: Math.min(index * 0.08, 0.3),
-                  }}
+                <article
                   className={cn(
-                    "rounded-2xl border bg-background text-center relative flex flex-col h-full transition-all duration-300 hover:shadow-lg",
+                    "relative flex h-full flex-col border bg-background p-4 text-center transition-colors duration-200 sm:p-5 md:p-6",
                     plan.isPopular
-                      ? "border-primary border-2 shadow-2xl ring-4 ring-primary/15 sm:scale-[1.05] z-10 p-4 sm:p-5 md:p-6 min-h-[620px] overflow-visible"
-                      : "border-border hover:border-primary/40 p-4 sm:p-5 md:p-6 min-h-[580px] overflow-hidden"
+                      ? "z-10 min-h-[620px] border-primary"
+                      : "min-h-[580px] border-border hover:border-primary/40"
                   )}
                 >
                   {plan.isPopular && (
-                    <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-primary to-primary/90 py-1.5 px-4 rounded-full flex items-center shadow-xl border-2 border-background z-40 whitespace-nowrap">
-                      <Star className="text-primary-foreground h-3.5 w-3.5 fill-current mr-1.5 flex-shrink-0" />
-                      <span className="text-primary-foreground font-bold text-xs tracking-wide">
+                    <div className="mx-auto mb-3 flex w-fit items-center gap-1.5 px-3 py-2 text-primary">
+                      <Star className="h-3.5 w-3.5 flex-shrink-0 fill-current" />
+                      <span className="text-xs font-semibold uppercase leading-none">
                         Mais Popular
                       </span>
                     </div>
@@ -287,7 +248,7 @@ export function Pricing({
                                   (() => {
                                     const val = isMonthly ? plan.price : plan.yearlyPrice;
                                     if (typeof val === 'number') return val;
-                                    // Se for string, remove pontos de milhar e troca vírgula por ponto
+          // Se for string, remove pontos de milhar e troca virgula por ponto.
                                     return Number(String(val).replace(/\./g, '').replace(',', '.'));
                                   })()
                                 }
@@ -330,8 +291,11 @@ export function Pricing({
                         onClick={() => {
                           if (plan.href === '/login') {
                             navigate('/login');
+                          } else if (plan.href.startsWith('/contato')) {
+                            navigate('/contato');
                           } else {
-                            navigate(`${plan.href}&billing=${isMonthly ? 'monthly' : 'yearly'}`);
+                            const separator = plan.href.includes('?') ? '&' : '?';
+                            navigate(`${plan.href}${separator}billing=${isMonthly ? 'monthly' : 'yearly'}`);
                           }
                         }}
                         className={cn(
@@ -339,15 +303,14 @@ export function Pricing({
                             variant: plan.isPopular ? "default" : "outline",
                             size: "lg"
                           }),
-                          "w-full text-base font-semibold leading-none transition-all duration-200",
-                          plan.isPopular && "shadow-lg hover:shadow-xl"
+                          "w-full text-base font-semibold leading-none transition-colors duration-200"
                         )}
                       >
                         {plan.buttonText}
                       </button>
                     </div>
                   </div>
-                </motion.div>
+                </article>
               </CarouselItem>
             ))}
           </CarouselContent>

@@ -15,6 +15,7 @@ type UpdateRDOStatusRequest = {
   action?: string;
   motivo?: string;
   motivo_rejeicao?: string;
+  rejection_reason?: string;
 };
 
 const jsonResponse = (body: unknown, status = 200) =>
@@ -34,8 +35,6 @@ const normalizeAction = (action?: string): RDOAction | null => {
   return null;
 };
 
-const statusLabel = (status: RDOAction) => (status === "APPROVED" ? "Aprovado" : "Rejeitado");
-
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -46,7 +45,7 @@ serve(async (req: Request) => {
   }
 
   try {
-    const { rdoId, rdo_id, action, motivo, motivo_rejeicao }: UpdateRDOStatusRequest = await req.json();
+    const { rdoId, rdo_id, action, motivo, motivo_rejeicao, rejection_reason }: UpdateRDOStatusRequest = await req.json();
     const targetRdoId = rdoId || rdo_id;
     const nextStatus = normalizeAction(action);
 
@@ -111,20 +110,37 @@ serve(async (req: Request) => {
       );
     }
 
-    const rejectionReason = motivo_rejeicao || motivo || "Nao informado";
-    const dbStatus = statusLabel(nextStatus);
+    if (["APPROVED", "Aprovado"].includes(rdo.status)) {
+      return jsonResponse(
+        { error: { code: "INVALID_STATUS", message: "RDOs aprovados nao podem ser aprovados ou rejeitados novamente" } },
+        409,
+      );
+    }
+
+    const rejectionReason = rejection_reason || motivo_rejeicao || motivo || "";
+    if (nextStatus === "REJECTED" && !rejectionReason.trim()) {
+      return jsonResponse(
+        { error: { code: "VALIDATION_ERROR", message: "rejection_reason e obrigatorio para rejeitar" } },
+        400,
+      );
+    }
+
+    const now = new Date().toISOString();
     const updateData = {
-      status: dbStatus,
+      status: nextStatus,
+      approved_by: user.id,
+      approved_at: now,
+      rejection_reason: nextStatus === "REJECTED" ? rejectionReason.trim() : null,
       aprovado_por_id: user.id,
-      data_aprovacao: new Date().toISOString(),
-      motivo_rejeicao: nextStatus === "REJECTED" ? rejectionReason : null,
+      data_aprovacao: now,
+      motivo_rejeicao: nextStatus === "REJECTED" ? rejectionReason.trim() : null,
     };
 
     const { data: updatedRdo, error: updateError } = await supabase
       .from("rdos")
       .update(updateData)
       .eq("id", targetRdoId)
-      .select("id, status, aprovado_por_id, data_aprovacao, motivo_rejeicao")
+      .select("id, status, approved_by, approved_at, rejection_reason, aprovado_por_id, data_aprovacao, motivo_rejeicao")
       .single();
 
     if (updateError) {
@@ -138,7 +154,6 @@ serve(async (req: Request) => {
       success: true,
       rdo: updatedRdo,
       status: updatedRdo.status,
-      status_label: dbStatus,
       aprovador: {
         id: user.id,
         email: user.email,

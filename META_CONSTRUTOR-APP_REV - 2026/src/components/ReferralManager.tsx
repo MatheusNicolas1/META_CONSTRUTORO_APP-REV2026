@@ -62,8 +62,11 @@ export const ReferralManager = () => {
   };
 
   const shareOnWhatsApp = () => {
-    const message = `Conheça o MetaConstrutor - a melhor plataforma de gestão de obras! Use meu link para ganhar 10 dias extras: ${getReferralLink()}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank");
+    const message = `Conheça o MetaConstrutor para organizar obras, RDOs e equipes. Use meu link de indicação: ${getReferralLink()}`;
+    const popup = window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+    if (!popup) {
+      toast.error("O navegador bloqueou a janela do WhatsApp.");
+    }
   };
 
   if (!referralCode) return null;
@@ -76,7 +79,7 @@ export const ReferralManager = () => {
           Programa de Indicações
         </CardTitle>
         <CardDescription>
-          Indique amigos e ganhe 10 dias extras de teste para cada indicação!
+          Compartilhe seu link de indicação. Bônus aparecem aqui somente quando a indicação for registrada.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

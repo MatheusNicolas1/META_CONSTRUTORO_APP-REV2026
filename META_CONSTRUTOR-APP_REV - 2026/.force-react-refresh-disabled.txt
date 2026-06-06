@@ -1,6 +1,0 @@
-Disable React Fast Refresh completely
-Timestamp: 2025-11-08T00:45:00Z
-- Removed public/@react-refresh.js (to avoid shadowing Vite virtual module)
-- Vite plugin react with fastRefresh disabled (cast as any)
-- index.html preamble removed and cache-busted entry (refresh-disabled-final-3)
-Notes: HMR will fall back to full reloads in dev.

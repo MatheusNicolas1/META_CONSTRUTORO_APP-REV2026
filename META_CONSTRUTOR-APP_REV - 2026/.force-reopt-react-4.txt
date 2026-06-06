@@ -1,6 +1,0 @@
-1: Force full Vite re-optimize after removing React aliases and excluding react-query from optimizeDeps
-2: Timestamp: 2025-11-07T18:12:00Z
-3: Notes:
-4:  - Removed react/react-dom alias (dedupe handles it)
-5:  - Excluded react, react-dom, jsx-runtime, react-query from optimizeDeps
-6:  - cacheDir bumped to .vite-react-dedupe-4

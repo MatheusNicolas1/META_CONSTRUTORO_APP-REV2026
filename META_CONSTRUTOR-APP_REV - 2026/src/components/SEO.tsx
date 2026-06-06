@@ -1,37 +1,62 @@
-import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
+import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL, absoluteUrl, type JsonLd } from "@/config/seo";
 
 interface SEOProps {
   title: string; // < 60 chars
   description?: string; // < 160 chars
   canonical?: string;
+  robots?: string;
+  image?: string;
+  type?: "website" | "article";
+  jsonLd?: JsonLd | JsonLd[];
 }
 
-const SEO = ({ title, description, canonical }: SEOProps) => {
-  useEffect(() => {
-    if (title) document.title = title;
+const normalizeJsonLd = (jsonLd?: JsonLd | JsonLd[]) => {
+  if (!jsonLd) return [];
+  return Array.isArray(jsonLd) ? jsonLd : [jsonLd];
+};
 
-    if (description) {
-      let meta = document.querySelector('meta[name="description"]');
-      if (!meta) {
-        meta = document.createElement('meta');
-        meta.setAttribute('name', 'description');
-        document.head.appendChild(meta);
-      }
-      meta.setAttribute('content', description);
-    }
+const SEO = ({
+  title,
+  description,
+  canonical,
+  robots = "index,follow",
+  image = DEFAULT_OG_IMAGE,
+  type = "website",
+  jsonLd,
+}: SEOProps) => {
+  const canonicalUrl = canonical ? absoluteUrl(canonical) : SITE_URL;
+  const imageUrl = absoluteUrl(image);
+  const resolvedDescription =
+    description || "Plataforma web para gestao de obras, RDO digital, equipes, documentos e relatorios.";
 
-    if (canonical) {
-      let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
-      if (!link) {
-        link = document.createElement('link');
-        link.rel = 'canonical';
-        document.head.appendChild(link);
-      }
-      link.href = canonical;
-    }
-  }, [title, description, canonical]);
+  return (
+    <Helmet>
+      <title>{title}</title>
+      <meta name="description" content={resolvedDescription} />
+      <meta name="robots" content={robots} />
+      <link rel="canonical" href={canonicalUrl} />
 
-  return null;
+      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={resolvedDescription} />
+      <meta property="og:type" content={type} />
+      <meta property="og:url" content={canonicalUrl} />
+      <meta property="og:image" content={imageUrl} />
+      <meta property="og:locale" content="pt_BR" />
+
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={resolvedDescription} />
+      <meta name="twitter:image" content={imageUrl} />
+
+      {normalizeJsonLd(jsonLd).map((entry, index) => (
+        <script key={index} type="application/ld+json">
+          {JSON.stringify(entry)}
+        </script>
+      ))}
+    </Helmet>
+  );
 };
 
 export default SEO;

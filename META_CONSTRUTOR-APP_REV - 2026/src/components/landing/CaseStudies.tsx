@@ -1,183 +1,95 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ArrowRight, TrendingUp } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { usePricingNavigation } from '@/hooks/usePricingNavigation';
+import { ArrowRight, Building2, ClipboardCheck, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { usePricingNavigation } from "@/hooks/usePricingNavigation";
+
+const cases = [
+  {
+    title: "Construtora residencial",
+    context: "RDO manual, fotos espalhadas e cobranca recorrente por status da obra.",
+    adjustment: "Registros diarios, documentos e pendencias foram reunidos por obra.",
+    result: "A equipe passou a consultar uma fonte unica antes de tomar decisoes de campo.",
+    icon: Building2,
+  },
+  {
+    title: "Engenharia comercial",
+    context: "Atividades dependiam de mensagens soltas entre escritorio, mestre de obras e cliente.",
+    adjustment: "Checklists, responsaveis e prazos foram padronizados dentro da rotina.",
+    result: "As reunioes ficaram mais objetivas, com pendencias visiveis e historico rastreavel.",
+    icon: ClipboardCheck,
+  },
+  {
+    title: "Obra industrial",
+    context: "Documentos tecnicos e evidencias de execucao eram localizados com atraso.",
+    adjustment: "Arquivos, fotos e RDOs passaram a ficar conectados ao andamento da obra.",
+    result: "A gestao reduziu idas e voltas para validar informacoes basicas.",
+    icon: FileText,
+  },
+];
 
 const CaseStudies = () => {
   const navigate = useNavigate();
   const { navigateToFreePlan } = usePricingNavigation();
 
-  const cases = [
-    {
-      sector: 'Residencial',
-      location: 'São Paulo/SP',
-      company: 'Construtora Horizonte',
-      problem: 'Atrasos recorrentes e falta de visibilidade',
-      solution: 'Cronograma inteligente e alertas automáticos',
-      impact: [
-        { metric: '-35%', label: 'retrabalho' },
-        { metric: '+28%', label: 'produtividade' },
-        { metric: '1,2h', label: 'poupadas/dia' }
-      ],
-      image: '/prints-publicitarios/2026-05-06/15-obra-detalhes.png',
-      alt: 'Tela de detalhes da obra no MetaConstrutor'
-    },
-    {
-      sector: 'Comercial', 
-      location: 'Rio de Janeiro/RJ',
-      company: 'Engenharia Silva',
-      problem: 'Documentação dispersa e RDO manual',
-      solution: 'Digitalização completa e automação de processos',
-      impact: [
-        { metric: '-50%', label: 'tempo RDO' },
-        { metric: '+40%', label: 'precisão' },
-        { metric: '2,5h', label: 'economia/dia' }
-      ],
-      image: '/prints-publicitarios/2026-05-06/04-rdo-visualizar.png',
-      alt: 'Tela de RDO digital do MetaConstrutor'
-    },
-    {
-      sector: 'Industrial',
-      location: 'Belo Horizonte/MG', 
-      company: 'Incorporadora Moderna',
-      problem: 'Controle de qualidade inconsistente',
-      solution: 'Checklists digitais e evidências fotográficas',
-      impact: [
-        { metric: '-60%', label: 'não conformidades' },
-        { metric: '+45%', label: 'qualidade' },
-        { metric: '3,1h', label: 'ganho semanal' }
-      ],
-      image: '/prints-publicitarios/2026-05-06/06-checklist.png',
-      alt: 'Tela de checklists de qualidade e seguranca do MetaConstrutor'
-    }
-  ];
-
   return (
-    <section className="py-12 md:py-20 bg-muted/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4">
-            Resultados reais
+    <section className="bg-muted/30 px-2 py-16 md:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 max-w-3xl md:mb-14">
+          <h2 className="text-2xl font-semibold leading-tight text-foreground sm:text-3xl md:text-4xl">
+            Como a plataforma entra na rotina da construtora
           </h2>
-          <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-3xl mx-auto">
-            Conheça empresas que transformaram sua gestão com o MetaConstrutor e 
-            alcançaram resultados extraordinários em diferentes segmentos.
+          <p className="mt-4 max-w-[64ch] text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Tres cenarios comuns de obra mostram onde o Meta Construtor reduz ruido operacional e melhora rastreabilidade.
           </p>
         </div>
 
-        {/* Cases Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12 px-2 sm:px-0">
-          {cases.map((case_item, index) => (
-            <Card key={index} className="group h-full hover:shadow-xl transition-all duration-300 border-border bg-card overflow-hidden">
-              <CardContent className="flex h-full flex-col p-0">
-                {/* Image */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-[#06111f] p-2">
-                  <img
-                    src={case_item.image}
-                    alt={case_item.alt}
-                    className="h-full w-full rounded-md object-contain object-top group-hover:scale-[1.03] transition-transform duration-300"
-                    loading="lazy"
-                    decoding="async"
-                    width="1280"
-                    height="720"
-                    sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 1024px) 50vw, 400px"
-                  />
-                  
-                  {/* Overlay gradient */}
-                  <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
-                  
-                  {/* Sector badge */}
-                  <div className="absolute top-4 left-4">
-                    <Badge className="bg-primary text-primary-foreground text-xs font-medium leading-none">
-                      {case_item.sector}
-                    </Badge>
+        <div className="grid bg-background p-2 lg:grid-cols-3">
+          {cases.map((item) => {
+            const Icon = item.icon;
+
+            return (
+              <article key={item.title} className="border-b border-border p-5 last:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0 sm:p-6">
+                <div className="mb-5 flex h-11 w-8 items-center text-primary">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <h3 className="text-xl font-semibold leading-snug text-foreground">{item.title}</h3>
+
+                <div className="mt-5 space-y-4">
+                  <div>
+                    <div className="text-sm font-semibold text-foreground">Antes</div>
+                    <p className="mt-1 max-w-[58ch] text-sm leading-relaxed text-muted-foreground">{item.context}</p>
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-foreground">Ajuste</div>
+                    <p className="mt-1 max-w-[58ch] text-sm leading-relaxed text-muted-foreground">{item.adjustment}</p>
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-foreground">Depois</div>
+                    <p className="mt-1 max-w-[58ch] text-sm leading-relaxed text-muted-foreground">{item.result}</p>
                   </div>
                 </div>
-
-                {/* Content */}
-                <div className="flex flex-1 flex-col p-5 sm:p-6">
-                  {/* Company and location */}
-                  <div className="mb-4">
-                    <h3 className="text-lg font-semibold leading-snug text-foreground mb-1">
-                      {case_item.company}
-                    </h3>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      {case_item.location}
-                    </p>
-                  </div>
-
-                  {/* Problem → Solution */}
-                  <div className="mb-6 space-y-3">
-                    <div>
-                      <div className="text-xs font-medium leading-none text-red-600 dark:text-red-400 mb-1">
-                        PROBLEMA
-                      </div>
-                      <p className="text-sm leading-relaxed text-muted-foreground line-clamp-2">
-                        {case_item.problem}
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <div className="text-xs font-medium leading-none text-green-600 dark:text-green-400 mb-1">
-                        SOLUÇÃO
-                      </div>
-                      <p className="text-sm leading-relaxed text-muted-foreground line-clamp-2">
-                        {case_item.solution}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Impact KPIs */}
-                  <div className="mb-6">
-                    <div className="text-xs font-medium leading-none text-primary mb-2">
-                      IMPACTO
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {case_item.impact.map((kpi, kpiIndex) => (
-                        <div key={kpiIndex} className="flex items-center gap-1 text-xs leading-none">
-                          <TrendingUp className="h-3 w-3 text-green-500" />
-                          <span className="font-semibold text-foreground">{kpi.metric}</span>
-                          <span className="text-muted-foreground">{kpi.label}</span>
-                          {kpiIndex < case_item.impact.length - 1 && (
-                            <span className="text-muted-foreground ml-1">•</span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* CTA */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="mt-auto w-full justify-between hover:bg-primary/10 text-primary hover:text-primary group/btn"
-                    onClick={() => navigate(`/case-${case_item.company.toLowerCase().replace(/\s+/g, '-')}`)}
-                  >
-                    <span className="text-sm font-medium leading-none">Ver estudo de caso</span>
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+              </article>
+            );
+          })}
         </div>
 
-        {/* CTA */}
-        <div className="text-center">
-          <Button 
-            size="lg" 
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-semibold leading-none rounded-xl"
-            onClick={() => navigate('/login')}
+        <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+          <Button
+            size="lg"
+            className="w-full bg-primary py-3 text-base font-semibold text-primary-foreground hover:bg-primary/90 sm:w-auto"
+            onClick={navigateToFreePlan}
           >
-            Começar Gratuitamente
+            Comecar gratuitamente
           </Button>
-          <p className="text-sm leading-relaxed text-muted-foreground mt-2">
-            Sem cartão de crédito • Teste grátis por 14 dias
-          </p>
+          <Button
+            size="lg"
+            variant="outline"
+            className="w-full py-3 text-base font-semibold sm:w-auto"
+            onClick={() => navigate("/contato")}
+          >
+            Falar com vendas
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
         </div>
       </div>
     </section>

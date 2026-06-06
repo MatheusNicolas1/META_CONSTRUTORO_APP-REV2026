@@ -75,8 +75,8 @@ const FAQ = () => {
           answer: "Todos os relatórios podem ser exportados em formato PDF. Clique no botão 'Exportar' na parte superior do relatório para baixar o arquivo.",
         },
         {
-          question: "Posso agendar relatórios automáticos?",
-          answer: "Sim, nas configurações avançadas você pode programar o envio automático de relatórios por email em intervalos regulares (diário, semanal, mensal).",
+          question: "Relatorios automaticos ja estao disponiveis?",
+          answer: "Nao como rotina agendada independente. Hoje os relatorios podem ser gerados/exportados nos fluxos reais do app; envios por integracao dependem de backend e credenciais configuradas.",
         },
       ],
     },
@@ -93,7 +93,7 @@ const FAQ = () => {
         },
         {
           question: "Como fazer backup dos dados?",
-          answer: "Os dados são automaticamente salvos na nuvem. Para backups locais, use a função 'Exportar Dados' nas configurações. Administradores podem configurar backups automáticos.",
+          answer: "Os dados operacionais ficam persistidos no Supabase conforme as acoes do app. Esta versao nao oferece uma rotina de backup automatico configuravel pelo usuario; exportacoes e copias externas devem ser tratadas como processo operacional.",
         },
       ],
     },

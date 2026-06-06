@@ -1,206 +1,153 @@
-# 🚨 Runbook de Resposta a Incidentes — Meta Construtor
+# Runbook de incidentes
 
-> **Classificação:** INTERNO / CONFIDENCIAL  
-> **Versão:** 1.0  
-> **Última atualização:** Fevereiro de 2026  
-> **Responsável:** DPO — dpo@metaconstrutor.com
+Classificacao: interno/confidencial
 
----
+Ultima atualizacao: 2026-05-22
 
-## 1. Definição de Incidente de Segurança
+## Objetivo
 
-Qualquer evento que:
-- Comprometa a **confidencialidade, integridade ou disponibilidade** de dados pessoais
-- Resulte em **acesso não autorizado** a sistemas ou dados
-- Cause **perda, destruição ou alteração** indevida de dados pessoais
-- Represente **violação de políticas** de segurança da informação
+Orientar a resposta a incidentes de frontend, backend, banco, pagamentos, e-mail e dados pessoais no Meta Construtor.
 
-### Exemplos de Incidentes
-| Severidade | Exemplo |
-|------------|---------|
-| **Crítica** | Vazamento de dados pessoais, acesso não autorizado ao banco de dados, ransomware |
-| **Alta** | Comprometimento de credenciais de admin, falha de RLS, exposição de API keys |
-| **Média** | Tentativa de brute-force detectada, phishing direcionado a colaboradores |
-| **Baixa** | Scan de vulnerabilidade externo, login suspeito bloqueado automaticamente |
+## Ferramentas principais
 
----
+- Sentry: projeto `meta-construtor-web`
+- Vercel: projeto `meta-construtor-app-rev-2026`
+- Supabase: projeto `bgdvlhttyjeuprrfxgun`
+- Stripe: webhooks e assinaturas
+- Resend: envio de e-mail de RDO
+- Evidencias locais: `docs/evidence/`
 
-## 2. Equipe de Resposta a Incidentes
+## Severidade
 
-| Papel | Responsável | Contato |
-|-------|------------|---------|
-| **DPO (Encarregado)** | João da Silva | dpo@metaconstrutor.com |
-| **CTO / Líder Técnico** | [Nome] | [email] |
-| **DevOps / Infra** | [Nome] | [email] |
-| **Jurídico** | [Nome] | [email] |
+| Severidade | Exemplo | Primeira resposta |
+| --- | --- | --- |
+| Critica | vazamento de dados, service role exposta, RLS quebrada, indisponibilidade total | conter em ate 1h, avisar responsaveis e preservar logs |
+| Alta | login quebrado, checkout quebrado, Edge Function critica falhando, erro 5xx recorrente | corrigir ou rollback no mesmo dia |
+| Media | erro isolado em fluxo secundario, degradacao parcial | registrar, priorizar e corrigir |
+| Baixa | warning, erro visual sem perda funcional | registrar e agrupar para manutencao |
 
-> ⚠️ **Preencher os campos acima com os responsáveis reais antes de publicar.**
+## Primeiros 15 minutos
 
----
+1. Abrir Sentry e identificar projeto, issue, release e ambiente.
+2. Conferir deploy ativo na Vercel.
+3. Conferir logs da Edge Function ou do Supabase se o erro envolver backend.
+4. Registrar evidencia com data/hora em `docs/evidence/`.
+5. Classificar severidade.
+6. Evitar apagar logs ou dados antes da coleta de evidencia.
 
-## 3. Procedimento de Resposta (5 Fases)
+## Triagem por origem
 
-### Fase 1: Detecção e Triagem (0–2h)
+### Frontend
 
-1. **Identificar o incidente** via:
-   - Logs do Supabase (`Dashboard > Logs > API / Auth / Postgres`)
-   - Alertas de monitoramento (Edge Functions, Auth, Postgres)
-   - Relatórios de usuários ou equipe interna
+1. Verificar Sentry `meta-construtor-web`.
+2. Verificar console/CSP no navegador.
+3. Verificar deployment Vercel ativo:
 
-2. **Registrar no formato:**
-   ```
-   Data/Hora: [ISO 8601]
-   Tipo: [Vazamento / Acesso não autorizado / Indisponibilidade / Outro]
-   Severidade: [Crítica / Alta / Média / Baixa]
-   Dados afetados: [Tipo de dados, quantidade estimada de titulares]
-   Sistemas afetados: [API / Auth / Database / Edge Functions / Frontend]
-   Descoberto por: [Monitoramento / Usuário / Equipe interna]
-   ```
-
-3. **Classificar severidade** usando a tabela da Seção 1
-
-4. **Notificar imediatamente:**
-   - Severidade **Crítica/Alta** → DPO + CTO (telefone + email)
-   - Severidade **Média** → DPO (email)
-   - Severidade **Baixa** → Registro em log para revisão semanal
-
-### Fase 2: Contenção (2–6h)
-
-1. **Contenção imediata:**
-   - Revogar tokens/sessões comprometidos via Supabase Auth
-   - Bloquear IPs suspeitos no edge (Vercel/Supabase)
-   - Desativar Edge Functions comprometidas
-   - Rotacionar chaves (`SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY`) se necessário
-
-2. **Preservar evidências:**
-   - Exportar logs relevantes ANTES de qualquer ação corretiva
-   - Screenshot de dashboards e alertas
-   - Não deletar dados do incidente
-
-3. **Comunicação interna:**
-   - Canal dedicado (Telegram/Slack) para a equipe de resposta
-   - Atualizar status a cada 2h
-
-### Fase 3: Erradicação (6–24h)
-
-1. **Identificar causa raiz:**
-   - Análise de logs (`admin_audit_logs`, `user_activity`, `user_interactions`)
-   - Revisão de alterações recentes (deploys, migrations)
-   - Verificar RLS policies: `SELECT * FROM pg_policies;`
-
-2. **Corrigir vulnerabilidade:**
-   - Aplicar patch/hotfix
-   - Atualizar dependências comprometidas
-   - Fortalecer RLS/CORS se necessário
-
-3. **Validar correção:**
-   - Testar em ambiente de desenvolvimento (branch)
-   - Confirmar que o vetor de ataque não é mais explorável
-
-### Fase 4: Notificação (até 72h do conhecimento)
-
-#### Notificação à ANPD (obrigatória se risco relevante)
-- **Prazo:** Até 72 horas úteis após a ciência do incidente
-- **Canal:** [Sistema Peticionamento Eletrônico da ANPD](https://www.gov.br/anpd/)
-- **Conteúdo obrigatório:**
-  - Natureza dos dados pessoais afetados
-  - Número de titulares afetados (estimativa)
-  - Medidas técnicas e de segurança adotadas
-  - Riscos envolvidos
-  - Medidas tomadas para reverter ou mitigar
-
-#### Notificação aos Titulares (se risco relevante)
-- **Quando:** Imediatamente após notificação à ANPD
-- **Canal:** Email pessoal + notificação in-app
-- **Conteúdo:**
-  - Descrição do incidente (sem detalhes técnicos sensíveis)
-  - Tipos de dados afetados
-  - Medidas recomendadas (ex: trocar senha)
-  - Contato do DPO
-
-### Fase 5: Pós-Incidente (7–30 dias)
-
-1. **Relatório completo:**
-   - Timeline detalhada
-   - Causa raiz confirmada
-   - Dados afetados (tipos + volume)
-   - Medidas tomadas
-   - Lições aprendidas
-
-2. **Ações preventivas:**
-   - Atualizar este runbook se necessário
-   - Implementar controles adicionais
-   - Treinamento da equipe
-
-3. **Arquivar:**
-   - Relatório no repositório interno
-   - Registro na tabela `admin_audit_logs` com action `incident_resolved`
-
----
-
-## 4. Logs e Ferramentas de Investigação
-
-### Supabase Dashboard
-| Serviço | O que verificar |
-|---------|----------------|
-| **API Logs** | Requests suspeitos, 4xx/5xx anômalos |
-| **Auth Logs** | Logins falhos, criação de contas em massa |
-| **Postgres Logs** | Queries anômalas, uso elevado |
-| **Edge Function Logs** | Erros inesperados, timeouts |
-
-### Tabelas de Auditoria
-```sql
--- Últimas ações administrativas
-SELECT * FROM admin_audit_logs 
-ORDER BY created_at DESC LIMIT 100;
-
--- Atividade recente de usuários
-SELECT * FROM user_activity 
-WHERE created_at > NOW() - INTERVAL '24 hours'
-ORDER BY created_at DESC;
-
--- Interações suspeitas
-SELECT * FROM user_interactions 
-WHERE created_at > NOW() - INTERVAL '24 hours'
-ORDER BY created_at DESC;
+```powershell
+npx vercel ls --scope meta-construtors-projects
 ```
 
-### Verificação de RLS
+4. Reproduzir rota afetada.
+5. Se a versao nova causou o incidente, fazer rollback pelo painel Vercel ou promover deploy anterior estavel.
+
+### Supabase e banco
+
+1. Verificar logs no Supabase Dashboard: API, Auth, Postgres e Edge Functions.
+2. Confirmar se o erro esta ligado a RLS, schema ou migration.
+3. Para RLS, consultar:
+
 ```sql
--- Listar todas as policies ativas
-SELECT schemaname, tablename, policyname, cmd, qual 
-FROM pg_policies 
-WHERE schemaname = 'public';
+SELECT schemaname, tablename, policyname, cmd, qual, with_check
+FROM pg_policies
+WHERE schemaname = 'public'
+ORDER BY tablename, policyname;
 ```
 
----
+4. Se houver risco de dados entre organizacoes, pausar divulgacao imediatamente.
+5. Antes de qualquer correcao de schema remoto, fazer backup e seguir `docs/OPERATIONS.md`.
 
-## 5. Checklist Rápido para Incidentes Críticos
+### Stripe
 
-- [ ] Incidente registrado (data, tipo, severidade)
-- [ ] DPO notificado (telefone + email)
-- [ ] CTO notificado
-- [ ] Tokens/sessões comprometidos revogados
-- [ ] Logs exportados e preservados
-- [ ] Causa raiz identificada
-- [ ] Patch aplicado e validado
-- [ ] ANPD notificada (se aplicável, até 72h)
-- [ ] Titulares notificados (se aplicável)
-- [ ] Relatório pós-incidente elaborado
-- [ ] Ações preventivas implementadas
-- [ ] Runbook atualizado (se necessário)
+1. Verificar eventos no Dashboard Stripe.
+2. Verificar endpoint ativo:
+   `https://bgdvlhttyjeuprrfxgun.supabase.co/functions/v1/stripe-webhook`
+3. Verificar logs da Edge Function `stripe-webhook`.
+4. Conferir secrets no Supabase sem revelar valores:
 
----
+```powershell
+npx supabase secrets list
+```
 
-## 6. Contatos de Emergência
+5. Para pagamentos reais, nao criar ou cancelar assinaturas de clientes sem autorizacao operacional.
 
-| Serviço | Contato |
-|---------|---------|
-| **Supabase Support** | https://supabase.com/dashboard/support |
-| **Vercel Support** | https://vercel.com/support |
-| **ANPD** | https://www.gov.br/anpd/ |
-| **CERT.br** | https://www.cert.br/ |
+### Resend
 
----
+1. Verificar logs das Edge Functions `send-email-rdo` e `send-rdo-email`.
+2. Conferir `RESEND_API_KEY` e `RESEND_FROM_EMAIL` em Supabase secrets.
+3. Confirmar que o RDO esta `APPROVED`, pois o envio por e-mail deve ser bloqueado para outros status.
 
-> **Nota:** Este documento deve ser revisado trimestralmente e atualizado após cada incidente.
+## Contencao
+
+- Desativar temporariamente botao/feature via deploy rapido se houver risco funcional.
+- Revogar ou rotacionar secrets se houver exposicao.
+- Fazer rollback de deploy se o erro foi introduzido no frontend.
+- Corrigir RLS/migration apenas com backup e evidencia.
+- Bloquear divulgacao publica ate validar o smoke minimo.
+
+## Validacao de correcao
+
+Rodar localmente:
+
+```powershell
+npm run lint
+npm run test
+npm run build
+```
+
+Validar em producao conforme impacto:
+
+- rota publica afetada
+- fluxo autenticado afetado
+- Edge Function afetada
+- Sentry sem novo erro equivalente apos correcao
+
+## Registro minimo do incidente
+
+Salvar em `docs/evidence/YYYY-MM-DD-incidente-<slug>.md`:
+
+```text
+Data/hora:
+Severidade:
+Origem:
+Impacto:
+Usuarios afetados:
+Sistemas afetados:
+Evidencia:
+Acao de contencao:
+Correcao aplicada:
+Validacao:
+Pendencias:
+```
+
+## Criterios LGPD
+
+Se o incidente puder envolver dados pessoais:
+
+1. Preservar logs e evidencias.
+2. Estimar titulares afetados.
+3. Identificar categorias de dados afetados.
+4. Acionar responsavel legal/DPO.
+5. Avaliar necessidade de comunicacao a ANPD e titulares.
+
+## Checklist rapido
+
+- [ ] Incidente registrado.
+- [ ] Severidade definida.
+- [ ] Sentry/Vercel/Supabase/Stripe/Resend conferidos conforme origem.
+- [ ] Logs preservados.
+- [ ] Contencao aplicada.
+- [ ] Causa raiz identificada.
+- [ ] Correcao validada com `lint`, `test` e `build`.
+- [ ] Producao validada.
+- [ ] Evidencia salva em `docs/evidence/`.
+- [ ] `PRD.md` atualizado se o incidente afetar release.

@@ -1,0 +1,9 @@
+{
+  "route": "/criar-conta",
+  "finalUrl": "https://www.metaconstrutor.app.br/app/dashboard",
+  "title": "Meta Construtor",
+  "notBlank": true,
+  "frameworkOverlay": false,
+  "relevantConsole": [],
+  "sample": "- region \"Notifications (F8)\":\n  - list\n- region \"Notifications alt+T\"\n- complementary:\n  - button \"Toggle Sidebar\":\n    - generic: Toggle Sidebar\n  - link \"Criar\":\n    - /url: /app/rdo/novo\n    - generic: Criar\n  - navigation:\n    - link \"Inicio\":\n      - /url: /app/dashboard\n      - generic: Inicio\n    - link \"Obras\":\n      - /url: /app/obras\n      - generic: Obras\n    - link \"RDO\":\n      - /url: /app/rdo\n      - generic: RDO\n    - link \"Check\":\n      - /url: /app/checklist\n      - generic: Check\n    - button \"Mais\":\n      - generic: Mais\n  - button:\n  - button \"Toggle theme\":\n    - generic: Toggle theme\n  - button \"Menu do perfil do usuário\":\n    - generic: C\n- complementary:\n  - generic \"Meta Construtor\":\n    - generic: META\n    - generic: Construtor\n  - paragraph: Ultimos RDOs\n  - paragraph: Atalhos dos registros mais recentes.\n  - text: Nenhum RDO recente ainda.\n  - link \"Criar nov"
+}

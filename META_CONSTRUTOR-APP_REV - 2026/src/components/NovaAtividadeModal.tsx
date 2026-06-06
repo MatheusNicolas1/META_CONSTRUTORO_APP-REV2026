@@ -9,11 +9,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DatePicker } from "@/components/DatePicker";
-import { Copy, FileText, Users, Calendar, Package, Upload, Save, X, Wrench, Search, Image, Paperclip, Eye, Download } from "lucide-react";
+import { Copy, FileText, Users, Package, Save, X, Search, Image, Paperclip } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useActivitiesSupabase, Activity } from "@/hooks/useActivitiesSupabase";
-import { useEquipamentos, Equipamento } from "@/hooks/useEquipamentos";
+import { useEquipamentos } from "@/hooks/useEquipamentos";
 import { useObras } from "@/hooks/useObras";
+import { useOrgResponsibles } from "@/hooks/useOrgResponsibles";
 import { Attachment, UploadProgress, isValidFileType, formatFileSize } from "@/types/attachment";
 import { toast } from "sonner";
 import { uploadFileToStorage } from "@/utils/uploadUtils";
@@ -39,6 +40,8 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
     responsavel: "",
     dataInicio: undefined as Date | undefined,
     dataTermino: undefined as Date | undefined,
+    status: "agendada" as Activity["status"],
+    prioridade: "media" as Activity["prioridade"],
     descricao: "",
     materiais: [] as { nome: string; quantidade: string }[],
     equipamentos: [] as { id: string; nome: string; tipo: "Próprio" | "Aluguel" }[],
@@ -53,6 +56,7 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
   const { saveActivity, activitiesList } = useActivitiesSupabase();
   const { searchEquipamentos, getEquipamentoById } = useEquipamentos();
   const { obras } = useObras();
+  const { responsibles, isLoading: isLoadingResponsibles } = useOrgResponsibles();
 
   const categorias = [
     "Terraplanagem", "Estrutura", "Alvenaria", "Instalações", "Acabamento", "Cobertura"
@@ -69,13 +73,6 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
 
   const popularUnits = unidadesMedida.filter(u => u.popular);
   const otherUnits = unidadesMedida.filter(u => !u.popular);
-
-  const responsaveis = [
-    { id: "resp-1", nome: "João Silva", tipo: "Engenheiro Civil" },
-    { id: "resp-2", nome: "Maria Santos", tipo: "Técnica de Qualidade" },
-    { id: "resp-3", nome: "Carlos Lima", tipo: "Mestre de Obras" },
-    { id: "resp-4", nome: "Ana Costa", tipo: "Arquiteta" }
-  ];
 
   const materiaisDisponiveis = [
     "Cimento",
@@ -107,6 +104,14 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
       setFormData(prev => ({ ...prev, obra: currentObra }));
     }
   }, [currentObra]);
+
+  useEffect(() => {
+    if (!isOpen || formData.responsavel || responsibles.length === 0) return;
+    setFormData(prev => ({
+      ...prev,
+      responsavel: prev.responsavel || responsibles[0].id,
+    }));
+  }, [formData.responsavel, isOpen, responsibles]);
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -159,6 +164,12 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
   // Funções para gerenciar anexos
   // Funções para gerenciar anexos
   const handleFileUpload = async (files: FileList, targetType?: 'image' | 'document') => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error("Faca login para anexar arquivos.");
+      return;
+    }
+
     const validFiles = Array.from(files).filter(file => {
       if (!isValidFileType(file)) {
         toast.error(`Tipo de arquivo não suportado: ${file.name}`);
@@ -189,7 +200,6 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
     for (const file of validFiles) {
       const progressId = `upload-${Date.now()}-${Math.random()}`;
 
-      // Adicionar à lista de progresso
       setUploadProgress(prev => [...prev, {
         id: progressId,
         fileName: file.name,
@@ -198,33 +208,12 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
       }]);
 
       try {
-        // Simular progresso visual (já que o upload do Supabase não tem callback de progresso nativo fácil)
-        const progressInterval = setInterval(() => {
-          setUploadProgress(prev =>
-            prev.map(p => p.id === progressId && p.progress < 90
-              ? { ...p, progress: p.progress + 10 }
-              : p
-            )
-          );
-        }, 300);
-
         const bucketName = 'documentos'; // Usando bucket 'documentos'
         const path = `atividades/${formData.obra || 'geral'}`;
 
         const publicUrl = await uploadFileToStorage(file, bucketName, path);
 
-        clearInterval(progressInterval);
-
         if (publicUrl) {
-          // Finalizar upload com sucesso
-          setUploadProgress(prev =>
-            prev.map(p => p.id === progressId
-              ? { ...p, progress: 100, status: 'completed' as const }
-              : p
-            )
-          );
-
-          // Adicionar aos anexos
           const newAttachment: Attachment = {
             id: `attachment-${Date.now()}`,
             name: file.name,
@@ -233,7 +222,7 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
             size: file.size,
             url: publicUrl,
             uploadedAt: new Date().toISOString(),
-            uploadedBy: 'user-id-placeholder' // Será substituído no submit se necessário
+            uploadedBy: user.id,
           };
 
           // Adicionar à lista correta no formData
@@ -258,10 +247,7 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
         toast.error(`Erro ao enviar ${file.name}`);
         setUploadProgress(prev => prev.filter(p => p.id !== progressId));
       } finally {
-        // Remover da lista de progresso após 2s
-        setTimeout(() => {
-          setUploadProgress(prev => prev.filter(p => p.id !== progressId));
-        }, 2000);
+        setUploadProgress(prev => prev.filter(p => p.id !== progressId));
       }
     }
   };
@@ -295,6 +281,8 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
         unidadeMedida: lastActivity.unidade_medida || "",
         quantidadePrevista: lastActivity.quantidade_prevista?.toString() || "",
         responsavel: lastActivity.responsavel || "",
+        status: lastActivity.status || "agendada",
+        prioridade: lastActivity.prioridade || "media",
       }));
       hookToast({
         title: "Atividade duplicada",
@@ -330,8 +318,8 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
         descricao: formData.descricao || `Atividade: ${formData.nome}`,
         data: formData.dataInicio ? formData.dataInicio.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         hora: "08:00",
-        status: "agendada",
-        prioridade: "media",
+        status: formData.status,
+        prioridade: formData.prioridade,
         categoria: formData.categoria,
         unidade_medida: formData.unidadeMedida,
         quantidade_prevista: parseFloat(formData.quantidadePrevista.replace(',', '.')) || undefined,
@@ -383,6 +371,8 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
         responsavel: "",
         dataInicio: undefined,
         dataTermino: undefined,
+        status: "agendada",
+        prioridade: "media",
         descricao: "",
         materiais: [],
         equipamentos: [],
@@ -569,11 +559,21 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
                           <SelectValue placeholder="Selecione o responsável" />
                         </SelectTrigger>
                         <SelectContent>
-                          {responsaveis.map((resp) => (
+                          {isLoadingResponsibles && (
+                            <div className="px-2 py-2 text-sm text-muted-foreground">
+                              Carregando responsaveis...
+                            </div>
+                          )}
+                          {!isLoadingResponsibles && responsibles.length === 0 && (
+                            <div className="px-2 py-2 text-sm text-muted-foreground">
+                              Nenhum responsavel ativo encontrado.
+                            </div>
+                          )}
+                          {responsibles.map((resp) => (
                             <SelectItem key={resp.id} value={resp.id}>
                               <div className="flex flex-col">
                                 <span>{resp.nome}</span>
-                                <span className="text-xs text-muted-foreground">{resp.tipo}</span>
+                                <span className="text-xs text-muted-foreground">{resp.funcao || resp.email}</span>
                               </div>
                             </SelectItem>
                           ))}
@@ -599,6 +599,36 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
                           placeholder="Selecione a data"
                           className="w-full"
                         />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Status</Label>
+                        <Select value={formData.status} onValueChange={(value) => handleInputChange("status", value as Activity["status"])}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="agendada">Agendada</SelectItem>
+                            <SelectItem value="em_andamento">Em andamento</SelectItem>
+                            <SelectItem value="concluida">Concluida</SelectItem>
+                            <SelectItem value="cancelada">Cancelada</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Prioridade</Label>
+                        <Select value={formData.prioridade} onValueChange={(value) => handleInputChange("prioridade", value as Activity["prioridade"])}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Prioridade" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="baixa">Baixa</SelectItem>
+                            <SelectItem value="media">Media</SelectItem>
+                            <SelectItem value="alta">Alta</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
 
@@ -847,18 +877,14 @@ export const NovaAtividadeModal = ({ isOpen, onClose, currentObra }: NovaAtivida
                           )}
                         </div>
 
-                        {/* Progresso de Upload */}
+                        {/* Estado de Upload */}
                         {uploadProgress.map((upload) => (
                           <div key={upload.id} className="border rounded-md p-2">
                             <div className="flex items-center justify-between mb-1">
                               <span className="text-sm font-medium truncate">{upload.fileName}</span>
-                              <span className="text-xs text-muted-foreground">{upload.progress}%</span>
-                            </div>
-                            <div className="w-full bg-muted rounded-full h-1.5">
-                              <div
-                                className="bg-primary h-1.5 rounded-full transition-all duration-300"
-                                style={{ width: `${upload.progress}%` }}
-                              />
+                              <span className="text-xs text-muted-foreground">
+                                {upload.status === 'uploading' ? 'Enviando...' : 'Finalizado'}
+                              </span>
                             </div>
                           </div>
                         ))}

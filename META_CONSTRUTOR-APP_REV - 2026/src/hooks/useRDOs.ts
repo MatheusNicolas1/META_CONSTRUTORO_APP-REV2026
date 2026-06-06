@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { notifyRDOChange } from '@/utils/notificationService';
 import { useRequireOrg } from '@/hooks/requireOrg';
 import { track } from '@/integrations/analytics';
+import { triggerSuccessFeedback } from '@/hooks/useSuccessFeedback';
 
 import { CreateRDOData } from "@/types/rdo";
 import { RDOSupabase } from '@/types/supabase-rdo';
@@ -123,6 +124,7 @@ export const useRDOs = () => {
           rdo_equipes (*, equipes(*)),
           rdo_equipamentos (*, equipamentos(*))
         `)
+        .is('deleted_at' as any, null)
         .order('data', { ascending: false })
         .order('created_at', { ascending: false })
         .limit(20);
@@ -137,6 +139,14 @@ export const useRDOs = () => {
     mutationFn: async (input: CreateRDOData) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
+
+      if (!orgId) throw new Error('Organizacao ativa nao encontrada');
+
+      const { count: previousUserRdos } = await supabase
+        .from('rdos')
+        .select('id', { count: 'exact', head: true })
+        .eq('org_id', orgId)
+        .eq('criado_por_id', user.id);
 
       const {
         atividadesRealizadas,
@@ -166,9 +176,10 @@ export const useRDOs = () => {
         clima: baseData.clima,
         equipe_ociosa: baseData.equipeOciosa,
         observacoes: baseData.observacoes,
-        created_by: user.id,
+        criado_por_id: user.id,
         org_id: orgId,
         status: 'DRAFT',
+        tempo_ocioso: baseData.equipeOciosa ? baseData.tempoOcioso ?? 0 : null,
         detalhes: detalhes
       };
 
@@ -324,6 +335,15 @@ export const useRDOs = () => {
         data: baseData.data
       });
 
+      if ((previousUserRdos || 0) === 0) {
+        track('activation.first_rdo_created', {
+          rdo_id: rdo.id,
+          org_id: orgId,
+          obra_id: baseData.obraId,
+          activation_source: 'rdo_create',
+        });
+      }
+
       return rdo;
     },
     onSuccess: (_data, variables) => {
@@ -332,6 +352,7 @@ export const useRDOs = () => {
       queryClient.invalidateQueries({ queryKey: ['obra', variables.obraId] });
       queryClient.invalidateQueries({ queryKey: ['recent-rdos', orgId] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
+      triggerSuccessFeedback('RDO criado');
       toast.success('RDO criado com sucesso!');
     },
     onError: (error) => {
@@ -367,13 +388,17 @@ export const useRDOs = () => {
         tempo_ocioso: baseData.tempoOcioso
       };
 
-      const updatePayload: any = {
-        ...baseData,
-        detalhes
-      }
+      const updatePayload: any = { detalhes };
 
-      // Remove tempoOcioso from top level object since it exists in detalhes only
-      delete updatePayload.tempoOcioso;
+      if (baseData.data !== undefined) updatePayload.data = baseData.data;
+      if (baseData.obraId !== undefined) updatePayload.obra_id = baseData.obraId;
+      if (baseData.periodo !== undefined) updatePayload.periodo = baseData.periodo;
+      if (baseData.clima !== undefined) updatePayload.clima = baseData.clima;
+      if (baseData.equipeOciosa !== undefined) updatePayload.equipe_ociosa = baseData.equipeOciosa;
+      if (baseData.tempoOcioso !== undefined || baseData.equipeOciosa !== undefined) {
+        updatePayload.tempo_ocioso = baseData.equipeOciosa ? baseData.tempoOcioso ?? 0 : null;
+      }
+      if (baseData.observacoes !== undefined) updatePayload.observacoes = baseData.observacoes;
 
       // Clean undefined
       Object.keys(updatePayload).forEach(key => updatePayload[key] === undefined && delete updatePayload[key]);
@@ -424,6 +449,7 @@ export const useRDOs = () => {
         queryClient.invalidateQueries({ queryKey: ['obra', obraId] });
       }
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
+      triggerSuccessFeedback('RDO atualizado');
       toast.success('RDO atualizado com sucesso!');
     },
     onError: (error) => {
@@ -441,7 +467,7 @@ export const useRDOs = () => {
         .from('rdos')
         .update({ status: 'SUBMITTED' } as any)
         .eq('id', id)
-        .eq('created_by', user.id)
+        .eq('criado_por_id', user.id)
         .select(`*, obras (nome)`)
         .single();
       const data = submitRaw as any;
@@ -462,9 +488,11 @@ export const useRDOs = () => {
 
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: ['rdos', orgId] });
+      queryClient.invalidateQueries({ queryKey: ['rdo', id, orgId] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
+      triggerSuccessFeedback('RDO enviado');
       toast.success('RDO enviado para aprovação!');
     },
     onError: (error) => {
@@ -483,15 +511,19 @@ export const useRDOs = () => {
         .from('rdos')
         .select(`*, obras (nome)`)
         .eq('id', id)
-        .eq('created_by', user.id)
+        .eq('criado_por_id', user.id)
         .single();
       const rdoData = rdoDataRaw as any;
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('rdos')
-        .delete()
+        .update({
+          deleted_at: new Date().toISOString(),
+          deleted_by: user.id,
+          delete_origin: 'rdos',
+        })
         .eq('id', id)
-        .eq('created_by', user.id);
+        .eq('criado_por_id', user.id);
 
       if (error) throw error;
 
@@ -505,7 +537,7 @@ export const useRDOs = () => {
       queryClient.invalidateQueries({ queryKey: ['rdos', orgId] });
       queryClient.invalidateQueries({ queryKey: ['recent-rdos', orgId] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
-      toast.success('RDO excluído com sucesso!');
+      toast.success('RDO movido para a Lixeira. Voce pode restaurar por ate 30 dias.');
     },
     onError: (error) => {
       console.error('Erro ao excluir RDO:', error);

@@ -12,7 +12,7 @@ const AdminOperationalMetrics = () => {
     const { data: metrics, isLoading } = useQuery({
         queryKey: ['admin-operational-metrics', orgId],
         queryFn: async () => {
-            // 1. Obras (Total, Progresso Médio, Orçamento Previsto, Prazo Médio)
+            // Operational usage is shown as activation signal, not as the primary Admin KPI.
             const { data: obras, error: obrasError } = await supabase
                 .from('obras')
                 .select('*')
@@ -95,7 +95,10 @@ const AdminOperationalMetrics = () => {
 
     return (
         <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-foreground">🏗️ Métricas Operacionais</h2>
+            <h2 className="text-2xl font-bold text-foreground">Ativacao e uso operacional</h2>
+            <p className="text-sm text-muted-foreground">
+                Obras, RDOs, colaboradores e equipamentos reclassificados como sinais de ativacao do app.
+            </p>
 
             {/* KPI Cards */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -107,7 +110,7 @@ const AdminOperationalMetrics = () => {
                     <CardContent>
                         <div className="text-2xl font-bold">{metrics?.totalObras}</div>
                         <p className="text-xs text-muted-foreground mt-1">
-                            Obras cadastradas
+                            Sinal de ativacao por organizacao
                         </p>
                     </CardContent>
                 </Card>

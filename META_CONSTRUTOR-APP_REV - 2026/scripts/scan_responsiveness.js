@@ -7,6 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 const SRC_DIR = path.join(PROJECT_ROOT, 'src');
+const EVIDENCE_DIR = path.join(PROJECT_ROOT, 'docs', 'evidence', 'generated');
 
 function scanDir(dir, fileList = []) {
     const files = fs.readdirSync(dir);
@@ -55,6 +56,7 @@ files.forEach(file => {
     }
 });
 
-const outputPath = path.join(PROJECT_ROOT, 'RESPONSIVENESS_RAW.json');
+fs.mkdirSync(EVIDENCE_DIR, { recursive: true });
+const outputPath = path.join(EVIDENCE_DIR, 'RESPONSIVENESS_RAW.json');
 fs.writeFileSync(outputPath, JSON.stringify(report, null, 2));
 console.log(`Report saved to ${outputPath}`);

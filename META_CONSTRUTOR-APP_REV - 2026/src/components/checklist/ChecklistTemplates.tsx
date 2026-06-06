@@ -15,10 +15,10 @@ interface ChecklistTemplatesProps {
 export function ChecklistTemplates({ onSelectTemplate, selectedCategory }: ChecklistTemplatesProps) {
   const [previewTemplate, setPreviewTemplate] = useState<ChecklistTemplate | null>(null);
 
-  // Mock templates - em produção virão do backend
+  // Templates padrao locais usados para iniciar checklists reais no Supabase.
   const templates: ChecklistTemplate[] = [
     {
-      id: "template-1",
+      id: "11111111-1111-4111-8111-111111111111",
       name: "Segurança no Início da Obra",
       category: "Segurança",
       description: "Checklist completo para verificações de segurança antes do início de qualquer obra",
@@ -56,7 +56,7 @@ export function ChecklistTemplates({ onSelectTemplate, selectedCategory }: Check
       ]
     },
     {
-      id: "template-2",
+      id: "22222222-2222-4222-8222-222222222222",
       name: "Controle de Qualidade - Concreto",
       category: "Qualidade",
       description: "Verificações para garantir a qualidade da concretagem",
@@ -94,7 +94,7 @@ export function ChecklistTemplates({ onSelectTemplate, selectedCategory }: Check
       ]
     },
     {
-      id: "template-3",
+      id: "33333333-3333-4333-8333-333333333333",
       name: "Verificação de Equipamentos",
       category: "Equipamentos",
       description: "Checklist para inspeção e manutenção preventiva de equipamentos",
@@ -125,7 +125,7 @@ export function ChecklistTemplates({ onSelectTemplate, selectedCategory }: Check
       ]
     },
     {
-      id: "template-4",
+      id: "44444444-4444-4444-8444-444444444444",
       name: "Documentação da Obra",
       category: "Documentação",
       description: "Verificação de documentos e licenças necessárias",

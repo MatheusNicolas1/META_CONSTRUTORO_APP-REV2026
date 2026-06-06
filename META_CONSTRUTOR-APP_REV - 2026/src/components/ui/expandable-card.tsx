@@ -288,7 +288,7 @@ export function ObraExpandableCard({
             <div onClick={(e) => e.stopPropagation()}>
               <SocialShare
                 title={`Obra: ${nome}`}
-                text={`🏗️ ${nome}\n\n📍 ${localizacao}\n👷 ${responsavel}\n📊 Progresso: ${progresso}%\n\n#MetaConstrutor #Construcao #Obra`}
+                text={`Obra: ${nome}\nLocal: ${localizacao}\nResponsável: ${responsavel}\n\nResumo compartilhado pelo MetaConstrutor.`}
                 obraId={id}
               />
             </div>

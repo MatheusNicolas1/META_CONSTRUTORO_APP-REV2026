@@ -1,35 +1,34 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import SEO from '@/components/SEO';
+import { seoPages } from '@/config/seo';
 import LandingNavigation from '@/components/landing/LandingNavigation';
 import { supabase } from '@/integrations/supabase/client';
 import { usePlans } from '@/hooks/usePlans';
-import CheckoutDialog from '@/components/ui/checkout-dialog';
 import { CheckoutForm, CheckoutFormData } from '@/components/pricing/CheckoutForm';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, Check, Lock, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useAuth } from '@/components/auth/AuthContext';
+import { getCheckoutErrorFeedback } from '@/utils/checkoutErrors';
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [step, setStep] = useState<'details' | 'payment'>('details');
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [defaultFormValues, setDefaultFormValues] = useState<Partial<CheckoutFormData>>({});
 
   const planKey = searchParams.get('plan') || 'basic';
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
-    (searchParams.get('billing') as 'monthly' | 'yearly') || 'monthly'
-  );
+  const billingParam = searchParams.get('billing');
+  const billingCycle: 'monthly' | 'yearly' = billingParam === 'yearly' ? 'yearly' : 'monthly';
+  const planManagementPath = `/app/planos?plan=${encodeURIComponent(planKey)}&billing=${billingCycle}`;
 
   const { data: plans, isLoading: isPlansLoading } = usePlans({ staticOnly: !isAuthenticated });
   const selectedPlan = plans?.find(p => p.slug === planKey);
@@ -81,12 +80,28 @@ const Checkout = () => {
     };
   }, [user]);
 
-  const createSubscriptionIntent = async (userId: string, email: string, cycle: 'monthly' | 'yearly') => {
-    const { data, error } = await supabase.functions.invoke('create-subscription', {
-      body: { plan: planKey, billing: cycle, user_id: userId, email }
+  const createHostedCheckoutSession = async (cycle: 'monthly' | 'yearly', formData?: CheckoutFormData) => {
+    const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+      body: {
+        plan: planKey,
+        billing: cycle,
+        coupon_code: formData?.coupon_code || null,
+        profile: formData ? {
+          name: formData.name,
+          company: formData.company,
+          cpf_cnpj: formData.cpf_cnpj,
+          phone: formData.phone,
+        } : undefined,
+        successUrl: `${window.location.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${window.location.origin}/checkout/cancel?plan=${encodeURIComponent(planKey)}&billing=${cycle}`,
+      }
     });
-    if (error || !data?.clientSecret) throw new Error(error?.message || 'Erro ao inicializar pagamento');
-    return data.clientSecret;
+
+    if (error || !data?.url) {
+      throw new Error(data?.error || error?.message || 'Erro ao iniciar checkout seguro');
+    }
+
+    return data.url as string;
   }
 
   const handleDetailsSubmit = async (data: CheckoutFormData) => {
@@ -101,21 +116,54 @@ const Checkout = () => {
         }).eq('id', user.id);
 
         if (planKey === 'free') {
-          toast({ title: "Sucesso!", description: "Redirecionando para o dashboard..." });
-          setTimeout(() => navigate('/app/dashboard'), 1500);
+          toast({ title: "Sucesso!", description: "Plano gratuito ativado." });
+          navigate('/app/dashboard');
           return;
         }
 
-        const secret = await createSubscriptionIntent(user.id, user.email, billingCycle);
-        setClientSecret(secret);
-        setStep('payment');
+        const { data: orgMember } = await supabase
+          .from('org_members')
+          .select('org_id')
+          .eq('user_id', user.id)
+          .eq('status', 'active')
+          .order('created_at', { ascending: true })
+          .limit(1)
+          .maybeSingle();
+
+        if (orgMember?.org_id) {
+          const { data: activeSubscription } = await supabase
+            .from('subscriptions')
+            .select('stripe_subscription_id')
+            .eq('org_id', orgMember.org_id)
+            .in('status', ['active', 'trialing', 'past_due'])
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          if (activeSubscription?.stripe_subscription_id) {
+            toast({
+              title: "Assinatura ativa encontrada",
+              description: "Use a area de planos para trocar de plano ou ciclo de cobranca.",
+            });
+            navigate(planManagementPath);
+            return;
+          }
+        }
+
+        const checkoutUrl = await createHostedCheckoutSession(billingCycle, data);
+        window.location.assign(checkoutUrl);
         return;
+      }
+
+      const password = data.password?.trim();
+      if (!password) {
+        throw new Error("Informe uma senha para criar a conta e continuar o pagamento.");
       }
 
       // 1. Sign Up
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
-        password: data.password || 'TemporaryPass123!', // Should be handled better in real app, prompted or auto-generated logic
+        password,
         options: {
           data: {
             name: data.name,
@@ -127,29 +175,42 @@ const Checkout = () => {
 
       if (signUpError) {
         if (signUpError.message.includes('already registered')) {
-          toast({ title: "Conta já existe", description: "Faça login para continuar.", variant: "destructive" });
-          // Logic to handle existing user could be added here
+          toast({ title: "Conta ja existe", description: "Faca login para continuar.", variant: "destructive" });
+          const redirect = `${location.pathname}${location.search}`;
+          navigate(`/login?redirect=${encodeURIComponent(redirect)}&email=${encodeURIComponent(data.email)}`);
         } else {
           throw signUpError;
         }
         return;
       }
 
-      if (!authData.user) throw new Error("Falha ao criar usuário");
+      if (!authData.user) throw new Error("Falha ao criar usuario");
+      if (!authData.session) {
+        throw new Error("Conta criada. Confirme seu e-mail e faca login para continuar o pagamento.");
+      }
 
       // 2. Free Plan
       if (planKey === 'free') {
-        toast({ title: "Sucesso!", description: "Redirecionando para o dashboard..." });
-        setTimeout(() => navigate('/app/dashboard'), 1500);
+        toast({ title: "Sucesso!", description: "Plano gratuito ativado." });
+        navigate('/app/dashboard');
         return;
       }
 
-      // 3. Paid Plan -> Intent
-      const secret = await createSubscriptionIntent(authData.user.id, authData.user.email!, billingCycle);
-      setClientSecret(secret);
-      setStep('payment');
+      // 3. Paid Plan -> Stripe-hosted Checkout
+      const checkoutUrl = await createHostedCheckoutSession(billingCycle, data);
+      window.location.assign(checkoutUrl);
     } catch (error: any) {
-      toast({ title: "Erro", description: error.message, variant: "destructive" });
+      const feedback = getCheckoutErrorFeedback(error);
+      toast({
+        title: feedback.title,
+        description: feedback.description,
+        variant: feedback.variant,
+      });
+
+      if (feedback.redirect === 'plan-management') {
+        navigate(planManagementPath);
+        return;
+      }
     } finally {
       setIsLoading(false);
     }
@@ -161,7 +222,7 @@ const Checkout = () => {
 
   return (
     <div className="min-h-screen bg-background selection:bg-primary/10">
-      <SEO title="Finalizar Assinatura" description="Checkout seguro Meta Construtor" />
+      <SEO {...seoPages.checkout} />
       <LandingNavigation />
 
       <main className="pt-32 pb-24 px-4 md:px-6">
@@ -169,11 +230,11 @@ const Checkout = () => {
           {/* Stepper */}
           <div className="flex justify-center mb-12">
             <div className="flex items-center gap-4">
-              <div className={cn("flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300", step === 'details' ? "border-primary bg-primary text-primary-foreground" : "border-primary bg-primary text-primary-foreground")}>
+              <div className={cn("flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 border-primary bg-primary text-primary-foreground")}>
                 <span className="font-bold">1</span>
               </div>
-              <div className={cn("h-1 w-20 rounded-full transition-all duration-300", step === 'payment' ? "bg-primary" : "bg-muted")} />
-              <div className={cn("flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300", step === 'payment' ? "border-primary bg-primary text-primary-foreground" : "border-muted text-muted-foreground")}>
+              <div className="h-1 w-20 rounded-full bg-muted transition-all duration-300" />
+              <div className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-muted text-muted-foreground transition-all duration-300">
                 <span className="font-bold">2</span>
               </div>
             </div>
@@ -191,53 +252,35 @@ const Checkout = () => {
                     <div className="flex items-center justify-between">
                       <div className="space-y-1">
                         <CardTitle className="text-2xl">
-                          {step === 'details' ? 'Dados da Conta' : 'Pagamento Seguro'}
+                          Dados da Conta
                         </CardTitle>
                         <CardDescription>
-                          {step === 'details' ? 'Informe seus dados para criar o acesso.' : 'Finalize sua assinatura com segurança.'}
+                          Informe seus dados para seguir ao checkout seguro da Stripe.
                         </CardDescription>
+                        <Link
+                          to="/preco"
+                          className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-primary transition-colors hover:text-primary/80"
+                        >
+                          <ArrowLeft className="h-4 w-4" />
+                          Voltar aos planos
+                        </Link>
                       </div>
                       <Lock className="w-6 h-6 text-green-600/80" />
                     </div>
                   </CardHeader>
                   <CardContent className="p-8">
-                    <AnimatePresence mode="wait">
-                      {step === 'details' ? (
-                        <motion.div
-                          key="details"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                        >
-                          <CheckoutForm
-                            onSubmit={handleDetailsSubmit}
-                            loading={isLoading}
-                            defaultValues={defaultFormValues}
-                            showPasswordFields={!isAuthenticated}
-                          />
-                        </motion.div>
-                      ) : (
-                        <div className="text-center py-12">
-                          <p className="text-muted-foreground mb-4">O modal de pagamento seguro foi aberto.</p>
-                          <Button variant="outline" onClick={() => setStep('details')}>Voltar para dados</Button>
-
-                          <CheckoutDialog
-                            open={true}
-                            onOpenChange={(open) => !open && setStep('details')}
-                            clientSecret={clientSecret}
-                            planName={selectedPlan.name}
-                            amount={displayPrice}
-                            period="mês"
-                            billingCycle={billingCycle}
-                            onBillingChange={async (c) => {
-                              setBillingCycle(c);
-                              // Re-fetch intent logic would go here if switching allowed at this stage
-                            }}
-                            planPrice={rawMonthlyPrice} // Simplified for display
-                          />
-                        </div>
-                      )}
-                    </AnimatePresence>
+                    <motion.div
+                      key="details"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
+                      <CheckoutForm
+                        onSubmit={handleDetailsSubmit}
+                        loading={isLoading}
+                        defaultValues={defaultFormValues}
+                        showPasswordFields={!isAuthenticated}
+                      />
+                    </motion.div>
                   </CardContent>
                 </Card>
               </motion.div>

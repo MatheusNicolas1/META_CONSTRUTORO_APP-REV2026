@@ -10,188 +10,268 @@ import {
   Truck,
   BarChart3,
   Zap,
-  Shield,
   DollarSign,
-  CreditCard
+  CreditCard,
+  Plus,
+  MoreHorizontal,
+  Trash2,
+  type LucideIcon,
 } from "lucide-react";
 import { NavLink, useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import i18n from "@/lib/i18n";
-import Logo from "./Logo";
 import { useAuth } from "./auth/AuthContext";
+import { Sidebar, SidebarContent, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { NotificationPanel } from "./NotificationPanel";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { UserProfile } from "./UserProfile";
+import Logo from "./Logo";
+import { useRecentRDOs } from "@/hooks/useRecentRDOs";
+
+type NavigationItem = {
+  title: string;
+  shortTitle?: string;
+  url: string;
+  icon: LucideIcon;
+  tourId?: string;
+};
 
 export function AppSidebar() {
   const { state, isMobile, setOpenMobile } = useSidebar();
   const location = useLocation();
-  // const { t } = useTranslation();
-  const { roles, user, hasRole } = useAuth();
+  const { roles } = useAuth();
+  const { data: recentRdos = [], isLoading: isLoadingRdos } = useRecentRDOs();
   const collapsed = state === "collapsed";
 
   const t = (key: string) => i18n.t(key);
+  const canManageBilling = roles.some((role) => ["Presidente", "Administrador"].includes(role));
 
-  const menuItems = [
-    { title: t('menu.obras'), url: "/app/obras", icon: Briefcase, tourId: "obras" },
-    { title: t('menu.rdo'), url: "/app/rdo", icon: FileText, tourId: "rdo" },
-    { title: t('menu.checklist'), url: "/app/checklist", icon: CheckSquare, tourId: "checklist" },
-    { title: t('menu.atividades'), url: "/app/atividades", icon: Calendar, tourId: "atividades" },
-    { title: t('menu.equipes'), url: "/app/equipes", icon: Users, tourId: "equipes" },
-    { title: t('menu.equipamentos'), url: "/app/equipamentos", icon: Wrench, tourId: "equipamentos" },
+  const primaryItems: NavigationItem[] = [
+    { title: t("menu.dashboard"), shortTitle: "Inicio", url: "/app/dashboard", icon: Home, tourId: "dashboard" },
+    { title: t("menu.obras"), shortTitle: "Obras", url: "/app/obras", icon: Briefcase, tourId: "obras" },
+    { title: t("menu.rdo"), shortTitle: "RDO", url: "/app/rdo", icon: FileText, tourId: "rdo" },
+    { title: t("menu.checklist"), shortTitle: "Check", url: "/app/checklist", icon: CheckSquare, tourId: "checklist" },
   ];
 
-  const secondaryItems = [
-    { title: t('menu.documentos'), url: "/app/documentos", icon: Folder, tourId: "documentos" },
-    { title: t('menu.fornecedores'), url: "/app/fornecedores", icon: Truck, tourId: "fornecedores" },
-    { title: 'Despesas', url: "/app/despesas", icon: DollarSign, tourId: "despesas" },
-    { title: t('menu.relatorios'), url: "/app/relatorios", icon: BarChart3, tourId: "relatorios" },
-    { title: t('menu.integracoes'), url: "/app/integracoes", icon: Zap, tourId: "integracoes" },
+  const operationItems: NavigationItem[] = [
+    { title: t("menu.atividades"), url: "/app/atividades", icon: Calendar, tourId: "atividades" },
+    { title: t("menu.equipes"), url: "/app/equipes", icon: Users, tourId: "equipes" },
+    { title: t("menu.equipamentos"), url: "/app/equipamentos", icon: Wrench, tourId: "equipamentos" },
+    { title: t("menu.documentos"), url: "/app/documentos", icon: Folder, tourId: "documentos" },
   ];
 
-  const isAdmin = hasRole('Administrador');
-  const isSuperAdmin = user?.email === 'matheusnicolas.org@gmail.com';
+  const moreItems: NavigationItem[] = [
+    { title: t("menu.fornecedores"), url: "/app/fornecedores", icon: Truck, tourId: "fornecedores" },
+    { title: "Despesas", url: "/app/despesas", icon: DollarSign, tourId: "despesas" },
+    ...(canManageBilling ? [{ title: "Planos", url: "/app/planos", icon: CreditCard, tourId: "planos" }] : []),
+    { title: t("menu.relatorios"), url: "/app/relatorios", icon: BarChart3, tourId: "relatorios" },
+    { title: t("menu.integracoes"), url: "/app/integracoes", icon: Zap, tourId: "integracoes" },
+    { title: "Lixeira", url: "/app/lixeira", icon: Trash2, tourId: "lixeira" },
+  ];
 
-  // Verificação ESTRITA para Presidente conforme solicitado
-  const isPresidente = roles.includes('Presidente');
+  const detailItems = [...operationItems, ...moreItems];
 
-  // Close mobile menu on route change
   useEffect(() => {
     if (isMobile) {
       setOpenMobile(false);
     }
   }, [location.pathname, isMobile, setOpenMobile]);
 
-  const isActive = (path: string) => {
-    return location.pathname.startsWith(path);
-  };
+  const isActive = (path: string) =>
+    path === "/app/dashboard"
+      ? location.pathname === path
+      : location.pathname.startsWith(path);
 
-  const getNavClass = (path: string) =>
-    isActive(path)
-      ? "bg-primary text-primary-foreground hover:bg-primary/90"
-      : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground";
+  const isMoreActive = moreItems.some((item) => isActive(item.url));
+
+  const railLinkClass = (active: boolean) =>
+    [
+      "flex h-[4.4rem] w-[4.5rem] flex-col items-center justify-center gap-1 rounded-2xl text-xs font-semibold transition-colors",
+      active
+        ? "bg-primary/10 text-primary ring-1 ring-primary/15"
+        : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+    ].join(" ");
+
+  const detailLinkClass = (active: boolean) =>
+    [
+      "flex h-11 min-w-0 items-center gap-3 rounded-2xl px-3 text-sm font-semibold transition-colors",
+      active
+        ? "bg-primary/10 text-primary ring-1 ring-primary/15"
+        : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+    ].join(" ");
+
+  const renderRailLink = (item: NavigationItem) => (
+    <NavLink
+      key={item.title}
+      to={item.url}
+      data-tour={item.tourId}
+      className={railLinkClass(isActive(item.url))}
+      title={item.title}
+      end={item.url === "/app/dashboard"}
+    >
+      <item.icon className="h-5 w-5 shrink-0" />
+      <span className="max-w-[4rem] truncate leading-tight">{item.shortTitle || item.title}</span>
+    </NavLink>
+  );
+
+  const renderDetailLink = (item: NavigationItem) => (
+    <NavLink
+      key={item.title}
+      to={item.url}
+      data-tour={item.tourId}
+      className={detailLinkClass(isActive(item.url))}
+      title={item.title}
+      end={item.url === "/app/dashboard"}
+    >
+      <item.icon className="h-5 w-5 shrink-0" />
+      <span className="min-w-0 truncate">{item.title}</span>
+    </NavLink>
+  );
+
+  const formatRdoDate = (value?: string | null) => {
+    if (!value) return "Sem data";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "Sem data";
+    return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+  };
 
   return (
     <Sidebar
-      className={`transition-all duration-300 ease-in-out ${collapsed ? "w-16" : "w-64"}`}
+      className={`border-r border-sidebar-border/70 bg-sidebar transition-[width] duration-300 ease-out ${collapsed ? "w-[5.5rem]" : "w-[25.5rem]"}`}
       collapsible="icon"
       side="left"
     >
-      <SidebarContent className="bg-sidebar">
-        {/* Header com Logo */}
-        {/* Header com Logo */}
-        <div className={`border-b border-sidebar-border transition-all duration-300 h-14 sm:h-16 flex items-center ${collapsed ? 'px-2' : 'px-4'}`}>
-          <div className="flex items-center justify-center w-full">
-            <Link
-              to="/app/dashboard"
-              className="flex items-center justify-center hover:opacity-80 transition-opacity touch-safe w-full"
-              title={collapsed ? "MetaConstrutor - Dashboard" : "Dashboard"}
-            >
-              {!collapsed && (
-                <Logo size="md" className="transition-all duration-300" />
-              )}
-              {collapsed && (
-                <div className="w-8 h-8 flex items-center justify-center">
-                  <Logo size="sm" className="transition-all duration-300" />
+      <SidebarContent className="overflow-hidden bg-sidebar">
+        <div className="flex h-full min-h-0">
+          <aside className="flex h-full w-[5.5rem] shrink-0 flex-col items-center border-r border-sidebar-border/70 bg-sidebar">
+            <div className="flex h-16 w-full shrink-0 items-center justify-center border-b border-sidebar-border/70">
+              <SidebarTrigger className="h-11 w-11 rounded-2xl text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" />
+            </div>
+
+            <div className="flex w-full shrink-0 justify-center border-b border-sidebar-border/70 py-3">
+              <Link
+                to="/app/rdo/novo"
+                className="flex h-[4.4rem] w-[4.5rem] flex-col items-center justify-center gap-1 rounded-2xl bg-primary text-primary-foreground shadow-sm shadow-primary/20 transition-colors hover:bg-primary/90"
+                title="Criar novo RDO"
+              >
+                <Plus className="h-6 w-6" />
+                <span className="text-xs font-bold leading-tight">Criar</span>
+              </Link>
+            </div>
+
+            <nav className="flex min-h-0 flex-1 flex-col items-center gap-1 overflow-hidden py-3">
+              {primaryItems.map(renderRailLink)}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className={railLinkClass(isMoreActive)}
+                    title="Mais"
+                  >
+                    <MoreHorizontal className="h-5 w-5 shrink-0" />
+                    <span className="max-w-[4rem] truncate leading-tight">Mais</span>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" side="right" className="w-64" sideOffset={12}>
+                  <DropdownMenuLabel>Mais ferramentas</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {moreItems.map((item) => (
+                    <DropdownMenuItem key={item.title} asChild>
+                      <NavLink to={item.url} className="cursor-pointer">
+                        <item.icon className="mr-2 h-4 w-4" />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </nav>
+
+            <div className="flex w-full shrink-0 flex-col items-center gap-2 border-t border-sidebar-border/70 px-2 py-3">
+              <div className="flex h-10 w-10 items-center justify-center [&_button]:h-10 [&_button]:w-10 [&_button]:rounded-2xl [&_button]:px-0">
+                <NotificationPanel />
+              </div>
+              <div className="flex h-10 w-10 items-center justify-center [&_button]:h-10 [&_button]:w-10 [&_button]:rounded-2xl [&_button]:px-0">
+                <ThemeToggle />
+              </div>
+              <UserProfile compact align="start" />
+            </div>
+          </aside>
+
+          {!collapsed && (
+            <aside className="flex h-full min-w-0 flex-1 flex-col bg-sidebar">
+              <div className="flex h-16 shrink-0 items-center border-b border-sidebar-border/70 px-5">
+                <Logo size="lg" />
+              </div>
+
+              <div className="min-h-0 flex-1 overflow-hidden px-4 py-4">
+                <div className="mb-4 px-2">
+                  <p className="text-xs font-bold uppercase tracking-normal text-sidebar-foreground/55">
+                    Ultimos RDOs
+                  </p>
+                  <p className="mt-1 text-xs text-sidebar-foreground/55">
+                    Atalhos dos registros mais recentes.
+                  </p>
                 </div>
-              )}
-            </Link>
-          </div>
-        </div>
 
-        {/* Navegação Principal */}
-        <div className="flex-1 overflow-y-auto">
-          <SidebarGroup className={`transition-all duration-300 ${collapsed ? 'px-2 py-2' : 'px-3 py-2'}`}>
-            {!collapsed && (
-              <SidebarGroupLabel className="text-sidebar-foreground/70 px-2 py-1.5 text-xs font-semibold uppercase tracking-wider">
-                {t('menu.dashboard')}
-              </SidebarGroupLabel>
-            )}
-            <SidebarGroupContent>
-              <SidebarMenu className="space-y-1">
-                {menuItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild tooltip={collapsed ? item.title : undefined}>
+                <div className="space-y-2">
+                  {isLoadingRdos ? (
+                    [1, 2, 3].map((item) => (
+                      <div key={item} className="h-16 rounded-2xl border border-sidebar-border/70 bg-sidebar-accent/35" />
+                    ))
+                  ) : recentRdos.length > 0 ? (
+                    recentRdos.slice(0, 3).map((rdo: any) => (
                       <NavLink
-                        to={item.url}
-                        data-tour={item.tourId}
-                        className={`${getNavClass(item.url)} flex items-center gap-3 transition-all duration-200 rounded-lg h-10 ${collapsed ? 'justify-center px-0 w-10 mx-auto' : 'justify-start px-3'
-                          }`}
-                        title={collapsed ? item.title : undefined}
-                        end={false}
+                        key={rdo.id}
+                        to={`/app/rdo/${rdo.id}/visualizar`}
+                        className="group block rounded-2xl border border-sidebar-border/70 bg-sidebar-accent/35 p-2.5 transition-colors hover:bg-sidebar-accent"
                       >
-                        <item.icon className="h-5 w-5 flex-shrink-0" />
-                        {!collapsed && <span className="truncate text-sm font-medium">{item.title}</span>}
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                            <FileText className="h-4 w-4" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-2">
+                              <p className="truncate text-sm font-bold leading-tight text-sidebar-foreground">
+                                RDO {formatRdoDate(rdo.created_at || rdo.data)}
+                              </p>
+                              <span className="shrink-0 rounded-full bg-background/70 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-sidebar-foreground/65">
+                                {rdo.status || "RDO"}
+                              </span>
+                            </div>
+                            <p className="mt-0.5 truncate text-xs leading-tight text-sidebar-foreground/65">
+                              {rdo.obras?.nome || "Obra nao vinculada"}
+                            </p>
+                          </div>
+                        </div>
                       </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+                    ))
+                  ) : (
+                    <div className="rounded-2xl border border-dashed border-sidebar-border/80 p-4 text-sm text-sidebar-foreground/65">
+                      Nenhum RDO recente ainda.
+                      <Link to="/app/rdo/novo" className="mt-3 block font-semibold text-primary">
+                        Criar novo RDO
+                      </Link>
+                    </div>
+                  )}
+                </div>
 
-          <SidebarGroup className={`transition-all duration-300 ${collapsed ? 'px-2 py-2' : 'px-3 py-2'}`}>
-            {!collapsed && (
-              <SidebarGroupLabel className="text-sidebar-foreground/70 px-2 py-1.5 text-xs font-semibold uppercase tracking-wider">
-                {t('settings.title')}
-              </SidebarGroupLabel>
-            )}
-            <SidebarGroupContent>
-              <SidebarMenu className="space-y-1">
-                {secondaryItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild tooltip={collapsed ? item.title : undefined}>
-                      <NavLink
-                        to={item.url}
-                        data-tour={item.tourId}
-                        className={`${getNavClass(item.url)} flex items-center gap-3 transition-all duration-200 rounded-lg h-10 ${collapsed ? 'justify-center px-0 w-10 mx-auto' : 'justify-start px-3'
-                          }`}
-                        title={collapsed ? item.title : undefined}
-                      >
-                        <item.icon className="h-5 w-5 flex-shrink-0" />
-                        {!collapsed && <span className="truncate text-sm font-medium">{item.title}</span>}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-
-          {/* Painel Administrativo - Somente para Presidente (Estrito) */}
-          {isPresidente && (
-            <SidebarGroup className={`transition-all duration-300 ${collapsed ? 'px-2 py-2' : 'px-3 py-2'}`}>
-              {!collapsed && (
-                <SidebarGroupLabel className="text-sidebar-foreground/70 px-2 py-1.5 text-xs font-semibold uppercase tracking-wider">
-                  Administração
-                </SidebarGroupLabel>
-              )}
-              <SidebarGroupContent>
-                <SidebarMenu className="space-y-1">
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild tooltip={collapsed ? "Painel Admin" : undefined}>
-                      <NavLink
-                        to="/app/admin/dashboard"
-                        className={`${getNavClass('/app/admin/dashboard')} flex items-center gap-3 transition-all duration-200 rounded-lg h-10 ${collapsed ? 'justify-center px-0 w-10 mx-auto' : 'justify-start px-3'
-                          }`}
-                        title={collapsed ? "Painel Admin" : undefined}
-                      >
-                        <Shield className="h-5 w-5 flex-shrink-0" />
-                        {!collapsed && <span className="truncate text-sm font-medium">Painel Admin</span>}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
+                <div className="mt-5 px-2 text-xs font-bold uppercase tracking-normal text-sidebar-foreground/55">
+                  Ferramentas
+                </div>
+                <nav className="mt-2 grid grid-cols-2 gap-2">
+                  {detailItems.map(renderDetailLink)}
+                </nav>
+              </div>
+            </aside>
           )}
         </div>
       </SidebarContent>

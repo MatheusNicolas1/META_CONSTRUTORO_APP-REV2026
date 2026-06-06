@@ -92,7 +92,7 @@ describe('fluxos de autenticação', () => {
     await user.click(screen.getByRole('button', { name: /^Entrar$/i }));
 
     await waitFor(() => {
-      expect(mocks.signIn).toHaveBeenCalledWith('usuario@teste.com', 'SenhaForte1!');
+      expect(mocks.signIn).toHaveBeenCalledWith('usuario@teste.com', 'SenhaForte1!', undefined);
     });
   });
 
@@ -105,7 +105,7 @@ describe('fluxos de autenticação', () => {
     expect(mocks.signInWithOAuth).toHaveBeenCalledWith({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=%2Fapp%2Fdashboard`,
+        redirectTo: 'https://www.metaconstrutor.app.br/app/dashboard',
         queryParams: {
           access_type: 'offline',
           prompt: 'select_account',
@@ -158,7 +158,7 @@ describe('fluxos de autenticação', () => {
     expect(mocks.signInWithOAuth).toHaveBeenCalledWith({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=%2Fapp%2Fdashboard`,
+        redirectTo: 'https://www.metaconstrutor.app.br/app/dashboard',
         queryParams: {
           access_type: 'offline',
           prompt: 'select_account',

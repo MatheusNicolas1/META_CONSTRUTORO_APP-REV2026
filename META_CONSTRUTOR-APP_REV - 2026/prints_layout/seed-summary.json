@@ -1,0 +1,34 @@
+{
+  "generated_at": "2026-06-03T20:05:00.394Z",
+  "environment": "supabase remoto configurado no .env",
+  "org": {
+    "id": "851cda93-d971-4328-b119-a3fcf542934a",
+    "slug": "prd-prints-campanha-2026-06-03",
+    "name": "Meta Construtor Campanha PRD Prints"
+  },
+  "plan": {
+    "slug": "prd-prints-campaign",
+    "max_users": 20,
+    "max_obras": 20
+  },
+  "login_email": "campanha+prdprints10@metaconstrutor.test",
+  "counts": {
+    "users": 10,
+    "obras": 6,
+    "atividades": 36,
+    "rdos": 6,
+    "rdo_atividades": 18,
+    "checklists": 6,
+    "checklist_items": 30,
+    "documentos": 6,
+    "equipes": 6,
+    "equipamentos": 6,
+    "fornecedores": 6,
+    "expenses": 6
+  },
+  "safety": {
+    "password_recorded": false,
+    "real_customer_data": false,
+    "external_integrations_called": false
+  }
+}

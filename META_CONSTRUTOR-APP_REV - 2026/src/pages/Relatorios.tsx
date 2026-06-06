@@ -170,7 +170,7 @@ const Relatorios = () => {
       obraId: rdo.obra_id,
       obraNome: rdo.obras?.nome || "Sem nome",
       status: rdo.status as RDOStatus,
-      criadoPorId: rdo.created_by,
+      criadoPorId: rdo.criado_por_id,
       criadoPorNome: "Usuário",
       periodo: rdo.periodo as RDO['periodo'],
       clima: rdo.clima,

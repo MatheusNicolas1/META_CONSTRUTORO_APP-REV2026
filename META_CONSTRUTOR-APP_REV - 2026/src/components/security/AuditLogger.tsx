@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useCallback } from 'react';
 import { useAuth } from '@/components/auth/AuthContext';
+import { getActiveOrgIdLocal } from '@/helpers/storage';
 
 export type AuditEvent =
   | 'auth.login'
@@ -48,6 +49,8 @@ export interface AuditLogEntry {
   sessionId?: string;
 }
 
+const isDevelopment = import.meta.env.DEV;
+
 // Hook para logging de auditoria
 export const useAuditLogger = () => {
   const { user, isAuthenticated } = useAuth();
@@ -73,27 +76,28 @@ export const useAuditLogger = () => {
       userAgent: navigator.userAgent,
       resource: options.resource,
       resourceId: options.resourceId,
-      details: {
-        ...details,
-        // Mascarar dados sensíveis
-        ...maskSensitiveData(details),
-      },
+      details: maskSensitiveData(details),
       severity: options.severity || getSeverityForEvent(event),
       success: options.success ?? true,
       sessionId: getSessionId(),
     };
 
-    // Armazenar log localmente (em produção, enviar para backend)
-    storeAuditLog(entry);
-
-    // Enviar para backend se configurado
-    sendToAuditService(entry);
-
-    // Log crítico no console para desenvolvimento
-    if (entry.severity === 'critical' || entry.severity === 'error') {
-      console.error('AUDIT LOG:', entry);
+    if (!isAuthenticated) {
+      storeAuditLog(entry);
+      return;
     }
-  }, [user]);
+
+    void sendToAuditService(entry).then((sent) => {
+      if (!sent) {
+        storeAuditLog(entry);
+      }
+    });
+
+    // Log critico no console apenas em desenvolvimento e sem dados sensiveis.
+    if (isDevelopment && (entry.severity === 'critical' || entry.severity === 'error')) {
+      console.error('AUDIT LOG:', sanitizeAuditLogForConsole(entry));
+    }
+  }, [isAuthenticated, user]);
 
   return { logEvent };
 };
@@ -181,17 +185,49 @@ const getSeverityForEvent = (event: AuditEvent): AuditLogEntry['severity'] => {
   return severityMap[event] || 'info';
 };
 
+const sensitiveFields = [
+  'authorization',
+  'credential',
+  'cpf',
+  'cnpj',
+  'email',
+  'key',
+  'password',
+  'phone',
+  'secret',
+  'session',
+  'telefone',
+  'token',
+];
+
 const maskSensitiveData = (data: Record<string, any>): Record<string, any> => {
-  const sensitiveFields = ['password', 'token', 'secret', 'key', 'credential'];
-  const masked = { ...data };
-
-  Object.keys(masked).forEach(key => {
+  return Object.entries(data).reduce<Record<string, any>>((acc, [key, value]) => {
     if (sensitiveFields.some(field => key.toLowerCase().includes(field))) {
-      masked[key] = '***MASKED***';
+      acc[key] = '***MASKED***';
+      return acc;
     }
-  });
 
-  return masked;
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      acc[key] = maskSensitiveData(value as Record<string, any>);
+      return acc;
+    }
+
+    acc[key] = value;
+    return acc;
+  }, {});
+};
+
+const sanitizeAuditLogForConsole = (entry: AuditLogEntry): Partial<AuditLogEntry> => {
+  return {
+    id: entry.id,
+    timestamp: entry.timestamp,
+    event: entry.event,
+    resource: entry.resource,
+    resourceId: entry.resourceId,
+    details: maskSensitiveData(entry.details),
+    severity: entry.severity,
+    success: entry.success,
+  };
 };
 
 const storeAuditLog = (entry: AuditLogEntry): void => {
@@ -219,20 +255,35 @@ const getStoredLogs = (): AuditLogEntry[] => {
   }
 };
 
-const sendToAuditService = async (entry: AuditLogEntry): Promise<void> => {
+const sendToAuditService = async (entry: AuditLogEntry): Promise<boolean> => {
   try {
     const { supabase } = await import('@/integrations/supabase/client');
 
-    await supabase.from('audit_logs').insert({
-      user_id: entry.userId || null,
-      action: entry.event,
-      entity: entry.resource || 'system',
-      entity_id: entry.resourceId || null,
-      details: entry.details,
-      created_at: entry.timestamp
+    const { error } = await supabase.functions.invoke('record-audit-log', {
+      body: {
+        org_id: getActiveOrgIdLocal(),
+        action: entry.event,
+        entity: entry.resource || 'system',
+        entity_id: entry.resourceId || null,
+        metadata: {
+          ...entry.details,
+          audit_id: entry.id,
+          timestamp: entry.timestamp,
+          user_name: entry.userName,
+          user_role: entry.userRole,
+          severity: entry.severity,
+          success: entry.success,
+          session_id: entry.sessionId,
+          client_user_agent: entry.userAgent,
+        },
+      },
     });
+
+    if (error) throw error;
+    return true;
   } catch (error) {
     console.error('Failed to send audit log to Supabase:', error);
+    return false;
   }
 };
 

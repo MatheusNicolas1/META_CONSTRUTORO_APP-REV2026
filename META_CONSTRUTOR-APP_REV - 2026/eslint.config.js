@@ -14,6 +14,8 @@ export default tseslint.config(
       ".agent",
       ".agents",
       ".playwright-cli",
+      "MetaConstrutor",
+      "MetaConstrutor/**",
       "temp_*.ts",
       "*.tsbuildinfo",
     ],

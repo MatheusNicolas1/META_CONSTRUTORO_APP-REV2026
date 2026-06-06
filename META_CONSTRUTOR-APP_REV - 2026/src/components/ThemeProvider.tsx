@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 
 type Theme = 'dark' | 'light' | 'system';
 
@@ -18,7 +18,7 @@ interface ThemeProviderState {
 }
 
 const initialState: ThemeProviderState = {
-    theme: 'system',
+    theme: 'light',
     setTheme: () => null,
     systemTheme: 'light',
 };
@@ -27,15 +27,23 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({
     children,
-    defaultTheme = 'system',
-    enableSystem = true,
+    defaultTheme = 'light',
+    enableSystem = false,
     attribute = 'class',
-    storageKey = 'theme',
+    storageKey = 'vite-ui-theme',
     ...props
 }: ThemeProviderProps) {
     const [theme, setThemeState] = useState<Theme>(() => {
         if (typeof window !== 'undefined') {
-            return (localStorage.getItem(storageKey) as Theme) || defaultTheme;
+            const storedTheme = localStorage.getItem(storageKey) as Theme | null;
+            const legacyTheme = localStorage.getItem('theme') as Theme | null;
+            const savedTheme = storedTheme === 'dark' || storedTheme === 'light'
+                ? storedTheme
+                : legacyTheme === 'dark' || legacyTheme === 'light'
+                    ? legacyTheme
+                    : null;
+
+            return savedTheme || defaultTheme;
         }
         return defaultTheme;
     });
@@ -71,16 +79,17 @@ export function ThemeProvider({
         }
     }, [theme, systemTheme, attribute]);
 
-    const setTheme = (newTheme: Theme) => {
+    const setTheme = useCallback((newTheme: Theme) => {
         localStorage.setItem(storageKey, newTheme);
+        localStorage.setItem('theme', newTheme);
         setThemeState(newTheme);
-    };
+    }, [storageKey]);
 
-    const value = {
+    const value = useMemo(() => ({
         theme,
         setTheme,
         systemTheme,
-    };
+    }), [theme, setTheme, systemTheme]);
 
     return (
         <ThemeProviderContext.Provider {...props} value={value}>

@@ -22,6 +22,7 @@ export const useExpenses = (obraId?: string) => {
         .from('expenses')
         .select('*')
         .eq('org_id', orgId)
+        .is('deleted_at' as any, null)
         .order('created_at', { ascending: false });
 
       if (obraId) {
@@ -73,7 +74,7 @@ export const useExpenses = (obraId?: string) => {
         const notifications = managers.map((manager) => ({
           user_id: manager.user_id,
           title: 'Nova Despesa para Aprovação',
-          message: `Uma nova despesa de R$ ${expenseData.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} foi submetida na obra "${obra?.nome || 'N/A'}" e aguarda sua aprovação.`,
+          message: `Uma nova despesa de R$ ${expenseData.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} foi submetida na obra "${obra?.nome || 'Obra nao informada'}" e aguarda sua aprovação.`,
           type: 'expense_approval',
           route: '/app/despesas',
         }));
@@ -156,7 +157,7 @@ export const useExpenses = (obraId?: string) => {
           const notifications = admins.map((admin) => ({
             user_id: admin.user_id,
             title: 'Despesa Aguardando Aprovação Final',
-            message: `Uma despesa de R$ ${expense?.amount?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} na obra "${obra?.nome || 'N/A'}" foi aprovada pelo gestor e aguarda sua aprovação final.`,
+            message: `Uma despesa de R$ ${expense?.amount?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} na obra "${obra?.nome || 'Obra nao informada'}" foi aprovada pelo gestor e aguarda sua aprovação final.`,
             type: 'expense_approval',
             route: '/app/despesas',
           }));
@@ -169,7 +170,7 @@ export const useExpenses = (obraId?: string) => {
         await supabase.from('notifications').insert({
           user_id: expense?.user_submitting_id,
           title: `Despesa ${statusText}`,
-          message: `Sua despesa de R$ ${expense?.amount?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} na obra "${obra?.nome || 'N/A'}" foi ${statusText}.`,
+          message: `Sua despesa de R$ ${expense?.amount?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} na obra "${obra?.nome || 'Obra nao informada'}" foi ${statusText}.`,
           type: 'expense_status',
           route: '/app/despesas',
         });

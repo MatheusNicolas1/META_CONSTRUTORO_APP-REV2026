@@ -43,7 +43,7 @@ export const N8NConfigCard = ({ config, status, onSave, onTest }: N8NConfigCardP
       setIsEditing(false);
       toast({
         title: "Configuração salva",
-        description: "Integração com N8N configurada com sucesso",
+        description: "Credenciais salvas. Execute um teste real antes de considerar a integracao conectada.",
       });
     } catch (error) {
       toast({
@@ -79,6 +79,8 @@ export const N8NConfigCard = ({ config, status, onSave, onTest }: N8NConfigCardP
   const getStatusBadge = () => {
     if (!status) return <Badge variant="secondary">Não configurado</Badge>;
     
+    if (!status.hasEvidence) return <Badge variant="secondary"><AlertCircle className="w-3 h-3 mr-1" />Sem evidencia</Badge>;
+
     switch (status.isHealthy) {
       case true:
         return <Badge variant="default" className="bg-construction-green"><CheckCircle className="w-3 h-3 mr-1" />Conectado</Badge>;
@@ -87,6 +89,14 @@ export const N8NConfigCard = ({ config, status, onSave, onTest }: N8NConfigCardP
       default:
         return <Badge variant="secondary">Desconhecido</Badge>;
     }
+  };
+
+  const formatLastCheck = () => status?.lastCheck ? new Date(status.lastCheck).toLocaleString() : "Sem teste registrado";
+  const formatPercent = () => typeof status?.successRate === "number" ? `${status.successRate.toFixed(1)}%` : "-";
+  const formatLatency = () => typeof status?.latency === "number" ? `${status.latency}ms` : "-";
+  const formatOperationalStatus = () => {
+    if (!status?.hasEvidence) return "Sem evidencia real";
+    return status.isHealthy ? "Ativo" : "Com erro";
   };
 
   return (
@@ -176,19 +186,19 @@ export const N8NConfigCard = ({ config, status, onSave, onTest }: N8NConfigCardP
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground">Status</p>
-                  <p className="font-medium">{status.isHealthy ? 'Ativo' : 'Inativo'}</p>
+                  <p className="font-medium">{formatOperationalStatus()}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Última verificação</p>
-                  <p className="font-medium">{new Date(status.lastCheck).toLocaleString()}</p>
+                  <p className="font-medium">{formatLastCheck()}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Taxa de sucesso</p>
-                  <p className="font-medium">{status.successRate.toFixed(1)}%</p>
+                  <p className="font-medium">{formatPercent()}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Latência</p>
-                  <p className="font-medium">{status.latency}ms</p>
+                  <p className="font-medium">{formatLatency()}</p>
                 </div>
               </div>
             )}

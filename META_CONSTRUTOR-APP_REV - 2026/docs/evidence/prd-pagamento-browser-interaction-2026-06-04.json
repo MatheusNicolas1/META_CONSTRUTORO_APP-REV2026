@@ -1,0 +1,13 @@
+{
+  "interaction": {
+    "route": "/checkout?plan=master&billing=monthly",
+    "email": "codex.browser.payment.master.1780607251845@example.com",
+    "finalUrl": "https://www.metaconstrutor.app.br/checkout?plan=master&billing=monthly",
+    "finalUrlHost": "www.metaconstrutor.app.br",
+    "title": "Finalizar assinatura | Meta Construtor",
+    "reachedStripe": false,
+    "stripeSnapshotHasPlan": true,
+    "relevantConsole": []
+  },
+  "screenshotStatus": "Timed out running CDP command \"Page.captureScreenshot\" for tab 1"
+}

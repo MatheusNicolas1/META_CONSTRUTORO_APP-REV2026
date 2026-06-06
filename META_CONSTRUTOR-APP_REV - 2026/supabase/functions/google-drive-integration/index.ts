@@ -1,10 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { getCorsHeaders } from "../_shared/cors.ts";
 
 interface DriveRequest {
   action: 'test' | 'oauth-url' | 'oauth-callback' | 'list-files' | 'upload' | 'create-folder';
@@ -19,6 +15,8 @@ interface DriveRequest {
 }
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -59,10 +57,12 @@ serve(async (req) => {
       console.info('Google Drive OAuth credentials not configured');
       return new Response(
         JSON.stringify({ 
+          success: false,
           error: 'Google Drive integration not configured. Please add GOOGLE_DRIVE_CLIENT_ID and GOOGLE_DRIVE_CLIENT_SECRET secrets.',
+          message: 'Google Drive integration is blocked until OAuth secrets are configured.',
           configured: false 
         }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 

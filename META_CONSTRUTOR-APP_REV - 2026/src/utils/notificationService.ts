@@ -28,12 +28,12 @@ export async function sendNotification({
     } as any);
 
     if (error) {
-      console.error('Error sending notification:', error);
+      console.warn('Error sending notification:', error);
       return false;
     }
     return true;
   } catch (error) {
-    console.error('Error sending notification:', error);
+    console.warn('Error sending notification:', error);
     return false;
   }
 }
@@ -59,7 +59,7 @@ export async function sendNotificationToMultiple(
       await supabase.from('notifications').insert(notifications as any);
     }
   } catch (error) {
-    console.error('Error sending notifications:', error);
+    console.warn('Error sending notifications:', error);
   }
 }
 

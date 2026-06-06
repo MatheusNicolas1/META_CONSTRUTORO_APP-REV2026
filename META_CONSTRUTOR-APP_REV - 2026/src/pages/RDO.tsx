@@ -4,6 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { RDONewForm } from "@/components/rdo/RDONewForm";
 import { DatePicker } from "@/components/DatePicker";
 import { RDOExpandableCard } from "@/components/RDOExpandableCard";
@@ -31,6 +41,7 @@ const RDOPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [editingRDO, setEditingRDO] = useState<RDO | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; label: string } | null>(null);
   const navigate = useNavigate();
 
   const { rdos, isLoading, deleteRDO, createRDO, updateRDO } = useRDOs();
@@ -49,9 +60,18 @@ const RDOPage = () => {
   });
 
   const handleDeleteRDO = (id: number | string) => {
-    if (confirm("Tem certeza que deseja excluir este RDO?")) {
-      deleteRDO.mutate(String(id));
-    }
+    const rdo = rdos.find((item) => String(item.id) === String(id));
+    setPendingDelete({
+      id: String(id),
+      label: (rdo as any)?.numero || String(id).slice(0, 8),
+    });
+  };
+
+  const confirmDeleteRDO = () => {
+    if (!pendingDelete) return;
+    deleteRDO.mutate(pendingDelete.id, {
+      onSuccess: () => setPendingDelete(null),
+    });
   };
 
   const handleEditRDO = (rdo: RDO) => {
@@ -68,10 +88,10 @@ const RDOPage = () => {
     const rows = filteredRDOs.map(rdo => [
       (rdo as any).numero || rdo.id,
       rdo.data,
-      (rdo as any).obras?.nome || 'N/A',
+      (rdo as any).obras?.nome || 'Obra nao informada',
       rdo.status,
-      rdo.clima || 'N/A',
-      rdo.periodo || 'N/A',
+      rdo.clima || 'Clima nao informado',
+      rdo.periodo || 'Periodo nao informado',
       (rdo as any).equipes_presentes?.length || 0,
       (rdo as any).equipamentos_utilizados?.length || 0
     ]);
@@ -104,8 +124,8 @@ const RDOPage = () => {
         {
           title: "Indicadores",
           meta: [
-            { label: "Aprovados", value: filteredRDOs.filter((rdo) => rdo.status === "aprovado" || rdo.status === "Aprovado").length },
-            { label: "Pendentes", value: filteredRDOs.filter((rdo) => rdo.status !== "aprovado" && rdo.status !== "Aprovado").length },
+            { label: "Aprovados", value: filteredRDOs.filter((rdo) => rdo.status === "aprovado" || rdo.status === "Aprovado" || rdo.status === "APPROVED").length },
+            { label: "Pendentes", value: filteredRDOs.filter((rdo) => rdo.status !== "aprovado" && rdo.status !== "Aprovado" && rdo.status !== "APPROVED").length },
           ],
         },
         {
@@ -194,11 +214,12 @@ const RDOPage = () => {
     obraId: rdo.obra_id,
     obraNome: rdo.obras?.nome || 'Obra não encontrada',
     status: rdo.status,
-    criadoPorId: rdo.created_by,
+    criadoPorId: rdo.criado_por_id,
     criadoPorNome: 'Usuário',
-    aprovadoPorId: rdo.aprovado_por_id,
-    aprovadoPorNome: rdo.aprovado_por_id ? 'Aprovador' : undefined,
-    dataAprovacao: rdo.data_aprovacao,
+    aprovadoPorId: rdo.approved_by || rdo.aprovado_por_id,
+    aprovadoPorNome: (rdo.approved_by || rdo.aprovado_por_id) ? 'Aprovador' : undefined,
+    dataAprovacao: rdo.approved_at || rdo.data_aprovacao,
+    motivoRejeicao: rdo.rejection_reason || rdo.motivo_rejeicao,
     atividadesRealizadas: mapAtividades(rdo.rdo_atividades, false),
     atividadesExtras: mapAtividades(rdo.rdo_atividades, true),
     periodo: rdo.periodo,
@@ -371,6 +392,26 @@ const RDOPage = () => {
           }
         }}
       />
+      <AlertDialog open={!!pendingDelete} onOpenChange={(open) => !open && setPendingDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Mover RDO para a Lixeira?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acao vai mover o RDO {pendingDelete?.label || ""} para a Lixeira. Ele podera ser restaurado por ate 30 dias, e a acao so sera confirmada se a mutation real concluir.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteRDO.isPending}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteRDO}
+              disabled={deleteRDO.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleteRDO.isPending ? "Movendo..." : "Mover para Lixeira"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div >
   );
 };

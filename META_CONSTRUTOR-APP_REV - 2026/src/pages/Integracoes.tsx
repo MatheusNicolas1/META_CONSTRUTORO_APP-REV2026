@@ -47,6 +47,7 @@ const Integracoes = () => {
     saveGoogleDriveConfig,
     testGoogleDriveConfig,
     connectGoogleDriveOAuth,
+    loadIntegrations,
     loadLogs,
     statuses,
     exportLogs
@@ -58,7 +59,7 @@ const Integracoes = () => {
       id: 'whatsapp',
       nome: "WhatsApp Business",
       categoria: "Comunicação",
-      descricao: "Notificações de atividades, prazos vencidos e mensagens para colaboradores",
+      descricao: "Canal configuravel para notificacoes quando credenciais e backend estiverem ativos",
       icon: Smartphone,
       conectado: false,
       color: "text-construction-green",
@@ -69,7 +70,7 @@ const Integracoes = () => {
       id: 'gmail',
       nome: "Gmail",
       categoria: "E-mail",
-      descricao: "Relatórios de andamento, confirmações e alertas por e-mail",
+      descricao: "Canal configuravel para e-mails transacionais e testes reais de envio",
       icon: Mail,
       conectado: false,
       color: "text-destructive",
@@ -80,18 +81,18 @@ const Integracoes = () => {
       id: 'googledrive',
       nome: "Google Drive",
       categoria: "Armazenamento",
-      descricao: "Armazenamento automático de anexos, plantas e memoriais técnicos",
+      descricao: "Credenciais para organizar arquivos no Drive quando o fluxo real estiver conectado",
       icon: Cloud,
       conectado: false,
       color: "text-construction-blue",
-      fluxos: ["Upload Documentos", "Backup Automático"],
+      fluxos: ["Upload Documentos", "Organizacao de Arquivos"],
       priority: 3
     },
     {
       id: 'googlecalendar',
       nome: "Google Agenda",
       categoria: "Agenda",
-      descricao: "Agendamento automático de reuniões, prazos e lembretes",
+      descricao: "Planejado para agenda externa; configure via N8N ate haver backend dedicado",
       icon: Calendar,
       conectado: false,
       color: "text-construction-orange",
@@ -102,7 +103,7 @@ const Integracoes = () => {
       id: 'n8n',
       nome: "N8N Automation",
       categoria: "Automação",
-      descricao: "Plataforma de automação de workflows (configurado pelo desenvolvedor)",
+      descricao: "Plataforma de workflows configurada pelo desenvolvedor e validada por teste real",
       icon: Zap,
       conectado: false,
       color: "text-construction-orange",
@@ -128,11 +129,14 @@ const Integracoes = () => {
 
   const enrichedIntegracoes = integracoes.map((integracao) => {
     const saved = integrations.find((item) => item.id === integracao.id);
+    const statusInfo = statuses[integracao.id];
+    const conectado = saved?.status === "connected" && statusInfo?.hasEvidence === true && statusInfo?.isHealthy === true;
     return {
       ...integracao,
-      conectado: saved?.status === "connected",
+      conectado,
+      configurado: saved?.isConfigured === true,
       config: saved?.configuration,
-      statusInfo: statuses[integracao.id],
+      statusInfo,
     };
   });
 
@@ -150,9 +154,11 @@ const Integracoes = () => {
       });
 
       const result = await IntegrationHelpers.testIntegrationChain();
+      await loadLogs();
+      await loadIntegrations();
 
       toast({
-        title: result.success ? "Teste concluído" : "Falha no teste",
+        title: result.success ? "Teste com evidencia registrada" : "Falha no teste",
         description: result.success ? result.message : result.error,
         variant: result.success ? "default" : "destructive",
       });
@@ -170,7 +176,7 @@ const Integracoes = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">Configurações de Integrações</h1>
-          <p className="text-muted-foreground text-sm md:text-base">Conecte o MetaConstrutor com serviços externos para automações inteligentes</p>
+          <p className="text-muted-foreground text-sm md:text-base">Conecte servicos externos somente quando houver credenciais, backend e teste real disponiveis.</p>
         </div>
         <Button onClick={handleTestarCadeiaIntegracoes} variant="outline">
           <Play className="h-4 w-4 mr-2" />
@@ -218,6 +224,11 @@ const Integracoes = () => {
                               <CheckCircle className="h-3 w-3 mr-1" />
                               Conectado
                             </>
+                          ) : integracao.configurado ? (
+                            <>
+                              <AlertCircle className="h-3 w-3 mr-1" />
+                              Aguardando teste
+                            </>
                           ) : (
                             <>
                               <AlertCircle className="h-3 w-3 mr-1" />
@@ -239,9 +250,9 @@ const Integracoes = () => {
                     {integracao.descricao}
                   </CardDescription>
 
-                  {/* Fluxos suportados */}
+                  {/* Fluxos previstos */}
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground mb-2">Fluxos suportados:</p>
+                    <p className="text-xs font-medium text-muted-foreground mb-2">Fluxos previstos:</p>
                     <div className="flex flex-wrap gap-1">
                       {integracao.fluxos.map((fluxo, index) => (
                         <Badge key={index} variant="outline" className="text-xs px-2 py-1">
@@ -267,7 +278,7 @@ const Integracoes = () => {
                         ) : (
                           <>
                             <Play className="h-4 w-4 mr-2" />
-                            Conectar
+                            {integracao.configurado ? "Testar/Configurar" : "Conectar"}
                           </>
                         )}
                       </Button>
@@ -349,7 +360,10 @@ const Integracoes = () => {
         <TabsContent value="dashboard">
           <IntegrationDashboard
             logs={logs}
-            onRefresh={loadLogs}
+            onRefresh={async () => {
+              await loadIntegrations();
+              await loadLogs();
+            }}
             statuses={Object.values(statuses)}
           />
         </TabsContent>
@@ -375,7 +389,7 @@ const Integracoes = () => {
           <Card>
             <CardHeader>
               <CardTitle>Blueprint de Integrações</CardTitle>
-              <CardDescription>Fluxos automáticos implementados seguindo o blueprint</CardDescription>
+              <CardDescription>Blueprint de fluxos pretendidos. Cada fluxo so deve ser tratado como ativo apos configuracao e teste real.</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
@@ -386,7 +400,7 @@ const Integracoes = () => {
                       Fluxo 1: Obra Criada
                     </h4>
                     <p className="text-sm text-green-700 dark:text-green-300 mt-2">
-                      Quando uma obra é criada → Notificação WhatsApp para responsável + E-mail para gestores + Sincronização Google Drive
+                      Quando uma obra e criada: acionar notificacoes e organizacao externa somente se as integracoes estiverem conectadas e testadas.
                     </p>
                   </div>
 
@@ -396,7 +410,7 @@ const Integracoes = () => {
                       Fluxo 2: RDO Aprovado
                     </h4>
                     <p className="text-sm text-blue-700 dark:text-blue-300 mt-2">
-                      Quando RDO é aprovado → Relatório detalhado por e-mail + Notificação WhatsApp para equipe
+                      Quando RDO e aprovado: envio por e-mail/WhatsApp permanece dependente de integracao conectada e backend valido.
                     </p>
                   </div>
 
@@ -406,7 +420,7 @@ const Integracoes = () => {
                       Fluxo 3: Documento Carregado
                     </h4>
                     <p className="text-sm text-purple-700 dark:text-purple-300 mt-2">
-                      Quando documento é carregado → Upload automático Google Drive + Notificação responsáveis
+                      Quando documento e carregado: envio ao Drive fica bloqueado ate existir conexao real e teste aprovado.
                     </p>
                   </div>
 
@@ -416,7 +430,7 @@ const Integracoes = () => {
                       Fluxo 4: Atividade Atrasada
                     </h4>
                     <p className="text-sm text-red-700 dark:text-red-300 mt-2">
-                      Quando atividade atrasa → Notificação urgente WhatsApp + E-mail para gestores
+                      Quando atividade atrasa: alertas externos dependem de canais conectados; sem isso, o app nao deve simular envio.
                     </p>
                   </div>
 
@@ -426,7 +440,7 @@ const Integracoes = () => {
                       Fluxo 5: Relatório Diário
                     </h4>
                     <p className="text-sm text-amber-700 dark:text-amber-300 mt-2">
-                      Automático às 18h → Resumo do dia por e-mail para gestores
+                      Relatorio diario: rotina agendada ainda depende de backend de agendamento e envio validado.
                     </p>
                   </div>
                 </div>
@@ -434,11 +448,11 @@ const Integracoes = () => {
                 <div className="mt-6 p-4 bg-construction-light border border-construction rounded-lg">
                   <h4 className="font-medium text-construction-dark">Critérios de Aceite ✅</h4>
                   <ul className="mt-2 space-y-1 text-sm text-construction-dark">
-                    <li>✅ Usuário conecta/desconecta serviços diretamente pelo app web</li>
-                    <li>✅ Dados sensíveis salvos de forma segura e criptografada</li>
-                    <li>✅ Layout mantém padrão do aplicativo web</li>
-                    <li>✅ Conexão N8N gerenciada pelo desenvolvedor</li>
-                    <li>✅ Estrutura modular para novos aplicativos</li>
+                    <li>Registrar configuracao somente quando credenciais obrigatorias forem informadas.</li>
+                    <li>Executar teste real antes de marcar uma integracao como conectada.</li>
+                    <li>Manter webhooks bloqueados enquanto nao houver backend real ativo.</li>
+                    <li>Conexao N8N permanece gerenciada pelo desenvolvedor.</li>
+                    <li>Novos aplicativos entram como planejados ate haver contrato tecnico validado.</li>
                   </ul>
                 </div>
               </div>

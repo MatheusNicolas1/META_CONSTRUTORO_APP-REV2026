@@ -51,7 +51,7 @@ export const GmailConfigCard = ({ config, status, onSave, onTest, onOAuthConnect
       setIsEditing(false);
       toast({
         title: "Configuração salva",
-        description: "Integração com Gmail configurada com sucesso",
+        description: "Credenciais salvas. Execute um teste real antes de considerar a integracao conectada.",
       });
     } catch (error) {
       toast({
@@ -68,13 +68,13 @@ export const GmailConfigCard = ({ config, status, onSave, onTest, onOAuthConnect
       const newConfig = await onOAuthConnect();
       setFormData(newConfig);
       toast({
-        title: "Conectado com sucesso",
-        description: "Gmail conectado via OAuth2",
+        title: "OAuth iniciado",
+        description: "Conclua a autorizacao do Gmail na janela aberta antes de considerar a integracao conectada.",
       });
     } catch (error) {
       toast({
-        title: "Erro na conexão",
-        description: "Falha ao conectar com o Gmail",
+        title: "Gmail bloqueado",
+        description: error instanceof Error ? error.message : "Secrets OAuth do Gmail ainda nao estao configurados.",
         variant: "destructive",
       });
     } finally {
@@ -89,8 +89,8 @@ export const GmailConfigCard = ({ config, status, onSave, onTest, onOAuthConnect
       toast({
         title: success ? "Teste realizado" : "Falha no teste",
         description: success 
-          ? "E-mail de teste enviado com sucesso" 
-          : "Não foi possível enviar o e-mail de teste",
+          ? "Gmail validado com evidencia real persistida." 
+          : "Gmail nao enviou e-mail; verifique secrets OAuth, autorizacao e logs persistidos.",
         variant: success ? "default" : "destructive",
       });
     } catch (error) {
@@ -107,6 +107,8 @@ export const GmailConfigCard = ({ config, status, onSave, onTest, onOAuthConnect
   const getStatusBadge = () => {
     if (!status) return <Badge variant="secondary">Não configurado</Badge>;
     
+    if (!status.hasEvidence) return <Badge variant="secondary"><AlertCircle className="w-3 h-3 mr-1" />Sem evidencia</Badge>;
+
     switch (status.isHealthy) {
       case true:
         return <Badge variant="default" className="bg-construction-green"><CheckCircle className="w-3 h-3 mr-1" />Conectado</Badge>;
@@ -118,6 +120,12 @@ export const GmailConfigCard = ({ config, status, onSave, onTest, onOAuthConnect
   };
 
   const isConfigured = config?.accessToken && config?.refreshToken;
+  const formatLastCheck = () => status?.lastCheck ? new Date(status.lastCheck).toLocaleString() : "Sem teste registrado";
+  const formatPercent = () => typeof status?.successRate === "number" ? `${status.successRate.toFixed(1)}%` : "-";
+  const formatOperationalStatus = () => {
+    if (!status?.hasEvidence) return "Sem evidencia real";
+    return status.isHealthy ? "Ativo" : "Com erro";
+  };
 
   return (
     <Card>
@@ -138,7 +146,7 @@ export const GmailConfigCard = ({ config, status, onSave, onTest, onOAuthConnect
           </Button>
         </div>
         <CardDescription>
-          Configure a integração com Gmail para envio automático de relatórios e notificações
+          Configure o Gmail para testes reais de envio. Rotinas agendadas dependem de backend ativo.
         </CardDescription>
       </CardHeader>
       
@@ -204,7 +212,7 @@ export const GmailConfigCard = ({ config, status, onSave, onTest, onOAuthConnect
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label htmlFor="enableAutoReports">Relatórios Automáticos</Label>
+                <Label htmlFor="enableAutoReports">Permitir relatorios quando houver rotina real</Label>
                 <Switch
                   id="enableAutoReports"
                   checked={formData.settings.enableAutoReports}
@@ -254,19 +262,19 @@ export const GmailConfigCard = ({ config, status, onSave, onTest, onOAuthConnect
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground">Status</p>
-                  <p className="font-medium">{status.isHealthy ? 'Ativo' : 'Inativo'}</p>
+                  <p className="font-medium">{formatOperationalStatus()}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Última verificação</p>
-                  <p className="font-medium">{new Date(status.lastCheck).toLocaleString()}</p>
+                  <p className="font-medium">{formatLastCheck()}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Taxa de sucesso</p>
-                  <p className="font-medium">{status.successRate.toFixed(1)}%</p>
+                  <p className="font-medium">{formatPercent()}</p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">E-mails enviados</p>
-                  <p className="font-medium">{status.errorCount || 0}</p>
+                  <p className="text-muted-foreground">Eventos reais</p>
+                  <p className="font-medium">{status.evidenceCount}</p>
                 </div>
               </div>
             )}
@@ -289,7 +297,7 @@ export const GmailConfigCard = ({ config, status, onSave, onTest, onOAuthConnect
                 <div className="grid grid-cols-2 gap-2">
                   <div className="flex items-center space-x-2">
                     <Switch checked={config.settings.enableAutoReports} disabled />
-                    <Label className="text-sm">Relatórios automáticos</Label>
+                    <Label className="text-sm">Relatorios condicionados a rotina real</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Switch checked={config.settings.enableUrgentAlerts} disabled />

@@ -54,7 +54,8 @@ const normalizeType = (value: string): string =>
     .toUpperCase();
 
 export const makeReportFilename = (reportType: string, generatedAt = new Date().toISOString()): string => {
-  const date = new Date(generatedAt);
+  const parsedDate = new Date(generatedAt);
+  const date = Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
   const yyyy = date.getFullYear();
   const mm = String(date.getMonth() + 1).padStart(2, '0');
   const dd = String(date.getDate()).padStart(2, '0');

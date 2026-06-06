@@ -14,6 +14,8 @@ import { FileUpload } from "@/components/FileUpload";
 import { useUserPermissions } from "@/hooks/useUserPermissions";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuthUserId } from "@/hooks/useAuthUserId";
+import { triggerSuccessFeedback } from "@/hooks/useSuccessFeedback";
+import { buildFeedbackRequestBody } from "@/utils/feedback";
 
 const Feedback = () => {
   const { toast } = useToast();
@@ -65,16 +67,12 @@ const Feedback = () => {
 
     try {
       const { error } = await supabase.functions.invoke('send-feedback', {
-        body: {
-          title: formData.title,
-          type: formData.type,
-          rating: formData.rating ? Number(formData.rating) : undefined,
-          message: formData.message,
-        },
+        body: buildFeedbackRequestBody(formData),
       });
 
       if (error) throw error;
 
+      triggerSuccessFeedback("Feedback enviado");
       toast({
         title: "Feedback enviado com sucesso!",
         description: "Seu feedback foi enviado com sucesso, obrigado por contribuir com melhorias para o Meta Construtor!",
@@ -104,11 +102,11 @@ const Feedback = () => {
     switch (status) {
       case "Recebido":
         return "default";
-      case "Em anÃ¡lise":
+      case "Em análise":
         return "secondary";
       case "Implementado":
         return "default";
-      case "NÃ£o serÃ¡ implementado":
+      case "Não será implementado":
         return "destructive";
       default:
         return "default";
@@ -119,11 +117,11 @@ const Feedback = () => {
     switch (status) {
       case "Recebido":
         return <Clock className="h-3 w-3" />;
-      case "Em anÃ¡lise":
+      case "Em análise":
         return <AlertCircle className="h-3 w-3" />;
       case "Implementado":
         return <CheckCircle className="h-3 w-3" />;
-      case "NÃ£o serÃ¡ implementado":
+      case "Não será implementado":
         return <XCircle className="h-3 w-3" />;
       default:
         return <Clock className="h-3 w-3" />;
@@ -139,7 +137,7 @@ const Feedback = () => {
       <div>
         <h1 className="text-3xl font-bold text-foreground">Feedback</h1>
         <p className="text-muted-foreground mt-2">
-          Compartilhe suas sugestÃµes, relate problemas ou envie elogios
+          Compartilhe suas sugestões, relate problemas ou envie elogios
         </p>
       </div>
 
@@ -160,19 +158,19 @@ const Feedback = () => {
                 Enviar Feedback
               </CardTitle>
               <CardDescription>
-                Conte-nos sua experiÃªncia, sugestÃµes ou problemas encontrados
+                Conte-nos sua experiência, sugestões ou problemas encontrados
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="title">TÃ­tulo (Opcional)</Label>
+                    <Label htmlFor="title">Título (Opcional)</Label>
                     <Input
                       id="title"
                       value={formData.title}
                       onChange={(e) => setFormData({...formData, title: e.target.value})}
-                      placeholder="Digite um tÃ­tulo para seu feedback"
+                      placeholder="Digite um título para seu feedback"
                     />
                   </div>
                   <div className="space-y-2">
@@ -182,7 +180,7 @@ const Feedback = () => {
                         <SelectValue placeholder="Selecione o tipo" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="sugestao">SugestÃ£o de melhoria</SelectItem>
+                        <SelectItem value="sugestao">Sugestão de melhoria</SelectItem>
                         <SelectItem value="problema">Problema encontrado</SelectItem>
                         <SelectItem value="elogio">Elogio</SelectItem>
                         <SelectItem value="outro">Outro</SelectItem>
@@ -231,7 +229,7 @@ const Feedback = () => {
                     uploadType="all"
                   />
                   <p className="text-sm text-muted-foreground">
-                    Anexe imagens, prints ou documentos para exemplificar (mÃ¡ximo 5 arquivos)
+                    Anexe imagens, prints ou documentos para exemplificar (máximo 5 arquivos)
                   </p>
                 </div>
 
@@ -304,7 +302,7 @@ const Feedback = () => {
                   <div className="text-center py-8">
                     <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground">
-                      VocÃª ainda nÃ£o enviou nenhum feedback
+                      Você ainda não enviou nenhum feedback
                     </p>
                   </div>
                 )}
@@ -322,7 +320,7 @@ const Feedback = () => {
                   Gerenciar Feedbacks
                 </CardTitle>
                 <CardDescription>
-                  Visualize e gerencie todos os feedbacks dos usuÃ¡rios
+                  Visualize e gerencie todos os feedbacks dos usuários
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -344,7 +342,7 @@ const Feedback = () => {
                               </div>
                               {feedback.user_id && (
                                 <p className="text-sm text-muted-foreground mb-1">
-                                  UsuÃ¡rio: {feedback.user_id}
+                                  Usuário: {feedback.user_id}
                                 </p>
                               )}
                               <p className="text-sm text-muted-foreground mb-2">
@@ -380,6 +378,7 @@ const Feedback = () => {
                                 if (error) {
                                   toast({ title: "Erro", description: "Falha ao atualizar status", variant: "destructive" });
                                 } else {
+                                  triggerSuccessFeedback("Status atualizado");
                                   toast({ title: "Sucesso", description: "Status atualizado!" });
                                   // Update local state if needed or force re-fetch
                                   const { data } = await supabase.from('feedbacks').select('*').order('created_at', { ascending: false });
@@ -392,9 +391,9 @@ const Feedback = () => {
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="Recebido">Recebido</SelectItem>
-                                <SelectItem value="Em anÃ¡lise">Em anÃ¡lise</SelectItem>
+                                <SelectItem value="Em análise">Em análise</SelectItem>
                                 <SelectItem value="Implementado">Implementado</SelectItem>
-                                <SelectItem value="NÃ£o serÃ¡ implementado">NÃ£o serÃ¡ implementado</SelectItem>
+                                <SelectItem value="Não será implementado">Não será implementado</SelectItem>
                               </SelectContent>
                             </Select>
                           </div>

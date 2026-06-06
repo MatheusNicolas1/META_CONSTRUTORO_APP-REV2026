@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Joyride, { CallBackProps, STATUS, Step } from 'react-joyride';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { track } from '@/integrations/analytics';
 
 interface OnboardingProps {
   forceShow?: boolean;
@@ -62,11 +63,23 @@ const tourSteps: Step[] = [
 export const Onboarding = ({ forceShow = false, onComplete }: OnboardingProps) => {
   const [runTour, setRunTour] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
+  const hasTrackedStart = useRef(false);
 
   useEffect(() => {
+    let cancelled = false;
+    let frameId: number | null = null;
+
+    const startTourAfterPaint = () => {
+      frameId = window.requestAnimationFrame(() => {
+        if (!cancelled) {
+          setRunTour(true);
+        }
+      });
+    };
+
     const checkOnboarding = async () => {
       if (forceShow) {
-        setRunTour(true);
+        startTourAfterPaint();
         return;
       }
 
@@ -84,9 +97,8 @@ export const Onboarding = ({ forceShow = false, onComplete }: OnboardingProps) =
           return;
         }
 
-        if (profile && !profile.has_seen_onboarding) {
-          // Pequeno delay para garantir que a página está totalmente renderizada
-          setTimeout(() => setRunTour(true), 1000);
+        if (!cancelled && profile && !profile.has_seen_onboarding) {
+          startTourAfterPaint();
         }
       } catch (error) {
         console.error('Erro ao verificar onboarding:', error);
@@ -94,7 +106,23 @@ export const Onboarding = ({ forceShow = false, onComplete }: OnboardingProps) =
     };
 
     checkOnboarding();
+
+    return () => {
+      cancelled = true;
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+      }
+    };
   }, [forceShow]);
+
+  useEffect(() => {
+    if (!runTour || hasTrackedStart.current) return;
+    hasTrackedStart.current = true;
+    track('onboarding.started', {
+      force_show: forceShow,
+      total_steps: tourSteps.length,
+    });
+  }, [forceShow, runTour]);
 
   const handleJoyrideCallback = async (data: CallBackProps) => {
     const { status, index, type, action } = data;
@@ -112,6 +140,12 @@ export const Onboarding = ({ forceShow = false, onComplete }: OnboardingProps) =
             .eq('id', user.id);
         }
 
+        track(status === STATUS.FINISHED ? 'onboarding.completed' : 'onboarding.skipped', {
+          force_show: forceShow,
+          final_step_index: index,
+          total_steps: tourSteps.length,
+        });
+
         if (status === STATUS.FINISHED) {
           toast.success('🎉 Tour concluído! Você já pode começar a usar o Meta Construtor.');
         }
@@ -125,8 +159,18 @@ export const Onboarding = ({ forceShow = false, onComplete }: OnboardingProps) =
     // Atualizar índice da etapa em qualquer transição
     if (type === 'step:after' && action === 'next') {
       setStepIndex(index + 1);
+      track('onboarding.step_advanced', {
+        from_step_index: index,
+        to_step_index: index + 1,
+        total_steps: tourSteps.length,
+      });
     } else if (type === 'step:after' && action === 'prev') {
       setStepIndex(index - 1);
+      track('onboarding.step_back', {
+        from_step_index: index,
+        to_step_index: index - 1,
+        total_steps: tourSteps.length,
+      });
     }
   };
 

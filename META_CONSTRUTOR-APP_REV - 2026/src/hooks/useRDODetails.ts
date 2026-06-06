@@ -19,8 +19,23 @@ export function useRDODetails(id: string | undefined) {
             nome
           ),
           rdo_atividades (*),
-          rdo_equipes (*),
-          rdo_equipamentos (*),
+          rdo_equipes (
+            *,
+            equipes (
+              id,
+              nome,
+              funcao
+            )
+          ),
+          rdo_equipamentos (
+            *,
+            equipamentos (
+              id,
+              nome,
+              categoria,
+              status
+            )
+          ),
           documentos (*)
         `)
                 .eq('id', id)

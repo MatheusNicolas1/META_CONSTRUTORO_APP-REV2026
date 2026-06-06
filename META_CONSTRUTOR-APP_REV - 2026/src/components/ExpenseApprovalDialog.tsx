@@ -16,6 +16,7 @@ interface ExpenseApprovalDialogProps {
 
 export function ExpenseApprovalDialog({ expense, open, onOpenChange }: ExpenseApprovalDialogProps) {
   const [rejectionReason, setRejectionReason] = useState('');
+  const [rejectionError, setRejectionError] = useState<string | null>(null);
   const { approveExpense } = useExpenses();
 
   if (!expense) return null;
@@ -34,10 +35,11 @@ export function ExpenseApprovalDialog({ expense, open, onOpenChange }: ExpenseAp
 
   const handleReject = async () => {
     if (!rejectionReason.trim()) {
-      alert('Por favor, informe o motivo da rejeição');
+      setRejectionError('Informe o motivo da rejeicao antes de rejeitar a despesa.');
       return;
     }
 
+    setRejectionError(null);
     await approveExpense.mutateAsync({
       id: expense.id,
       approval_status: 'Rejected',
@@ -64,14 +66,14 @@ export function ExpenseApprovalDialog({ expense, open, onOpenChange }: ExpenseAp
         <DialogHeader>
           <DialogTitle>Detalhes da Despesa</DialogTitle>
           <div className="sr-only">
-            Detalhes completos da despesa para aprovação ou rejeição.
+            Detalhes completos da despesa para aprovacao ou rejeicao.
           </div>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label className="text-muted-foreground">Número da NF</Label>
+              <Label className="text-muted-foreground">Numero da NF</Label>
               <p className="font-medium">{expense.invoice_number}</p>
             </div>
             <div>
@@ -111,7 +113,7 @@ export function ExpenseApprovalDialog({ expense, open, onOpenChange }: ExpenseAp
 
           {expense.notes && (
             <div>
-              <Label className="text-muted-foreground">Observações</Label>
+              <Label className="text-muted-foreground">Observacoes</Label>
               <p className="text-sm mt-1">{expense.notes}</p>
             </div>
           )}
@@ -141,7 +143,7 @@ export function ExpenseApprovalDialog({ expense, open, onOpenChange }: ExpenseAp
 
           {expense.approval_status === 'Rejected' && expense.rejection_reason && (
             <div className="bg-destructive/10 p-3 rounded-md">
-              <Label className="text-destructive">Motivo da Rejeição</Label>
+              <Label className="text-destructive">Motivo da Rejeicao</Label>
               <p className="text-sm mt-1">{expense.rejection_reason}</p>
             </div>
           )}
@@ -149,15 +151,21 @@ export function ExpenseApprovalDialog({ expense, open, onOpenChange }: ExpenseAp
           {(expense.approval_status === 'Pending Manager' ||
             expense.approval_status === 'Pending General Manager') && (
               <div>
-                <Label htmlFor="rejection-reason">Motivo da Rejeição (opcional)</Label>
+                <Label htmlFor="rejection-reason">Motivo da Rejeicao (obrigatorio para rejeitar)</Label>
                 <Textarea
                   id="rejection-reason"
                   value={rejectionReason}
-                  onChange={(e) => setRejectionReason(e.target.value)}
-                  placeholder="Descreva o motivo caso vá rejeitar..."
+                  onChange={(e) => {
+                    setRejectionReason(e.target.value);
+                    if (rejectionError) setRejectionError(null);
+                  }}
+                  placeholder="Descreva o motivo caso va rejeitar..."
                   rows={3}
                   className="mt-2"
                 />
+                {rejectionError && (
+                  <p className="mt-2 text-sm text-destructive">{rejectionError}</p>
+                )}
               </div>
             )}
         </div>

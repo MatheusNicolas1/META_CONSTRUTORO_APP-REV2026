@@ -103,8 +103,6 @@ export const CreditsDisplay = () => {
 
   // Não mostrar para planos premium
   if (credits.plan_type !== 'free') return null;
-  if (user?.email === 'matheusnicolas.org@gmail.com') return null;
-
   return (
     <Card data-tour="credits" className="p-4 mb-4 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
       <div className="flex items-center justify-between mb-3">

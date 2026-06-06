@@ -5,12 +5,34 @@
             "headers": [
                 {
                     "key": "Content-Security-Policy",
-                    "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; frame-src 'self' https://js.stripe.com https://hooks.stripe.com; connect-src 'self' https://api.stripe.com https://maps.googleapis.com https://bgdvlhttyjeuprrfxgun.supabase.co wss://bgdvlhttyjeuprrfxgun.supabase.co; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+                    "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; frame-src 'self' https://js.stripe.com https://hooks.stripe.com; connect-src 'self' https://api.stripe.com https://maps.googleapis.com https://bgdvlhttyjeuprrfxgun.supabase.co wss://bgdvlhttyjeuprrfxgun.supabase.co https://o4511422743576576.ingest.us.sentry.io https://app.posthog.com https://us.i.posthog.com https://eu.i.posthog.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
                 }
             ]
         }
     ],
     "rewrites": [
+        { "source": "/home", "destination": "/home/index.html" },
+        { "source": "/preco", "destination": "/preco/index.html" },
+        { "source": "/sobre", "destination": "/sobre/index.html" },
+        { "source": "/contato", "destination": "/contato/index.html" },
+        { "source": "/blog", "destination": "/blog/index.html" },
+        { "source": "/blog/como-estruturar-rdo", "destination": "/blog/como-estruturar-rdo/index.html" },
+        { "source": "/blog/documentos-por-obra", "destination": "/blog/documentos-por-obra/index.html" },
+        { "source": "/blog/checklist-qualidade-obra", "destination": "/blog/checklist-qualidade-obra/index.html" },
+        { "source": "/blog/o-que-e-rdo", "destination": "/blog/o-que-e-rdo/index.html" },
+        { "source": "/blog/o-que-e-rdos", "destination": "/blog/o-que-e-rdos/index.html" },
+        { "source": "/blog/rdo-na-policia", "destination": "/blog/rdo-na-policia/index.html" },
+        { "source": "/blog/rdo-de-empresa", "destination": "/blog/rdo-de-empresa/index.html" },
+        { "source": "/central-ajuda", "destination": "/central-ajuda/index.html" },
+        { "source": "/documentacao", "destination": "/documentacao/index.html" },
+        { "source": "/api", "destination": "/api/index.html" },
+        { "source": "/status", "destination": "/status/index.html" },
+        { "source": "/atualizacoes", "destination": "/atualizacoes/index.html" },
+        { "source": "/carreiras", "destination": "/carreiras/index.html" },
+        { "source": "/legal/privacidade", "destination": "/legal/privacidade/index.html" },
+        { "source": "/legal/termos", "destination": "/legal/termos/index.html" },
+        { "source": "/legal/cookies", "destination": "/legal/cookies/index.html" },
+        { "source": "/legal/lgpd", "destination": "/legal/lgpd/index.html" },
         {
             "source": "/(.*)",
             "destination": "/"

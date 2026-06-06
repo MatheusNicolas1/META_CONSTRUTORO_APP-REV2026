@@ -13,6 +13,9 @@ import { useAuth } from "@/components/auth/AuthContext";
 import { supportedLanguages } from "@/lib/i18n";
 import { Building2, Users, Bell, Shield, Palette, Database, Save, Upload, Globe } from "lucide-react";
 import SEO from "@/components/SEO";
+import { useTheme } from "@/components/ThemeProvider";
+import { OrgUsersSettings } from "@/components/settings/OrgUsersSettings";
+import { normalizePersistedTheme, persistUserThemePreference, resolvePersistedTheme } from "@/utils/themePreference";
 
 interface UserSettings {
   theme: string;
@@ -42,13 +45,15 @@ interface CompanyData {
 const Configuracoes = () => {
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
+  const { theme: appTheme, setTheme, systemTheme } = useTheme();
   const [activeTab, setActiveTab] = useState("company");
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const pendingThemeRef = useRef<string | null>(null);
 
   const [settings, setSettings] = useState<UserSettings>({
-    theme: "dark",
+    theme: "light",
     language: "pt-BR",
     primaryColor: "orange",
     fontSize: "medium",
@@ -71,6 +76,9 @@ const Configuracoes = () => {
     address: "",
     logo_url: "",
   });
+
+  const tt = (key: string, defaultValue: string) => t(key, { defaultValue });
+  const activeTheme = resolvePersistedTheme(appTheme, systemTheme);
 
   useEffect(() => {
     if (user) {
@@ -96,7 +104,7 @@ const Configuracoes = () => {
 
       if (data) {
         setSettings({
-          theme: data.theme || "dark",
+          theme: normalizePersistedTheme(data.theme),
           language: data.language || "pt-BR",
           primaryColor: data.primary_color || "orange",
           fontSize: data.font_size || "medium",
@@ -118,8 +126,10 @@ const Configuracoes = () => {
 
         // Aplicar tema carregado
         if (data.theme) {
-          document.documentElement.classList.toggle("dark", data.theme === "dark");
+          setTheme(normalizePersistedTheme(data.theme));
         }
+      } else {
+        setSettings((prev) => ({ ...prev, theme: activeTheme }));
       }
     } catch (error) {
       console.error("Erro ao carregar configurações:", error);
@@ -132,7 +142,7 @@ const Configuracoes = () => {
     try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("name, email, phone, avatar_url, company")
+        .select("name, email, phone, avatar_url, company, cpf_cnpj, company_address")
         .eq("id", user.id)
         .single();
 
@@ -144,10 +154,10 @@ const Configuracoes = () => {
       if (data) {
         setCompanyData({
           name: data.company || "",
-          cnpj: "",
+          cnpj: data.cpf_cnpj || "",
           phone: data.phone || "",
           email: data.email || "",
-          address: "",
+          address: data.company_address || "",
           logo_url: data.avatar_url || "",
         });
       }
@@ -178,8 +188,8 @@ const Configuracoes = () => {
     try {
       // Upload para Supabase Storage
       const fileExt = file.name.split(".").pop();
-      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-      const filePath = `logos/${fileName}`;
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/logos/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from("community_media")
@@ -216,6 +226,23 @@ const Configuracoes = () => {
     toast.success(`✅ Idioma alterado para ${supportedLanguages.find(l => l.code === newLanguage)?.name}`);
   };
 
+  const handleThemeChange = async (newTheme: string) => {
+    const theme = normalizePersistedTheme(newTheme);
+    pendingThemeRef.current = theme;
+    setSettings((prev) => ({ ...prev, theme }));
+    setTheme(theme);
+
+    if (!user?.id) return;
+
+    try {
+      await persistUserThemePreference(user.id, theme);
+      toast.success("Tema salvo com sucesso!");
+    } catch (error: any) {
+      console.error("Erro ao salvar tema:", error);
+      toast.error(`Erro ao salvar tema: ${error.message}`);
+    }
+  };
+
   const handleSaveAll = async () => {
     if (!user) {
       toast.error("❌ Erro: Usuário não autenticado");
@@ -225,12 +252,17 @@ const Configuracoes = () => {
     setLoading(true);
 
     try {
+      const storedTheme = typeof window !== "undefined"
+        ? localStorage.getItem("vite-ui-theme") || localStorage.getItem("theme")
+        : null;
+      const themeToSave = normalizePersistedTheme(pendingThemeRef.current || storedTheme || settings.theme || activeTheme);
+
       // Salvar configurações do usuário
       const { error: settingsError } = await supabase
         .from("user_settings")
         .upsert({
           user_id: user.id,
-          theme: settings.theme,
+          theme: themeToSave,
           language: settings.language,
           primary_color: settings.primaryColor,
           font_size: settings.fontSize,
@@ -255,16 +287,18 @@ const Configuracoes = () => {
         .from("profiles")
         .update({
           company: companyData.name,
+          cpf_cnpj: companyData.cnpj || null,
           phone: companyData.phone,
           email: companyData.email,
+          company_address: companyData.address || null,
           updated_at: new Date().toISOString(),
         })
         .eq("id", user.id);
 
       if (companyError) throw companyError;
 
-      // Aplicar tema imediatamente
-      document.documentElement.classList.toggle("dark", settings.theme === "dark");
+      // Aplicar tema imediatamente e manter o recarregamento consistente.
+      setTheme(themeToSave);
 
       toast.success("✅ Configurações salvas com sucesso!");
     } catch (error: any) {
@@ -306,30 +340,30 @@ const Configuracoes = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 gap-2 h-auto p-1">
-            <TabsTrigger value="company" className="flex items-center gap-2">
-              <Building2 className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("settings.company")}</span>
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-2 h-auto p-1">
+            <TabsTrigger value="company" className="min-w-0 px-2 sm:px-3 flex items-center justify-center gap-2">
+              <Building2 className="h-4 w-4 shrink-0" />
+              <span className="min-w-0 truncate">{tt("settings.tabs.company", "Empresa")}</span>
             </TabsTrigger>
-            <TabsTrigger value="users" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("settings.users")}</span>
+            <TabsTrigger value="users" className="min-w-0 px-2 sm:px-3 flex items-center justify-center gap-2">
+              <Users className="h-4 w-4 shrink-0" />
+              <span className="min-w-0 truncate">{tt("settings.tabs.users", "Usuários")}</span>
             </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center gap-2">
-              <Bell className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("settings.notifications")}</span>
+            <TabsTrigger value="notifications" className="min-w-0 px-2 sm:px-3 flex items-center justify-center gap-2">
+              <Bell className="h-4 w-4 shrink-0" />
+              <span className="min-w-0 truncate">{tt("settings.tabs.notifications", "Notificações")}</span>
             </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("settings.security")}</span>
+            <TabsTrigger value="security" className="min-w-0 px-2 sm:px-3 flex items-center justify-center gap-2">
+              <Shield className="h-4 w-4 shrink-0" />
+              <span className="min-w-0 truncate">{tt("settings.tabs.security", "Segurança")}</span>
             </TabsTrigger>
-            <TabsTrigger value="appearance" className="flex items-center gap-2">
-              <Palette className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("settings.appearance")}</span>
+            <TabsTrigger value="appearance" className="min-w-0 px-2 sm:px-3 flex items-center justify-center gap-2">
+              <Palette className="h-4 w-4 shrink-0" />
+              <span className="min-w-0 truncate">{tt("settings.tabs.appearance", "Aparência")}</span>
             </TabsTrigger>
-            <TabsTrigger value="backup" className="flex items-center gap-2">
-              <Database className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("settings.backup")}</span>
+            <TabsTrigger value="backup" className="min-w-0 px-2 sm:px-3 flex items-center justify-center gap-2">
+              <Database className="h-4 w-4 shrink-0" />
+              <span className="min-w-0 truncate">{tt("settings.tabs.backup", "Backup")}</span>
             </TabsTrigger>
           </TabsList>
 
@@ -337,13 +371,13 @@ const Configuracoes = () => {
           <TabsContent value="company" className="space-y-4 mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>{t("settings.company")}</CardTitle>
+                <CardTitle>{tt("settings.company.title", "Informações da Empresa")}</CardTitle>
                 <CardDescription>Informações da sua empresa</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="companyName">{t("settings.companyName")}</Label>
+                    <Label htmlFor="companyName">{tt("settings.company.name", "Nome da Empresa")}</Label>
                     <Input
                       id="companyName"
                       value={companyData.name}
@@ -352,7 +386,7 @@ const Configuracoes = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="companyCnpj">{t("settings.companyCnpj")}</Label>
+                    <Label htmlFor="companyCnpj">{tt("settings.company.cnpj", "CNPJ")}</Label>
                     <Input
                       id="companyCnpj"
                       value={companyData.cnpj}
@@ -361,7 +395,7 @@ const Configuracoes = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="companyPhone">{t("settings.companyPhone")}</Label>
+                    <Label htmlFor="companyPhone">{tt("settings.company.phone", "Telefone")}</Label>
                     <Input
                       id="companyPhone"
                       value={companyData.phone}
@@ -370,7 +404,7 @@ const Configuracoes = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="companyEmail">{t("settings.companyEmail")}</Label>
+                    <Label htmlFor="companyEmail">{tt("settings.company.email", "E-mail")}</Label>
                     <Input
                       id="companyEmail"
                       type="email"
@@ -381,7 +415,7 @@ const Configuracoes = () => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="companyAddress">{t("settings.companyAddress")}</Label>
+                  <Label htmlFor="companyAddress">{tt("settings.company.address", "Endereço")}</Label>
                   <Input
                     id="companyAddress"
                     value={companyData.address}
@@ -390,7 +424,7 @@ const Configuracoes = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>{t("settings.companyLogo")}</Label>
+                  <Label>{tt("settings.company.logo", "Logo da Empresa")}</Label>
                   <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                     {companyData.logo_url && (
                       <img 
@@ -413,7 +447,7 @@ const Configuracoes = () => {
                       className="w-full sm:w-auto"
                     >
                       <Upload className="h-4 w-4 mr-2" />
-                      {uploading ? t("settings.uploading") : t("settings.uploadLogo")}
+                      {uploading ? tt("settings.company.uploading", "Enviando...") : tt("settings.company.uploadLogo", "Enviar Logo")}
                     </Button>
                   </div>
                 </div>
@@ -423,41 +457,31 @@ const Configuracoes = () => {
 
           {/* Users Tab */}
           <TabsContent value="users" className="space-y-4 mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("settings.users")}</CardTitle>
-                <CardDescription>Gerenciar usuários da empresa</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Funcionalidade em desenvolvimento
-                </p>
-              </CardContent>
-            </Card>
+            <OrgUsersSettings />
           </TabsContent>
 
           {/* Notifications Tab */}
           <TabsContent value="notifications" className="space-y-4 mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>{t("settings.notifications")}</CardTitle>
+                <CardTitle>{tt("settings.tabs.notifications", "Notificações")}</CardTitle>
                 <CardDescription>Preferências de notificações</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="emailNotifications">{t("settings.emailNotifications")}</Label>
+                  <Label htmlFor="emailNotifications">{tt("settings.emailNotifications", "Notificações por e-mail")}</Label>
                   <Switch
                     id="emailNotifications"
                     checked={settings.emailNotifications}
-                    onCheckedChange={(checked) => setSettings({ ...settings, emailNotifications: checked })}
+                    onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, emailNotifications: checked }))}
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="pushNotifications">{t("settings.pushNotifications")}</Label>
+                  <Label htmlFor="pushNotifications">{tt("settings.pushNotifications", "Notificações push")}</Label>
                   <Switch
                     id="pushNotifications"
                     checked={settings.pushNotifications}
-                    onCheckedChange={(checked) => setSettings({ ...settings, pushNotifications: checked })}
+                    onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, pushNotifications: checked }))}
                   />
                 </div>
                 <div className="flex items-center justify-between">
@@ -465,7 +489,7 @@ const Configuracoes = () => {
                   <Switch
                     id="deadlineAlerts"
                     checked={settings.deadlineAlerts}
-                    onCheckedChange={(checked) => setSettings({ ...settings, deadlineAlerts: checked })}
+                    onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, deadlineAlerts: checked }))}
                   />
                 </div>
                 <div className="flex items-center justify-between">
@@ -473,7 +497,7 @@ const Configuracoes = () => {
                   <Switch
                     id="weeklyReports"
                     checked={settings.weeklyReports}
-                    onCheckedChange={(checked) => setSettings({ ...settings, weeklyReports: checked })}
+                    onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, weeklyReports: checked }))}
                   />
                 </div>
               </CardContent>
@@ -484,24 +508,24 @@ const Configuracoes = () => {
           <TabsContent value="security" className="space-y-4 mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>{t("settings.security")}</CardTitle>
+                <CardTitle>{tt("settings.tabs.security", "Segurança")}</CardTitle>
                 <CardDescription>Configurações de segurança</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="twoFactor">{t("settings.twoFactor")}</Label>
+                  <Label htmlFor="twoFactor">{tt("settings.twoFactor", "Autenticação em duas etapas")}</Label>
                   <Switch
                     id="twoFactor"
                     checked={settings.twoFactorEnabled}
-                    onCheckedChange={(checked) => setSettings({ ...settings, twoFactorEnabled: checked })}
+                    onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, twoFactorEnabled: checked }))}
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="sessionTimeout">{t("settings.sessionTimeout")}</Label>
+                  <Label htmlFor="sessionTimeout">{tt("settings.sessionTimeout", "Encerrar sessão automaticamente")}</Label>
                   <Switch
                     id="sessionTimeout"
                     checked={settings.sessionTimeout}
-                    onCheckedChange={(checked) => setSettings({ ...settings, sessionTimeout: checked })}
+                    onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, sessionTimeout: checked }))}
                   />
                 </div>
               </CardContent>
@@ -512,19 +536,19 @@ const Configuracoes = () => {
           <TabsContent value="appearance" className="space-y-4 mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>{t("settings.appearance")}</CardTitle>
+                <CardTitle>{tt("settings.appearance.title", "Aparência e Personalização")}</CardTitle>
                 <CardDescription>Personalização visual</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="theme">{t("settings.theme")}</Label>
-                  <Select value={settings.theme} onValueChange={(value) => setSettings({ ...settings, theme: value })}>
-                    <SelectTrigger id="theme">
+                  <Label htmlFor="theme">{tt("settings.appearance.theme", "Tema")}</Label>
+                  <Select value={settings.theme || activeTheme} onValueChange={handleThemeChange}>
+                    <SelectTrigger id="theme" data-testid="settings-theme-trigger">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="light">{t("settings.light")}</SelectItem>
-                      <SelectItem value="dark">{t("settings.dark")}</SelectItem>
+                      <SelectItem value="light" data-testid="settings-theme-light">{tt("settings.appearance.light", "Claro")}</SelectItem>
+                      <SelectItem value="dark" data-testid="settings-theme-dark">{tt("settings.appearance.dark", "Escuro")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -532,15 +556,15 @@ const Configuracoes = () => {
                 <div className="space-y-2">
                   <Label htmlFor="language" className="flex items-center gap-2">
                     <Globe className="h-4 w-4" />
-                    {t("settings.language")}
+                    {tt("settings.appearance.language", "Idioma")}
                   </Label>
                   <Select value={settings.language} onValueChange={handleLanguageChange}>
-                    <SelectTrigger id="language">
+                    <SelectTrigger id="language" data-testid="settings-language-trigger">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       {supportedLanguages.map((lang) => (
-                        <SelectItem key={lang.code} value={lang.code}>
+                        <SelectItem key={lang.code} value={lang.code} data-testid={`settings-language-${lang.code}`}>
                           {lang.flag} {lang.name}
                         </SelectItem>
                       ))}
@@ -549,30 +573,30 @@ const Configuracoes = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="fontSize">{t("settings.fontSize")}</Label>
-                  <Select value={settings.fontSize} onValueChange={(value) => setSettings({ ...settings, fontSize: value })}>
-                    <SelectTrigger id="fontSize">
+                  <Label htmlFor="fontSize">{tt("settings.appearance.fontSize", "Tamanho da Fonte")}</Label>
+                  <Select value={settings.fontSize} onValueChange={(value) => setSettings((prev) => ({ ...prev, fontSize: value }))}>
+                    <SelectTrigger id="fontSize" data-testid="settings-font-size-trigger">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="small">{t("settings.small")}</SelectItem>
-                      <SelectItem value="medium">{t("settings.medium")}</SelectItem>
-                      <SelectItem value="large">{t("settings.large")}</SelectItem>
+                      <SelectItem value="small" data-testid="settings-font-size-small">{tt("settings.appearance.small", "Pequeno")}</SelectItem>
+                      <SelectItem value="medium" data-testid="settings-font-size-medium">{tt("settings.appearance.medium", "Médio")}</SelectItem>
+                      <SelectItem value="large" data-testid="settings-font-size-large">{tt("settings.appearance.large", "Grande")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="primaryColor">{t("settings.primaryColor")}</Label>
-                  <Select value={settings.primaryColor} onValueChange={(value) => setSettings({ ...settings, primaryColor: value })}>
-                    <SelectTrigger id="primaryColor">
+                  <Label htmlFor="primaryColor">{tt("settings.appearance.primaryColor", "Cor Principal")}</Label>
+                  <Select value={settings.primaryColor} onValueChange={(value) => setSettings((prev) => ({ ...prev, primaryColor: value }))}>
+                    <SelectTrigger id="primaryColor" data-testid="settings-primary-color-trigger">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="orange">🟠 Laranja</SelectItem>
-                      <SelectItem value="blue">🔵 Azul</SelectItem>
-                      <SelectItem value="green">🟢 Verde</SelectItem>
-                      <SelectItem value="red">🔴 Vermelho</SelectItem>
+                      <SelectItem value="orange" data-testid="settings-primary-color-orange">🟠 Laranja</SelectItem>
+                      <SelectItem value="blue" data-testid="settings-primary-color-blue">🔵 Azul</SelectItem>
+                      <SelectItem value="green" data-testid="settings-primary-color-green">🟢 Verde</SelectItem>
+                      <SelectItem value="red" data-testid="settings-primary-color-red">🔴 Vermelho</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -584,37 +608,37 @@ const Configuracoes = () => {
           <TabsContent value="backup" className="space-y-4 mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>{t("settings.backup")}</CardTitle>
-                <CardDescription>Backup e sincronização</CardDescription>
+                <CardTitle>{tt("settings.tabs.backup", "Preferencias de backup")}</CardTitle>
+                <CardDescription>Preferencias registradas. Esta tela nao executa uma rotina automatica de backup.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="autoBackup">{t("settings.autoBackup")}</Label>
+                  <Label htmlFor="autoBackup">{tt("settings.autoBackup", "Solicitar rotina de backup")}</Label>
                   <Switch
                     id="autoBackup"
                     checked={settings.autoBackup}
-                    onCheckedChange={(checked) => setSettings({ ...settings, autoBackup: checked })}
+                    onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, autoBackup: checked }))}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="backupFrequency">Frequência de backup</Label>
-                  <Select value={settings.backupFrequency} onValueChange={(value) => setSettings({ ...settings, backupFrequency: value })}>
+                  <Label htmlFor="backupFrequency">Frequencia desejada</Label>
+                  <Select value={settings.backupFrequency} onValueChange={(value) => setSettings((prev) => ({ ...prev, backupFrequency: value }))}>
                     <SelectTrigger id="backupFrequency">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="daily">Diário</SelectItem>
+                      <SelectItem value="daily">Diario</SelectItem>
                       <SelectItem value="weekly">Semanal</SelectItem>
                       <SelectItem value="monthly">Mensal</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="cloudSync">Sincronização na nuvem</Label>
+                  <Label htmlFor="cloudSync">Permitir sincronizacao externa quando houver integracao real</Label>
                   <Switch
                     id="cloudSync"
                     checked={settings.cloudSync}
-                    onCheckedChange={(checked) => setSettings({ ...settings, cloudSync: checked })}
+                    onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, cloudSync: checked }))}
                   />
                 </div>
               </CardContent>

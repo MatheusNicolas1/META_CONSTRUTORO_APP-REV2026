@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader2, ArrowRight, User, Mail, Building2, CreditCard, Phone, FileText } from "lucide-react";
+import { Loader2, ArrowRight, User, Mail, Building2, CreditCard, Phone, FileText, Ticket } from "lucide-react";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 
@@ -15,8 +15,9 @@ const formSchema = z.object({
     company: z.string().optional(),
     cpf_cnpj: z.string().min(11, "CPF/CNPJ inválido").optional().or(z.literal("")),
     phone: z.string().min(10, "Telefone inválido").optional().or(z.literal("")),
-    password: z.string().min(8, "Senha deve ter pelo menos 8 caracteres").optional(), // Added for sign up flow if needed
-    confirmPassword: z.string().optional()
+    password: z.string().min(8, "Senha deve ter pelo menos 8 caracteres").optional().or(z.literal("")),
+    confirmPassword: z.string().optional().or(z.literal("")),
+    coupon_code: z.string().optional().or(z.literal("")),
 });
 
 export type CheckoutFormData = z.infer<typeof formSchema>;
@@ -170,6 +171,27 @@ export function CheckoutForm({ defaultValues, onSubmit, loading, showPasswordFie
                                     <div className="relative">
                                         <Building2 className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                                         <Input placeholder="Sua empresa" {...field} className="pl-9 bg-background/50 border-muted-foreground/20 focus:border-primary transition-all duration-300" />
+                                    </div>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="coupon_code"
+                        render={({ field }) => (
+                            <FormItem className="col-span-1 md:col-span-2">
+                                <FormLabel>Cupom de desconto (opcional)</FormLabel>
+                                <FormControl>
+                                    <div className="relative">
+                                        <Ticket className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                                        <Input
+                                            placeholder="Insira seu cupom"
+                                            {...field}
+                                            className="pl-9 bg-background/50 border-muted-foreground/20 focus:border-primary transition-all duration-300 uppercase"
+                                        />
                                     </div>
                                 </FormControl>
                                 <FormMessage />

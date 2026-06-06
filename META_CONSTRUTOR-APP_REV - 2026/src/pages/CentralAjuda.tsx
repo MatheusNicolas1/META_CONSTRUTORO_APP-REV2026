@@ -1,141 +1,104 @@
-import React, { useState } from 'react';
-import { Search, BookOpen, FileQuestion, MessageCircle, Video, ChevronRight } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { BookOpen, FileQuestion, MessageCircle, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SEO from '@/components/SEO';
+import { seoPages } from '@/config/seo';
+import { useMarketingSurface } from '@/hooks/useMarketingSurface';
+
+const helpTopics = [
+  {
+    icon: BookOpen,
+    title: 'Primeiros passos',
+    description: 'Organizacao inicial, cadastro da empresa, acesso de usuarios e estrutura basica de obras.',
+  },
+  {
+    icon: FileQuestion,
+    title: 'Rotina de obra',
+    description: 'Orientacoes sobre RDO, checklists, documentos, equipes e acompanhamento operacional.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Conta e seguranca',
+    description: 'Permissoes, privacidade, LGPD, acesso por organizacao e boas praticas de uso.',
+  },
+  {
+    icon: MessageCircle,
+    title: 'Atendimento',
+    description: 'Caminhos para falar com suporte, vendas ou parcerias quando a duvida exigir contato humano.',
+  },
+];
+
+const practicalLinks = [
+  'Como organizar a primeira obra no Meta Construtor',
+  'Quando usar RDO, checklist e documentos',
+  'Como convidar usuarios e definir responsabilidades',
+  'Onde consultar termos, privacidade, cookies e LGPD',
+];
 
 const CentralAjuda = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const categories = [
-    {
-      icon: BookOpen,
-      title: 'Primeiros Passos',
-      description: 'Aprenda o básico da plataforma',
-      articles: 5
-    },
-    {
-      icon: FileQuestion,
-      title: 'RDO e Checklists',
-      description: 'Gestão de atividades diárias',
-      articles: 8
-    },
-    {
-      icon: MessageCircle,
-      title: 'Integrações',
-      description: 'Conecte com outras ferramentas',
-      articles: 6
-    },
-    {
-      icon: Video,
-      title: 'Vídeos Tutoriais',
-      description: 'Aprenda visualmente',
-      articles: 12
-    }
-  ];
-
-  const popularArticles = [
-    'Como criar minha primeira obra?',
-    'Registrando um RDO diário',
-    'Convidando membros da equipe',
-    'Configurando integrações',
-    'Gerando relatórios personalizados',
-    'Políticas de segurança e privacidade'
-  ];
+  useMarketingSurface();
 
   return (
     <>
-      <SEO 
-        title="Central de Ajuda - Meta Construtor"
-        description="Encontre respostas, tutoriais e documentação sobre o Meta Construtor"
-      />
-      
-      <div className="min-h-screen bg-background">
-        {/* Hero Section with Search */}
-        <div className="bg-gradient-to-b from-primary/10 to-background">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-              Como podemos ajudar?
-            </h1>
-            <div className="relative max-w-2xl mx-auto">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Busque por artigos, tutoriais ou dúvidas..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 h-14 text-lg"
-              />
-            </div>
-          </div>
-        </div>
+      <SEO {...seoPages.centralAjuda} />
 
-        {/* Categories */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <h2 className="text-2xl font-bold text-center mb-12">Categorias de Ajuda</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-            {categories.map((category, index) => {
-              const Icon = category.icon;
+      <main className="min-h-screen bg-background p-2">
+        <section className="border-b border-border bg-muted/30 px-4 py-20 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl text-center">
+            <h1 className="text-4xl font-bold text-foreground md:text-5xl">
+              Ajuda para organizar obra, RDO e acesso
+            </h1>
+            <p className="mx-auto mt-6 max-w-[64ch] text-lg leading-8 text-muted-foreground">
+              Consulte orientacoes para preparar a primeira obra, entender os registros de campo
+              e acionar atendimento quando a rotina exigir suporte humano.
+            </p>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 divide-y divide-border border-y border-border p-4 md:grid-cols-2 md:divide-x md:divide-y-0 lg:grid-cols-4">
+            {helpTopics.map((topic) => {
+              const Icon = topic.icon;
               return (
-                <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
-                  <CardHeader>
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                      <Icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <CardTitle className="text-lg">{category.title}</CardTitle>
-                    <CardDescription>{category.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <span>{category.articles} artigos</span>
-                      <ChevronRight className="h-4 w-4" />
-                    </div>
-                  </CardContent>
-                </Card>
+                <article key={topic.title} className="px-3 py-6 md:px-6">
+                  <Icon className="mb-4 h-6 w-6 text-primary" />
+                  <h2 className="text-lg font-semibold text-foreground">{topic.title}</h2>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                    {topic.description}
+                  </p>
+                </article>
               );
             })}
           </div>
 
-          {/* Popular Articles */}
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Artigos Populares</h2>
-            <Card>
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  {popularArticles.map((article, index) => (
-                    <button
-                      key={index}
-                      className="w-full flex items-center justify-between p-4 hover:bg-muted rounded-lg transition-colors text-left"
-                    >
-                      <span className="text-foreground">{article}</span>
-                      <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                    </button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Contact Support */}
-          <Card className="mt-16 bg-primary text-primary-foreground max-w-4xl mx-auto">
-            <CardContent className="p-12 text-center">
-              <h3 className="text-2xl font-bold mb-4">Não encontrou o que procurava?</h3>
-              <p className="text-lg mb-6 opacity-90">
-                Nossa equipe de suporte está pronta para ajudar
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button variant="secondary" size="lg">
-                  Abrir Ticket de Suporte
-                </Button>
-                <Button variant="secondary" size="lg">
-                  Chat ao Vivo
-                </Button>
+          <div className="mx-auto mt-16 grid max-w-5xl gap-10 md:grid-cols-[1fr_0.8fr]">
+            <section>
+              <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+                Leituras recomendadas
+              </h2>
+              <div className="mt-5 divide-y divide-border border-y border-border px-3 py-2">
+                {practicalLinks.map((item) => (
+                  <p key={item} className="px-1 py-4 text-sm leading-7 text-muted-foreground">
+                    {item}
+                  </p>
+                ))}
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+            </section>
+
+            <aside className="border-t border-border p-4 md:border-l md:border-t-0 md:pl-8">
+              <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+                Precisa falar com alguem?
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-muted-foreground">
+                Use a pagina de contato para suporte, vendas, demonstracoes e parcerias. Evitamos
+                prometer chat ou ticket publico quando o canal depender de configuracao operacional.
+              </p>
+              <Button className="mt-6" asChild>
+                <a href="/contato">Ir para contato</a>
+              </Button>
+            </aside>
+          </div>
+        </section>
+      </main>
     </>
   );
 };

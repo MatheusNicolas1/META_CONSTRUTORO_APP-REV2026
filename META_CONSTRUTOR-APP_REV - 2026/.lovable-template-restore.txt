@@ -1,6 +1,0 @@
-Restored Lovable template configuration
-Timestamp: 2025-11-07T02:43:00Z
-- Restored componentTagger plugin (required for Lovable)
-- Removed HMR override
-- Removed custom optimizeDeps and dedupe (using defaults)
-- Clean React configuration

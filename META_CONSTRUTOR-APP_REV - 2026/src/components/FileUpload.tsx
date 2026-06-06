@@ -40,7 +40,7 @@ export function FileUpload({
       case 'images':
         return 'image/*';
       case 'documents':
-        return '.pdf,.doc,.docx,.xls,.xlsx,.txt';
+        return '.pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png';
       default:
         return accept;
     }
@@ -72,7 +72,7 @@ export function FileUpload({
         return;
       }
 
-      if (uploadType === 'documents' && file.type.startsWith('image/')) {
+      if (uploadType === 'documents' && file.type.startsWith('image/') && !getAcceptString().includes('.jpg')) {
         toast({
           title: "Tipo de arquivo inválido",
           description: `${file.name} não é um documento válido`,

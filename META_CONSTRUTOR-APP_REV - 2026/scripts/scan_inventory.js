@@ -10,6 +10,7 @@ const connectionString = process.env.DB_URL || 'postgresql://postgres:postgres@1
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.resolve(__dirname, '..');
+const EVIDENCE_DIR = path.join(PROJECT_ROOT, 'docs', 'evidence', 'generated');
 
 async function scan() {
     const client = new Client({ connectionString });
@@ -93,7 +94,8 @@ async function scan() {
         }
 
         // Output to JSON
-        const outputPath = path.join(PROJECT_ROOT, 'INVENTORY_RAW.json');
+        fs.mkdirSync(EVIDENCE_DIR, { recursive: true });
+        const outputPath = path.join(EVIDENCE_DIR, 'INVENTORY_RAW.json');
         fs.writeFileSync(outputPath, JSON.stringify(report, null, 2));
         console.log(`✅ Scan complete. Saved to ${outputPath}`);
         process.exit(0);

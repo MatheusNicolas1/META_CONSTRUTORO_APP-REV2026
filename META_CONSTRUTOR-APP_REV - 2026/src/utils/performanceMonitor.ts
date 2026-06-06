@@ -70,9 +70,9 @@ class PerformanceMonitor {
       }
     };
 
-    // Medir memÃ³ria a cada 10 segundos
+    // Medir memória a cada 10 segundos
     setInterval(measureMemory, 10000);
-    measureMemory(); // Primeira mediÃ§Ã£o
+    measureMemory(); // Primeira medição
   }
 
   recordMetric(name: string, value: number) {
@@ -83,7 +83,7 @@ class PerformanceMonitor {
     const values = this.metrics.get(name)!;
     values.push(value);
     
-    // Manter apenas os Ãºltimos 100 valores
+    // Manter apenas os últimos 100 valores
     if (values.length > 100) {
       values.shift();
     }
@@ -123,14 +123,14 @@ class PerformanceMonitor {
       alerts.push(`FPS baixo: ${metrics.fps.latest}`);
     }
 
-    // MemÃ³ria alta
+    // Memória alta
     if (metrics.memory_used && metrics.memory_used.latest > 100) {
-      alerts.push(`Uso de memÃ³ria alto: ${metrics.memory_used.latest}MB`);
+      alerts.push(`Uso de memória alto: ${metrics.memory_used.latest}MB`);
     }
 
     // Layout shifts
     if (metrics['layout-shift'] && metrics['layout-shift'].latest > 0.1) {
-      alerts.push(`Layout instÃ¡vel detectado`);
+      alerts.push(`Layout instável detectado`);
     }
 
     return alerts;
@@ -145,7 +145,7 @@ class PerformanceMonitor {
       score -= (60 - metrics.fps.average) * 0.5;
     }
 
-    // Penalizar uso alto de memÃ³ria
+    // Penalizar uso alto de memória
     if (metrics.memory_used && metrics.memory_used.latest > 50) {
       score -= (metrics.memory_used.latest - 50) * 0.3;
     }
@@ -185,7 +185,7 @@ export const usePerformanceMonitor = () => {
   };
 };
 
-// UtilitÃ¡rio para medir performance de operaÃ§Ãµes
+// Utilitário para medir performance de operações
 export const measurePerformance = async <T>(
   operation: () => Promise<T>,
   name: string
@@ -200,7 +200,7 @@ export const measurePerformance = async <T>(
     performanceMonitor.recordMetric(`operation_${name}`, duration);
     
     if (duration > 1000) {
-      console.warn(`âš ï¸ OperaÃ§Ã£o lenta detectada: ${name} (${duration.toFixed(2)}ms)`);
+      console.warn(`⚠️ Operação lenta detectada: ${name} (${duration.toFixed(2)}ms)`);
     }
     
     return result;

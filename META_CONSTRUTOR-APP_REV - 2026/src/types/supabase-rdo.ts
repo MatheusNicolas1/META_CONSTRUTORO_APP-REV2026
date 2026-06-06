@@ -24,7 +24,10 @@ export interface RDOSupabase {
     equipe_ociosa: boolean;
     tempo_ocioso?: number;
     observacoes?: string;
-    created_by: string;
+    criado_por_id: string;
+    approved_by?: string | null;
+    approved_at?: string | null;
+    rejection_reason?: string | null;
     aprovado_por_id?: string | null;
     data_aprovacao?: string | null;
     motivo_rejeicao?: string | null;

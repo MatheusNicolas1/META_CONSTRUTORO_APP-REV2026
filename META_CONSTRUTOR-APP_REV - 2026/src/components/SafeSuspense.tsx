@@ -25,7 +25,7 @@ export const SafeSuspense: React.FC<SafeSuspenseProps> = ({
 
   return (
     <ErrorBoundary fallback={errorFallback}>
-      <Suspense fallback={fallback || defaultFallback}>
+      <Suspense fallback={fallback === undefined ? defaultFallback : fallback}>
         {children}
       </Suspense>
     </ErrorBoundary>

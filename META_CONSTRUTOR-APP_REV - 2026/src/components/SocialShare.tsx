@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SocialShareButton } from "@/components/social/SocialShareButton";
 
+// FALSO-054: onShareSuccess removido — nunca invocado em runtime. Ver SocialShareButton.tsx.
 interface SocialShareProps {
   title: string;
   text: string;
@@ -15,7 +16,6 @@ interface SocialShareProps {
   imageUrl?: string;
   obraId?: string;
   rdoId?: string;
-  onShareSuccess?: () => void;
   compact?: boolean;
 }
 
@@ -26,7 +26,6 @@ export const SocialShare = ({
   imageUrl,
   obraId,
   rdoId,
-  onShareSuccess,
   compact
 }: SocialShareProps) => {
   return (
@@ -36,7 +35,6 @@ export const SocialShare = ({
       imageUrl={imageUrl}
       obraId={obraId}
       rdoId={rdoId}
-      onShareSuccess={onShareSuccess}
       compact={compact}
     />
   );

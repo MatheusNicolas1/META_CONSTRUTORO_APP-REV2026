@@ -1,8 +1,0 @@
-Force React import consistency fix
-Timestamp: 2025-11-19T21:48:00Z
-
-Fixed ThemeProvider to use direct named imports instead of namespace imports:
-- Changed from: import * as React from "react"
-- Changed to: import { createContext, useContext, useState, useEffect, ReactNode } from "react"
-
-This ensures consistent React usage and prevents duplicate React instances.

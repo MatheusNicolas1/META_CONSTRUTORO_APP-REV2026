@@ -209,7 +209,7 @@ class IntegrationServiceImpl implements IntegrationService {
         return false;
       }
 
-      return data?.configured === true;
+      return data?.success === true && data?.configured === true;
     } catch (error) {
       console.error('Gmail connection test failed:', error);
       return false;
@@ -227,6 +227,13 @@ class IntegrationServiceImpl implements IntegrationService {
 
       if (error) {
         return { success: false, error: 'Falha ao gerar URL OAuth' };
+      }
+
+      if (data?.success !== true || !data?.oauthUrl) {
+        return {
+          success: false,
+          error: data?.error || 'Gmail bloqueado ate configurar secrets OAuth'
+        };
       }
 
       return {
@@ -264,7 +271,7 @@ class IntegrationServiceImpl implements IntegrationService {
       return {
         success: data?.success === true,
         message: data?.message,
-        error: data?.error
+        error: data?.error || (data?.success === false ? data?.message : undefined)
       };
     } catch (error) {
       return {
@@ -286,7 +293,7 @@ class IntegrationServiceImpl implements IntegrationService {
         return false;
       }
 
-      return data?.configured === true;
+      return data?.success === true && data?.configured === true;
     } catch (error) {
       console.error('Google Drive connection test failed:', error);
       return false;
@@ -306,9 +313,16 @@ class IntegrationServiceImpl implements IntegrationService {
         return { success: false, error: 'Falha ao gerar URL OAuth' };
       }
 
+      if (data?.success !== true || !data?.oauthUrl) {
+        return {
+          success: false,
+          error: data?.error || data?.message || 'Google Drive bloqueado ate configurar secrets OAuth'
+        };
+      }
+
       return {
         success: true,
-        data: data?.oauthUrl
+        data: data.oauthUrl
       };
     } catch (error) {
       return {
@@ -346,10 +360,18 @@ class IntegrationServiceImpl implements IntegrationService {
         };
       }
 
+      if (data?.success !== true) {
+        return {
+          success: false,
+          message: data?.message,
+          error: data?.error || data?.message || 'Google Drive bloqueado ate concluir OAuth real'
+        };
+      }
+
       return {
-        success: data?.success === true,
+        success: true,
         message: data?.message,
-        error: data?.error
+        data: data?.data
       };
     } catch (error) {
       return {
@@ -377,10 +399,18 @@ class IntegrationServiceImpl implements IntegrationService {
         };
       }
 
+      if (data?.success !== true) {
+        return {
+          success: false,
+          message: data?.message,
+          error: data?.error || data?.message || 'Google Drive bloqueado ate concluir OAuth real'
+        };
+      }
+
       return {
-        success: data?.success === true,
+        success: true,
         message: data?.message,
-        error: data?.error
+        data: data?.data
       };
     } catch (error) {
       return {
@@ -410,7 +440,7 @@ class IntegrationServiceImpl implements IntegrationService {
       data,
       error,
       timestamp: new Date().toISOString(),
-      duration: status === 'success' ? Math.floor(Math.random() * 2000) + 500 : undefined
+      duration: typeof data?.duration === 'number' ? data.duration : undefined
     };
   }
 }

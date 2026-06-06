@@ -73,7 +73,7 @@ export function DocumentoExpandableCard({
   };
 
   const formatFileSize = (bytes: number | null) => {
-    if (!bytes) return "N/A";
+    if (!bytes) return "Tamanho nao informado";
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

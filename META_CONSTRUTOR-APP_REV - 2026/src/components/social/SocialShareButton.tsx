@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+﻿import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Share2, Instagram, Linkedin, Coins } from "lucide-react";
+import { Share2, Instagram, Linkedin } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,15 +9,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 
+// FALSO-054: onShareSuccess removido — circuito legado de creditos sociais (social_shares / add_credit_for_share)
+// nunca foi conectado ao frontend. O compartilhamento e apenas client-side (popup Instagram/LinkedIn).
 interface SocialShareButtonProps {
   title: string;
   description: string;
   imageUrl?: string;
   obraId?: string;
   rdoId?: string;
-  onShareSuccess?: () => void;
   compact?: boolean;
 }
 
@@ -27,12 +27,11 @@ export const SocialShareButton = ({
   imageUrl,
   obraId,
   rdoId,
-  onShareSuccess,
   compact = false
 }: SocialShareButtonProps) => {
   const [showPreview, setShowPreview] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<'instagram' | 'linkedin' | null>(null);
-  const [caption, setCaption] = useState(`${title}\n\n${description}\n\n#MetaConstrutor #EngenhariaCivil #Construção`);
+  const [caption, setCaption] = useState(`${title}\n\n${description}\n\n#MetaConstrutor #EngenhariaCivil #ConstruÃ§Ã£o`);
   const [isSharing, setIsSharing] = useState(false);
 
   const handlePlatformSelect = (platform: 'instagram' | 'linkedin') => {
@@ -56,23 +55,24 @@ export const SocialShareButton = ({
   };
 
   const shareToInstagram = async () => {
-    // Instagram não tem API pública para compartilhamento direto
-    // Vamos copiar o conteúdo e abrir o Instagram Web
+    // Instagram nÃ£o tem API pÃºblica para compartilhamento direto
+    // Vamos copiar o conteÃºdo e abrir o Instagram Web
     const content = generateShareContent();
 
     try {
       await navigator.clipboard.writeText(`${content.caption}\n\n${content.url}`);
 
-      // Abrir Instagram Web
-      window.open('https://www.instagram.com/', '_blank');
+      const popup = window.open('https://www.instagram.com/', '_blank', 'noopener,noreferrer');
+      if (!popup) {
+        toast.error("O navegador bloqueou a janela do Instagram.");
+        return;
+      }
 
       toast.info(
-        "Conteúdo copiado! Cole no Instagram para publicar.",
+        "ConteÃºdo copiado. Cole no Instagram para publicar.",
         { duration: 5000 }
       );
 
-
-      onShareSuccess?.();
       setShowPreview(false);
     } catch (error) {
       console.error('Erro ao compartilhar:', error);
@@ -91,9 +91,10 @@ export const SocialShareButton = ({
       const popup = window.open(linkedInUrl, '_blank', 'width=600,height=600');
 
       if (popup) {
-        toast.success("Compartilhamento iniciado!");
-        onShareSuccess?.();
+        toast.info("Janela do LinkedIn aberta. Conclua a publicaÃ§Ã£o na plataforma.");
         setShowPreview(false);
+      } else {
+        toast.error("O navegador bloqueou a janela do LinkedIn.");
       }
     } catch (error) {
       console.error('Erro ao compartilhar:', error);
@@ -147,12 +148,12 @@ export const SocialShareButton = ({
               {selectedPlatform === 'instagram' ? (
                 <>
                   <Instagram className="h-5 w-5" />
-                  Compartilhar no Instagram
+                  Preparar para Instagram
                 </>
               ) : (
                 <>
                   <Linkedin className="h-5 w-5" />
-                  Compartilhar no LinkedIn
+                  Preparar para LinkedIn
                 </>
               )}
             </DialogTitle>
@@ -185,16 +186,14 @@ export const SocialShareButton = ({
                 {caption.length} caracteres
               </p>
             </div>
-
-            {/* Informações sobre o compartilhamento */}
             <div className="p-3 rounded-lg bg-muted/50 border text-xs text-muted-foreground">
               {selectedPlatform === 'instagram' ? (
                 <p>
-                  💡 O conteúdo será copiado automaticamente. Cole no Instagram para publicar.
+                  O conteúdo será copiado. A publicação precisa ser concluída no Instagram.
                 </p>
               ) : (
                 <p>
-                  💡 Uma nova janela será aberta para você publicar no LinkedIn.
+                  Uma nova janela será aberta. A publicação precisa ser concluída no LinkedIn.
                 </p>
               )}
             </div>
@@ -214,7 +213,7 @@ export const SocialShareButton = ({
                 {isSharing ? "Compartilhando..." : (
                   <>
                     <Share2 className="h-4 w-4" />
-                    Compartilhar
+                    Preparar
                   </>
                 )}
               </Button>
@@ -225,3 +224,4 @@ export const SocialShareButton = ({
     </>
   );
 };
+

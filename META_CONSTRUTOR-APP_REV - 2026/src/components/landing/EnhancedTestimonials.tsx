@@ -1,142 +1,62 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
-import { usePricingNavigation } from '@/hooks/usePricingNavigation';
-import { AnimatedTestimonials } from '@/components/ui/animated-testimonials';
+import { CheckCircle2, MessageSquareText, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { usePricingNavigation } from "@/hooks/usePricingNavigation";
+
+const proofPoints = [
+  {
+    icon: CheckCircle2,
+    title: "Adocao por rotina simples",
+    text: "A equipe comeca pelo registro diario, depois conecta documentos, checklists e relatorios.",
+  },
+  {
+    icon: MessageSquareText,
+    title: "Menos dependencia de conversas soltas",
+    text: "Pendencias e evidencias deixam de ficar dispersas em grupos e passam a ter contexto de obra.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Base preparada para auditoria",
+    text: "Historico, responsaveis e anexos ficam organizados para consulta posterior.",
+  },
+];
 
 const EnhancedTestimonials = () => {
-  const navigate = useNavigate();
   const { navigateToFreePlan } = usePricingNavigation();
 
-  const testimonials = [
-    {
-      quote: "Reduzimos 35% dos retrabalhos e aumentamos a produtividade em 28%. O ROI foi imediato e a equipe adorou a interface intuitiva.",
-      name: "Carlos Eduardo Santos",
-      designation: "Diretor de Operações • Construtora Alfa",
-      src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "A digitalização do RDO nos poupou 3 horas por dia. Relatórios automáticos e assinaturas digitais revolucionaram nossa operação.",
-      name: "Marina Silva Costa",
-      designation: "Gerente de Projetos • Horizonte Engenharia",
-      src: "https://images.unsplash.com/photo-1494790108755-2616b612b742?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "Eliminamos 90% da papelada e ganhamos transparência total. Nossos clientes acompanham o progresso em tempo real.",
-      name: "Roberto Mendes Lima",
-      designation: "CEO • ObraSul",
-      src: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "O controle de qualidade com checklists digitais nos permitiu reduzir não conformidades em 60%. Auditoria aprovada sem ressalvas.",
-      name: "Ana Carolina Ferreira",
-      designation: "Coordenadora de Obras • Urbanis",
-      src: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "A gestão de equipamentos nos salvou R$ 80 mil em manutenções. O sistema previne falhas antes que aconteçam.",
-      name: "João Paulo Rodrigues",
-      designation: "Engenheiro Civil • Ponte Azul Infra",
-      src: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "Conseguimos certificação ISO mais rápido com a documentação organizada. Transparência total em todos os processos.",
-      name: "Fernanda Oliveira Santos",
-      designation: "Diretora Técnica • NorteSteel",
-      src: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "Integração perfeita com nossas ferramentas. WhatsApp, Drive e Gmail conectados facilitaram toda comunicação da obra.",
-      name: "Pedro Henrique Alves",
-      designation: "Supervisor de Obras • Construtora Ômega",
-      src: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "A mobilidade do sistema é impressionante. Consigo acompanhar tudo do celular, mesmo em locais sem internet com o modo offline.",
-      name: "Juliana Martins",
-      designation: "Engenheira Residente • Delta Construções",
-      src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "Os 7 créditos gratuitos foram perfeitos para testar. Sistema completo e gratuito para começar, virou indispensável na minha rotina!",
-      name: "Beatriz Mendes",
-      designation: "Arquiteta • Studio BM Design",
-      src: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "Dashboard visual e intuitivo. Métricas em tempo real ajudaram a tomar decisões mais rápidas e assertivas nos projetos.",
-      name: "Lucas Pereira",
-      designation: "Gestor de Obras • LP Empreendimentos",
-      src: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "Suporte técnico excepcional. Sempre que preciso, a equipe responde rápido e resolve. Sinto que tenho um parceiro de negócio.",
-      name: "Patrícia Gomes",
-      designation: "Proprietária • PG Construções",
-      src: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "A automação de relatórios liberou minha equipe para focar no que realmente importa: qualidade e prazos. Produtividade em alta!",
-      name: "Ricardo Tavares",
-      designation: "Coordenador Técnico • RT Engenharia",
-      src: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "Segurança de dados impecável. LGPD compliance garantido e backups automáticos nos dão total tranquilidade operacional.",
-      name: "Camila Rodrigues",
-      designation: "Diretora Jurídica • Grupo Vertice",
-      src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "Personalização total dos checklists. Adaptamos para cada tipo de obra e garantimos conformidade com todas as normas técnicas.",
-      name: "Diego Carvalho",
-      designation: "Engenheiro de Qualidade • Qualibuild",
-      src: "https://images.unsplash.com/photo-1463453091185-61582044d556?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "Interface limpa e profissional. Apresentações para clientes ficaram mais impactantes com os relatórios visuais do sistema.",
-      name: "Renata Cardoso",
-      designation: "Coordenadora Comercial • RC Incorporadora",
-      src: "https://images.unsplash.com/photo-1598550874175-4d0ef436c909?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    },
-    {
-      quote: "O controle de custos e orçamentos ficou muito mais preciso. Conseguimos reduzir desperdícios em 22% no último ano.",
-      name: "Thiago Nascimento",
-      designation: "Analista Financeiro • TN Construtora",
-      src: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=500&h=500&fit=crop&crop=face&auto=format&q=80",
-    }
-  ];
-
-
   return (
-    <section className="py-12 md:py-20 bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4">
-            O que nossos clientes dizem
+    <section className="bg-[#f8f6f2] px-2 py-16 md:py-24">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:px-8">
+        <div>
+          <h2 className="text-2xl font-semibold leading-tight text-foreground sm:text-3xl md:text-4xl">
+            Prova operacional sem promessas infladas
           </h2>
-          <p className="text-base sm:text-lg leading-relaxed text-muted-foreground">
-            Depoimentos verificados de quem usa o MetaConstrutor no dia a dia
+          <p className="mt-4 max-w-[62ch] text-base leading-8 text-muted-foreground">
+            A home passa a explicar onde a plataforma cria valor no dia a dia da construtora,
+            sem depender de depoimentos ficticios ou metricas sem fonte publica.
           </p>
+          <Button
+            size="lg"
+            className="mt-8 w-full bg-primary py-3 text-base font-semibold text-primary-foreground hover:bg-primary/90 sm:w-auto"
+            onClick={navigateToFreePlan}
+          >
+            Comecar pelo plano gratuito
+          </Button>
         </div>
 
-        {/* Animated Testimonials */}
-        <AnimatedTestimonials 
-          testimonials={testimonials}
-          autoplay={true}
-          className="mb-8 sm:mb-10"
-        />
+        <div className="grid bg-background p-2 sm:grid-cols-3">
+          {proofPoints.map((point) => {
+            const Icon = point.icon;
 
-        {/* CTA */}
-        <div className="text-center">
-          <Button 
-            size="lg" 
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-semibold leading-none rounded-xl"
-            onClick={() => navigate('/login')}
-          >
-            Começar Gratuitamente
-          </Button>
+            return (
+              <article key={point.title} className="border-b border-[#ded4ca] p-5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0">
+                <div className="mb-4 flex h-10 w-8 items-center text-primary">
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <h3 className="text-base font-semibold leading-snug text-foreground">{point.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{point.text}</p>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

@@ -1,6 +1,0 @@
-{
-  "code": "23502",
-  "details": "Failing row contains (cfbb79df-d837-4620-aba1-5a697e9960e2, Obra da Org A, Local A, Resp A, Cliente A, null, 0, null, null, ACTIVE, null, null, null, null, null, 1c3fdde9-5e78-400a-89ba-c2fb685c9500, 2026-03-04 12:14:12.849477+00, 2026-03-04 12:14:12.849477+00, f, null, null, 3a96b93c-f49f-432d-ae09-41c170a85f72).",
-  "hint": null,
-  "message": "null value in column \"tipo\" of relation \"obras\" violates not-null constraint"
-}

@@ -1,0 +1,149 @@
+import { Link, useParams } from "react-router-dom";
+import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
+import SEO from "@/components/SEO";
+import { getBlogArticle } from "@/content/blogArticles";
+import { seoBlogArticles, seoPages } from "@/config/seo";
+import LandingNavigation from "@/components/landing/LandingNavigation";
+import FooterSection from "@/components/landing/FooterSection";
+import { Button } from "@/components/ui/button";
+
+const BlogArticle = () => {
+  const { slug } = useParams();
+  const article = getBlogArticle(slug);
+
+  if (!article) {
+    return (
+      <>
+        <SEO {...seoPages.blog} robots="noindex,follow" />
+        <LandingNavigation />
+        <main className="min-h-screen bg-background px-4 pb-20 pt-32 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl">
+            <Link to="/blog" className="inline-flex items-center gap-2 text-sm font-medium text-primary">
+              <ArrowLeft className="h-4 w-4" />
+              Voltar ao blog
+            </Link>
+            <h1 className="mt-8 text-4xl font-semibold tracking-tight text-foreground">
+              Artigo nao encontrado
+            </h1>
+            <p className="mt-4 text-muted-foreground">
+              O conteudo solicitado nao esta disponivel.
+            </p>
+          </div>
+        </main>
+        <FooterSection />
+      </>
+    );
+  }
+
+  const seo = seoBlogArticles[article.slug] ?? seoPages.blog;
+
+  return (
+    <>
+      <SEO {...seo} />
+      <LandingNavigation />
+
+      <main className="min-h-screen bg-background pt-28">
+        <article>
+          <header className="border-b border-border bg-[#fbfaf7] px-4 py-12 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-4xl">
+              <Link to="/blog" className="inline-flex items-center gap-2 text-sm font-medium text-primary">
+                <ArrowLeft className="h-4 w-4" />
+                Blog
+              </Link>
+              <p className="mt-8 text-sm font-semibold text-primary">
+                {article.category} - {article.readingTime}
+              </p>
+              <h1 className="mt-5 text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
+                {article.title}
+              </h1>
+              <p className="mt-6 max-w-[64ch] text-base leading-8 text-muted-foreground md:text-lg">
+                {article.summary}
+              </p>
+              <ul className="mt-6 flex max-w-[64ch] flex-wrap gap-2 text-sm text-muted-foreground">
+                {article.keywords.slice(0, 4).map((keyword) => (
+                  <li key={keyword} className="border border-border px-3 py-1">
+                    {keyword}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </header>
+
+          <div className="px-4 py-12 sm:px-6 lg:px-8">
+            <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[1fr_280px]">
+              <div className="max-w-[64ch] space-y-10">
+                {article.sections.map((section) => (
+                  <section key={section.title}>
+                    <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+                      {section.title}
+                    </h2>
+                    <p className="mt-4 text-base leading-8 text-muted-foreground">
+                      {section.body}
+                    </p>
+                    {section.items ? (
+                      <ul className="mt-5 space-y-3 text-base leading-8 text-muted-foreground">
+                        {section.items.map((item) => (
+                          <li key={item} className="flex gap-3">
+                            <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-primary" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </section>
+                ))}
+
+                <section>
+                  <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+                    Perguntas frequentes
+                  </h2>
+                  <div className="mt-5 divide-y divide-border border-y border-border">
+                    {article.faq.map((item) => (
+                      <div key={item.question} className="py-5">
+                        <h3 className="text-lg font-semibold text-foreground">{item.question}</h3>
+                        <p className="mt-2 text-base leading-8 text-muted-foreground">
+                          {item.answer}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </div>
+
+              <aside className="h-fit bg-[#fbfaf7] p-5">
+                <h2 className="text-sm font-semibold text-foreground">Pontos principais</h2>
+                <ul className="mt-4 space-y-3 text-sm leading-7 text-muted-foreground">
+                  {article.takeaways.map((item) => (
+                    <li key={item} className="flex gap-2">
+                      <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-primary" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </aside>
+            </div>
+          </div>
+
+          <section className="bg-[#0b1623] px-4 py-12 text-white sm:px-6 lg:px-8">
+            <div className="mx-auto flex max-w-5xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h2 className="text-3xl font-semibold">{article.cta.title}</h2>
+                <p className="mt-3 max-w-[64ch] leading-8 text-slate-300">{article.cta.description}</p>
+              </div>
+              <Button asChild size="lg" className="h-12 shrink-0 px-6">
+                <Link to={article.cta.href}>
+                  {article.cta.label}
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </section>
+        </article>
+      </main>
+
+      <FooterSection />
+    </>
+  );
+};
+
+export default BlogArticle;

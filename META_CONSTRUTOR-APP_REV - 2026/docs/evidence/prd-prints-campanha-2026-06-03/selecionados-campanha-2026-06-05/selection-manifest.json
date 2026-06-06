@@ -1,0 +1,299 @@
+﻿{
+    "generated_at":  "2026-06-05T08:46:40.4608009-03:00",
+    "source_manifest":  "../manifest.json",
+    "source_safe_folder":  "docs/evidence/prd-prints-campanha-2026-06-03/",
+    "package_folder":  "docs/evidence/prd-prints-campanha-2026-06-03/selecionados-campanha-2026-06-05/",
+    "status":  "captured",
+    "screenshots":  [
+                        {
+                            "index":  1,
+                            "file":  "prd-prints-2026-06-04-01-login-limpo-desktop.png",
+                            "route":  "/login?email=campanha%2Bprdprints10%40metaconstrutor.test",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Login limpo sem senha preenchida",
+                            "sha256":  "03d04a9f1403e6d19eda3c32144d649234a404b9b95f9677b80012ba264b13c5"
+                        },
+                        {
+                            "index":  2,
+                            "file":  "prd-prints-2026-06-04-02-obras-lista-desktop.png",
+                            "route":  "/app/obras",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Obras com grid/lista preenchida",
+                            "sha256":  "68923b2dd8dc24a34d9d71bbce68bbbc5dd581095aa23600afdfcc91d0163381"
+                        },
+                        {
+                            "index":  3,
+                            "file":  "prd-prints-2026-06-04-03-obra-detalhe-desktop.png",
+                            "route":  "/app/obras/2278bbc8-2016-4843-8926-921bd303f731",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Detalhe da primeira obra demonstrativa",
+                            "sha256":  "2aae2015ed982712bef6f52ed8c8e0ece94952f1ced3d7c4061d33c97a117deb"
+                        },
+                        {
+                            "index":  4,
+                            "file":  "prd-prints-2026-06-04-04-atividades-lista-desktop.png",
+                            "route":  "/app/atividades",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Atividades demonstrativas preenchidas",
+                            "sha256":  "b1df4ea15d9d60dafda163964b15f320502f5344382a637810364aaee99fece7"
+                        },
+                        {
+                            "index":  5,
+                            "file":  "prd-prints-2026-06-04-05-rdo-lista-desktop.png",
+                            "route":  "/app/rdo",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "RDOs recentes preenchidos",
+                            "sha256":  "d54be1e42b1f404a01df0bb9eecb617a363372431f5302f82e0c0a2e2cb547f0"
+                        },
+                        {
+                            "index":  6,
+                            "file":  "prd-prints-2026-06-04-06-checklist-lista-desktop.png",
+                            "route":  "/app/checklist",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Checklists com progresso visual",
+                            "sha256":  "ea7550e46e9572b38352ee4ae609a70a9ce4f3441efbbbb8f5ba20d91edad988"
+                        },
+                        {
+                            "index":  7,
+                            "file":  "prd-prints-2026-06-04-07-documentos-lista-desktop.png",
+                            "route":  "/app/documentos",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Biblioteca de documentos demonstrativos",
+                            "sha256":  "3a6f2fad9cc05544ac956f6d02fff81ea4c1a73e2eb561ffe06825e09a575c1f"
+                        },
+                        {
+                            "index":  8,
+                            "file":  "prd-prints-2026-06-04-08-equipes-lista-desktop.png",
+                            "route":  "/app/equipes",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Equipes demonstrativas",
+                            "sha256":  "c96174daded21df8fc89c972cacbb15540beecd9cd1865563665a77a1cd1c012"
+                        },
+                        {
+                            "index":  9,
+                            "file":  "prd-prints-2026-06-04-09-equipamentos-lista-desktop.png",
+                            "route":  "/app/equipamentos",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Equipamentos com status variados",
+                            "sha256":  "91e4f9facc16c89b8911df696cfa4fb0ed8d6f7d9bed07bfb8669a823c0fc61b"
+                        },
+                        {
+                            "index":  10,
+                            "file":  "prd-prints-2026-06-04-10-fornecedores-lista-desktop.png",
+                            "route":  "/app/fornecedores",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Fornecedores demonstrativos",
+                            "sha256":  "be5195dae42e96f53cf1a99222a755d663985981fb4408c121d4991f36645788"
+                        },
+                        {
+                            "index":  11,
+                            "file":  "prd-prints-2026-06-04-11-despesas-lista-desktop.png",
+                            "route":  "/app/despesas",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Despesas demonstrativas",
+                            "sha256":  "c6dab684f4a3244bb81dbb309dd6ca50cb5b09188d34eaffa0068b2ef59dc7a7"
+                        },
+                        {
+                            "index":  12,
+                            "file":  "prd-prints-2026-06-04-12-relatorios-resumo-desktop.png",
+                            "route":  "/app/relatorios",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Relatorios com dados persistidos",
+                            "sha256":  "cb5f0ac80462ccbdcacae684e7ca6e5462da12ed410236ed135b3d232f25d71d"
+                        },
+                        {
+                            "index":  13,
+                            "file":  "prd-prints-2026-06-04-13-integracoes-status-desktop.png",
+                            "route":  "/app/integracoes",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Estados honestos de integracoes",
+                            "sha256":  "33a899bde2e3646ae88baf197bfa21ce5e3f1feb1cba1a7f6a9f9957607dd2b6"
+                        },
+                        {
+                            "index":  14,
+                            "file":  "prd-prints-2026-06-04-14-atividade-nova-modal-desktop.png",
+                            "route":  "/app/atividades",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Modal de nova atividade com campos relevantes",
+                            "sha256":  "852fd753181888e8df46f72d87f3c730c9a4e124907ad8e7834cd865a51ee76f"
+                        },
+                        {
+                            "index":  15,
+                            "file":  "prd-prints-2026-06-04-15-rdo-visualizacao-desktop.png",
+                            "route":  "/app/rdo/02a4ea48-5aa9-4901-b69c-a23aa852fcaa/visualizar",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Visualizacao de RDO com atividades e evidencias",
+                            "sha256":  "e84e0c3e67f0a3765bd42fa43fc4d7c19d37927df61a7e94b55c4140830cad75"
+                        },
+                        {
+                            "index":  16,
+                            "file":  "prd-prints-2026-06-04-16-checklist-detalhe-desktop.png",
+                            "route":  "/app/checklist/1e96510f-8bb8-4327-b81d-563cc8417bd4",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Detalhe de checklist com itens marcados",
+                            "sha256":  "dca150ac8b4b8a74dfd1d781d7d2b0c548bf12070327e35336365e02c9c98972"
+                        },
+                        {
+                            "index":  17,
+                            "file":  "prd-prints-2026-06-04-17-perfil-conta-desktop.png",
+                            "route":  "/app/perfil",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Perfil da conta demonstrativa",
+                            "sha256":  "a6f4dd0c04d3143d36185aa702d1a563b888590879d600c75b0eae7f52778b7f"
+                        },
+                        {
+                            "index":  18,
+                            "file":  "prd-prints-2026-06-04-18-configuracoes-desktop.png",
+                            "route":  "/app/configuracoes",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Configuracoes da organizacao demonstrativa",
+                            "sha256":  "cbed145f297bf399dd085c609afc9efca39b523c4da3ab3e3b181b7035ce36f9"
+                        },
+                        {
+                            "index":  19,
+                            "file":  "prd-prints-2026-06-04-19-notificacoes-desktop.png",
+                            "route":  "/app/notificacoes",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Notificacoes e filtros da conta demonstrativa",
+                            "sha256":  "c67921d7f61249d93be0484697db97b3844f2d96b26b441310ebf030df4054b9"
+                        },
+                        {
+                            "index":  20,
+                            "file":  "prd-prints-2026-06-04-20-faq-desktop.png",
+                            "route":  "/app/faq",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "FAQ autenticado de apoio",
+                            "sha256":  "e7522f6047b52baa5e7a5967e74376c60f4de4ad6028a138ffb49e106567fcbe"
+                        },
+                        {
+                            "index":  21,
+                            "file":  "prd-prints-2026-06-04-21-feedback-desktop.png",
+                            "route":  "/app/feedback",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Formulario de feedback autenticado",
+                            "sha256":  "19176f5be8e6b8e5651b5ae8fed929dcc17f34f548f965b0591d2e2d833831fe"
+                        },
+                        {
+                            "index":  22,
+                            "file":  "prd-prints-2026-06-04-22-dashboard-tablet.png",
+                            "route":  "/app/dashboard",
+                            "device":  "tablet",
+                            "viewport":  "820x1180",
+                            "status":  "captured",
+                            "notes":  "Dashboard em tablet",
+                            "sha256":  "4636a7c93e039da3e30477197c91d24bd6644aeb7434c940e9fa83e95626231f"
+                        },
+                        {
+                            "index":  23,
+                            "file":  "prd-prints-2026-06-04-23-obras-tablet.png",
+                            "route":  "/app/obras",
+                            "device":  "tablet",
+                            "viewport":  "820x1180",
+                            "status":  "captured",
+                            "notes":  "Obras em tablet",
+                            "sha256":  "1b3de6c3a423d6d9731ef8a26378801a0c4170dc178c234955b5c9d25cf7c921"
+                        },
+                        {
+                            "index":  24,
+                            "file":  "prd-prints-2026-06-04-24-checklist-tablet.png",
+                            "route":  "/app/checklist",
+                            "device":  "tablet",
+                            "viewport":  "820x1180",
+                            "status":  "captured",
+                            "notes":  "Checklist em tablet",
+                            "sha256":  "cedbf0216f1dff732f544b71b3fe88ff578287635e270a84058d47b905cbfe6e"
+                        },
+                        {
+                            "index":  25,
+                            "file":  "prd-prints-2026-06-04-25-rdo-mobile.png",
+                            "route":  "/app/rdo",
+                            "device":  "mobile",
+                            "viewport":  "390x844",
+                            "status":  "captured",
+                            "notes":  "RDO em mobile",
+                            "sha256":  "c12ea0e5190ec5116bab98c4cdae475aa7d6f981ed2c3bb6bd64096ec6622c88"
+                        },
+                        {
+                            "index":  26,
+                            "file":  "prd-prints-2026-06-04-26-obras-mobile.png",
+                            "route":  "/app/obras",
+                            "device":  "mobile",
+                            "viewport":  "390x844",
+                            "status":  "captured",
+                            "notes":  "Obras em mobile",
+                            "sha256":  "9bdf1ea1dc037d7932d013d9a265de163de7aaf10c3cefc8f3ca3e894f41cc6c"
+                        },
+                        {
+                            "index":  27,
+                            "file":  "prd-prints-2026-06-04-27-atividade-mobile.png",
+                            "route":  "/app/atividades",
+                            "device":  "mobile",
+                            "viewport":  "390x844",
+                            "status":  "captured",
+                            "notes":  "Atividades em mobile",
+                            "sha256":  "e82db5787016f49e82106f34ed79c2c5c3bdf901c2e72df9d8eb601e9791ee8f"
+                        },
+                        {
+                            "index":  28,
+                            "file":  "prd-prints-2026-06-04-28-dashboard-resumo-final-desktop.png",
+                            "route":  "/app/dashboard",
+                            "device":  "desktop",
+                            "viewport":  "1440x900",
+                            "status":  "captured",
+                            "notes":  "Ultimo print obrigatorio: dashboard consolidado apos seed",
+                            "sha256":  "0a4d62fe59f5a6103a6e746eac48e40bab8a6e4af5418d782424a60fe7e28910"
+                        }
+                    ],
+    "total":  28,
+    "final_screenshot":  "prd-prints-2026-06-04-28-dashboard-resumo-final-desktop.png",
+    "console_events":  0,
+    "transient_console_events":  1,
+    "safety":  {
+                   "password_recorded":  false,
+                   "real_customer_data":  false,
+                   "external_integrations_called":  false,
+                   "final_screenshot":  "prd-prints-2026-06-04-28-dashboard-resumo-final-desktop.png"
+               }
+}

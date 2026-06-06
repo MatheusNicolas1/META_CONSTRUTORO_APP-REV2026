@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,23 +13,26 @@ import { ChecklistForm } from "@/components/checklist/ChecklistForm";
 import { DigitalSignatureComponent } from "@/components/checklist/DigitalSignature";
 import { Checklist as ChecklistType, ChecklistFormData, ChecklistFilters, ChecklistCategory, ChecklistStatus, DigitalSignature } from "@/types/checklist";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { CheckSquare, Search, Plus, Filter, Calendar as CalendarIcon, Download, FileCheck, Users, AlertCircle, Clock, X, Loader2, Trash2 } from "lucide-react";
+import { CheckSquare, Search, Plus, Filter, Calendar as CalendarIcon, Download, FileCheck, Users, AlertCircle, Clock, X, Loader2, Trash2, PenLine } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 import { useChecklist } from "@/hooks/useChecklist";
 import { useObras } from "@/hooks/useObras";
-import { useEquipesSupabase } from "@/hooks/useEquipesSupabase";
+import { useOrgResponsibles } from "@/hooks/useOrgResponsibles";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuthUserId } from "@/hooks/useAuthUserId";
+import { useRole } from "@/hooks/usePermissions";
 import { useQueryClient } from "@tanstack/react-query";
 
 const ChecklistPage = () => {
   const { toast } = useToast();
   const { navigate } = useNavigationTransition();
   const { userId } = useAuthUserId();
+  const { isPresidente, isAdmin, isGerente } = useRole();
   const queryClient = useQueryClient();
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingChecklist, setEditingChecklist] = useState<ChecklistType | null>(null);
   const [activeTab, setActiveTab] = useState("active");
 
   const [filters, setFilters] = useState<ChecklistFilters>({
@@ -41,7 +44,7 @@ const ChecklistPage = () => {
     dateRange: {}
   });
 
-  const { useChecklistsQuery, createChecklist, deleteChecklist } = useChecklist();
+  const { useChecklistsQuery, createChecklist, updateChecklist, deleteChecklist } = useChecklist();
 
   // Debounce filter changes if necessary, but for now direct passing is fine
   const { data: checklists = [], isLoading } = useChecklistsQuery(filters);
@@ -51,6 +54,19 @@ const ChecklistPage = () => {
       await createChecklist.mutateAsync(formData);
     } catch (error) {
       console.error("Error creating checklist:", error);
+      throw error;
+    }
+  };
+
+  const handleEditChecklist = async (formData: ChecklistFormData) => {
+    if (!editingChecklist) return;
+
+    try {
+      await updateChecklist.mutateAsync({ checklistId: editingChecklist.id, formData });
+      setEditingChecklist(null);
+    } catch (error) {
+      console.error("Error updating checklist:", error);
+      throw error;
     }
   };
 
@@ -106,7 +122,8 @@ const ChecklistPage = () => {
 
   // Data hooks for filters
   const { obras } = useObras();
-  const { equipes } = useEquipesSupabase();
+  const { responsibles } = useOrgResponsibles();
+  const canApproveChecklist = isPresidente || isAdmin || isGerente;
 
   const clearFilters = () => {
     setFilters({
@@ -120,7 +137,8 @@ const ChecklistPage = () => {
   };
 
   const hasActiveFilters = filters.search || (filters.obra && filters.obra !== "all") || filters.category !== "all" ||
-    filters.status !== "all" || (filters.responsible && filters.responsible !== "all");
+    filters.status !== "all" || (filters.responsible && filters.responsible !== "all") ||
+    filters.dateRange.start || filters.dateRange.end;
 
   const activeChecklists = checklists.filter(c =>
     c.status === "Em Andamento" || c.status === "Rascunho" || c.status === "Pendente"
@@ -172,7 +190,7 @@ const ChecklistPage = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-5">
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               <div className="space-y-2">
                 <Label>Buscar</Label>
                 <div className="relative">
@@ -194,7 +212,7 @@ const ChecklistPage = () => {
                     setFilters({ ...filters, category: value })
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger aria-label="Filtro categoria">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -216,7 +234,7 @@ const ChecklistPage = () => {
                     setFilters({ ...filters, status: value })
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger aria-label="Filtro status">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -236,7 +254,7 @@ const ChecklistPage = () => {
                   value={filters.obra}
                   onValueChange={(value) => setFilters({ ...filters, obra: value })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger aria-label="Filtro obra">
                     <SelectValue placeholder="Todas" />
                   </SelectTrigger>
                   <SelectContent>
@@ -256,18 +274,42 @@ const ChecklistPage = () => {
                   value={filters.responsible}
                   onValueChange={(value) => setFilters({ ...filters, responsible: value })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger aria-label="Filtro responsável">
                     <SelectValue placeholder="Todos" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Todos os responsáveis</SelectItem>
-                    {equipes.map((membro) => (
+                    {responsibles.map((membro) => (
                       <SelectItem key={membro.id} value={membro.id || "unknown"}>
                         {membro.nome}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Período do prazo</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  <Input
+                    type="date"
+                    aria-label="Filtro prazo inicial"
+                    value={filters.dateRange.start || ""}
+                    onChange={(e) => setFilters({
+                      ...filters,
+                      dateRange: { ...filters.dateRange, start: e.target.value || undefined }
+                    })}
+                  />
+                  <Input
+                    type="date"
+                    aria-label="Filtro prazo final"
+                    value={filters.dateRange.end || ""}
+                    onChange={(e) => setFilters({
+                      ...filters,
+                      dateRange: { ...filters.dateRange, end: e.target.value || undefined }
+                    })}
+                  />
+                </div>
               </div>
             </div>
           </CardContent>
@@ -325,7 +367,7 @@ const ChecklistPage = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Responsáveis</p>
-                  <p className="text-2xl font-bold">{equipes.length}</p>
+                  <p className="text-2xl font-bold">{responsibles.length}</p>
                 </div>
               </div>
             </CardContent>
@@ -357,6 +399,8 @@ const ChecklistPage = () => {
                   checklist={checklist}
                   onSign={handleSignChecklist}
                   onDelete={handleDeleteChecklist}
+                  onEdit={setEditingChecklist}
+                  canApprove={canApproveChecklist}
                 />
               ))}
             </div>
@@ -377,6 +421,8 @@ const ChecklistPage = () => {
                   checklist={checklist}
                   onSign={handleSignChecklist}
                   onDelete={handleDeleteChecklist}
+                  onEdit={setEditingChecklist}
+                  canApprove={canApproveChecklist}
                 />
               ))}
             </div>
@@ -397,6 +443,8 @@ const ChecklistPage = () => {
                   checklist={checklist}
                   onSign={handleSignChecklist}
                   onDelete={handleDeleteChecklist}
+                  onEdit={setEditingChecklist}
+                  canApprove={canApproveChecklist}
                 />
               ))}
             </div>
@@ -412,10 +460,26 @@ const ChecklistPage = () => {
 
         {/* Form Dialog */}
         <ChecklistForm
-          isOpen={isFormOpen}
-          onClose={() => setIsFormOpen(false)}
-          onSubmit={handleCreateChecklist}
-          isLoading={createChecklist.isPending}
+          isOpen={isFormOpen || !!editingChecklist}
+          onClose={() => {
+            setIsFormOpen(false);
+            setEditingChecklist(null);
+          }}
+          onSubmit={editingChecklist ? handleEditChecklist : handleCreateChecklist}
+          initialData={editingChecklist ? {
+            title: editingChecklist.title,
+            category: editingChecklist.category,
+            description: editingChecklist.description || "",
+            obraId: editingChecklist.obra.id,
+            responsibleId: editingChecklist.responsible.id,
+            dueDate: editingChecklist.dueDate,
+            items: editingChecklist.items,
+            templateId: editingChecklist.templateUsed?.id,
+          } : undefined}
+          isLoading={createChecklist.isPending || updateChecklist.isPending}
+          dialogTitle={editingChecklist ? "Editar Checklist" : "Criar Novo Checklist"}
+          dialogDescription={editingChecklist ? "Atualize dados, responsavel, prazo e itens do checklist" : undefined}
+          submitLabel={editingChecklist ? "Salvar Alteracoes" : "Criar Checklist"}
         />
       </div>
     </div>
@@ -427,9 +491,11 @@ interface ChecklistCardProps {
   checklist: ChecklistType;
   onSign: (checklistId: string, signature: DigitalSignature) => void;
   onDelete: (id: string) => void;
+  onEdit: (checklist: ChecklistType) => void;
+  canApprove: boolean;
 }
 
-function ChecklistCard({ checklist, onSign, onDelete }: ChecklistCardProps) {
+function ChecklistCard({ checklist, onSign, onDelete, onEdit, canApprove }: ChecklistCardProps) {
   const { navigate } = useNavigationTransition();
   const getStatusIcon = (status: ChecklistStatus) => {
     switch (status) {
@@ -476,12 +542,10 @@ function ChecklistCard({ checklist, onSign, onDelete }: ChecklistCardProps) {
           <Badge variant="outline">{checklist.category}</Badge>
         </div>
         <CardTitle className="text-lg line-clamp-2">{checklist.title}</CardTitle>
-        <CardDescription>
-          <div className="space-y-1">
-            <p className="font-medium">{checklist.obra.name}</p>
-            <p className="text-sm">Responsável: {checklist.responsible.name}</p>
-          </div>
-        </CardDescription>
+        <div className="space-y-1 text-sm text-muted-foreground">
+          <p className="font-medium">{checklist.obra.name}</p>
+          <p>Responsável: {checklist.responsible.name}</p>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Progress */}
@@ -526,7 +590,17 @@ function ChecklistCard({ checklist, onSign, onDelete }: ChecklistCardProps) {
           >
             Visualizar
           </Button>
-          {checklist.status === "Em Andamento" && checklist.progress.percentage === 100 && !checklist.signature && (
+          {checklist.status !== "Concluído" && (
+            <Button
+              onClick={() => onEdit(checklist)}
+              variant="outline"
+              size="sm"
+              aria-label={`Editar checklist ${checklist.title}`}
+            >
+              <PenLine className="h-4 w-4" />
+            </Button>
+          )}
+          {canApprove && checklist.status === "Em Andamento" && checklist.progress.percentage === 100 && !checklist.signature && (
             <DigitalSignatureComponent
               onSign={(signature) => onSign(checklist.id, signature)}
               signerName={checklist.responsible.name}
@@ -549,7 +623,7 @@ function ChecklistCard({ checklist, onSign, onDelete }: ChecklistCardProps) {
               <AlertDialogHeader>
                 <AlertDialogTitle>Excluir Checklist</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Tem certeza que deseja excluir o checklist "{checklist.title}"? Esta ação não pode ser desfeita.
+                  Mover o checklist "{checklist.title}" para a Lixeira? Ele podera ser restaurado por ate 30 dias.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

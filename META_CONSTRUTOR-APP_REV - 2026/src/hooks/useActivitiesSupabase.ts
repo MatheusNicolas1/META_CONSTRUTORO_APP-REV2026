@@ -29,9 +29,19 @@ export interface Activity {
   title?: string;
   description?: string;
   obra?: string;
+  obras?: { id: string; nome: string } | null;
   date?: string;
   time?: string;
   priority?: 'baixa' | 'media' | 'alta';
+}
+
+export interface ActivityFilters {
+  obraId?: string;
+  status?: Activity['status'] | 'all';
+  responsavel?: string;
+  prioridade?: Activity['prioridade'] | 'all';
+  dateStart?: string;
+  dateEnd?: string;
 }
 
 // Global Singleton Registry (stored in globalThis to survive HMR/React Refresh)
@@ -52,7 +62,7 @@ const getRegistry = (): Map<string, RegistryEntry> => {
   return (globalThis as any)[REGISTRY_KEY];
 };
 
-export function useActivitiesSupabase(filters?: { obraId?: string }) {
+export function useActivitiesSupabase(filters?: ActivityFilters) {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
@@ -99,12 +109,27 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
       setIsLoading(true);
       let query = supabase
         .from('atividades')
-        .select('*')
+        .select('*, obras(id, nome)')
         .eq('org_id', orgId)
-        .eq('user_id', user.id);
+        .is('deleted_at' as any, null);
 
-      if (filters?.obraId) {
+      if (filters?.obraId && filters.obraId !== 'all') {
         query = query.eq('obra_id', filters.obraId);
+      }
+      if (filters?.status && filters.status !== 'all') {
+        query = query.eq('status', filters.status);
+      }
+      if (filters?.responsavel && filters.responsavel !== 'all') {
+        query = query.eq('responsavel', filters.responsavel);
+      }
+      if (filters?.prioridade && filters.prioridade !== 'all') {
+        query = query.eq('prioridade', filters.prioridade);
+      }
+      if (filters?.dateStart) {
+        query = query.gte('data', filters.dateStart);
+      }
+      if (filters?.dateEnd) {
+        query = query.lte('data', filters.dateEnd);
       }
 
       const { data, error } = await query
@@ -146,7 +171,19 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
         setIsLoading(false);
       }
     }
-  }, [isAuthenticated, user?.id, orgId, orgLoading, toast, filters?.obraId]);
+  }, [
+    isAuthenticated,
+    user?.id,
+    orgId,
+    orgLoading,
+    toast,
+    filters?.obraId,
+    filters?.status,
+    filters?.responsavel,
+    filters?.prioridade,
+    filters?.dateStart,
+    filters?.dateEnd,
+  ]);
 
   // Keep loadActivities ref updated
   useEffect(() => {
@@ -173,7 +210,18 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
     if (!orgLoading && isAuthenticated && user?.id) {
       loadActivities();
     }
-  }, [orgLoading, isAuthenticated, user?.id, loadActivities, filters?.obraId]);
+  }, [
+    orgLoading,
+    isAuthenticated,
+    user?.id,
+    loadActivities,
+    filters?.obraId,
+    filters?.status,
+    filters?.responsavel,
+    filters?.prioridade,
+    filters?.dateStart,
+    filters?.dateEnd,
+  ]);
 
   // --------------------------------------------------------------------------
   // ROBUST REALTIME SUBSCRIPTION (Global Singleton + Grace Period)
@@ -202,7 +250,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
               event: '*',
               schema: 'public',
               table: 'atividades',
-              filter: `user_id=eq.${user.id}`
+              filter: `org_id=eq.${orgId}`
             },
             (payload) => {
               // Broadcast event to ALL hooks
@@ -319,20 +367,33 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
       const isUpdate = activity.id && !activity.id.toString().match(/^\d+$/);
 
       if (isUpdate) {
+        const updateData: Partial<Activity> = {};
+        if ('titulo' in activity || 'title' in activity) updateData.titulo = activity.titulo || activity.title || '';
+        if ('descricao' in activity || 'description' in activity) updateData.descricao = activity.descricao || activity.description || '';
+        if ('data' in activity || 'date' in activity) updateData.data = activity.data || activity.date || new Date().toISOString().split('T')[0];
+        if ('hora' in activity || 'time' in activity) updateData.hora = activity.hora || activity.time || '09:00';
+        if ('status' in activity) updateData.status = activity.status || 'agendada';
+        if ('prioridade' in activity || 'priority' in activity) updateData.prioridade = activity.prioridade || activity.priority || 'media';
+        if ('categoria' in activity) updateData.categoria = activity.categoria || null;
+        if ('unidade_medida' in activity) updateData.unidade_medida = activity.unidade_medida || null;
+        if ('quantidade_prevista' in activity) updateData.quantidade_prevista = activity.quantidade_prevista || null;
+        if ('responsavel' in activity) updateData.responsavel = activity.responsavel || null;
+        if ('notificado' in activity) updateData.notificado = activity.notificado || false;
+        if ('obra_id' in activity) updateData.obra_id = activity.obra_id || null;
+
         const { data, error } = await supabase
           .from('atividades')
-          .update(activityData)
+          .update(updateData as any)
           .eq('id', activity.id)
           .eq('org_id', orgId)
-          .eq('user_id', user.id)
           .select()
           .single();
 
         if (error) throw error;
         result = data;
 
-        await notifyActivityChange(user.id, activityData.titulo, 'updated', activityData.obra_id || undefined, orgId);
-        toast({ title: 'Atividade atualizada', description: `${activityData.titulo} foi atualizada com sucesso.` });
+        await notifyActivityChange(user.id, updateData.titulo || activityData.titulo, 'updated', updateData.obra_id || undefined, orgId);
+        toast({ title: 'Atividade atualizada', description: `${updateData.titulo || activityData.titulo} foi atualizada com sucesso.` });
       } else {
         const { data, error } = await supabase
           .from('atividades')
@@ -367,12 +428,8 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
 
     try {
       const activityToDelete = activities.find(a => a.id === activityId);
-      const { error } = await supabase
-        .from('atividades')
-        .delete()
-        .eq('id', activityId)
-        .eq('org_id', orgId)
-        .eq('user_id', user.id);
+      const { error } = await (supabase as any)
+        .rpc('soft_delete_atividade', { p_activity_id: activityId });
 
       if (error) throw error;
 
@@ -380,7 +437,7 @@ export function useActivitiesSupabase(filters?: { obraId?: string }) {
         await notifyActivityChange(user.id, activityToDelete.titulo, 'deleted', activityToDelete.obra_id, orgId);
       }
 
-      toast({ title: 'Atividade excluída', description: 'A atividade foi removida com sucesso.' });
+      toast({ title: 'Atividade movida para a Lixeira', description: 'Voce pode restaurar por ate 30 dias.' });
       await loadActivities();
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats', orgId] });
     } catch (error) {

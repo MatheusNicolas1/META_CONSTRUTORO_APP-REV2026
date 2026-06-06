@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useRequireOrg } from '@/hooks/requireOrg';
 import { useAuthUserId } from './useAuthUserId';
+import { triggerSuccessFeedback } from '@/hooks/useSuccessFeedback';
 
 export interface CreateFornecedorData {
   nome: string;
@@ -61,6 +62,7 @@ export const useFornecedores = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['fornecedores', orgId] });
+      triggerSuccessFeedback('Fornecedor cadastrado');
       toast.success('Fornecedor cadastrado com sucesso!');
     },
     onError: (error) => {
@@ -83,6 +85,7 @@ export const useFornecedores = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['fornecedores', orgId] });
+      triggerSuccessFeedback('Fornecedor atualizado');
       toast.success('Fornecedor atualizado com sucesso!');
     },
     onError: (error) => {

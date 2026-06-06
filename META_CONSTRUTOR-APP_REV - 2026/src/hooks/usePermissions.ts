@@ -35,17 +35,22 @@ export const usePermissions = () => {
 
   // Buscar contagem atual de membros da equipe
   const { data: equipeCount = 0, isLoading: isEquipeLoading } = useQuery({
-    queryKey: ['equipe-count', user?.id], // Stable key based on user
+    queryKey: ['equipe-count', orgId, user?.id],
     queryFn: async () => {
       if (!user?.id) return 0;
-      const { count, error } = await supabase
+      let query = supabase
         .from('equipes')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id); // Fixed: table uses user_id, not org_id
+        .select('*', { count: 'exact', head: true });
+
+      query = orgId
+        ? query.eq('org_id', orgId)
+        : query.eq('user_id', user.id);
+
+      const { count, error } = await query;
       if (error) throw error;
       return count || 0;
     },
-    enabled: !!user?.id, // Only depends on user
+    enabled: !!user?.id && !orgLoading,
     retry: (failureCount, error: any) => {
       if (error?.status >= 400 && error?.status < 500) return false;
       return failureCount < 2;
@@ -136,7 +141,7 @@ export const usePermissions = () => {
     equipe: equipePermissions,
     relatorio: relatorioPermissions,
     sistema: sistemaPermissions,
-    isLoading: isPlanLoading || isObrasLoading || isEquipeLoading,
+    isLoading: isPlanLoading || isObrasLoading || isEquipeLoading || orgLoading,
     planType: limits, // Note: might want to return planType name as well
     obrasCount,
     equipeCount,

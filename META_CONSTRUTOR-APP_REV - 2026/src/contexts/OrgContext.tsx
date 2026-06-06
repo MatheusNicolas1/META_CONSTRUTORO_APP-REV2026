@@ -14,6 +14,7 @@ import {
     getActiveOrgIdLocal,
     clearActiveOrgIdLocal,
 } from '@/helpers/storage';
+import { setAnalyticsSession } from '@/integrations/analytics';
 
 const PRD5_SHARED_ORG_ID = 'a7f50485-4351-4ffa-a1a4-3a065ace213e';
 
@@ -96,6 +97,12 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
             try {
                 if (mountedRef.current) setIsLoading(true);
 
+                await supabase.functions.invoke('accept-invite').catch((error) => {
+                    console.warn('[OrgContext] Nao foi possivel ativar convites pendentes:', error?.message || error);
+                });
+
+                if (controller.signal.aborted || !mountedRef.current) return;
+
                 // Buscar memberships + org data em UMA única query
                 const { data: membershipsData, error: membershipsError } = await supabase
                     .from('org_members' as any)
@@ -144,7 +151,10 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
                         const membership = fallbackMemberships.find((m) => m.org_id === chosenOrgId);
                         const role = membership?.role || null;
                         setActiveRole(role);
-                        if (role) updateAuthRoles([role]);
+                        if (role) {
+                            updateAuthRoles([role]);
+                            setAnalyticsSession({ user_id: currentUserId, org_id: chosenOrgId, role });
+                        }
                         setIsLoading(false);
                     }
                     return;
@@ -207,6 +217,7 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
                     // 5. Sincronizar com AuthContext (Guard against loops)
                     if (role) {
                         updateAuthRoles([role]);
+                        setAnalyticsSession({ user_id: currentUserId, org_id: chosenOrgId, role });
                     }
 
                     setIsLoading(false);
@@ -245,6 +256,7 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
                 // Sync auth - only if role changed
                 if (newRole) {
                     updateAuthRoles([newRole]);
+                    setAnalyticsSession({ user_id: user?.id, org_id: activeOrgId, role: newRole });
                 }
             }
         }
@@ -269,6 +281,7 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
 
         // Sincronizar com AuthContext
         updateAuthRoles([role]);
+        setAnalyticsSession({ user_id: user?.id, org_id: orgId, role });
     };
 
     return (

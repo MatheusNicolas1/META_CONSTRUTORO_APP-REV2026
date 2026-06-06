@@ -1,9 +1,11 @@
 // Matriz central de RBAC - mapeamento completo de rotas e permissões
 import type { UserRole } from "@/types/user";
+import { PLATFORM_PRESIDENT_EMAIL, isPlatformPresidentEmail } from "@/utils/adminAccess";
 
 export interface RoutePermission {
   path: string;
   allowedRoles: UserRole[];
+  allowedEmails?: string[];
   requiredPermissions?: string[];
   description: string;
 }
@@ -65,7 +67,7 @@ export const ROUTE_PERMISSIONS: RoutePermission[] = [
   
   // Área de segurança (restrita)
   { path: "/app/seguranca", allowedRoles: ["Administrador", "Gerente"], description: "Dashboard de segurança" },
-  { path: "/app/admin/dashboard", allowedRoles: ["Presidente"], description: "Painel administrativo" },
+  { path: "/app/admin/dashboard", allowedRoles: ["Presidente", "Administrador"], allowedEmails: [PLATFORM_PRESIDENT_EMAIL], description: "Painel administrativo" },
 ];
 
 // Permissões específicas de ações
@@ -105,7 +107,7 @@ export const ACTION_PERMISSIONS: ActionPermission[] = [
 ];
 
 // Utility functions para verificação de permissões
-export const hasRouteAccess = (path: string, userRole: UserRole): boolean => {
+export const hasRouteAccess = (path: string, userRole: UserRole, userEmail?: string | null): boolean => {
   const permission = ROUTE_PERMISSIONS.find(p => {
     if (p.path.includes(':')) {
       // Para rotas dinâmicas, fazer match básico
@@ -116,7 +118,11 @@ export const hasRouteAccess = (path: string, userRole: UserRole): boolean => {
     return p.path === path;
   });
   
-  return permission ? permission.allowedRoles.includes(userRole) : false;
+  if (!permission) return false;
+  if (permission.allowedEmails?.some((email) => isPlatformPresidentEmail(email)) && isPlatformPresidentEmail(userEmail)) {
+    return true;
+  }
+  return permission.allowedRoles.includes(userRole);
 };
 
 export const hasActionPermission = (action: string, userRole: UserRole): boolean => {

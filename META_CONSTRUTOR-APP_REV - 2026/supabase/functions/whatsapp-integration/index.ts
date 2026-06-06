@@ -1,10 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { getCorsHeaders } from "../_shared/cors.ts";
 
 interface WhatsAppRequest {
   action: 'test' | 'send-message' | 'send-template' | 'verify-webhook';
@@ -13,11 +9,13 @@ interface WhatsAppRequest {
   templateName?: string;
   templateParams?: string[];
   mediaUrl?: string;
-  mediaType?: 'image' | 'document' | 'video';
+  mediaType?: 'image' | 'document' | 'video' | 'audio';
   webhookVerifyToken?: string;
 }
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -59,10 +57,12 @@ serve(async (req) => {
       console.info('WhatsApp Business API credentials not configured');
       return new Response(
         JSON.stringify({ 
+          success: false,
           error: 'WhatsApp integration not configured. Please add WHATSAPP_ACCESS_TOKEN and WHATSAPP_PHONE_NUMBER_ID secrets.',
+          message: 'WhatsApp integration is blocked until API secrets are configured.',
           configured: false 
         }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 

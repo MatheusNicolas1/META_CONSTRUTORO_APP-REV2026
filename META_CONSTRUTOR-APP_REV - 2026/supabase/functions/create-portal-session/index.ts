@@ -8,6 +8,21 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
     httpClient: Stripe.createFetchHttpClient(),
 });
 
+const getBillingOrgMember = async (supabaseAdmin: any, userId: string) => {
+    const { data, error } = await supabaseAdmin
+        .from("org_members")
+        .select("org_id")
+        .eq("user_id", userId)
+        .eq("status", "active")
+        .in("role", ["Presidente", "Administrador"])
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+    if (error) throw error;
+    return data;
+};
+
 serve(async (req) => {
     const corsHeaders = getCorsHeaders(req);
 
@@ -27,30 +42,22 @@ serve(async (req) => {
             throw new Error("User not found");
         }
 
-        const { returnUrl } = await req.json().catch(() => ({}));
+        const { returnUrl, plan, billing = "monthly" } = await req.json().catch(() => ({}));
 
-        const { data: orgMember } = await supabaseAdmin
-            .from("org_members")
-            .select("org_id")
-            .eq("user_id", user.id)
-            .eq("status", "active")
-            .in("role", ["Presidente", "Administrador"])
-            .order("created_at", { ascending: true })
-            .limit(1)
-            .maybeSingle();
+        const orgMember = await getBillingOrgMember(supabaseAdmin, user.id);
 
         if (!orgMember?.org_id) throw new Error("Organization not found for user");
 
-        const { data: subscription } = await supabaseAdmin
+        const { data: subscriptionData } = await supabaseAdmin
             .from("subscriptions")
-            .select("stripe_customer_id")
+            .select("stripe_customer_id, stripe_subscription_id")
             .eq("org_id", orgMember.org_id)
             .in("status", ["active", "trialing", "past_due"])
             .order("updated_at", { ascending: false })
             .limit(1)
             .maybeSingle();
 
-        let customerId = subscription?.stripe_customer_id;
+        let customerId = subscriptionData?.stripe_customer_id;
 
         if (!customerId) {
             const { data: profile } = await supabaseAdmin
@@ -63,10 +70,77 @@ serve(async (req) => {
 
         if (!customerId) throw new Error("Stripe customer not found");
 
-        const portalSession = await stripe.billingPortal.sessions.create({
+        const sessionParams: Stripe.BillingPortal.SessionCreateParams = {
             customer: customerId,
             return_url: returnUrl || req.headers.get("origin") || "https://metaconstrutor.com.br/app/perfil",
-        });
+        };
+        const portalConfiguration = Deno.env.get("STRIPE_PORTAL_CONFIGURATION_ID");
+        if (portalConfiguration) {
+            sessionParams.configuration = portalConfiguration;
+        }
+
+        if (plan) {
+            const { data: planData, error: planError } = await supabaseAdmin
+                .from("plans")
+                .select("slug, stripe_price_id_monthly, stripe_price_id_yearly")
+                .eq("slug", plan)
+                .eq("is_active", true)
+                .single();
+
+            if (planError || !planData) throw new Error(`Plan not found: ${plan}`);
+            if (!subscriptionData?.stripe_subscription_id) throw new Error("No active subscription found");
+
+            if (planData.slug === "free") {
+                sessionParams.flow_data = {
+                    type: "subscription_cancel",
+                    subscription_cancel: {
+                        subscription: subscriptionData.stripe_subscription_id,
+                    },
+                    after_completion: {
+                        type: "redirect",
+                        redirect: {
+                            return_url: returnUrl || req.headers.get("origin") || "https://metaconstrutor.com.br/app/planos",
+                        },
+                    },
+                };
+            } else {
+                if (!["monthly", "yearly"].includes(billing)) {
+                    throw new Error("Invalid billing cycle");
+                }
+
+                const newPriceId = billing === "yearly"
+                    ? planData.stripe_price_id_yearly
+                    : planData.stripe_price_id_monthly;
+
+                if (!newPriceId) throw new Error(`Price ID missing for ${plan} (${billing})`);
+
+                const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionData.stripe_subscription_id);
+                const subscriptionItemId = stripeSubscription.items.data[0]?.id;
+                if (!subscriptionItemId) throw new Error("Subscription item not found");
+
+                sessionParams.flow_data = {
+                    type: "subscription_update_confirm",
+                    subscription_update_confirm: {
+                        subscription: stripeSubscription.id,
+                        items: [
+                            {
+                                id: subscriptionItemId,
+                                price: newPriceId,
+                                quantity: 1,
+                            },
+                        ],
+                    },
+                    after_completion: {
+                        type: "redirect",
+                        redirect: {
+                            return_url: returnUrl || req.headers.get("origin") || "https://metaconstrutor.com.br/app/planos",
+                        },
+                    },
+                };
+            }
+        }
+
+        const portalSession = await stripe.billingPortal.sessions.create(sessionParams);
 
         return new Response(JSON.stringify({ url: portalSession.url }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },

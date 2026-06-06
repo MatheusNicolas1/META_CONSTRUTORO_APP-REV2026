@@ -439,21 +439,16 @@ export const SignUpSteps: React.FC<SignUpStepsProps> = ({ onComplete }) => {
     confirmPassword: ''
   });
 
-  const handleNameNext = async () => {
-    setIsValidating(true);
-    // Simulate name validation
-    await new Promise(resolve => setTimeout(resolve, 500));
-    setIsValidating(false);
+  const handleNameNext = () => {
     setCurrentStep(2);
   };
 
-  const handleEmailNext = async () => {
+  const handleEmailNext = () => {
     setIsValidating(true);
     try {
       // V1: Verificação de duplicidade removida daqui.
       // O anon role não tem mais acesso à RPC check_user_duplicates.
       // O Supabase Auth trata duplicidade de email nativamente.
-      await new Promise(resolve => setTimeout(resolve, 300));
       setCurrentStep(3);
     } catch (_error) {
       toast.error('Erro ao validar dados. Tente novamente.');

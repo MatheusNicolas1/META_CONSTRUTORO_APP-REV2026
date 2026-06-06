@@ -347,7 +347,7 @@ export const IntegrationLogs = ({ logs, onRefresh, onExport }: IntegrationLogsPr
                 <div>
                   <label className="text-sm font-medium">Duração</label>
                   <p className="text-sm text-muted-foreground">
-                    {selectedLog.duration ? `${selectedLog.duration}ms` : 'N/A'}
+                    {selectedLog.duration ? `${selectedLog.duration}ms` : 'Nao registrado'}
                   </p>
                 </div>
               </div>

@@ -51,3 +51,8 @@ vite.config.ts.timestamp-*.mjs
 
 # Supabase CLI local cache
 supabase/.temp/
+
+# Local auxiliary workspaces outside the app/deploy surface
+codex-supabase-deploy-payment/
+MetaConstrutor/
+openai-whisper/

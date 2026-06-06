@@ -1,5 +1,0 @@
-Force Vite rebuild with React deduplication fix
-Timestamp: 2025-11-07T09:26:20Z
-- Added dedupe for react and react-dom
-- Forced optimizeDeps to include React packages
-- This should fix duplicate React instance errors

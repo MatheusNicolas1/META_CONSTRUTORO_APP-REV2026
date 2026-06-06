@@ -26,7 +26,7 @@ export const useUserPermissions = () => {
 
   const canExportRDO = (rdoStatus: string): boolean => {
     // Só pode exportar RDOs aprovados
-    if (rdoStatus !== 'Aprovado') return false;
+    if (rdoStatus !== 'Aprovado' && rdoStatus !== 'APPROVED') return false;
     return permissions.canExportRDO;
   };
 

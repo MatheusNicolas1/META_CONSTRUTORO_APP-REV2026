@@ -136,8 +136,8 @@ export function ActivityCalendarModern() {
   );
 
   return (
-    <Card className="bg-card border-border">
-      <CardHeader className="pb-4 px-4 md:px-6">
+    <Card className="min-w-0 bg-card border-border">
+      <CardHeader className="px-4 pb-4 2xl:px-6">
         <CardTitle className="text-card-foreground flex items-center text-lg md:text-xl">
           <CalendarDays className="mr-2 h-5 w-5 md:h-6 md:w-6 text-primary" />
           Calendário de Atividades
@@ -146,10 +146,10 @@ export function ActivityCalendarModern() {
           Agende e acompanhe suas atividades de construção
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4 p-4 md:p-6">
-        <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-5">
-          {/* Calendar - takes 2 columns on xl screens */}
-          <div className="space-y-4 lg:col-span-1 xl:col-span-2">
+      <CardContent className="space-y-4 p-4 2xl:p-6">
+        <div className="grid min-w-0 gap-4 lg:grid-cols-[20rem_minmax(0,1fr)]">
+          {/* Keep the calendar at a stable readable width; the activities panel absorbs tighter layouts. */}
+          <div className="w-full min-w-0 space-y-4 lg:w-80 lg:shrink-0">
             <div className="rounded-lg border border-border p-2">
               <Calendar
                 mode="single"
@@ -262,8 +262,7 @@ export function ActivityCalendarModern() {
             </Dialog>
           </div>
 
-          {/* Activities for selected date - takes 3 columns on xl screens */}
-          <div className="space-y-4 lg:col-span-1 xl:col-span-3">
+          <div className="min-w-0 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <h4 className="text-sm md:text-base font-medium text-card-foreground">
                 {selectedDateString
@@ -280,7 +279,7 @@ export function ActivityCalendarModern() {
 
             <div className="space-y-3 max-h-[420px] overflow-y-auto scrollbar-thin scrollbar-track-muted scrollbar-thumb-muted-foreground">
               {selectedActivities.length > 0 ? (
-                <div className="grid gap-3 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-1">
+                <div className="grid min-w-0 gap-3 sm:grid-cols-1 md:grid-cols-2 2xl:grid-cols-1">
                   {selectedActivities.map((activity) => (
                     <div
                       key={activity.id}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { Paperclip, Mic, CornerDownLeft, X, MessageCircle } from "lucide-react";
+import { CornerDownLeft, X, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   ChatBubble,
@@ -14,7 +14,7 @@ import { ChatInput } from "@/components/ui/chat-input";
 interface Message {
   id: number;
   content: string;
-  sender: "user" | "ai";
+  sender: "user" | "support";
   timestamp: Date;
 }
 
@@ -22,79 +22,64 @@ interface AdvancedChatProps {
   onClose: () => void;
 }
 
+const getHelpResponse = (userMessage: string): string => {
+  const lowerMessage = userMessage.toLowerCase();
+
+  if (lowerMessage.includes("obra") || lowerMessage.includes("projeto")) {
+    return "Para criar uma obra, acesse /app/obras e use Nova Obra. Se voce precisa corrigir uma obra existente, abra a obra e revise os dados cadastrais.";
+  }
+
+  if (lowerMessage.includes("rdo") || lowerMessage.includes("relatorio")) {
+    return "Os RDOs ficam em /app/rdo. Para gerar PDF ou enviar por e-mail, abra um RDO aprovado em /app/rdo e use as acoes disponiveis na tela.";
+  }
+
+  if (lowerMessage.includes("equipe") || lowerMessage.includes("funcionario") || lowerMessage.includes("colaborador")) {
+    return "Colaboradores e equipes ficam em /app/equipes. Cadastre membros antes de usa-los em RDOs, atividades e permissoes.";
+  }
+
+  if (lowerMessage.includes("senha") || lowerMessage.includes("login") || lowerMessage.includes("acesso")) {
+    return "Para trocar senha, acesse Perfil e use Seguranca da Conta. Para recuperar acesso, use /recuperar-senha.";
+  }
+
+  if (lowerMessage.includes("plano") || lowerMessage.includes("pagamento") || lowerMessage.includes("assinatura")) {
+    return "Planos e cobranca ficam em /app/planos. Novas assinaturas seguem pelo checkout seguro e assinaturas ativas sao gerenciadas pelo portal de cobranca.";
+  }
+
+  return "Esta ajuda responde duvidas frequentes do app. Para atendimento especifico, use /contato ou envie sua pergunta com mais contexto.";
+};
+
 export function AdvancedChat({ onClose }: AdvancedChatProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      content: "Olá! Sou o assistente virtual do MetaConstrutor. Como posso ajudá-lo hoje?",
-      sender: "ai",
+      content: "Ajuda rapida do Meta Construtor. Digite uma duvida sobre obras, RDO, equipes, acesso ou planos.",
+      sender: "support",
       timestamp: new Date(),
     },
   ]);
-
   const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const getAIResponse = (userMessage: string): string => {
-    const lowerMessage = userMessage.toLowerCase();
-    
-    if (lowerMessage.includes("obra") || lowerMessage.includes("projeto")) {
-      return "Para criar uma nova obra, acesse a seção 'Obras' no menu lateral e clique em 'Nova Obra'. Preencha todos os dados necessários como nome, endereço e datas. Posso ajudar com algo mais específico sobre gestão de obras?";
-    }
-    
-    if (lowerMessage.includes("rdo") || lowerMessage.includes("relatório")) {
-      return "O RDO (Relatório Diário de Obra) é preenchido na seção 'RDO' do menu. Selecione a obra e a data para registrar as atividades do dia. Você pode anexar fotos e documentos. Precisa de ajuda com algum campo específico?";
-    }
-    
-    if (lowerMessage.includes("equipe") || lowerMessage.includes("funcionário")) {
-      return "Na seção 'Equipes' você pode gerenciar todos os membros da sua equipe. É possível adicionar novos funcionários, definir funções e acompanhar a produtividade. O que você gostaria de saber sobre gestão de equipes?";
-    }
-    
-    if (lowerMessage.includes("senha") || lowerMessage.includes("login")) {
-      return "Para alterar sua senha, vá em 'Configurações' no menu do perfil, depois 'Segurança' e clique em 'Alterar Senha'. Você precisará da senha atual para confirmar a mudança. Posso ajudar com outras questões de segurança?";
-    }
-
-    if (lowerMessage.includes("relatório") || lowerMessage.includes("relatorio")) {
-      return "O sistema oferece vários tipos de relatórios: progresso de obras, produtividade, custos e análises personalizadas. Todos podem ser exportados em PDF. Qual tipo específico você precisa?";
-    }
-
-    return "Entendi sua dúvida. Para questões mais específicas, recomendo consultar nossa seção de FAQ ou entrar em contato com nossa equipe de suporte técnico. Posso ajudar com informações gerais sobre o sistema. O que mais você gostaria de saber?";
-  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    const question = input.trim();
+    if (!question) return;
 
-    const userMessage: Message = {
-      id: messages.length + 1,
-      content: input,
-      sender: "user",
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-    setIsLoading(true);
-
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: messages.length + 2,
-        content: getAIResponse(input),
-        sender: "ai",
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: prev.length + 1,
+        content: question,
+        sender: "user",
         timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, aiResponse]);
-      setIsLoading(false);
-    }, 1000 + Math.random() * 1000);
-  };
-
-  const handleAttachFile = () => {
-    // Implementar anexo de arquivo
-  };
-
-  const handleMicrophoneClick = () => {
-    // Implementar gravação de áudio
+      },
+      {
+        id: prev.length + 2,
+        content: getHelpResponse(question),
+        sender: "support",
+        timestamp: new Date(),
+      },
+    ]);
+    setInput("");
   };
 
   return (
@@ -106,8 +91,8 @@ export function AdvancedChat({ onClose }: AdvancedChatProps) {
               <MessageCircle className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <h3 className="font-semibold text-foreground">Assistente Virtual</h3>
-              <p className="text-sm text-muted-foreground">Suporte MetaConstrutor</p>
+              <h3 className="font-semibold text-foreground">Ajuda rapida</h3>
+              <p className="text-sm text-muted-foreground">FAQ Meta Construtor</p>
             </div>
           </div>
           <Button variant="ghost" size="sm" onClick={onClose}>
@@ -124,12 +109,7 @@ export function AdvancedChat({ onClose }: AdvancedChatProps) {
               >
                 <ChatBubbleAvatar
                   className="h-8 w-8 shrink-0"
-                  src={
-                    message.sender === "user"
-                      ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&q=80&crop=faces&fit=crop"
-                      : "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=80&crop=faces&fit=crop"
-                  }
-                  fallback={message.sender === "user" ? "US" : "IA"}
+                  fallback={message.sender === "user" ? "US" : "FAQ"}
                 />
                 <ChatBubbleMessage
                   variant={message.sender === "user" ? "sent" : "received"}
@@ -146,17 +126,6 @@ export function AdvancedChat({ onClose }: AdvancedChatProps) {
                 </ChatBubbleMessage>
               </ChatBubble>
             ))}
-
-            {isLoading && (
-              <ChatBubble variant="received">
-                <ChatBubbleAvatar
-                  className="h-8 w-8 shrink-0"
-                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=80&crop=faces&fit=crop"
-                  fallback="IA"
-                />
-                <ChatBubbleMessage isLoading />
-              </ChatBubble>
-            )}
           </ChatMessageList>
         </div>
 
@@ -168,36 +137,15 @@ export function AdvancedChat({ onClose }: AdvancedChatProps) {
             <ChatInput
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Digite sua dúvida sobre o sistema..."
+              placeholder="Digite sua duvida sobre o sistema..."
               className="min-h-12 resize-none rounded-lg bg-background border-0 p-3 shadow-none focus-visible:ring-0"
             />
-            <div className="flex items-center p-3 pt-0 justify-between">
-              <div className="flex">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  type="button"
-                  onClick={handleAttachFile}
-                  className="h-8 w-8"
-                >
-                  <Paperclip className="h-4 w-4" />
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  type="button"
-                  onClick={handleMicrophoneClick}
-                  className="h-8 w-8"
-                >
-                  <Mic className="h-4 w-4" />
-                </Button>
-              </div>
-              <Button 
-                type="submit" 
-                size="sm" 
+            <div className="flex items-center p-3 pt-0 justify-end">
+              <Button
+                type="submit"
+                size="sm"
                 className="ml-auto gap-1.5"
-                disabled={!input.trim() || isLoading}
+                disabled={!input.trim()}
               >
                 Enviar
                 <CornerDownLeft className="h-3 w-3" />

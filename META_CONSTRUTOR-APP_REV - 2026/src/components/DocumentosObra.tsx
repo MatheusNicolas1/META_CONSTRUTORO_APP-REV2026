@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FileUpload } from "@/components/FileUpload";
-import { FileText, Download, Trash2, Upload } from "lucide-react";
+import { FileText, Trash2, Upload } from "lucide-react";
 
 interface DocumentoObra {
   id: string;
@@ -11,26 +11,40 @@ interface DocumentoObra {
   tamanho: string;
   dataUpload: string;
   url?: string;
+  file?: File;
 }
 
-export const DocumentosObra = () => {
+interface DocumentosObraProps {
+  onFilesChange?: (files: File[]) => void;
+  disabled?: boolean;
+}
+
+export const DocumentosObra = ({ onFilesChange, disabled = false }: DocumentosObraProps) => {
   const [documentos, setDocumentos] = useState<DocumentoObra[]>([]);
 
   const handleFilesUploaded = (uploadedFiles: any[]) => {
+    if (disabled) return;
+
     const novosDocumentos = uploadedFiles.map(file => ({
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
       nome: file.name,
       tipo: file.type || 'application/octet-stream',
       tamanho: formatFileSize(file.size),
       dataUpload: new Date().toLocaleDateString('pt-BR'),
-      url: file.url
+      url: file.url,
+      file: file.file instanceof File ? file.file : undefined
     }));
 
     setDocumentos(prev => [...prev, ...novosDocumentos]);
+    onFilesChange?.(uploadedFiles.map((file) => file.file).filter((file): file is File => file instanceof File));
   };
 
   const removerDocumento = (id: string) => {
-    setDocumentos(prev => prev.filter(doc => doc.id !== id));
+    setDocumentos(prev => {
+      const nextDocuments = prev.filter(doc => doc.id !== id);
+      onFilesChange?.(nextDocuments.map((doc) => doc.file).filter((file): file is File => file instanceof File));
+      return nextDocuments;
+    });
   };
 
   const formatFileSize = (bytes: number) => {
@@ -81,6 +95,7 @@ export const DocumentosObra = () => {
                 multiple
                 maxSize={10}
                 uploadType="documents"
+                className={disabled ? "pointer-events-none opacity-60" : undefined}
               />
             </div>
           </div>
@@ -117,17 +132,11 @@ export const DocumentosObra = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-muted-foreground hover:text-primary"
-                        title="Visualizar/Download"
-                      >
-                        <Download className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
                         className="text-muted-foreground hover:text-destructive"
                         onClick={() => removerDocumento(documento.id)}
+                        disabled={disabled}
                         title="Remover documento"
+                        aria-label={`Remover documento ${documento.nome}`}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

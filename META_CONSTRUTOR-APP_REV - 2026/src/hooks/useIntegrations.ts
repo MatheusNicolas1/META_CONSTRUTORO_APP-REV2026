@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import {
   Integration,
@@ -11,6 +11,8 @@ import {
   WhatsAppConfig,
   GmailConfig,
   GoogleDriveConfig,
+  IntegrationEvent,
+  EventPayload,
   ApiResponse
 } from '@/types/integration';
 import { useToast } from '@/hooks/use-toast';
@@ -25,11 +27,29 @@ type DbIntegration = {
   last_sync?: string;
 };
 
+type AnalyticsIntegrationLogRow = {
+  id: string;
+  event: string;
+  properties?: {
+    orgId?: string;
+    userId?: string;
+    source?: string;
+    integrationId?: string;
+    integrationType?: IntegrationType;
+    status?: IntegrationLog['status'];
+    message?: string;
+    data?: Record<string, any>;
+    duration?: number;
+    error?: string;
+  } | null;
+  created_at?: string | null;
+};
+
 const defaultIntegrations: Partial<Integration>[] = [
   { id: 'n8n', name: 'N8N Automation', type: 'n8n', description: 'Plataforma de automacao de workflow', priority: 8, isAdvanced: true },
   { id: 'whatsapp', name: 'WhatsApp Business', type: 'whatsapp', description: 'API do WhatsApp Business', priority: 1, fluxos: ['Obra Criada', 'RDO Aprovado', 'Atividade Atrasada'] },
   { id: 'gmail', name: 'Gmail', type: 'gmail', description: 'Integracao com Gmail', priority: 2, fluxos: ['Relatorios Diarios', 'Confirmacoes', 'Alertas Urgentes'] },
-  { id: 'googledrive', name: 'Google Drive', type: 'googledrive', description: 'Armazenamento na nuvem', priority: 3, fluxos: ['Upload Documentos', 'Backup Automatico'] }
+  { id: 'googledrive', name: 'Google Drive', type: 'googledrive', description: 'Armazenamento na nuvem', priority: 3, fluxos: ['Upload Documentos', 'Organizacao de Arquivos'] }
 ];
 
 const serviceToDb = (integrationId: string) => integrationId === 'googledrive' ? 'drive' : integrationId;
@@ -58,15 +78,109 @@ export const useIntegrations = () => {
   const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [logs, setLogs] = useState<IntegrationLog[]>([]);
   const [webhooks, setWebhooks] = useState<WebhookConfig[]>([]);
-  const [statuses, setStatuses] = useState<Record<string, IntegrationStatus>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const addLog = (log: Omit<IntegrationLog, 'id' | 'timestamp'>) => {
-    setLogs(prev => [{
+  const statuses = useMemo<Record<string, IntegrationStatus>>(() => {
+    return Object.fromEntries(integrations.map(integration => {
+      const integrationLogs = logs.filter(log =>
+        log.integrationId === integration.id &&
+        (log.event.startsWith('integration.test') || log.event.startsWith('integration.execution'))
+      );
+      const successfulEvents = integrationLogs.filter(log => log.status === 'success').length;
+      const errorCount = integrationLogs.filter(log => log.status === 'error').length;
+      const hasEvidence = integrationLogs.length > 0;
+      const latestLog = integrationLogs[0];
+      const latencyLogs = integrationLogs.filter(log => typeof log.duration === 'number');
+      const latency = latencyLogs.length > 0
+        ? Math.round(latencyLogs.reduce((sum, log) => sum + (log.duration || 0), 0) / latencyLogs.length)
+        : undefined;
+      const successRate = hasEvidence ? Math.round((successfulEvents / integrationLogs.length) * 100) : undefined;
+
+      return [
+        integration.id,
+        {
+          integrationId: integration.id,
+          name: integration.name,
+          type: integration.type,
+          isHealthy: hasEvidence && errorCount === 0,
+          hasEvidence,
+          lastCheck: latestLog?.timestamp || integration.lastSync || '',
+          errorCount,
+          successRate,
+          uptime: successRate,
+          latency,
+          evidenceCount: integrationLogs.length,
+          successfulEvents
+        }
+      ];
+    }));
+  }, [integrations, logs]);
+
+  const appendLogState = (log: IntegrationLog) => {
+    setLogs(prev => [log, ...prev.filter(item => item.id !== log.id)].slice(0, 100));
+  };
+
+  const persistLog = async (log: IntegrationLog) => {
+    if (!session?.user?.id || !orgId) return false;
+
+    const { error } = await supabase
+      .from('analytics_events' as any)
+      .insert({
+        event: log.event,
+        org_id: orgId,
+        user_id: session.user.id,
+        source: 'frontend',
+        success: log.status === 'success',
+        error: log.error,
+        properties: {
+          orgId,
+          userId: session.user.id,
+          source: 'frontend',
+          integrationId: log.integrationId,
+          integrationType: log.integrationType,
+          status: log.status,
+          message: log.message,
+          data: log.data,
+          duration: log.duration,
+          error: log.error
+        }
+      });
+
+    if (error) {
+      console.warn('Falha ao persistir log de integracao:', error.message);
+      return false;
+    }
+
+    return true;
+  };
+
+  const addLog = async (log: Omit<IntegrationLog, 'id' | 'timestamp'>) => {
+    const fullLog = {
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
       ...log
-    }, ...prev].slice(0, 100));
+    };
+
+    appendLogState(fullLog);
+    return persistLog(fullLog);
+  };
+
+  const mapAnalyticsLog = (row: AnalyticsIntegrationLogRow): IntegrationLog => {
+    const props = row.properties || {};
+    const status = props.status || (props.error ? 'error' : 'pending');
+
+    return {
+      id: row.id,
+      integrationId: props.integrationId || 'integrations',
+      integrationType: props.integrationType || 'webhook',
+      event: row.event,
+      status,
+      message: props.message || props.error || row.event,
+      data: props.data,
+      error: props.error,
+      timestamp: row.created_at || new Date().toISOString(),
+      duration: props.duration
+    };
   };
 
   const mergeIntegrations = (savedRows: DbIntegration[] = []) => {
@@ -91,19 +205,6 @@ export const useIntegrations = () => {
     });
 
     setIntegrations(merged);
-    setStatuses(Object.fromEntries(merged.map(integration => [
-      integration.id,
-      {
-        integrationId: integration.id,
-        name: integration.name,
-        type: integration.type,
-        isHealthy: integration.status === 'connected',
-        lastCheck: integration.lastSync || new Date().toISOString(),
-        errorCount: integration.status === 'error' ? 1 : 0,
-        successRate: integration.status === 'connected' ? 100 : 0,
-        uptime: integration.status === 'connected' ? 100 : 0
-      }
-    ])));
   };
 
   const loadIntegrations = async () => {
@@ -122,7 +223,7 @@ export const useIntegrations = () => {
       if (error) throw error;
       mergeIntegrations((data || []) as DbIntegration[]);
     } catch (error: any) {
-      addLog({
+      void addLog({
         integrationId: 'integrations',
         integrationType: 'webhook',
         event: 'integrations.load',
@@ -137,7 +238,34 @@ export const useIntegrations = () => {
   };
 
   const loadLogs = async () => {
-    return Promise.resolve();
+    if (!session?.user?.id || !orgId) {
+      setLogs([]);
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('analytics_events' as any)
+      .select('id, event, properties, created_at')
+      .eq('properties->>orgId', orgId)
+      .or('event.like.integration.%,event.like.integrations.%')
+      .order('created_at', { ascending: false })
+      .limit(100);
+
+    if (error) {
+      appendLogState({
+        id: crypto.randomUUID(),
+        integrationId: 'integrations',
+        integrationType: 'webhook',
+        event: 'integrations.logs.load_failed',
+        status: 'error',
+        message: 'Falha ao carregar logs persistidos',
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
+      return;
+    }
+
+    setLogs(((data || []) as AnalyticsIntegrationLogRow[]).map(mapAnalyticsLog));
   };
 
   const loadWebhooks = async () => {
@@ -148,7 +276,7 @@ export const useIntegrations = () => {
     if (!session?.user?.id || !orgId) return { success: false, error: 'Usuario ou organizacao nao autenticados' };
 
     try {
-      const status: Integration['status'] = 'connected';
+      const status: Integration['status'] = 'pending';
       const { error } = await supabase
         .from('integrations')
         .upsert({
@@ -164,11 +292,11 @@ export const useIntegrations = () => {
 
       setIntegrations(prev => prev.map(integration =>
         integration.id === integrationId
-          ? { ...integration, configuration: config, isConfigured: true, isActive: true, status }
+          ? { ...integration, configuration: config, isConfigured: true, isActive: false, status }
           : integration
       ));
 
-      addLog({
+      void addLog({
         integrationId,
         integrationType: integrationId as IntegrationType,
         event: 'integration.config.saved',
@@ -178,7 +306,7 @@ export const useIntegrations = () => {
 
       return { success: true, message: 'Configuracao salva com sucesso' };
     } catch (error: any) {
-      addLog({
+      void addLog({
         integrationId,
         integrationType: integrationId as IntegrationType,
         event: 'integration.config.save_failed',
@@ -215,7 +343,7 @@ export const useIntegrations = () => {
       const success = data?.success === true;
       await updateIntegrationStatus(integrationId, success ? 'connected' : 'error');
 
-      addLog({
+      const logPersisted = await addLog({
         integrationId,
         integrationType: integrationId as IntegrationType,
         event: 'integration.test',
@@ -226,10 +354,15 @@ export const useIntegrations = () => {
       });
 
       await loadIntegrations();
+      if (success && !logPersisted) {
+        await updateIntegrationStatus(integrationId, 'error');
+        return false;
+      }
+
       return success;
     } catch (error: any) {
       await updateIntegrationStatus(integrationId, 'error');
-      addLog({
+      await addLog({
         integrationId,
         integrationType: integrationId as IntegrationType,
         event: 'integration.test_failed',
@@ -254,7 +387,10 @@ export const useIntegrations = () => {
     const redirectUri = `${window.location.origin}/integracoes`;
     const { data, error } = await supabase.functions.invoke('gmail-integration', { body: { action: 'oauth-url', redirectUri } });
     if (error) throw error;
-    if (data?.oauthUrl) window.open(data.oauthUrl, '_blank', 'noopener,noreferrer');
+    if (data?.success !== true || !data?.oauthUrl) {
+      throw new Error(data?.error || 'Gmail bloqueado ate configurar secrets OAuth');
+    }
+    window.open(data.oauthUrl, '_blank', 'noopener,noreferrer');
     return { clientId: '', clientSecret: '', accessToken: '', refreshToken: '', settings: { enableAutoReports: true, enableUrgentAlerts: true, defaultSender: '' } } as GmailConfig;
   };
 
@@ -264,14 +400,50 @@ export const useIntegrations = () => {
     const redirectUri = `${window.location.origin}/integracoes`;
     const { data, error } = await supabase.functions.invoke('google-drive-integration', { body: { action: 'oauth-url', redirectUri } });
     if (error) throw error;
-    if (data?.oauthUrl) window.open(data.oauthUrl, '_blank', 'noopener,noreferrer');
+    if (data?.success !== true || !data?.oauthUrl) {
+      throw new Error(data?.error || 'Google Drive bloqueado ate configurar secrets OAuth');
+    }
+    window.open(data.oauthUrl, '_blank', 'noopener,noreferrer');
     return { clientId: '', clientSecret: '', accessToken: '', refreshToken: '', settings: { autoSync: true, folderStructure: { obras: 'Obras', rdos: 'RDOs', documentos: 'Documentos', checklists: 'Checklists' } } } as GoogleDriveConfig;
   };
 
-  const saveWebhook = async () => undefined;
-  const deleteWebhook = async () => undefined;
-  const testWebhook = async () => true;
-  const triggerEvent = async () => undefined;
+  const webhookBackendUnavailable = 'Webhooks personalizados ainda nao possuem backend real configurado.';
+
+  const recordWebhookUnavailable = (event: string, data?: Record<string, any>) => {
+    void addLog({
+      integrationId: 'webhook',
+      integrationType: 'webhook',
+      event,
+      status: 'error',
+      message: webhookBackendUnavailable,
+      data,
+      error: webhookBackendUnavailable
+    });
+  };
+
+  const saveWebhook = async (webhook?: WebhookConfig) => {
+    recordWebhookUnavailable('integrations.webhook.save_unavailable', webhook ? { webhookId: webhook.id, name: webhook.name } : undefined);
+    throw new Error(webhookBackendUnavailable);
+  };
+
+  const deleteWebhook = async (id?: string) => {
+    recordWebhookUnavailable('integrations.webhook.delete_unavailable', id ? { webhookId: id } : undefined);
+    throw new Error(webhookBackendUnavailable);
+  };
+
+  const testWebhook = async (webhook?: WebhookConfig) => {
+    recordWebhookUnavailable('integrations.webhook.test_unavailable', webhook ? { webhookId: webhook.id, name: webhook.name } : undefined);
+    return false;
+  };
+
+  const triggerEvent = async (event?: IntegrationEvent, payload?: EventPayload) => {
+    recordWebhookUnavailable('integrations.webhook.trigger_unavailable', {
+      event,
+      entityId: payload?.entityId,
+      entityType: payload?.entityType
+    });
+    throw new Error(webhookBackendUnavailable);
+  };
   const exportLogs = async () => {
     const headers = ['Timestamp', 'Integracao', 'Evento', 'Status', 'Mensagem', 'Erro'];
     const csv = [

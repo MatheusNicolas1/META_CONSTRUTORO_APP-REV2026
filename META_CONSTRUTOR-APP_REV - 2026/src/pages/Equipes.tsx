@@ -2,26 +2,34 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { AutocompleteInput } from "@/components/ui/autocomplete-input";
 import { EquipeExpandableCard } from "@/components/EquipeExpandableCard";
 import { useEquipesSupabase } from "@/hooks/useEquipesSupabase";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Users, Search, Plus, Loader2, AlertCircle } from "lucide-react";
+import { Users, Search, Plus, Loader2 } from "lucide-react";
 import { usePermissions } from "@/hooks/usePermissions";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { PlanLimitCard } from "@/components/PlanLimitCard";
 
 const emptyFormData = { nome: "", funcao: "", telefone: "", email: "" };
 
 const Equipes = () => {
-  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const { equipe: equipePerms, isLoading: isPermsLoading } = usePermissions();
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; nome: string } | null>(null);
+  const { equipe: equipePerms, isLoading: isPermsLoading, equipeCount } = usePermissions();
 
   const [formData, setFormData] = useState(emptyFormData);
   const [editFormData, setEditFormData] = useState(emptyFormData);
@@ -72,9 +80,18 @@ const Equipes = () => {
   };
 
   const handleDeleteMembro = (id: number | string) => {
-    if (confirm("Tem certeza que deseja excluir este colaborador?")) {
-      deleteEquipe.mutate(String(id));
-    }
+    const membro = equipes.find((item) => String(item.id) === String(id));
+    setPendingDelete({
+      id: String(id),
+      nome: membro?.nome || "este colaborador",
+    });
+  };
+
+  const confirmDeleteMembro = () => {
+    if (!pendingDelete) return;
+    deleteEquipe.mutate(pendingDelete.id, {
+      onSuccess: () => setPendingDelete(null),
+    });
   };
 
   const handleSubmit = () => {
@@ -193,16 +210,12 @@ const Equipes = () => {
         </div>
 
         {equipePerms.isAtLimit && (
-          <Alert variant="destructive" className="bg-destructive/10 border-destructive/20 text-destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Limite de Colaboradores Atingido</AlertTitle>
-            <AlertDescription className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <span>Seu plano atual permite até {equipePerms.maxUsers} colaborador(es). Para adicionar mais membros, faça o upgrade do seu plano.</span>
-              <Button size="sm" variant="outline" onClick={() => navigate('/preco')} className="border-destructive/50 hover:bg-destructive/20 text-destructive">
-                Ver Planos
-              </Button>
-            </AlertDescription>
-          </Alert>
+          <PlanLimitCard
+            title="Limite de colaboradores atingido"
+            description={`Seu plano atual permite até ${equipePerms.maxUsers} colaborador(es). Faça upgrade para adicionar novos membros à equipe.`}
+            used={equipeCount}
+            limit={equipePerms.maxUsers}
+          />
         )}
 
         <div className="w-full">
@@ -291,6 +304,27 @@ const Equipes = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!pendingDelete} onOpenChange={(open) => !open && setPendingDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir colaborador?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acao vai excluir {pendingDelete?.nome || "este colaborador"} do cadastro. A operacao usa a exclusao real do Supabase e nao sera confirmada se a requisicao falhar.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteEquipe.isPending}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteMembro}
+              disabled={deleteEquipe.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleteEquipe.isPending ? "Excluindo..." : "Excluir"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

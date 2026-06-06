@@ -1,22 +1,21 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Building2, Search, Plus, Loader2, AlertCircle } from "lucide-react";
+import { Building2, Search, Plus, AlertCircle } from "lucide-react";
 import { ObraExpandableCard } from "@/components/ui/expandable-card";
 import { NovaObraForm } from "@/components/NovaObraForm";
 import { CreditsDisplay } from "@/components/CreditsDisplay";
+import { PlanLimitCard } from "@/components/PlanLimitCard";
 import { useObras } from "@/hooks/useObras";
 import { usePermissions } from "@/hooks/usePermissions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
-import { useNavigate } from "react-router-dom";
 
 const Obras = () => {
-  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { obras, isLoading, error, refetch } = useObras();
-  const { obra: obraPerms, isLoading: isPermsLoading } = usePermissions();
+  const { obra: obraPerms, isLoading: isPermsLoading, obrasCount } = usePermissions();
 
   const filteredObras = obras.filter(obra =>
     String(obra.nome || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -94,16 +93,12 @@ const Obras = () => {
         </div>
 
         {obraPerms.isAtLimit && (
-          <Alert variant="destructive" className="bg-destructive/10 border-destructive/20 text-destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Limite de Obras Atingido</AlertTitle>
-            <AlertDescription className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <span>Seu plano atual permite até {obraPerms.maxObras} obra(s) ativa(s). Para cadastrar mais obras, faça o upgrade do seu plano.</span>
-              <Button size="sm" variant="outline" onClick={() => navigate('/preco')} className="border-destructive/50 hover:bg-destructive/20 text-destructive">
-                Ver Planos
-              </Button>
-            </AlertDescription>
-          </Alert>
+          <PlanLimitCard
+            title="Limite de obras atingido"
+            description={`Seu plano atual permite até ${obraPerms.maxObras} obra(s). Faça upgrade para cadastrar novas obras e continuar expandindo seus projetos.`}
+            used={obrasCount}
+            limit={obraPerms.maxObras}
+          />
         )}
 
         {/* Sistema de Créditos */}

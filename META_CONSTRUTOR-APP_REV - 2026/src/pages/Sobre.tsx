@@ -1,285 +1,152 @@
-import React, { lazy, Suspense } from 'react';
-import { useNavigate } from 'react-router-dom';
+﻿import React from 'react';
+import { motion } from 'framer-motion';
 import SEO from "@/components/SEO";
-import LandingNavigation from '@/components/landing/LandingNavigation';
-import FooterSection from '@/components/landing/FooterSection';
+import { seoPages } from '@/config/seo';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Target, Eye, Heart, MapPin, Shield, Zap, Building2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { PublicLayout } from '@/components/public/PublicLayout';
+import { AnimatedSection } from '@/components/public/AnimatedSection';
+import { AnimatedGradient } from '@/components/public/AnimatedGradient';
+import { StaggerContainer, StaggerItem } from '@/components/public/StaggerContainer';
 
-const TimelineSection = lazy(() => import('@/components/sobre/TimelineSection'));
-const TeamSection = lazy(() => import('@/components/sobre/TeamSection'));
-const InstitutionalTestimonials = lazy(() => import('@/components/sobre/InstitutionalTestimonials'));
-const ImpactMetrics = lazy(() => import('@/components/sobre/ImpactMetrics'));
-import {
-  Target,
-  Eye,
-  Heart,
-  Shield,
-  Headphones,
-  Award,
-  Zap,
-  MapPin,
-  Leaf,
-  Lock
-} from 'lucide-react';
+const missionItems = [
+  { icon: Target, title: 'Missão', desc: 'Digitalizar a rotina de construtoras brasileiras com simplicidade e eficiência.' },
+  { icon: Eye, title: 'Visão', desc: 'Ser a plataforma de referência em gestão de obras no Brasil até 2028.' },
+  { icon: Heart, title: 'Valores', desc: 'Clareza, segurança, simplicidade operacional e respeito aos dados.' },
+];
 
-const Sobre = () => {
-  const navigate = useNavigate();
-  const missionValues = [
-    {
-      icon: Target,
-      title: 'Missão',
-      description: 'Empoderar construtoras e engenheiros com tecnologia acessível e intuitiva.'
-    },
-    {
-      icon: Eye,
-      title: 'Visão',
-      description: 'Ser a plataforma de gestão de obras mais confiável e utilizada na América Latina até 2030.'
-    },
-    {
-      icon: Heart,
-      title: 'Valores',
-      description: 'Transparência, Inovação, Simplicidade, Foco no Cliente, Segurança.'
-    }
-  ];
+const differentials = [
+  { icon: MapPin, title: '100% brasileiro', desc: 'Produto pensado para a rotina e legislação da construção civil do Brasil.' },
+  { icon: Shield, title: 'Segurança e LGPD', desc: 'Dados criptografados, isolados por organização e em conformidade com a lei.' },
+  { icon: Zap, title: 'Rápido e online', desc: 'Acesse de qualquer dispositivo, sem instalar nada. Atualizações em tempo real.' },
+];
 
-  const differentials = [
-    {
-      icon: MapPin,
-      title: 'Plataforma 100% brasileira',
-      description: 'Desenvolvida especialmente para o mercado nacional, adaptada às normas e necessidades locais.'
-    },
-    {
-      icon: Headphones,
-      title: 'Suporte humanizado 24/7',
-      description: 'Equipe especializada disponível para ajudar você a qualquer momento, todos os dias.'
-    },
-    {
-      icon: Shield,
-      title: 'Segurança de dados garantida',
-      description: 'Criptografia de nível empresarial, backups automáticos e conformidade com LGPD.'
-    },
-    {
-      icon: Zap,
-      title: 'Integrações nativas',
-      description: 'Conecte-se facilmente às ferramentas que você já usa no dia a dia da sua empresa.'
-    }
-  ];
+const metrics = [
+  { value: '2023', label: 'Fundação' },
+  { value: '300+', label: 'Construtoras' },
+  { value: '1.500+', label: 'Obras ativas' },
+  { value: '50k+', label: 'RDOs gerados' },
+];
 
-  const commitments = [
-    {
-      icon: Lock,
-      title: 'Conformidade LGPD',
-      description: 'Total adequação à Lei Geral de Proteção de Dados, garantindo privacidade e segurança.'
-    },
-    {
-      icon: Shield,
-      title: 'Segurança de dados',
-      description: 'Infraestrutura robusta com criptografia, backups e monitoramento 24/7.'
-    },
-    {
-      icon: Leaf,
-      title: 'Sustentabilidade',
-      description: 'Redução significativa no uso de papel e impressões, contribuindo para um planeta mais verde.'
-    }
-  ];
-
-  return (
-    <>
-      <SEO
-        title="Sobre Nós - Meta Construtor | Transformando a Gestão de Obras no Brasil"
-        description="Conheça a história, missão e valores do Meta Construtor. Descubra como revolucionamos a gestão de obras com tecnologia 100% brasileira."
-        canonical="https://metaconstrutor.com.br/sobre"
-      />
-
-      <div className="min-h-screen overflow-x-hidden bg-background">
-        <LandingNavigation />
-
-        <main className="pt-16 md:pt-20 w-full">
-          {/* Hero Section */}
-          <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-primary/10 via-background to-secondary/5 relative overflow-hidden w-full">
-            <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="grid lg:grid-cols-2 gap-12 items-center">
-                <div className="mx-auto max-w-[22rem] min-w-0 text-center lg:mx-0 lg:max-w-none lg:text-left">
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 leading-tight break-words">
-                    Transformando a gestão de obras
-                    <span className="text-primary"> no Brasil</span>
-                  </h1>
-                  <p className="text-lg sm:text-xl text-muted-foreground mb-8 leading-relaxed">
-                    Simplificamos processos, reduzimos retrabalho e damos mais previsibilidade
-                    às construtoras através de tecnologia intuitiva e acessível.
-                  </p>
-                  <button
-                    onClick={() => navigate('/contato')}
-                    className="w-full max-w-[20rem] bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-4 rounded-lg font-semibold text-base leading-none sm:w-auto sm:max-w-none sm:px-8 transition-all duration-300 shadow-lg hover:shadow-xl"
-                  >
-                    Fale com a nossa equipe
-                  </button>
-                </div>
-
-                <div className="relative mx-auto max-w-[calc(100vw-2rem)] min-w-0 lg:max-w-none">
-                  <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-border/50">
-                    <img
-                      src="/lovable-uploads/5557c860-388b-4ad5-bde2-5718350a8197.png"
-                      alt="MetaConstrutor - Dashboard de gestão de obras digitalizado"
-                      className="w-full h-auto object-cover animate-fade-in"
-                    />
-                  </div>
-                  <div className="absolute -top-6 -right-6 w-20 h-20 bg-primary/20 rounded-full blur-xl animate-pulse" />
-                  <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-secondary/20 rounded-full blur-2xl animate-pulse delay-1000" />
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Mission, Vision, Values */}
-          <section className="py-12 md:py-16 lg:py-20 bg-muted/30 w-full">
-            <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-center mb-16">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4 break-words">
-                  Missão, Visão e Valores
-                </h2>
-                <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto">
-                  Os pilares que guiam nossa jornada de transformação no setor da construção civil.
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-8">
-                {missionValues.map((value, index) => (
-                  <div
-                    key={index}
-                    className="bg-card rounded-2xl p-6 sm:p-8 border border-border hover:shadow-lg transition-all duration-300 md:hover:scale-105 text-center group"
-                  >
-                    <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:from-primary/30 group-hover:to-primary/20 transition-all">
-                      <value.icon className="h-10 w-10 text-primary" />
-                    </div>
-                    <h3 className="text-lg sm:text-xl font-semibold leading-snug text-foreground mb-4 break-words">
-                      {value.title}
-                    </h3>
-                    <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                      {value.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Timeline History */}
-          <Suspense fallback={<div className="py-12 text-center text-muted-foreground">Carregando...</div>}>
-            <TimelineSection />
-          </Suspense>
-
-          {/* Team Section */}
-          <Suspense fallback={<div className="py-12 text-center text-muted-foreground">Carregando...</div>}>
-            <TeamSection />
-          </Suspense>
-
-          {/* Differentials */}
-          <section className="py-12 md:py-16 lg:py-20 bg-muted/30 w-full">
-            <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-center mb-16">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4 break-words">
-                  Diferenciais do MetaConstrutor
-                </h2>
-                <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto">
-                  O que nos torna únicos no mercado de gestão de obras.
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {differentials.map((differential, index) => (
-                  <div
-                    key={index}
-                    className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 text-center group"
-                  >
-                    <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
-                      <differential.icon className="h-8 w-8 text-primary" />
-                    </div>
-                    <h3 className="text-base sm:text-lg font-semibold leading-snug text-foreground mb-3 break-words">
-                      {differential.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {differential.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* Impact Metrics */}
-          <Suspense fallback={<div className="py-12 text-center text-muted-foreground">Carregando...</div>}>
-            <ImpactMetrics />
-          </Suspense>
-
-          {/* Institutional Testimonials */}
-          <Suspense fallback={<div className="py-12 text-center text-muted-foreground">Carregando...</div>}>
-            <InstitutionalTestimonials />
-          </Suspense>
-
-          {/* Commitment and Responsibility */}
-          <section className="py-12 md:py-16 lg:py-20 w-full">
-            <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-center mb-16">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-4 break-words">
-                  Compromisso e Responsabilidade
-                </h2>
-                <p className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto">
-                  Nosso compromisso vai além da tecnologia, abraçando responsabilidade social e sustentabilidade.
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-8">
-                {commitments.map((commitment, index) => (
-                  <div
-                    key={index}
-                    className="bg-card rounded-xl p-6 sm:p-8 border border-border hover:shadow-lg transition-all duration-300 text-center"
-                  >
-                    <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-6">
-                      <commitment.icon className="h-8 w-8 text-primary" />
-                    </div>
-                    <h3 className="text-lg sm:text-xl font-semibold leading-snug text-foreground mb-4 break-words">
-                      {commitment.title}
-                    </h3>
-                    <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                      {commitment.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* CTA Final */}
-          <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-r from-primary/10 via-primary/5 to-background w-full">
-            <div className="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-foreground mb-6 break-words">
-                Pronto para conhecer o MetaConstrutor?
-              </h2>
-              <p className="text-base sm:text-lg leading-relaxed text-muted-foreground mb-8">
-                Junte-se às centenas de construtoras que já transformaram sua gestão de obras.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button
-                  onClick={() => navigate('/login')}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-4 rounded-lg font-semibold text-base leading-none sm:w-auto sm:px-8 transition-all duration-300 shadow-lg hover:shadow-xl"
-                >
-                  Começar Gratuitamente
-                </button>
-                <button
-                  onClick={() => navigate('/contato')}
-                  className="w-full border border-border hover:bg-muted text-foreground px-6 py-4 rounded-lg font-semibold text-base leading-none sm:w-auto sm:px-8 transition-all duration-300"
-                >
-                  Agendar uma demonstração
-                </button>
-              </div>
-            </div>
-          </section>
-        </main>
-
-        <FooterSection />
-      </div>
-    </>
-  );
+const fadeInUp = {
+  hidden: { opacity: 0, y: 40, filter: 'blur(4px)' },
+  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
 };
 
-export default Sobre;
+export default function Sobre() {
+  return (
+    <PublicLayout>
+      <SEO {...seoPages.sobre} />
+
+      {/* Hero */}
+      <section className="pt-24 md:pt-32 pb-10 md:pb-16 bg-hero-gradient">
+        <div className="container max-w-3xl mx-auto px-4 sm:px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <span className="inline-flex items-center gap-2 bg-brand-orange-ghost text-brand-orange text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
+              <Building2 className="w-3.5 h-3.5" /> Nossa história
+            </span>
+            <h1 className="text-[clamp(1.75rem,5vw,3.75rem)] font-extrabold text-neutral-900 leading-[1.05] tracking-tight mb-4">
+              Construindo o futuro da{' '}
+              <AnimatedGradient as="span">construção civil</AnimatedGradient>
+            </h1>
+            <p className="text-base md:text-lg text-neutral-600 max-w-lg mx-auto leading-relaxed">
+              Nascemos para resolver um problema real: a gestão de obras ainda é feita no papel, WhatsApp e planilhas.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Metrics */}
+      <AnimatedSection className="py-16 border-y border-neutral-100 bg-neutral-50" distance={20}>
+        <div className="container max-w-4xl mx-auto px-4 sm:px-6">
+          <StaggerContainer staggerDelay={0.08} className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+            {metrics.map((m, i) => (
+              <StaggerItem key={i} className="text-center">
+                <div className="text-3xl md:text-4xl font-extrabold text-brand-orange mb-1">{m.value}</div>
+                <div className="text-sm text-neutral-500">{m.label}</div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </div>
+      </AnimatedSection>
+
+      {/* Mission, Vision, Values */}
+      <AnimatedSection>
+        <div className="container max-w-4xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="text-brand-orange font-semibold text-sm tracking-wide uppercase">Propósito</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-neutral-900 mt-3">
+              <AnimatedGradient as="span">Missão, Visão e Valores</AnimatedGradient>
+            </h2>
+          </div>
+          <StaggerContainer staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            {missionItems.map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <StaggerItem key={i} className="text-center p-6 md:p-8 rounded-2xl bg-neutral-50 border border-neutral-100">
+                  <div className="w-14 h-14 bg-brand-orange-ghost rounded-xl flex items-center justify-center mx-auto mb-5">
+                    <Icon className="w-7 h-7 text-brand-orange" />
+                  </div>
+                  <h3 className="text-xl font-bold text-neutral-900 mb-3">{item.title}</h3>
+                  <p className="text-neutral-600 leading-relaxed">{item.desc}</p>
+                </StaggerItem>
+              );
+            })}
+          </StaggerContainer>
+        </div>
+      </AnimatedSection>
+
+      {/* Differentials */}
+      <AnimatedSection dark={false} className="bg-neutral-50">
+        <div className="container max-w-4xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="text-brand-orange font-semibold text-sm tracking-wide uppercase">Diferenciais</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-neutral-900 mt-3">
+              <AnimatedGradient as="span">Por que escolher o Meta Construtor</AnimatedGradient>
+            </h2>
+          </div>
+          <StaggerContainer staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            {differentials.map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <StaggerItem key={i} className="bg-white rounded-2xl p-6 md:p-8 border border-neutral-100 shadow-sm">
+                  <Icon className="w-8 h-8 text-brand-orange mb-4" />
+                  <h3 className="text-lg font-bold text-neutral-900 mb-2">{item.title}</h3>
+                  <p className="text-neutral-600 text-sm leading-relaxed">{item.desc}</p>
+                </StaggerItem>
+              );
+            })}
+          </StaggerContainer>
+        </div>
+      </AnimatedSection>
+
+      {/* Final CTA */}
+      <section className="relative py-24 bg-neutral-900 overflow-hidden">
+        <motion.div
+          animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+          className="absolute top-0 right-0 w-[400px] h-[400px] bg-brand-orange/10 rounded-full blur-3xl"
+        />
+        <div className="container max-w-2xl mx-auto px-4 sm:px-6 text-center relative z-10">
+          <motion.h2
+            variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+            className="text-3xl md:text-4xl font-extrabold text-white mb-8"
+          >
+            Faça parte dessa{' '}
+            <AnimatedGradient as="span" colors={['#F97316', '#FDBA74', '#EA580C', '#F97316']}>história</AnimatedGradient>
+          </motion.h2>
+          <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <Button className="w-full md:w-auto bg-brand-orange hover:bg-brand-orange-hover text-white text-lg px-10 py-7 rounded-full shadow-xl shadow-brand-orange/30" asChild>
+              <Link to="/criar-conta">Comece grátis agora <ArrowRight className="ml-2 w-5 h-5" /></Link>
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+    </PublicLayout>
+  );
+}

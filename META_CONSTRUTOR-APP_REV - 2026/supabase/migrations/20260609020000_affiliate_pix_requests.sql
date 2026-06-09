@@ -197,8 +197,8 @@ DECLARE
 BEGIN
     -- Verificar se é admin
     IF NOT EXISTS (
-        SELECT 1 FROM public.admin_users
-        WHERE user_id = auth.uid() AND role IN ('president', 'finance')
+        SELECT 1 FROM public.admin_users_view au
+        WHERE au.id = auth.uid() AND au.roles && ARRAY['president', 'finance']::text[]
     ) THEN
         RETURN jsonb_build_object('success', false, 'error', 'Permissão negada');
     END IF;
@@ -246,8 +246,8 @@ DECLARE
 BEGIN
     -- Verificar se é admin
     IF NOT EXISTS (
-        SELECT 1 FROM public.admin_users
-        WHERE user_id = auth.uid() AND role IN ('president', 'finance')
+        SELECT 1 FROM public.admin_users_view au
+        WHERE au.id = auth.uid() AND au.roles && ARRAY['president', 'finance']::text[]
     ) THEN
         RETURN jsonb_build_object('success', false, 'error', 'Permissão negada');
     END IF;
@@ -268,7 +268,7 @@ BEGIN
         processed_by = auth.uid()
     WHERE id = p_pix_request_id;
 
-    -- Marcar comissões como "paid" definitivo (já estavam "processing")
+    -- Marcar comissões como &quot;paid&quot; (já estavam &quot;processing&quot;)
     UPDATE public.affiliate_commissions
     SET status = 'paid',
         paid_at = now()
@@ -300,8 +300,8 @@ DECLARE
 BEGIN
     -- Verificar se é admin
     IF NOT EXISTS (
-        SELECT 1 FROM public.admin_users
-        WHERE user_id = auth.uid() AND role IN ('president', 'finance')
+        SELECT 1 FROM public.admin_users_view au
+        WHERE au.id = auth.uid() AND au.roles && ARRAY['president', 'finance']::text[]
     ) THEN
         RETURN jsonb_build_object('success', false, 'error', 'Permissão negada');
     END IF;
@@ -351,8 +351,8 @@ CREATE POLICY "pix_requests_select_policy"
             SELECT id FROM public.affiliate_profiles WHERE user_id = auth.uid()
         )
         OR EXISTS (
-            SELECT 1 FROM public.admin_users
-            WHERE user_id = auth.uid() AND role IN ('president', 'finance')
+            SELECT 1 FROM public.admin_users_view au
+            WHERE au.id = auth.uid() AND au.roles && ARRAY['president', 'finance']::text[]
         )
     );
 
@@ -368,8 +368,8 @@ CREATE POLICY "pix_requests_update_policy"
     ON public.affiliate_pix_requests FOR UPDATE
     USING (
         EXISTS (
-            SELECT 1 FROM public.admin_users
-            WHERE user_id = auth.uid() AND role IN ('president', 'finance')
+            SELECT 1 FROM public.admin_users_view au
+            WHERE au.id = auth.uid() AND au.roles && ARRAY['president', 'finance']::text[]
         )
     );
 
@@ -379,7 +379,7 @@ CREATE POLICY "pix_requests_delete_policy"
     ON public.affiliate_pix_requests FOR DELETE
     USING (
         EXISTS (
-            SELECT 1 FROM public.admin_users
-            WHERE user_id = auth.uid() AND role IN ('president', 'finance')
+            SELECT 1 FROM public.admin_users_view au
+            WHERE au.id = auth.uid() AND au.roles && ARRAY['president', 'finance']::text[]
         )
     );

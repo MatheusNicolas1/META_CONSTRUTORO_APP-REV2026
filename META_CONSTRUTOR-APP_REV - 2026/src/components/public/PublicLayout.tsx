@@ -1,5 +1,6 @@
 import React from 'react';
-import PublicNav from '@/pages/PublicNav';
+import PublicNav from './PublicNav';
+import Logo from '@/components/Logo';
 
 interface PublicLayoutProps {
   children: React.ReactNode;
@@ -23,7 +24,7 @@ function PublicFooter() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 mb-10 md:mb-12">
           <div className="col-span-2">
             <a href="/home" className="flex items-center mb-4">
-              <img src="/brand/meta-construtor-icon.png" alt="Meta Construtor" className="h-8 w-8" />
+              <Logo size="md" className="text-neutral-300" />
             </a>
             <p className="text-xs sm:text-sm leading-relaxed max-w-xs">
               Plataforma de gestão de obras para construtoras brasileiras. RDO digital, checklists, equipes e relatórios em um só lugar.

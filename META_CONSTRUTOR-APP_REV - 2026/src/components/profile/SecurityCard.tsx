@@ -1,9 +1,11 @@
 
 import { useState } from "react";
-import { Lock, Shield, Smartphone, Trash2, Download, AlertTriangle, Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Lock, Shield, Smartphone, Trash2, Download, AlertTriangle, Loader2, Globe, Eye, EyeOff, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -16,9 +18,28 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { supportedLanguages } from "@/lib/i18n";
 
 export const SecurityCard = () => {
     const { toast } = useToast();
+    const { t, i18n } = useTranslation();
+
+    // --- Change Password ---
+    const [showPasswordForm, setShowPasswordForm] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmNewPassword, setConfirmNewPassword] = useState("");
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+    const [isChangingPassword, setIsChangingPassword] = useState(false);
 
     // --- Delete Account ---
     const [showDeleteStep1, setShowDeleteStep1] = useState(false);
@@ -29,6 +50,108 @@ export const SecurityCard = () => {
 
     // --- Export Data ---
     const [isExporting, setIsExporting] = useState(false);
+
+    const handleChangePassword = async () => {
+        if (!currentPassword) {
+            toast({
+                title: "Senha atual obrigatória",
+                description: "Digite sua senha atual para alterá-la.",
+                variant: "destructive",
+            });
+            return;
+        }
+
+        if (newPassword.length < 10) {
+            toast({
+                title: "Senha muito curta",
+                description: "A nova senha deve ter pelo menos 10 caracteres.",
+                variant: "destructive",
+            });
+            return;
+        }
+
+        if (newPassword !== confirmNewPassword) {
+            toast({
+                title: "Senhas não conferem",
+                description: "A nova senha e a confirmação devem ser iguais.",
+                variant: "destructive",
+            });
+            return;
+        }
+
+        if (currentPassword === newPassword) {
+            toast({
+                title: "Senha igual à atual",
+                description: "A nova senha deve ser diferente da atual.",
+                variant: "destructive",
+            });
+            return;
+        }
+
+        setIsChangingPassword(true);
+        try {
+            // Get user email first
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user?.email) {
+                toast({
+                    title: "Usuário não encontrado",
+                    description: "Não foi possível identificar sua conta. Faça login novamente.",
+                    variant: "destructive",
+                });
+                return;
+            }
+
+            // Verify current password by attempting to sign in again
+            const { error: signInError } = await supabase.auth.signInWithPassword({
+                email: user.email,
+                password: currentPassword,
+            });
+
+            if (signInError) {
+                toast({
+                    title: "Senha atual incorreta",
+                    description: "A senha atual digitada não corresponde à sua senha.",
+                    variant: "destructive",
+                });
+                return;
+            }
+
+            // Update to new password
+            const { error: updateError } = await supabase.auth.updateUser({
+                password: newPassword,
+            });
+
+            if (updateError) throw updateError;
+
+            toast({
+                title: "Senha alterada com sucesso",
+                description: "Sua senha foi atualizada. Use a nova senha no próximo login.",
+            });
+
+            // Reset form
+            setShowPasswordForm(false);
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmNewPassword("");
+        } catch (err: any) {
+            toast({
+                title: "Erro ao alterar senha",
+                description: err?.message || "Não foi possível alterar a senha. Tente novamente.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsChangingPassword(false);
+        }
+    };
+
+    // --- Language ---
+    const handleLanguageChange = (newLanguage: string) => {
+        i18n.changeLanguage(newLanguage);
+        toast({
+            title: "Idioma alterado",
+            description: `Idioma alterado para ${supportedLanguages.find(l => l.code === newLanguage)?.name}`,
+        });
+    };
 
     const handlePasswordReset = async () => {
         const email = (await supabase.auth.getUser()).data.user?.email;
@@ -230,9 +353,160 @@ export const SecurityCard = () => {
                                     <p className="text-xs text-muted-foreground mt-0.5">Recomendamos alterar periodicamente</p>
                                 </div>
                             </div>
-                            <Button variant="outline" size="sm" onClick={handlePasswordReset} className="ml-2 flex-shrink-0">
-                                Alterar
+                            <Button variant="outline" size="sm" onClick={() => setShowPasswordForm(!showPasswordForm)} className="ml-2 flex-shrink-0">
+                                {showPasswordForm ? "Cancelar" : "Alterar"}
                             </Button>
+                        </div>
+
+                        {/* Inline Password Change Form */}
+                        {showPasswordForm && (
+                            <div className="md:col-span-2 p-4 border border-primary/20 rounded-xl bg-primary/5 space-y-4 animate-in slide-in-from-top-2 duration-200">
+                                <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                                    <KeyRound className="h-4 w-4" />
+                                    Alterar Senha
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                    {/* Senha Atual */}
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="currentPassword" className="text-xs">Senha Atual</Label>
+                                        <div className="relative">
+                                            <Input
+                                                id="currentPassword"
+                                                type={showCurrentPassword ? "text" : "password"}
+                                                placeholder="Digite sua senha atual"
+                                                value={currentPassword}
+                                                onChange={(e) => setCurrentPassword(e.target.value)}
+                                                className="pr-9 text-sm"
+                                                autoComplete="current-password"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowCurrentPassword((v) => !v)}
+                                                className="absolute inset-y-0 right-2 flex items-center text-muted-foreground"
+                                                aria-label={showCurrentPassword ? "Ocultar senha" : "Mostrar senha"}
+                                            >
+                                                {showCurrentPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Nova Senha */}
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="newPassword" className="text-xs">Nova Senha</Label>
+                                        <div className="relative">
+                                            <Input
+                                                id="newPassword"
+                                                type={showNewPassword ? "text" : "password"}
+                                                placeholder="Mínimo 10 caracteres"
+                                                value={newPassword}
+                                                onChange={(e) => setNewPassword(e.target.value)}
+                                                className="pr-9 text-sm"
+                                                autoComplete="new-password"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowNewPassword((v) => !v)}
+                                                className="absolute inset-y-0 right-2 flex items-center text-muted-foreground"
+                                                aria-label={showNewPassword ? "Ocultar senha" : "Mostrar senha"}
+                                            >
+                                                {showNewPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Confirmar Nova Senha */}
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="confirmNewPassword" className="text-xs">Confirmar Nova Senha</Label>
+                                        <div className="relative">
+                                            <Input
+                                                id="confirmNewPassword"
+                                                type={showConfirmNewPassword ? "text" : "password"}
+                                                placeholder="Repita a nova senha"
+                                                value={confirmNewPassword}
+                                                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                                                className="pr-9 text-sm"
+                                                autoComplete="new-password"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowConfirmNewPassword((v) => !v)}
+                                                className="absolute inset-y-0 right-2 flex items-center text-muted-foreground"
+                                                aria-label={showConfirmNewPassword ? "Ocultar confirmação" : "Mostrar confirmação"}
+                                            >
+                                                {showConfirmNewPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-end gap-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                            setShowPasswordForm(false);
+                                            setCurrentPassword("");
+                                            setNewPassword("");
+                                            setConfirmNewPassword("");
+                                        }}
+                                    >
+                                        Cancelar
+                                    </Button>
+                                    <Button
+                                        size="sm"
+                                        onClick={handleChangePassword}
+                                        disabled={isChangingPassword || !currentPassword || !newPassword || !confirmNewPassword}
+                                        className="gap-1.5"
+                                    >
+                                        {isChangingPassword ? (
+                                            <>
+                                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                                Alterando...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <KeyRound className="h-3.5 w-3.5" />
+                                                Alterar Senha
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Idioma / Localidade */}
+                        <div className="flex items-center justify-between p-4 border rounded-xl hover:bg-muted/50 transition-colors">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-primary/10 p-2.5 rounded-full flex-shrink-0">
+                                    <Globe className="h-4 w-4 text-primary" />
+                                </div>
+                                <div>
+                                    <h4 className="font-medium text-sm">Idioma / Localidade</h4>
+                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                        {supportedLanguages.find(l => l.code === i18n.language)?.flag}{" "}
+                                        {supportedLanguages.find(l => l.code === i18n.language)?.name || "Português (Brasil)"}
+                                    </p>
+                                </div>
+                            </div>
+                            <Select
+                                value={i18n.language}
+                                onValueChange={handleLanguageChange}
+                            >
+                                <SelectTrigger className="w-[180px] ml-2 flex-shrink-0">
+                                    <SelectValue placeholder="Selecionar idioma" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {supportedLanguages.map((lang) => (
+                                        <SelectItem key={lang.code} value={lang.code}>
+                                            <span className="flex items-center gap-2">
+                                                <span className="text-base">{lang.flag}</span>
+                                                <span>{lang.name}</span>
+                                            </span>
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         {/* Sessões */}

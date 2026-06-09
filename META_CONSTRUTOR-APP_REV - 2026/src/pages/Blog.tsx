@@ -8,7 +8,7 @@ import FooterSection from "@/components/landing/FooterSection";
 
 const Blog = () => {
   return (
-    <>
+    <div className="force-light-blog">
       <SEO {...seoPages.blog} />
       <LandingNavigation />
 
@@ -65,7 +65,7 @@ const Blog = () => {
       </main>
 
       <FooterSection />
-    </>
+    </div>
   );
 };
 

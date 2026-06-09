@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import Logo from '@/components/Logo';
 
 const navLinks = [
   { to: '/home', label: 'Início' },
@@ -24,17 +25,13 @@ export default function PublicNav() {
       aria-label="Navegação principal"
     >
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        {/* Logo larga — usada na nav */}
+        {/* Logo — mesma do Dashboard */}
         <Link
           to="/home"
           className="flex items-center shrink-0"
           aria-label="Ir para a página inicial"
         >
-          <img
-            src="/brand/meta-construtor-logo.png"
-            alt="Meta Construtor"
-            className="h-8 w-auto"
-          />
+          <Logo size="sm" className="text-primary" />
         </Link>
 
         {/* Desktop links */}

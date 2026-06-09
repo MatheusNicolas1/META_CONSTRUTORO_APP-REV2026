@@ -1,0 +1,152 @@
+{
+  "nome": "Empresa",
+  "email": "relacionamento@celi.com.br",
+  "campanha_26": {
+    "1": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "2": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "3": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "4": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "5": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "6": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "7": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "8": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "9": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "10": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "11": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "12": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "13": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "14": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "15": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "16": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "17": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "18": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "19": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "20": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "21": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "22": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "23": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "24": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "25": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "26": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    }
+  },
+  "onboarding": {
+    "1": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "2": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "3": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "5": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "7": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "15": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "21": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "30": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    }
+  },
+  "contador_26": 26,
+  "contador_onb": 8,
+  "criado_em": "2026-06-08 12:00:21",
+  "ultimo_envio": "2026-06-08",
+  "completo_26": true,
+  "completo_onb": true,
+  "proximo_dia_26": 27,
+  "indice_onb": 8
+}

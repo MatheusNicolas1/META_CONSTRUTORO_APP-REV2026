@@ -5,7 +5,7 @@ const siteUrl = "https://www.metaconstrutor.app.br";
 const lastmod = "2026-06-06";
 
 const routes = [
-  ["/home", "weekly", "1.0"],
+  ["/", "weekly", "1.0"],
   ["/preco", "weekly", "0.9"],
   ["/sobre", "monthly", "0.8"],
   ["/contato", "monthly", "0.8"],

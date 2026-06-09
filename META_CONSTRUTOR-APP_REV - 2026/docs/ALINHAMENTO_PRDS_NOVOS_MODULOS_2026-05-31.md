@@ -1,5 +1,7 @@
 # ALINHAMENTO: PRDs Novos Módulos vs Estado Atual do App
 Data: 2026-05-31
+Ultima atualizacao: 2026-06-07
+Status: ✅ TODOS OS 6 MODULOS IMPLANTADOS
 Origem: PRDs e código existente
 Restrição: nenhuma alteração de layout do app web até novo aviso.
 
@@ -63,14 +65,27 @@ Restrição: nenhuma alteração de layout do app web até novo aviso.
 - PWA/responsividade existente pode ser aproveitada para OS mobile.
 
 ## 5. Itens de alinhamento recomendados (sem mexer no layout atual)
-1. Validar schema remoto antes de criar tabelas novas, principalmente `rdos.detalhes`.
+1. ✅ Validar schema remoto antes de criar tabelas novas — **feito**: 6 migrations aplicadas com sucesso
 2. Definir regra comercial do plano `enterprise` ou mapear ERP para planos existentes.
-3. Preparar feature flags/rotas futuras para os 6 módulos sem expô-las ainda.
-4. Garantir que qualquer novo arquivo use padrão org-bound e RLS do projeto.
-5. Planejar migrations independentes por módulo, na ordem do relatório.
+3. ✅ Feature flags/rotas criadas — **feito**: todos os 6 módulos em rotas isoladas (`/app/fluxo-caixa`, `/app/ordens-servico`, `/app/dds`, `/app/contratos`, `/app/clientes-portal`, `/app/integracoes/erp`)
+4. ✅ Padrão org-bound e RLS — **feito**: todas as novas tabelas usam RLS e políticas org-bound
+5. ✅ Migrations independentes por módulo — **feito**: 6 migrations aplicadas na ordem correta
 
-## 6. Próximo passo sugerido
-Começar pelo PRD_FLUXO_CAIXA_CURVA_ABC com:
-- criação isolada de migrations e validação remota read-only;
-- hook `useFluxoCaixa.ts` e queries org-bound;
-- smoke tests apenas do módulo novo, sem tocar telas existentes.
+## 6. Status de Execução (atualizado em 2026-06-07)
+**✅ TODOS OS 6 MÓDULOS IMPLANTADOS**
+
+- **13 Edge Functions deployadas** no Supabase (total: 49 ativas)
+- **6 migrations aplicadas** no banco remoto sem erros
+- **165+ migrações** sincronizadas local/remoto
+- **Frontend build**: `tsc -b && vite build` — 5.652 módulos, 0 erros
+- **Postbuild**: sitemap + 22 páginas pré-renderizadas
+- **E2E audio-summary**: aguardando credenciais WhatsApp para desbloquear
+- **RPCs complementares**: `trigger_set_updated_at()` + triggers bulk em 7 tabelas
+
+### Bloqueios (dependentes do usuário)
+1. ⏳ Configurar credenciais WhatsApp nos Supabase Secrets
+2. ⏳ Aprovação WhatsApp Business API (número de testes)
+3. ⏳ VPS/n8n para pipeline de áudio (Whisper local)
+4. ⏳ Seleção de vozes ElevenLabs pt-BR
+5. ⏳ Templates WhatsApp aprovados
+6. ⏳ Domínio/subdomínio apontado para VPS

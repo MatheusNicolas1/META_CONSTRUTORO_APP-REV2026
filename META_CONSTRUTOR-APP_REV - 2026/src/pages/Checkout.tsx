@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import SEO from '@/components/SEO';
 import { seoPages } from '@/config/seo';
@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/components/auth/AuthContext';
 import { getCheckoutErrorFeedback } from '@/utils/checkoutErrors';
+import { NavigationSafety } from '@/utils/navigationSafety';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -257,13 +258,13 @@ const Checkout = () => {
                         <CardDescription>
                           Informe seus dados para seguir ao checkout seguro da Stripe.
                         </CardDescription>
-                        <Link
-                          to="/preco"
-                          className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-primary transition-colors hover:text-primary/80"
+                        <button
+                          onClick={() => NavigationSafety.safeNavigate(navigate, '/preco')}
+                          className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-primary transition-colors hover:text-primary/80 cursor-pointer"
                         >
                           <ArrowLeft className="h-4 w-4" />
                           Voltar aos planos
-                        </Link>
+                        </button>
                       </div>
                       <Lock className="w-6 h-6 text-green-600/80" />
                     </div>

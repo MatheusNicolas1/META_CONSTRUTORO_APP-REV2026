@@ -1,0 +1,184 @@
+[
+  {
+    "subject": "Acabe com o RDO perdido no WhatsApp",
+    "tone": "Técnico",
+    "topic": "rdo_digital",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-05-rdo-lista-desktop.png"
+  },
+  {
+    "subject": "Aquele RDO que \"tava no WhatsApp\"",
+    "tone": "Humor",
+    "topic": "rdo_digital_2",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-25-rdo-mobile.png"
+  },
+  {
+    "subject": "3 obras, 3 status, 1 tela",
+    "tone": "Reportagem",
+    "topic": "gestao_obras",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-02-obras-lista-desktop.png"
+  },
+  {
+    "subject": "Menos planilha, mais obra",
+    "tone": "Usabilidade",
+    "topic": "gestao_obras_2",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-23-obras-tablet.png"
+  },
+  {
+    "subject": "Checklist que não se perde na gaveta",
+    "tone": "Técnico",
+    "topic": "checklists",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-06-checklist-lista-desktop.png"
+  },
+  {
+    "subject": "O DDS que vira assinatura digital",
+    "tone": "Reportagem",
+    "topic": "checklists_2",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-24-checklist-tablet.png"
+  },
+  {
+    "subject": "Quanto tempo você perde procurando documento?",
+    "tone": "Emocional",
+    "topic": "documentos",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-07-documentos-lista-desktop.png"
+  },
+  {
+    "subject": "Seus projetos sempre à mão",
+    "tone": "Usabilidade",
+    "topic": "documentos_2",
+    "has_image": false,
+    "image_path": null
+  },
+  {
+    "subject": "Seu relatório de obra em 1 clique",
+    "tone": "Técnico",
+    "topic": "relatorios",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-12-relatorios-resumo-desktop.png"
+  },
+  {
+    "subject": "O que seus relatórios mostram que o Excel esconde?",
+    "tone": "Reportagem",
+    "topic": "relatorios_2",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-28-dashboard-resumo-final-desktop.png"
+  },
+  {
+    "subject": "\"Quem tá na obra hoje?\"",
+    "tone": "Humor",
+    "topic": "equipes",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-08-equipes-lista-desktop.png"
+  },
+  {
+    "subject": "Sua equipe merece organização",
+    "tone": "Emocional",
+    "topic": "equipes_2",
+    "has_image": false,
+    "image_path": null
+  },
+  {
+    "subject": "Contrato e medição no mesmo lugar",
+    "tone": "Técnico",
+    "topic": "contratos",
+    "has_image": false,
+    "image_path": null
+  },
+  {
+    "subject": "Medição aprovada em campo, liberada no financeiro",
+    "tone": "Reportagem",
+    "topic": "contratos_2",
+    "has_image": false,
+    "image_path": null
+  },
+  {
+    "subject": "Seu fluxo de caixa por obra em tempo real",
+    "tone": "Técnico",
+    "topic": "fluxo_caixa",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-11-despesas-lista-desktop.png"
+  },
+  {
+    "subject": "O orçamento estourou e ninguém avisou?",
+    "tone": "Emocional",
+    "topic": "fluxo_caixa_2",
+    "has_image": false,
+    "image_path": null
+  },
+  {
+    "subject": "Seu cliente quer ver a obra — mostre",
+    "tone": "Emocional",
+    "topic": "portal_cliente",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-03-obra-detalhe-desktop.png"
+  },
+  {
+    "subject": "\"Manda foto da obra\" — acabou",
+    "tone": "Humor",
+    "topic": "portal_cliente_2",
+    "has_image": false,
+    "image_path": null
+  },
+  {
+    "subject": "Registrar RDO sem abrir o sistema?",
+    "tone": "Usabilidade",
+    "topic": "whatsapp_bot",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-25-rdo-mobile.png"
+  },
+  {
+    "subject": "O WhatsApp que a obra precisa",
+    "tone": "Reportagem",
+    "topic": "whatsapp_bot_2",
+    "has_image": false,
+    "image_path": null
+  },
+  {
+    "subject": "Integre o Meta Construtor ao seu ERP",
+    "tone": "Técnico",
+    "topic": "integracoes",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-13-integracoes-status-desktop.png"
+  },
+  {
+    "subject": "Dados da obra no seu ERP sem digitar",
+    "tone": "Reportagem",
+    "topic": "integracoes_2",
+    "has_image": false,
+    "image_path": null
+  },
+  {
+    "subject": "Dados da obra seguros e em conformidade com a LGPD",
+    "tone": "Técnico",
+    "topic": "seguranca",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-01-login-limpo-desktop.png"
+  },
+  {
+    "subject": "Seus dados merecem mais que uma planilha",
+    "tone": "Emocional",
+    "topic": "seguranca_2",
+    "has_image": false,
+    "image_path": null
+  },
+  {
+    "subject": "R$ 97 pra nunca mais ouvir 'cadê o RDO?'",
+    "tone": "Humor",
+    "topic": "planos",
+    "has_image": true,
+    "image_path": "/marketing/prd-prints-2026-06-04-26-obras-mobile.png"
+  },
+  {
+    "subject": "Comece de graça. Fique porque funciona.",
+    "tone": "Emocional",
+    "topic": "planos_2",
+    "has_image": false,
+    "image_path": null
+  }
+]

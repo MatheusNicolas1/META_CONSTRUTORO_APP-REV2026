@@ -1,5 +1,6 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { NavigationSafety } from "@/utils/navigationSafety";
 
 type AllowedSections = {
   fotos?: boolean;
@@ -19,6 +20,7 @@ type PortalPayload = {
 
 const PortalPublicoInner = () => {
   const { token } = useParams();
+  const navigate = useNavigate();
   const [payload, setPayload] = useState<PortalPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -371,9 +373,9 @@ const PortalPublicoInner = () => {
         </section>
 
         <footer className="mt-10 pb-8 text-center text-xs text-muted-foreground">
-          <a href="/home" className="font-semibold text-primary hover:underline">
+          <button type="button" onClick={() => NavigationSafety.safeNavigate(navigate, "/home")} className="font-semibold text-primary hover:underline cursor-pointer">
             Voltar para o site
-          </a>
+          </button>
         </footer>
       </div>
     </div>

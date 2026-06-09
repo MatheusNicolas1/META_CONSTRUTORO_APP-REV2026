@@ -28,6 +28,7 @@ import {
   PieChart
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { NavigationSafety } from "@/utils/navigationSafety";
 import { SocialShare } from "@/components/SocialShare";
 import { NovaObraForm } from "@/components/NovaObraForm";
 import { useObraDetails } from "@/hooks/useObraDetails";
@@ -87,9 +88,7 @@ const ObraDetalhes = () => {
       <div className="flex h-screen items-center justify-center flex-col gap-4">
         <h2 className="text-xl font-semibold">Erro ao carregar obra</h2>
         <p className="text-muted-foreground">Não foi possível encontrar os detalhes desta obra.</p>
-        <Link to="/app/obras">
-          <Button variant="outline">Voltar para Obras</Button>
-        </Link>
+        <Button variant="outline" className="cursor-pointer" onClick={() => NavigationSafety.safeNavigate(navigate, '/app/obras')}>Voltar para Obras</Button>
       </div>
     );
   }

@@ -5,7 +5,7 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
-    host: true, // Listen on all addresses (:: or 0.0.0.0)
+    host: true,
     port: 5173,
     strictPort: true,
   },
@@ -19,8 +19,13 @@ export default defineConfig(({ mode }) => ({
     dedupe: ["react", "react-dom"],
   },
   build: {
+    target: "esnext",
+    minify: "esbuild",
+    cssMinify: true,
+    cssCodeSplit: false,
     rollupOptions: {
       output: {
+        compact: true,
         manualChunks(id) {
           const normalizedId = id.replace(/\\/g, "/");
           const nodeModulesPath = normalizedId.split("/node_modules/")[1];
@@ -47,9 +52,15 @@ export default defineConfig(({ mode }) => ({
           if (packageName === "zod" || packageName === "react-hook-form") return "vendor-forms";
           if (packageName === "@hello-pangea/dnd") return "vendor-dnd";
 
+          // Agrupa pacotes pequenos e menos usados em vendor-misc para reduzir chunks
+          if (["idb", "sonner", "re-resizable", "tslib", "clsx", "tailwind-merge"].includes(packageName)) {
+            return "vendor-misc";
+          }
+
           return undefined;
         },
       },
     },
+    chunkSizeWarningLimit: 1000,
   },
 }));

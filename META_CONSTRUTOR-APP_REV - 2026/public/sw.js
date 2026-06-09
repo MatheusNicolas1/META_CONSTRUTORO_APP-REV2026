@@ -5,33 +5,104 @@ const urlsToCache = [
   '/favicon.ico'
 ];
 
-// Cache de recursos estáticos
+// ─── Safe Cache Operations ──────────────────────────────────
+// Evita "Lock was stolen by another request" no Safari/iOS
+// usando um mecanismo de retry com backoff
+
+async function safeCacheOpen(name) {
+  let attempts = 0;
+  const maxAttempts = 3;
+  while (attempts < maxAttempts) {
+    try {
+      return await caches.open(name);
+    } catch (err) {
+      if (err.name === 'AbortError' && attempts < maxAttempts - 1) {
+        attempts++;
+        await new Promise(r => setTimeout(r, 100 * Math.pow(2, attempts)));
+        continue;
+      }
+      throw err;
+    }
+  }
+}
+
+async function safeCachePut(cache, request, response) {
+  let attempts = 0;
+  const maxAttempts = 3;
+  while (attempts < maxAttempts) {
+    try {
+      await cache.put(request, response);
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError' && attempts < maxAttempts - 1) {
+        attempts++;
+        await new Promise(r => setTimeout(r, 100 * Math.pow(2, attempts)));
+        continue;
+      }
+      // Silently fail on non-critical cache operations
+      console.warn('[SW] Cache put failed:', err.message);
+      return;
+    }
+  }
+}
+
+async function safeCacheMatch(cache, request) {
+  let attempts = 0;
+  const maxAttempts = 3;
+  while (attempts < maxAttempts) {
+    try {
+      return await cache.match(request);
+    } catch (err) {
+      if (err.name === 'AbortError' && attempts < maxAttempts - 1) {
+        attempts++;
+        await new Promise(r => setTimeout(r, 100 * Math.pow(2, attempts)));
+        continue;
+      }
+      throw err;
+    }
+  }
+}
+
+// ─── Install ────────────────────────────────────────────────
+
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(urlsToCache).catch(() => undefined);
-      })
+    (async () => {
+      try {
+        const cache = await safeCacheOpen(CACHE_NAME);
+        await cache.addAll(urlsToCache).catch(() => undefined);
+      } catch (err) {
+        console.warn('[SW] Install cache failed:', err.message);
+      }
+    })()
   );
 });
 
-// Ativar novo service worker imediatamente
+// ─── Activate ───────────────────────────────────────────────
+
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    (async () => {
+      try {
+        const cacheNames = await caches.keys();
+        await Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME) {
+              return caches.delete(cacheName).catch(() => undefined);
+            }
+          })
+        );
+      } catch (err) {
+        console.warn('[SW] Activation cleanup failed:', err.message);
+      }
+      await self.clients.claim();
+    })()
   );
 });
 
-// Network-first strategy with dev exclusions
+// ─── Fetch (Network-first, safe) ───────────────────────────
+
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
@@ -44,14 +115,25 @@ self.addEventListener('fetch', (event) => {
   // Always network-first for navigations (HTML) to avoid stale index.html
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request).catch(() => caches.match(request)).then((response) => {
-        // Optionally cache HTML for offline fallback
-        if (response && response.ok) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+      (async () => {
+        try {
+          const response = await fetch(request);
+          if (response && response.ok) {
+            const clone = response.clone();
+            const cache = await safeCacheOpen(CACHE_NAME);
+            safeCachePut(cache, request, clone);
+          }
+          return response;
+        } catch (err) {
+          // Network failed — try cache
+          try {
+            const cached = await caches.match(request);
+            return cached || new Response('Offline', { status: 503 });
+          } catch {
+            return new Response('Offline', { status: 503 });
+          }
         }
-        return response;
-      })
+      })()
     );
     return;
   }
@@ -69,7 +151,17 @@ self.addEventListener('fetch', (event) => {
 
   if (isDevModule) {
     event.respondWith(
-      fetch(request).catch(() => caches.match(request))
+      (async () => {
+        try {
+          return await fetch(request);
+        } catch {
+          try {
+            return await caches.match(request);
+          } catch {
+            return new Response('Offline', { status: 503 });
+          }
+        }
+      })()
     );
     return;
   }
@@ -82,22 +174,31 @@ self.addEventListener('fetch', (event) => {
     url.pathname.includes('/auth/') ||
     url.pathname.includes('/realtime/')
   ) {
-    // Return sem chamar respondWith deixa o browser tratar naturalmente
     return;
   }
 
-  // Cache-first for static assets
+  // Cache-first for static assets (with safe operations)
   event.respondWith(
-    caches.match(request)
-      .then(response => {
-        if (response) return response;
-        return fetch(request).then(response => {
-          if (!response || response.status !== 200) return response;
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(request, responseClone));
-          return response;
-        });
-      })
-      .catch(() => caches.match('/'))
+    (async () => {
+      try {
+        const cache = await safeCacheOpen(CACHE_NAME);
+        const cachedResponse = await safeCacheMatch(cache, request);
+        if (cachedResponse) return cachedResponse;
+
+        const networkResponse = await fetch(request);
+        if (networkResponse && networkResponse.ok) {
+          const clone = networkResponse.clone();
+          safeCachePut(cache, request, clone);
+        }
+        return networkResponse;
+      } catch (err) {
+        // Ultimate fallback — serve homepage
+        try {
+          return await caches.match('/');
+        } catch {
+          return new Response('Offline', { status: 503 });
+        }
+      }
+    })()
   );
 });

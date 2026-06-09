@@ -31,7 +31,7 @@ const LegalPageLayout = ({
         <section className="border-b border-border bg-[#fbfaf7] px-4 py-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
             <nav className="mb-8 text-sm text-muted-foreground" aria-label="Breadcrumb">
-              <Link to="/home" className="hover:text-foreground">
+              <Link to="/" className="hover:text-foreground">
                 Inicio
               </Link>
               <span className="mx-2">/</span>

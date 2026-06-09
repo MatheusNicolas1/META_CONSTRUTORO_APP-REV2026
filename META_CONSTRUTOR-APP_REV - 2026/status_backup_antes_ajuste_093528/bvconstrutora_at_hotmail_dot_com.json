@@ -1,0 +1,36 @@
+{
+  "nome": "Empresa",
+  "email": "bvconstrutora@hotmail.com",
+  "campanha_26": {
+    "1": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    }
+  },
+  "onboarding": {
+    "1": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "2": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "3": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    },
+    "5": {
+      "status": "falhou",
+      "erro": "<urlopen error [Errno 11002] getaddrinfo failed>"
+    }
+  },
+  "contador_26": 1,
+  "contador_onb": 3,
+  "criado_em": "2026-06-08 12:03:07",
+  "ultimo_envio": "2026-06-08T17:31:20.118528+00:00",
+  "completo_26": false,
+  "completo_onb": false,
+  "proximo_dia_26": 1,
+  "indice_onb": 3
+}

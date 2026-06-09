@@ -36,7 +36,11 @@ docs/STRIPE_CREDENTIALS.md
 
 .env*.local
 
-# Local automation/test artifacts
+# LightRAG knowledge graph
+tools/lightrag/rag_storage/
+tools/lightrag/.index_manifest.json
+tools/lightrag/.venv/
+docs/knowledge-graph/
 .agent/
 .agents/
 .playwright-cli/
@@ -56,3 +60,5 @@ supabase/.temp/
 codex-supabase-deploy-payment/
 MetaConstrutor/
 openai-whisper/
+
+.env*.local

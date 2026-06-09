@@ -1,0 +1,29 @@
+{
+  "androidPackageName": "com.metaconstrutor.app",
+  "manifestUrl": "https://www.metaconstrutor.app.br/manifest.json",
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "orientation": "portrait",
+  "display": "standalone",
+  "host": "https://www.metaconstrutor.app.br",
+  "launchUrl": "/",
+  "iconUrl": "https://www.metaconstrutor.app.br/icon-512.png",
+  "maskableIconUrl": "https://www.metaconstrutor.app.br/icon-512.png",
+  "monochromeIconUrl": "",
+  "backgroundColor": "#ffffff",
+  "themeColor": "#1a1f2c",
+  "appName": "Meta Construtor",
+  "shortName": "MetaConstrutor",
+  "description": "Sistema completo de gestão de obras e projetos de construção civil",
+  "enableNotifications": true,
+  "displayMode": "standalone",
+  "features": {
+    "locationDelegation": "gps",
+    "playBilling": false,
+    "pushNotifications": true
+  },
+  "signing": {
+    "keystore": "../metaconstrutor.keystore",
+    "alias": "metaconstrutor"
+  }
+}

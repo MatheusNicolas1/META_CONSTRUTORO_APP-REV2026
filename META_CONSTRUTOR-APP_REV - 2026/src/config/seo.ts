@@ -40,14 +40,15 @@ const softwareJsonLd: JsonLd = {
   "@type": "SoftwareApplication",
   name: SITE_NAME,
   applicationCategory: "BusinessApplication",
-  operatingSystem: "Web",
+  operatingSystem: "Web, Android, iOS",
   url: SITE_URL,
   description:
-    "Plataforma web para gestao de obras, RDO digital, checklists, equipes, documentos e relatorios para construtoras.",
+    "Plataforma web para gestão de obras, RDO digital, checklists de qualidade, equipes, documentos, contratos e relatórios para construtoras, engenheiros e escritórios de estruturas metálicas.",
   offers: {
     "@type": "Offer",
     price: "0",
     priceCurrency: "BRL",
+    priceValidUntil: "2027-12-31",
     availability: "https://schema.org/InStock",
   },
 };
@@ -99,7 +100,7 @@ const page = (
   const jsonLd = [
     webPageJsonLd(title, path, description),
     breadcrumbJsonLd([
-      { name: "Inicio", path: "/home" },
+      { name: "Início", path: "/" },
       { name: title.replace(` | ${SITE_NAME}`, ""), path },
     ]),
     ...(Array.isArray(extraJsonLd) ? extraJsonLd : [extraJsonLd]),
@@ -150,7 +151,7 @@ const articlePage = (article: (typeof blogArticles)[number]): SeoConfig => ({
       },
     },
     breadcrumbJsonLd([
-      { name: "Inicio", path: "/home" },
+      { name: "Início", path: "/" },
       { name: "Blog", path: "/blog" },
       { name: article.title, path: article.path },
     ]),
@@ -164,12 +165,10 @@ export const seoBlogArticles = Object.fromEntries(
 
 export const seoPages = {
   home: page(
-    "/home",
-    "Meta Construtor | Sistema de gestao de obras e RDO digital",
-    "Controle obras, RDOs, equipes, documentos e relatorios em uma plataforma web simples para construtoras.",
+    "/",
+    "Meta Construtor | Gestão de Obras para Construtoras e Engenharia Civil",
+    "Gerencie obras, RDOs, equipes, contratos e documentação em uma plataforma web completa — da construtora ao escritório de engenharia.",
     [
-      organizationJsonLd,
-      softwareJsonLd,
       faqJsonLd([
         {
           question: "O que e o Meta Construtor?",

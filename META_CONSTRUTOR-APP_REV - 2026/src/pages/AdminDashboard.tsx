@@ -20,6 +20,7 @@ import AdminOrganizationsMetrics from "@/components/admin/AdminOrganizationsMetr
 import AdminRoutesMetrics from "@/components/admin/AdminRoutesMetrics";
 import AdminReferralsMetrics from "@/components/admin/AdminReferralsMetrics";
 import AdminAuditLogs from "@/components/admin/AdminAuditLogs";
+import AdminEnterprisePlans from "@/components/admin/AdminEnterprisePlans";
 import { AdminFiltersBar, AdminFiltersProvider } from "@/components/admin/AdminFilters";
 
 const AdminDashboard = () => {
@@ -87,6 +88,7 @@ const AdminDashboard = () => {
                 <TabsTrigger value="referrals" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Indicações</TabsTrigger>
                 <TabsTrigger value="health" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Saude</TabsTrigger>
                 <TabsTrigger value="audit" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Auditoria</TabsTrigger>
+                <TabsTrigger value="enterprise" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Enterprise</TabsTrigger>
               </TabsList>
             </div>
 
@@ -142,6 +144,17 @@ const AdminDashboard = () => {
           <TabsContent value="audit" className="space-y-6">
             <AdminAuditLogs />
             {canManageAdmins && <AdminManagers />}
+          </TabsContent>
+
+          <TabsContent value="enterprise" className="space-y-6">
+            {userRole === "Presidente" ? (
+              <AdminEnterprisePlans />
+            ) : (
+              <div className="text-center py-12 text-muted-foreground">
+                <Shield className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                <p>Apenas o Presidente pode gerenciar planos Enterprise.</p>
+              </div>
+            )}
           </TabsContent>
           </Tabs>
         </AdminFiltersProvider>

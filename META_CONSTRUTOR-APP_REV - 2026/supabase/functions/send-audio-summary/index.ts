@@ -124,7 +124,7 @@ serve(async (req) => {
     const body: SendAudioRequest = await req.json();
     orgId = body.orgId;
     recipientPhone = body.recipientPhone;
-    voiceId = body.voiceId || "pNInz6obpgDQG8FMA7zC"; // Voz masculina padrao: Bill
+    voiceId = body.voiceId || Deno.env.get("ELEVENLABS_DEFAULT_VOICE") || "pqHfZKP75CvOlQylNhV4"; // Voz masculina padrao: Bill
 
     if (!orgId || !recipientPhone) {
       return new Response(

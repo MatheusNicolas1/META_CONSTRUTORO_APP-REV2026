@@ -1,0 +1,858 @@
+[
+  {
+    "name": "Consorcio Nova Genesis",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "cadastro@passarelli.com.br",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Empreiteira De Mao De Obra Araujo &amp; Soares Ltda",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "andrea.alpha12@gmail.com",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Max Construcoes E Reformas Ltda",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "nilson@maxconstrucoes.com.br",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Antonio Luis Puglia Ltda.",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "puglia@pumapmp.com.br",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Mts Obras E Estandes Ltda",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "contatomts@outlook.com.br",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Reveste Construcoes Ltda",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "etecsp@terra.com.br",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Consorcio De Urbanizacao Embu Das Artes",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "helio.sciascia@curb.com.br",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Paifer",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "felcon@bol.com.br",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Construmeg Incorporacoes E Servicos Ltda",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "ac.quintino@uol.com.br",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Consorcio Contracta - Telar",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "rubens@khortywhite.com.br",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "G.T.A. Construcoes",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "assessor.cont@superig.com.br",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Farisco Empreiteira De Mao De Obra Ltda",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "operacional@amfprofissionais.com",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Aracon Construcao E Comercio De Materiais Ltda",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "societario@ocm7.com.br",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Grupo Avantti",
+    "city": "Curitiba",
+    "uf": "PR",
+    "email": "comercial@grupoavantti.com",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "MT Engenharia",
+    "city": "Curitiba",
+    "uf": "PR",
+    "email": "contato@mtengenharia.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora Resolucao",
+    "city": "Curitiba",
+    "uf": "PR",
+    "email": "adm@construtoraresolucao.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Artesa Construtora",
+    "city": "Curitiba",
+    "uf": "PR",
+    "email": "contato@artesa.eng.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Atenas Construtora",
+    "city": "Curitiba",
+    "uf": "PR",
+    "email": "contato@atenasconstrutora.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Atenas Construtora",
+    "city": "Curitiba",
+    "uf": "PR",
+    "email": "vendas@atenasconstrutora.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora Altar",
+    "city": "Curitiba",
+    "uf": "PR",
+    "email": "paulo@construtoraaltar.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Costamar",
+    "city": "Porto Alegre",
+    "uf": "RS",
+    "email": "construtora@costamar.eng.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Pelotense",
+    "city": "Porto Alegre",
+    "uf": "RS",
+    "email": "rh@pelotense.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Construl",
+    "city": "Porto Alegre",
+    "uf": "RS",
+    "email": "atendimento@construl.com",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Duo Construtora",
+    "city": "Rio de Janeiro",
+    "uf": "RJ",
+    "email": "duoconstrutora@duoconstrutora.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora Santa Isabel",
+    "city": "Rio de Janeiro",
+    "uf": "RJ",
+    "email": "contato@gruposantaisabel.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Lytorânea",
+    "city": "Rio de Janeiro",
+    "uf": "RJ",
+    "email": "lytoranea@lytoranea.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "RJ Engenharia",
+    "city": "Rio de Janeiro",
+    "uf": "RJ",
+    "email": "contato@rjengenharia.com",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "RJ Engenharia",
+    "city": "Rio de Janeiro",
+    "uf": "RJ",
+    "email": "contato@fabrikamall.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "RJ Engenharia",
+    "city": "Rio de Janeiro",
+    "uf": "RJ",
+    "email": "rh@rjengenharia.com",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "RJ Engenharia",
+    "city": "Rio de Janeiro",
+    "uf": "RJ",
+    "email": "vendas@rjengenharia.com",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "RJ Engenharia",
+    "city": "Rio de Janeiro",
+    "uf": "RJ",
+    "email": "sac@rjengenharia.com",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Cima Construtora",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "email": "contato@cimaconstrutora.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Gouv Engenharia",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "email": "contato@gouv.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Casa Forte",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "email": "atendimento@construtoracasaforte.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Comim Construtora",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "email": "ouvidoria@comimconstrutora.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Estrutural EC",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "email": "estruturalengenharia@estruturalec.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Estrutural EC",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "email": "rh@estruturalec.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Estrutural EC",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "email": "licitacoes@estruturalec.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora Terraco",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "email": "terraco@construtoraterraco.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Eliger Construtora",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "email": "rh@eliger.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Eliger Construtora",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "email": "terrenos@eliger.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Eliger Construtora",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "email": "financeiro@eliger.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Eliger Construtora",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "email": "fornecedor@eliger.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Eliger Construtora",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "email": "eliger@eliger.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Edge Construtora",
+    "city": "Ribeirao Preto",
+    "uf": "SP",
+    "email": "contato@edgeconstrutora.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora Santa Helena",
+    "city": "Londrina",
+    "uf": "PR",
+    "email": "atendimento@construtorasantahelena.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora Santa Helena",
+    "city": "Londrina",
+    "uf": "PR",
+    "email": "contato@construtorasantahelena.com.br",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Arquiteto/Eng. (ASSEAG)",
+    "city": "Guarulhos",
+    "uf": "SP",
+    "email": "rafa.albanez@gmail.com",
+    "source": "ASSEAG",
+    "type": "autonomo"
+  },
+  {
+    "name": "Arquiteto/Eng. (ASSEAG)",
+    "city": "Guarulhos",
+    "uf": "SP",
+    "email": "arquitetaangelaramires@gmail.com",
+    "source": "ASSEAG",
+    "type": "autonomo"
+  },
+  {
+    "name": "Arquiteto/Eng. (ASSEAG)",
+    "city": "Guarulhos",
+    "uf": "SP",
+    "email": "carlageanf@gmail.com",
+    "source": "ASSEAG",
+    "type": "autonomo"
+  },
+  {
+    "name": "Arquiteto/Eng. (ASSEAG)",
+    "city": "Guarulhos",
+    "uf": "SP",
+    "email": "areacomeum@uol.com.br",
+    "source": "ASSEAG",
+    "type": "autonomo"
+  },
+  {
+    "name": "Arquiteto/Eng. (ASSEAG)",
+    "city": "Guarulhos",
+    "uf": "SP",
+    "email": "crmcengenharia@gmail.com",
+    "source": "ASSEAG",
+    "type": "autonomo"
+  },
+  {
+    "name": "Arquiteto/Eng. (ASSEAG)",
+    "city": "Guarulhos",
+    "uf": "SP",
+    "email": "jrhigino@ig.com.br",
+    "source": "ASSEAG",
+    "type": "autonomo"
+  },
+  {
+    "name": "Arquiteto/Eng. (ASSEAG)",
+    "city": "Guarulhos",
+    "uf": "SP",
+    "email": "higinogomesjr@gmail.com",
+    "source": "ASSEAG",
+    "type": "autonomo"
+  },
+  {
+    "name": "Arquiteto/Eng. (ASSEAG)",
+    "city": "Guarulhos",
+    "uf": "SP",
+    "email": "joeleng.civil@gmail.com",
+    "source": "ASSEAG",
+    "type": "autonomo"
+  },
+  {
+    "name": "Arquiteto/Eng. (ASSEAG)",
+    "city": "Guarulhos",
+    "uf": "SP",
+    "email": "stkaeliengeharia@gmail.com",
+    "source": "ASSEAG",
+    "type": "autonomo"
+  },
+  {
+    "name": "Arquiteto/Eng. (ASSEAG)",
+    "city": "Guarulhos",
+    "uf": "SP",
+    "email": "proenergy@uol.com.br",
+    "source": "ASSEAG",
+    "type": "autonomo"
+  },
+  {
+    "name": "Arquiteto/Eng. (ASSEAG)",
+    "city": "Guarulhos",
+    "uf": "SP",
+    "email": "marcio@belloni.eng.br",
+    "source": "ASSEAG",
+    "type": "autonomo"
+  },
+  {
+    "name": "Arquiteto/Eng. (ASSEAG)",
+    "city": "Guarulhos",
+    "uf": "SP",
+    "email": "eng.eduardo@casadoextintor.com.br",
+    "source": "ASSEAG",
+    "type": "autonomo"
+  },
+  {
+    "name": "Arquiteto/Eng. (ASSEAG)",
+    "city": "Guarulhos",
+    "uf": "SP",
+    "email": "shiriuarquitetura@gmail.com",
+    "source": "ASSEAG",
+    "type": "autonomo"
+  },
+  {
+    "name": "Arquiteto/Eng. (ASSEAG)",
+    "city": "Guarulhos",
+    "uf": "SP",
+    "email": "mikags96@gmail.com",
+    "source": "ASSEAG",
+    "type": "autonomo"
+  },
+  {
+    "name": "Forma e Reforma",
+    "city": "Rio de Janeiro",
+    "uf": "RJ",
+    "email": "contato@formaereforma.com",
+    "source": "Web search",
+    "type": "construtora"
+  },
+  {
+    "name": "MR Engenharia",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "contato@mrengenharia.com.br",
+    "source": "Web search",
+    "type": "construtora"
+  },
+  {
+    "name": "Newhouse Reformas",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "financeironewhousereformas@gmail.com",
+    "source": "Web search",
+    "type": "construtora"
+  },
+  {
+    "name": "FADX Engenharia",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "contato@fadx.com.br",
+    "source": "Web search",
+    "type": "construtora"
+  },
+  {
+    "name": "JCS Reformas",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "contato@jcsreformas.com.br",
+    "source": "Web search",
+    "type": "construtora"
+  },
+  {
+    "name": "Pequenas Reformas",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "contato@pequenasreformas.com.br",
+    "source": "Web search",
+    "type": "construtora"
+  },
+  {
+    "name": "Pequenas Reformas RH",
+    "city": "Sao Paulo",
+    "uf": "SP",
+    "email": "rh@pequenasreformas.com.br",
+    "source": "Web search",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "sec@aceplanvr.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "antares.engenhariaeconstrucao@gmail.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "nicolau.barbosa@grupobiotec.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "bob.murayama@grupobiotec.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "chlocci@yahoo.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "leila.roner@citrinoengenharia.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "construtorasantafeltda@gmail.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "ctransportepirai@gmail.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "contato@mnconstrutora.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "construtora@correajunior.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "lopesmendes@terra.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "ferreira.arquitetos.associados@gmail.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "administrativo@engemater.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "imobiliariafrprime@gmail.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "ielsulf@ielsulf.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "irmaosvasconcelos1@gmail.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "rh.servicon.contabil@gmail.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "kvg@kvgengenharia.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "lannatechsolucoes@gmail.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "leas.goncalves@hotmail.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "lmaconstrucao2018@outlook.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "luzcomercialoliveira@gmail.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "contato@maindustrial.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "financeiro@macielemelo.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "periclesgaguiar@gmail.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "marcelo.seabra@msprojetos.ind.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "atendimento@moraeslopes.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "tayanerodrigues@grupoaceplan.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "npi@npiengenharia.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "maypaneto@yahoo.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "carlos@construtorapolo.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "administracao@portaldasaudade.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "grupounica@yahoo.com",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "riosul@riosulconstrucoes.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "singular@singulararquitetura.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "samuel@stormgeoengenharia.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "terraplantransporte@uol.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "adrianaporphirio@yahoo.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora (Sinduscon)",
+    "city": "Sul Fluminense",
+    "uf": "RJ",
+    "email": "financeiro@vdacomercialdeaco.com.br",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  }
+]

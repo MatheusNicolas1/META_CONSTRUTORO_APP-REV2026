@@ -1,4 +1,5 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { NavigationSafety } from "@/utils/navigationSafety";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 const RDOVisualizar = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const rdoId = id as string;
   const { data: rdoRaw, isLoading, error } = useRDODetails(id);
   const { downloadRDO, isDownloading: isPdfDownloading } = useRDODownload();
@@ -296,9 +298,7 @@ const RDOVisualizar = () => {
     return (
       <div className="flex flex-col items-center justify-center py-12">
         <h2 className="text-xl font-semibold mb-2">RDO não encontrado</h2>
-        <Link to="/app/rdo">
-          <Button variant="outline">Voltar para RDOs</Button>
-        </Link>
+        <Button variant="outline" className="cursor-pointer" onClick={() => NavigationSafety.safeNavigate(navigate, '/app/rdo')}>Voltar para RDOs</Button>
       </div>
     );
   }
@@ -371,12 +371,10 @@ const RDOVisualizar = () => {
       {/* Header */}
       <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
         <div className="flex items-center space-x-4">
-          <Link to="/app/rdo">
-            <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="cursor-pointer" onClick={() => NavigationSafety.safeNavigate(navigate, '/app/rdo')}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Voltar
             </Button>
-          </Link>
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-foreground flex items-center space-x-3">
               <FileText className="h-8 w-8 text-construction-orange" />

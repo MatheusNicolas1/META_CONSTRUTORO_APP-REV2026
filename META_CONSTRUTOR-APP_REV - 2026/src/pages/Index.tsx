@@ -1,17 +1,27 @@
-import React, { useRef } from 'react';
+import React, { useRef, lazy } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import SEO from "@/components/SEO";
 import { seoPages } from '@/config/seo';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Check, ArrowRight, Play, Shield, Zap, BarChart3, ClipboardCheck, Users, FileText, HardHat, Star } from 'lucide-react';
+import { Check, ArrowRight, Zap, BarChart3, ClipboardCheck, Users, FileText, HardHat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import PublicNav from './PublicNav';
-import ObrasReaisSection from '@/components/ObrasReaisSection';
-import { SaaSPrintsSection, MobilePrintsSection } from '@/components/SaasPrintsSection';
-import { TypewriterEffect } from '@/components/public/TypewriterEffect';
-import { FloatingElements } from '@/components/public/FloatingElements';
-import { AnimatedGradient } from '@/components/public/AnimatedGradient';
-import { SectionHeading } from '@/components/public/SectionHeading';
+
+// ─── Lazy load abaixo da dobra ─────────────────────────────
+const ObrasReaisSection = lazy(() => import('@/components/ObrasReaisSection'));
+const MobilePrintsSectionWrapper = lazy(() =>
+  import('@/components/SaasPrintsSection').then(m => ({ default: m.MobilePrintsSection }))
+);
+const FloatingElements = lazy(() =>
+  import('@/components/public/FloatingElements').then(m => ({ default: m.FloatingElements }))
+);
+const TypewriterEffect = lazy(() =>
+  import('@/components/public/TypewriterEffect').then(m => ({ default: m.TypewriterEffect }))
+);
+const WhatsAppDemoSection = lazy(() => import('@/components/WhatsAppDemoSection'));
+const DashboardPrintsCarousel = lazy(() => import('@/components/DashboardPrintsCarousel'));
+const OperationsPrintsCarousel = lazy(() => import('@/components/OperationsPrintsCarousel'));
+const MobileTabletCarousel = lazy(() => import('@/components/MobileTabletCarousel'));
 
 // ─── Constants ────────────────────────────────────────────────
 const MARKETING = '/marketing';
@@ -77,20 +87,20 @@ const faqItems = [
   { q: 'Como funciona o cancelamento?', a: 'Você pode cancelar a qualquer momento. Seus dados ficam disponíveis por 30 dias para exportação.' },
 ];
 
-// ─── Motion Variants ──────────────────────────────────────────
+// ─── Motion Variants (memorizados fora do componente) ─────────
 const fadeInUp = {
-  hidden: { opacity: 0, y: 40, filter: 'blur(4px)' },
-  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } },
 };
 
 const staggerContainer = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
+  visible: { transition: { staggerChildren: 0.1 } },
 };
 
 const scaleIn = {
-  hidden: { opacity: 0, scale: 0.92, filter: 'blur(4px)' },
-  visible: { opacity: 1, scale: 1, filter: 'blur(0px)', transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } },
+  hidden: { opacity: 0, scale: 0.92 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
 };
 
 // ─── Sub-components ───────────────────────────────────────────
@@ -105,7 +115,7 @@ function Section({ children, className = '', dark = false }: { children: React.R
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
       variants={fadeInUp}
-      className={`py-12 md:py-20 ${dark ? 'bg-neutral-900 text-white' : 'bg-white'} ${className}`}
+      className={`py-12 md:py-20 ${dark ? 'bg-neutral-900 text-white' : 'bg-white'} ${className} contain-layout`}
     >
       <div className="container max-w-7xl mx-auto px-4 sm:px-6">
         {children}
@@ -123,7 +133,7 @@ function StatItem({ value, label, delay }: { value: string; label: string; delay
       ref={ref}
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay }}
+      transition={{ duration: 0.5, delay }}
       className="text-center"
     >
       <div className="text-2xl md:text-4xl font-extrabold text-brand-orange mb-1">{value}</div>
@@ -142,16 +152,13 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
       variants={{
-        hidden: { opacity: 0, y: 30 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: index * 0.08 } },
+        hidden: { opacity: 0, y: 25 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.4, delay: index * 0.06 } },
       }}
-      whileHover={{ y: -6, transition: { duration: 0.25 } }}
+      whileHover={{ y: -4, transition: { duration: 0.2 } }}
       className="group relative bg-white border border-neutral-100 rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden"
     >
-      <motion.div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-        initial={false}
-      >
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent z-10" />
         <img
           src={feature.image}
@@ -159,8 +166,9 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
           className="absolute bottom-0 left-0 right-0 w-full object-cover object-top rounded-b-2xl"
           style={{ maxHeight: '70%' }}
           loading="lazy"
+          decoding="async"
         />
-      </motion.div>
+      </div>
 
       <div className="relative z-20">
         <div className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-orange-ghost rounded-xl flex items-center justify-center mb-3 sm:mb-4">
@@ -186,8 +194,8 @@ function FAQItem({ item, index }: { item: typeof faqItems[0]; index: number }) {
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
       variants={{
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.4, delay: index * 0.06 } },
+        hidden: { opacity: 0, y: 15 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.35, delay: index * 0.05 } },
       }}
       className="border-b border-neutral-100 pb-5 sm:pb-6"
     >
@@ -205,8 +213,14 @@ export default function Home() {
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, 150]);
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 100]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.3]);
+
+  // Hero fade-in combinado em uma única variante para menos cálculos
+  const heroContent = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans antialiased">
@@ -214,28 +228,41 @@ export default function Home() {
 
       <PublicNav />
 
-      {/* ── HERO ────────────────────────────────────────── */}
+      {/* ═══════════════════════════════════════════════════════
+          FLUXO DA PÁGINA (narrativa do visitante):
+          1. HERO — impacto, o que é
+          2. FEATURES — o que faz (6 cards)
+          3. DASHBOARD PRINTS — visão executiva (carrossel)
+          4. HOW IT WORKS — como começar em 3 passos
+          5. BEFORE / AFTER — por que trocar
+          6. OPERATIONS PRINTS — gestão diária (carrossel)
+          7. WHATSAPP DEMO — a novidade: bot inteligente
+          8. MOBILE TABLET — prints responsivos (carrossel)
+          9. MOBILE PRINTS — veja o app funcionando
+          10. OBRAS REAIS — prova social
+          11. TRUST STATS — números de impacto
+          12. FAQ — dúvidas comuns
+          13. CTA FINAL — ação
+          ═══════════════════════════════════════════════════════ */}
+
+      {/* ── 1. HERO ───────────────────────────────────────── */}
       <section ref={heroRef} className="relative min-h-[80vh] md:min-h-screen flex items-center overflow-hidden bg-hero-gradient">
-        {/* Decorative orbs — more subtle on mobile, respects prefers-reduced-motion */}
+        {/* Orbs decorativos com will-change */}
         <FloatingElements count={3} className="hidden md:block" />
-        <motion.div
-          animate={{ x: [0, 50, 0], y: [0, -30, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-          className="absolute top-20 right-10 w-[600px] h-[600px] bg-brand-orange/5 rounded-full blur-3xl opacity-30 md:opacity-100"
-        />
-        <motion.div
-          animate={{ x: [0, -40, 0], y: [0, 40, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-          className="absolute bottom-10 left-10 w-[400px] h-[400px] bg-brand-emerald/5 rounded-full blur-3xl opacity-30 md:opacity-100"
-        />
+
+        <div className="absolute top-20 right-10 w-[600px] h-[600px] bg-brand-orange/5 rounded-full blur-3xl opacity-30 md:opacity-100 pointer-events-none"
+             style={{ willChange: 'transform' }} />
+
+        <div className="absolute bottom-10 left-10 w-[400px] h-[400px] bg-brand-emerald/5 rounded-full blur-3xl opacity-30 md:opacity-100 pointer-events-none"
+             style={{ willChange: 'transform' }} />
 
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 pt-20 md:pt-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
             <motion.div style={{ y: heroY, opacity: heroOpacity }}>
               <motion.div
-                initial={{ opacity: 0, y: 40, filter: 'blur(4px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+                variants={heroContent}
+                initial="hidden"
+                animate="visible"
               >
                 <span className="inline-flex items-center gap-2 bg-brand-orange-ghost text-brand-orange text-xs sm:text-sm font-semibold px-3 py-1 sm:px-4 sm:py-1.5 rounded-full mb-4 sm:mb-6">
                   <Zap className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Sistema de gestão de obras
@@ -243,37 +270,37 @@ export default function Home() {
               </motion.div>
 
               <motion.h1
-                initial={{ opacity: 0, y: 40, filter: 'blur(4px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.15 }}
                 className="text-[clamp(2rem,7vw,4.5rem)] font-extrabold text-neutral-900 leading-[1.05] tracking-tight mb-4 sm:mb-6"
               >
                 Gestão de obras{' '}
-                <span className="text-brand-orange">sem complicação</span>
+                  <span className="text-brand-orange">em um só lugar</span>
               </motion.h1>
 
               <motion.p
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.4 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
                 className="text-[clamp(0.9rem,2.5vw,1.25rem)] text-neutral-600 leading-relaxed mb-6 sm:mb-8 max-w-lg"
               >
                 <TypewriterEffect
                   texts={[
-                    'RDO digital, checklists, equipes, documentos e relatórios — tudo integrado em uma plataforma feita para a construção civil brasileira.',
-                    'Mais de 300 construtoras já transformaram a gestão de obras com o Meta Construtor.',
-                    'Do diário de obra ao relatório final — tudo digital, tudo conectado.',
+                    'RDO digital, checklists de qualidade, equipes, documentos, contratos e relatórios — tudo integrado em uma plataforma completa para sua construtora.',
+                    'Mais de 300 construtoras já transformaram a gestão de obras com RDO online e controle de obras em tempo real.',
+                    'Do diário de obra ao relatório final — RDO, ocorrências, fotos, pendencias, medições e assinaturas, tudo digital.',
                   ]}
-                  speed={30}
+                  speed={35}
                   delayBetween={5000}
-                  deleteSpeed={20}
+                  deleteSpeed={25}
                 />
               </motion.p>
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
                 className="flex flex-col sm:flex-row gap-3 sm:gap-4"
               >
                 <Button className="bg-brand-orange hover:bg-brand-orange-hover text-white text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 rounded-full shadow-lg shadow-brand-orange/25 hover:shadow-brand-orange/40 transition-all w-full sm:w-auto" asChild>
@@ -291,7 +318,7 @@ export default function Home() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.9 }}
+                transition={{ duration: 0.4, delay: 0.7 }}
                 className="mt-6 sm:mt-8 flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm text-neutral-500"
               >
                 <span className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-emerald" /> Sem cartão</span>
@@ -302,16 +329,12 @@ export default function Home() {
 
             {/* Dashboard image — hidden on mobile */}
             <motion.div
-              initial={{ opacity: 0, x: 60, filter: 'blur(6px)' }}
-              animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-              transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.25 }}
               className="relative hidden lg:block"
             >
-              <motion.div
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                className="relative"
-              >
+              <div className="relative">
                 <div className="absolute -inset-4 bg-brand-orange/10 rounded-2xl blur-2xl" />
                 <div className="relative rounded-2xl border border-neutral-200 shadow-2xl overflow-hidden bg-white">
                   <div className="bg-neutral-100 px-4 py-2 flex items-center gap-2 border-b border-neutral-200">
@@ -327,25 +350,24 @@ export default function Home() {
                     alt="Dashboard do Meta Construtor"
                     className="w-full"
                     loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
                   />
                 </div>
 
                 {/* Mobile mockup overlay */}
-                <motion.div
-                  animate={{ y: [0, -12, 0] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-                  className="absolute -bottom-6 -right-4 lg:-right-8 w-32 lg:w-40"
-                >
+                <div className="absolute -bottom-6 -right-4 lg:-right-8 w-32 lg:w-40">
                   <div className="rounded-2xl border-2 border-neutral-200 shadow-xl overflow-hidden bg-white">
                     <img
-                      src={`${MARKETING}/prd-prints-2026-06-04-26-obras-mobile.png`}
+                      src={`${MARKETING}/prd-prints-2026-06-04-13-integracoes-status-desktop.png`}
                       alt="Meta Construtor mobile"
                       className="w-full"
                       loading="lazy"
+                      decoding="async"
                     />
                   </div>
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -367,23 +389,8 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* ── TRUST BAR ───────────────────────────────────── */}
-      <Section className="py-10 border-y border-neutral-100 bg-neutral-50">
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
-        >
-          {stats.map((stat, i) => (
-            <StatItem key={i} {...stat} delay={i * 0.1} />
-          ))}
-        </motion.div>
-      </Section>
-
-      {/* ── FEATURES GRID ───────────────────────────────── */}
-      <Section>
+      {/* ── 2. FEATURES GRID ──────────────────────────────── */}
+      <Section className="content-visibility-auto">
         <motion.div variants={fadeInUp} className="text-center mb-10 md:mb-16">
           <span className="text-brand-orange font-semibold text-xs sm:text-sm tracking-wide uppercase">Funcionalidades</span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-neutral-900 mt-2 sm:mt-3 mb-3 sm:mb-4">
@@ -401,17 +408,13 @@ export default function Home() {
         </div>
       </Section>
 
-      {/* ── OBRAS REAIS ─────────────────────────────────── */}
-      <ObrasReaisSection />
+      {/* ── 3. DASHBOARD PRINTS — carrossel de visão executiva ── */}
+      <div className="content-visibility-auto">
+        <DashboardPrintsCarousel />
+      </div>
 
-      {/* ── SAAS PRINTS SECTION 1 ───────────────────────── */}
-      <SaaSPrintsSection />
-
-      {/* ── SAAS PRINTS SECTION 2 (Mobile/Tablet) ───────── */}
-      <MobilePrintsSection />
-
-      {/* ── HOW IT WORKS ────────────────────────────────── */}
-      <Section className="bg-neutral-50">
+      {/* ── 4. HOW IT WORKS ───────────────────────────────── */}
+      <Section className="bg-neutral-50 content-visibility-auto">
         <motion.div variants={fadeInUp} className="text-center mb-10 md:mb-16">
           <span className="text-brand-orange font-semibold text-xs sm:text-sm tracking-wide uppercase">Como funciona</span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-neutral-900 mt-2 sm:mt-3 mb-3 sm:mb-4">
@@ -444,8 +447,8 @@ export default function Home() {
         </motion.div>
       </Section>
 
-      {/* ── BEFORE / AFTER ──────────────────────────────── */}
-      <Section>
+      {/* ── 4. BEFORE / AFTER ─────────────────────────────── */}
+      <Section className="content-visibility-auto">
         <motion.div variants={fadeInUp} className="text-center mb-10 md:mb-16">
           <span className="text-brand-orange font-semibold text-xs sm:text-sm tracking-wide uppercase">Comparativo</span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-neutral-900 mt-2 sm:mt-3 mb-3 sm:mb-4">
@@ -462,12 +465,12 @@ export default function Home() {
             className="bg-red-50 border-2 border-red-100 rounded-2xl p-5 sm:p-8"
           >
             <h3 className="text-base sm:text-lg font-bold text-red-700 mb-3 sm:mb-4 flex items-center gap-2">
-              <Play className="w-4 h-4 sm:w-5 sm:h-5" /> Antes
+              Antes
             </h3>
             <ul className="space-y-2 sm:space-y-3">
               {['Papel e planilha espalhados', 'RDO perdido no WhatsApp', 'Relatório manual no Excel', 'Sem histórico de obra', 'Fotos sem organização'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm sm:text-base text-red-800">
-                  <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 mt-0.5 flex-shrink-0 text-red-400 rotate-45" /> {item}
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 mt-0.5 flex-shrink-0 text-red-400" /> {item}
                 </li>
               ))}
             </ul>
@@ -494,8 +497,48 @@ export default function Home() {
         </div>
       </Section>
 
-      {/* ── FAQ ─────────────────────────────────────────── */}
-      <Section>
+      {/* ── 6. OPERATIONS PRINTS — carrossel de gestão diária ── */}
+      <div className="content-visibility-auto">
+        <OperationsPrintsCarousel />
+      </div>
+
+      {/* ── 7. WHATSAPP DEMO ──────────────────────────────── */}
+      <div className="content-visibility-auto">
+        <WhatsAppDemoSection />
+      </div>
+
+      {/* ── 8. MOBILE TABLET PRINTS — carrossel responsivo ── */}
+      <div className="content-visibility-auto">
+        <MobileTabletCarousel />
+      </div>
+
+      {/* ── 9. MOBILE PRINTS ──────────────────────────────── */}
+      <div className="content-visibility-auto">
+        <MobilePrintsSectionWrapper />
+      </div>
+
+      {/* ── 10. OBRAS REAIS ────────────────────────────────── */}
+      <div className="content-visibility-auto">
+        <ObrasReaisSection />
+      </div>
+
+      {/* ── 11. TRUST BAR ──────────────────────────────────── */}
+      <Section className="py-10 border-y border-neutral-100 bg-neutral-50">
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
+        >
+          {stats.map((stat, i) => (
+            <StatItem key={i} {...stat} delay={i * 0.08} />
+          ))}
+        </motion.div>
+      </Section>
+
+      {/* ── 12. FAQ ────────────────────────────────────────── */}
+      <Section className="content-visibility-auto">
         <motion.div variants={fadeInUp} className="text-center mb-8 sm:mb-16">
           <span className="text-brand-orange font-semibold text-xs sm:text-sm tracking-wide uppercase">Dúvidas</span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-neutral-900 mt-2 sm:mt-3 mb-3 sm:mb-4">
@@ -503,111 +546,29 @@ export default function Home() {
           </h2>
         </motion.div>
 
-        <div className="max-w-2xl mx-auto space-y-1 px-0 sm:px-4">
+        <div className="max-w-3xl mx-auto divide-y divide-neutral-100">
           {faqItems.map((item, i) => (
             <FAQItem key={i} item={item} index={i} />
           ))}
         </div>
       </Section>
 
-      {/* ── FINAL CTA ───────────────────────────────────── */}
-      <section className="relative py-16 sm:py-20 md:py-32 overflow-hidden bg-neutral-900">
-        {/* Decorative orbs — hidden on mobile */}
-        <motion.div
-          animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-          className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-orange/10 rounded-full blur-3xl hidden md:block"
-        />
-        <motion.div
-          animate={{ x: [0, -30, 0], y: [0, 20, 0] }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
-          className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-brand-emerald/5 rounded-full blur-3xl hidden md:block"
-        />
-
-        <div className="container max-w-3xl mx-auto px-4 sm:px-6 text-center relative z-10">
-          <motion.h2
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white mb-4 sm:mb-6 leading-tight"
-          >
-            Pronto para organizar{' '}
-            <span className="text-brand-orange">suas obras?</span>
-          </motion.h2>
-          <motion.p
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-sm sm:text-base md:text-lg text-neutral-400 mb-8 sm:mb-10 max-w-xl mx-auto"
-          >
-            Junte-se a centenas de construtoras que já transformaram a gestão de obras com o Meta Construtor.
-          </motion.p>
-          <motion.div
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center"
-          >
-            <Button className="bg-brand-orange hover:bg-brand-orange-hover text-white text-sm sm:text-base md:text-lg px-6 sm:px-8 md:px-10 py-5 sm:py-6 md:py-7 rounded-full shadow-xl shadow-brand-orange/30 hover:shadow-brand-orange/50 transition-all animate-glow-pulse w-full sm:w-auto" asChild>
-              <Link to="/criar-conta">
-                Comece de graça agora <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
-              </Link>
-            </Button>
-            <Button variant="outline" className="text-sm sm:text-base md:text-lg px-6 sm:px-8 md:px-10 py-5 sm:py-6 md:py-7 rounded-full border-2 border-neutral-700 text-white hover:bg-neutral-800 hover:border-neutral-600 transition-all w-full sm:w-auto" asChild>
-              <Link to="/contato">
-                Falar com a equipe
-              </Link>
-            </Button>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── FOOTER ──────────────────────────────────────── */}
-      <footer className="bg-neutral-950 text-neutral-400 py-12 md:py-20">
-        <div className="container max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 mb-10 md:mb-12">
-            <div className="col-span-2">
-              <Link to="/home" className="flex items-center mb-4">
-                <img src="/brand/meta-construtor-icon.png" alt="Meta Construtor" className="h-8 w-8" />
-              </Link>
-              <p className="text-xs sm:text-sm leading-relaxed max-w-xs">
-                Plataforma de gestão de obras para construtoras brasileiras. RDO digital, checklists, equipes e relatórios em um só lugar.
-              </p>
-            </div>
-
-            {[
-              { title: 'Produto', items: ['Funcionalidades', 'Planos', 'Blog', 'Atualizações', 'Status'] },
-              { title: 'Empresa', items: ['Sobre', 'Carreiras', 'Contato', 'Imprensa'] },
-              { title: 'Suporte', items: ['Central de Ajuda', 'Documentação', 'API', 'Comunidade'] },
-            ].map((col, i) => (
-              <div key={i}>
-                <h4 className="text-white font-semibold text-sm sm:text-base mb-3 sm:mb-4">{col.title}</h4>
-                <ul className="space-y-1.5 sm:space-y-2">
-                  {col.items.map((item, j) => (
-                    <li key={j}>
-                      <Link to={`/${item.toLowerCase().replace(/\s+/g, '-')}`} className="text-xs sm:text-sm hover:text-brand-orange transition-colors">
-                        {item}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t border-neutral-800 pt-6 md:pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-xs sm:text-sm">© 2026 Meta Construtor. Todos os direitos reservados.</p>
-            <div className="flex gap-4 sm:gap-6">
-              <Link to="/legal/privacidade" className="text-xs sm:text-sm hover:text-brand-orange transition-colors">Privacidade</Link>
-              <Link to="/legal/termos" className="text-xs sm:text-sm hover:text-brand-orange transition-colors">Termos</Link>
-              <Link to="/legal/lgpd" className="text-xs sm:text-sm hover:text-brand-orange transition-colors">LGPD</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      {/* ── 13. CTA FINAL ─────────────────────────────────── */}
+      <Section className="bg-brand-orange/5 content-visibility-auto">
+        <motion.div variants={fadeInUp} className="text-center max-w-3xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-neutral-900 mb-4 sm:mb-6">
+            Pronto para transformar sua obra?
+          </h2>
+          <p className="text-neutral-600 text-sm sm:text-lg mb-6 sm:mb-8 max-w-xl mx-auto">
+            Comece grátis hoje. Sem cartão de crédito. Sem instalação. Suporte em português.
+          </p>
+          <Button className="bg-brand-orange hover:bg-brand-orange-hover text-white text-sm sm:text-base px-8 sm:px-12 py-5 sm:py-6 rounded-full shadow-lg shadow-brand-orange/25 hover:shadow-brand-orange/40 transition-all" asChild>
+            <Link to="/criar-conta">
+              Comece grátis agora <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
+            </Link>
+          </Button>
+        </motion.div>
+      </Section>
     </div>
   );
 }

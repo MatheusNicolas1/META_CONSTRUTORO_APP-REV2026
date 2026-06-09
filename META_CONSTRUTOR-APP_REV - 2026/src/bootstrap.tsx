@@ -6,9 +6,11 @@ import './index.css';
 import './lib/i18n';
 import { initAnalytics } from './integrations/analytics';
 import { initSentry } from './integrations/sentry';
+import { initOpenTelemetry } from './integrations/opentelemetry';
 
 initAnalytics();
 initSentry();
+initOpenTelemetry();
 
 const queryClient = new QueryClient();
 

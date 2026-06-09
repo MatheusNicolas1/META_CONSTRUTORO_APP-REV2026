@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { NavigationSafety } from "@/utils/navigationSafety";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -81,7 +82,7 @@ const PerfilPublico = () => {
             <p className="text-muted-foreground text-center">
               Este perfil não existe ou não está público.
             </p>
-        <Button onClick={() => navigate("/home")}>
+        <Button onClick={() => NavigationSafety.safeNavigate(navigate, "/")} className="cursor-pointer">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Voltar ao início
             </Button>
@@ -95,8 +96,8 @@ const PerfilPublico = () => {
     <div className="container mx-auto p-6 max-w-4xl">
       <Button
         variant="ghost"
-          onClick={() => navigate("/home")}
-        className="mb-6"
+          onClick={() => NavigationSafety.safeNavigate(navigate, "/home")}
+        className="mb-6 cursor-pointer"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
         Voltar

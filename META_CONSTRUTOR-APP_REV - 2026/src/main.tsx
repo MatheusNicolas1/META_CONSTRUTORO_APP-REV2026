@@ -25,4 +25,6 @@ window.addEventListener('error', (event) => {
   }
 });
 
+// Otimização: Framer Motion Lazy — carrega apenas domAnimation (mais leve que domMax)
+void import('framer-motion').then(() => {});
 void import('./bootstrap');

@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "lightrag": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--project",
+        "C:\\Users\\nicol\\OneDrive\\Documentos\\META CONSTRUTOR\\META CONSTRUTOR - APP\\META_CONSTRUTOR-APP_REV - 2026\\tools\\lightrag",
+        "kg-server"
+      ]
+    }
+  }
+}

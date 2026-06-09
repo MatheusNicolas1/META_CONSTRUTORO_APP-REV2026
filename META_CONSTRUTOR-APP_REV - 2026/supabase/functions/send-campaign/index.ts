@@ -43,14 +43,23 @@ serve(async (req) => {
     );
 
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
     let isAuthorized = false;
+    let authLevel: "admin" | "anon" | null = null;
 
     // Caminho 1: service_role key (campanha server-side)
     if (authHeader.startsWith("Bearer ") && authHeader.slice(7) === serviceRoleKey) {
       isAuthorized = true;
+      authLevel = "admin";
     }
 
-    // Caminho 2: JWT de usuário admin
+    // Caminho 2: anon key (dry-run apenas)
+    if (!isAuthorized && authHeader.startsWith("Bearer ") && authHeader.slice(7) === anonKey) {
+      isAuthorized = true;
+      authLevel = "anon";
+    }
+
+    // Caminho 3: JWT de usuário admin
     if (!isAuthorized && authHeader.startsWith("Bearer ")) {
       const token = authHeader.slice(7);
       const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
@@ -62,6 +71,7 @@ serve(async (req) => {
           .single();
         if (userRecord?.role === "admin") {
           isAuthorized = true;
+          authLevel = "admin";
         }
       }
     }
@@ -96,6 +106,11 @@ serve(async (req) => {
         invalid: invalidEmails.length,
         preview: validEmails.slice(0, 3).map(e => e.to),
       }, corsHeaders);
+    }
+
+    // Anon key só pode fazer dry-run
+    if (authLevel === "anon") {
+      return jsonResponse({ error: "Anon key is read-only (dry-run only). Use service_role key for sending." }, corsHeaders, 403);
     }
 
     const fromDefault = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";

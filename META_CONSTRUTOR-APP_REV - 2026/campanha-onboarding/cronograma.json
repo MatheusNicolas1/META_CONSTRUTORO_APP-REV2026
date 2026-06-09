@@ -1,0 +1,10 @@
+[
+  {"dia": 1, "tipo": "apresentacao", "subject": "RDO ainda no papel? Conheça o Meta Construtor", "template": "email1_apresentacao.html", "delay_dias": 1},
+  {"dia": 2, "tipo": "prova_social", "subject": "Como uma construtora reduziu 80% do retrabalho no RDO", "template": "email2_prova_social.html", "delay_dias": 2},
+  {"dia": 3, "tipo": "educativo", "subject": "3 sinais de que seu RDO está te custando dinheiro", "template": "email3_educativo.html", "delay_dias": 3},
+  {"dia": 5, "tipo": "demo", "subject": "Veja o Meta Construtor em ação 🎥", "template": "email4_demo.html", "delay_dias": 5},
+  {"dia": 7, "tipo": "depoimentos", "subject": "O que nossos clientes mais amam no Meta Construtor", "template": "email5_depoimentos.html", "delay_dias": 7},
+  {"dia": 15, "tipo": "reengajamento", "subject": "Ainda está avaliando? Deixamos um presente 🎁", "template": "email6_reengajamento.html", "delay_dias": 15},
+  {"dia": 21, "tipo": "oferta", "subject": "Últimos dias — condições especiais de pré-lançamento", "template": "email7_oferta.html", "delay_dias": 21},
+  {"dia": 30, "tipo": "encerramento", "subject": "Encerramos nossa campanha — mas a porta continua aberta", "template": "email8_encerramento.html", "delay_dias": 30}
+]

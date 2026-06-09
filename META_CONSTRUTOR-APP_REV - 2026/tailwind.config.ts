@@ -80,12 +80,13 @@ export default {
 					'blue-light': 'hsl(var(--construction-blue-light))'
 				},
 				brand: {
-					orange: '#F97316',
-					'orange-hover': '#EA580C',
-					'orange-light': '#FDBA74',
-					'orange-ghost': '#FFF7ED',
-					emerald: '#059669',
-					'emerald-light': '#ECFDF5',
+				  orange: '#F97316',
+				  'orange-hover': '#EA580C',
+				  'orange-light': '#FDBA74',
+				  'orange-ghost': '#FFF7ED',
+				  emerald: '#059669',
+				  'emerald-light': '#ECFDF5',
+				  blue: '#1e3a5f',
 				}
 			},
 			borderRadius: {

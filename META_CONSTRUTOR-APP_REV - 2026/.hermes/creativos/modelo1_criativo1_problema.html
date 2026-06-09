@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Criativo 1 - Problema</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0f0f1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  /* Reset height to auto and use padding instead */
+  body { min-height: auto; padding: 20px 0; }
+  .card { width: 400px; min-height: 800px; background: linear-gradient(160deg, #0d1b2a 0%, #1b2838 40%, #16213e 100%); border-radius: 24px; overflow: hidden; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.5); padding-bottom: 30px; }
+  
+  /* Background texture */
+  .card::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px); pointer-events: none; }
+
+  /* Header */
+  .header { padding: 24px 20px 16px; display: flex; align-items: center; gap: 10px; }
+  .logo { width: 36px; height: 36px; background: linear-gradient(135deg, #f97316, #ea580c); border-radius: 10px; display: flex; align-items: center; center; font-weight: 800; color: white; font-size: 14px; justify-content: center; }
+  .logo-text { color: white; font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+  .logo-text span { color: #f97316; }
+
+  /* Main area */
+  .main { padding: 0 20px; position: relative; }
+
+  /* Badge problema */
+  .badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); padding: 6px 14px; border-radius: 50px; font-size: 11px; color: #fca5a5; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+  .badge::before { content: '⚠️'; font-size: 12px; }
+
+  /* Headline */
+  .headline { font-size: 32px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; color: white; margin-bottom: 8px; }
+  .headline .highlight { background: linear-gradient(135deg, #f97316, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  /* Subheadline */
+  .subheadline { font-size: 14px; color: #94a3b8; line-height: 1.5; margin-bottom: 20px; }
+
+  /* WhatsApp Mockup */
+  .mockup { background: #111827; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; margin-bottom: 16px; }
+  .mockup-header { background: #1f2937; padding: 10px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .mockup-header .avatar { width: 28px; height: 28px; border-radius: 50%; background: #22c55e; display: flex; align-items: center; justify-content: center; font-size: 12px; color: white; font-weight: 700; }
+  .mockup-header .name { color: white; font-size: 13px; font-weight: 600; flex: 1; }
+  .mockup-header .name small { color: #6b7280; font-weight: 400; font-size: 11px; display: block; }
+  .mockup-body { padding: 8px 14px; }
+
+  /* Chat bubbles */
+  .chat { display: flex; flex-direction: column; gap: 6px; }
+  .msg-received { align-self: flex-start; background: #1f2937; color: #e5e7eb; padding: 8px 12px; border-radius: 12px 12px 12px 4px; font-size: 12px; max-width: 75%; line-height: 1.4; }
+  .msg-received strong { color: #f97316; }
+  .msg-sent { align-self: flex-end; background: #0d9488; color: white; padding: 8px 12px; border-radius: 12px 12px 4px 12px; font-size: 12px; max-width: 65%; line-height: 1.4; }
+
+  .media-bubble { align-self: flex-start; background: #1f2937; border-radius: 12px; padding: 8px; max-width: 55%; }
+  .media-bubble .placeholder-img { width: 100%; height: 50px; background: linear-gradient(135deg, #374151, #4b5563); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-size: 10px; }
+
+  .pdf-bubble { align-self: flex-start; background: #1f2937; border-radius: 12px; padding: 8px 12px; display: flex; align-items: center; gap: 8px; max-width: 70%; }
+  .pdf-icon { width: 24px; height: 28px; background: #ef4444; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: 700; }
+  .pdf-text { color: #d1d5db; font-size: 11px; }
+  .pdf-text small { color: #6b7280; font-size: 10px; display: block; }
+
+  .voice-bubble { align-self: flex-start; background: #1f2937; border-radius: 12px 12px 12px 4px; padding: 8px 14px; display: flex; align-items: center; gap: 8px; max-width: 55%; }
+  .voice-wave { display: flex; align-items: center; gap: 2px; }
+  .voice-wave span { width: 3px; background: #22c55e; border-radius: 2px; display: inline-block; }
+  .voice-wave span:nth-child(1) { height: 10px; } .voice-wave span:nth-child(2) { height: 16px; } .voice-wave span:nth-child(3) { height: 12px; } .voice-wave span:nth-child(4) { height: 18px; } .voice-wave span:nth-child(5) { height: 8px; }
+  .voice-time { color: #6b7280; font-size: 10px; flex: 1; text-align: right; }
+
+  .msg-time { color: #6b7280; font-size: 10px; text-align: center; padding: 4px 0; }
+
+  /* Stats bar */
+  .stats { display: flex; justify-content: space-between; background: rgba(249, 115, 22, 0.1); border: 1px solid rgba(249, 115, 22, 0.2); border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; }
+  .stat-item { text-align: center; }
+  .stat-item .num { font-size: 20px; font-weight: 800; color: #fb923c; }
+  .stat-item .label { font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* CTA */
+  .cta { background: linear-gradient(135deg, #f97316, #ea580c); border: none; border-radius: 50px; padding: 14px 28px; width: 100%; color: white; font-size: 15px; font-weight: 700; text-align: center; cursor: pointer; box-shadow: 0 8px 24px rgba(249, 115, 22, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+  .cta:hover { background: linear-gradient(135deg, #ea580c, #dc2626); }
+
+  /* Footer - now inline, not absolute */
+  .footer { text-align: center; color: #4b5563; padding: 16px 0 8px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <!-- Progress bar -->
+    <div style="height: 3px; background: #1f2937; margin: 0;">
+      <div style="width: 33%; height: 100%; background: linear-gradient(90deg, #f97316, #fb923c); border-radius: 0 2px 2px 0;"></div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">MC</div>
+      <div class="logo-text">META <span>CONSTRUTOR</span></div>
+    </div>
+
+    <div class="main">
+      <div class="badge">Problema #1</div>
+
+      <div class="headline">
+        Seu RDO ainda<br>
+        <span class="highlight">vive no WhatsApp?</span>
+      </div>
+
+      <div class="subheadline">
+        Relatórios perdidos, fotos misturadas com mensagens,<br>
+        aprovações que nunca chegam. Parece familiar?
+      </div>
+
+      <!-- WhatsApp Mockup -->
+      <div class="mockup">
+        <div class="mockup-header">
+          <div class="avatar">O</div>
+          <div class="name">Obra Residencial Pedreira <small>online</small></div>
+        </div>
+        <div class="mockup-body">
+          <div class="chat">
+            <div class="msg-time">Hoje</div>
+            <div class="msg-received"><strong>João (Mestre):</strong> Bom dia, engenheiro! Foto da fundação de hoje</div>
+            <div class="media-bubble"><div class="placeholder-img">📸 IMG_20240607_093022.jpg</div></div>
+            <div class="msg-received"><strong>João:</strong> A concretagem terminou 11h</div>
+            <div class="msg-sent">Beleza, manda o RDO depois</div>
+            <div class="pdf-bubble"><div class="pdf-icon">PDF</div><div class="pdf-text">RDO_Semana_23.docx <small>127 KB</small></div></div>
+            <div class="voice-bubble"><div class="voice-wave"><span></span><span></span><span></span><span></span><span></span></div><span style="color:#d1d5db;font-size:11px;">0:24</span><span class="voice-time">áudio</span></div>
+            <div class="msg-received"><strong>Pedro (Cliente):</strong> @eng civil, consegue me mandar o relatório de sexta?</div>
+            <div class="msg-received"><strong>João:</strong> E aí, liberou o material?</div>
+            <div class="msg-received" style="color:#ef4444;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);"><strong>⚠️ 37 mensagens não lidas</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat-item"><div class="num">12h</div><div class="label">/semana perdidos</div></div>
+        <div class="stat-item"><div class="num">43%</div><div class="label">RDOs incompletos</div></div>
+        <div class="stat-item"><div class="num">3</div><div class="label">apps diferentes</div></div>
+      </div>
+
+      <!-- CTA -->
+      <a class="cta" href="#">
+        👷 Quero organizar minha obra
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div class="footer">1 / 3 • Carrossel</div>
+  </div>
+</body>
+</html>

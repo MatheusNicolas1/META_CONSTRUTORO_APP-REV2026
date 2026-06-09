@@ -33,8 +33,14 @@ Regra de continuidade:
 | `PRD_LIXEIRA.md` | Lixeira, soft delete, restauracao e expurgo | Planejado; nao tratar como feito |
 | `PRD_AUDIO_ELEVENLABS.md` | Mensagens de audio, resumos por voz, ElevenLabs TTS, Whisper/OpenAI STT, n8n e WhatsApp Business | Planejamento operacional; fonte primaria atual de audio |
 || `PRD_AUDIO_WHISPER_N8N.md` | Historico de planejamento audio/Whisper; refencia para contratos tecnico anteriores | Historico; consultar apenas para contexto ou contratos nao cobertos pelo PRD atual |
-| `PRD_PRINTS.md` | Contas demonstrativas, massa visual e screenshots seguros para campanha publicitaria | Ciclo 7 validado; 28 prints finais copiados para `prints_layout/`, pacote seguro mantido e dashboard final salvo |
-| `docs/PRD2.md` | Estabilizacao, anti-duplicacao, schema drift e verificacao antes de criar | Diretriz historica; aplicar regra de verificar antes de alterar |
+|| `PRD_PRINTS.md` | Contas demonstrativas, massa visual e screenshots seguros para campanha publicitaria | Ciclo 7 validado; 28 prints finais copiados para `prints_layout/`, pacote seguro mantido e dashboard final salvo |
+|| `docs/PRD_GESTAO_CONTRATOS_MEDICOES_2026-05-31.md` | Gestão de contratos e medições de obras | Implementado: página `Contratos.tsx`, hook `useContratosMedicoes.ts`, rota `/app/contratos`, EFs `calcular-medicao` e `medicao-approve-flow` |
+|| `docs/PRD_ORDEM_SERVICO_2026-05-31.md` | Ordem de Serviço (OS) com aprovação multicamadas | Implementado: página `OrdensServico.tsx`, hook `useOrdensServico.ts`, rota `/app/ordens-servico`, EF `ordem-servico-approve` |
+|| `docs/PRD_DIALOGO_DIARIO_SEGURANCA_2026-05-31.md` | DDS (Diálogo Diário de Segurança) | Implementado: página `DDS.tsx`, hook `useDDS.ts`, rota `/app/dds`, EFs `consolidar-fluxo` e `indicadores-mensais-dds` |
+|| `docs/PRD_FLUXO_CAIXA_CURVA_ABC_2026-05-31.md` | Fluxo de caixa e curva ABC de obras | Implementado: página `FluxoCaixa.tsx`, hook `useFluxoCaixa.ts`, rota `/app/fluxo-caixa`, EF `calcular-receita` |
+|| `docs/PRD_PORTAL_CLIENTE_2026-05-31.md` | Portal do cliente com acesso público por token | Implementado: páginas `ClientesPortal.tsx` e `PortalClientePublico.tsx`, hooks `useClientesPortal.ts` e `usePortalCliente.ts`, rota `/app/clientes-portal` e pública `/portal/:token`, EF `portal-client-register` |
+|| `docs/PRD_INTEGRACAO_ERP_2026-05-31.md` | Integração com ERPs (Omie, ContaAzul, etc.) | Implementado: página `IntegracaoERP.tsx`, hook `useIntegracaoERP.ts`, rota `/app/integracoes/erp`, migrations `prd_erp_tables` e `prd_rpcs_complementares` |
+|| `docs/PRD2.md` | Estabilizacao, anti-duplicacao, schema drift e verificacao antes de criar | Diretriz historica; aplicar regra de verificar antes de alterar |
 | `docs/PRD3.md` | Zero dados ficticios, org_id, query keys e isolamento de cache | Diretriz historica parcialmente executada; validar no PRD_falso e codigo atual |
 | `docs/PRD4.md` | Estabilizacao funcional rigida por modulos | Diretriz historica; usar como disciplina de execucao |
 | `docs/PRD5.md` e `docs/RELATORIO_FINAL_CONFORMIDADE_PRD5.md` | Funcionalidades mockadas, relatorios, integracoes, contato, approvals | Historico parcialmente superado por PRD.md e PRD_falso |

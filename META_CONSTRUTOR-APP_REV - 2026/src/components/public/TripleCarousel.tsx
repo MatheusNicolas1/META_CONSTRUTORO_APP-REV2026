@@ -1,11 +1,11 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState } from 'react';
 
 // ─── Tipos ────────────────────────────────────────────────
 
 export interface CarouselItem {
   src: string;
   title: string;
-  desc: string;
+  desc?: string;
   /** Para imagens verticais com mockup de celular */
   isMobile?: boolean;
 }
@@ -25,6 +25,8 @@ function injectKeyframes() {
   if (typeof document === 'undefined') return;
   if (document.getElementById(KEYFRAMES_ID)) return;
 
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   const style = document.createElement('style');
   style.id = KEYFRAMES_ID;
   style.textContent = `
@@ -38,12 +40,29 @@ function injectKeyframes() {
     }
     .triple-scroll-right {
       animation: scroll-right var(--scroll-speed) linear infinite;
+      will-change: ${prefersReducedMotion ? 'auto' : 'transform'};
     }
     .triple-scroll-left {
       animation: scroll-left var(--scroll-speed) linear infinite;
+      will-change: ${prefersReducedMotion ? 'auto' : 'transform'};
     }
     .triple-scroll-paused {
       animation-play-state: paused !important;
+    }
+    /* Mobile: reduz velocidade para evitar tremor */
+    @media (max-width: 768px) {
+      .triple-scroll-right,
+      .triple-scroll-left {
+        animation-duration: calc(var(--scroll-speed) * 1.5);
+      }
+    }
+    /* Reduced motion: pausa o carrossel */
+    @media (prefers-reduced-motion: reduce) {
+      .triple-scroll-right,
+      .triple-scroll-left {
+        animation: none !important;
+        transform: none !important;
+      }
     }
   `;
   document.head.appendChild(style);
@@ -53,27 +72,23 @@ function injectKeyframes() {
 
 function MobileMockupImage({ src, title }: { src: string; title: string }) {
   return (
-    <div className="relative flex-shrink-0 w-[180px] sm:w-[200px] md:w-[220px] lg:w-[240px]">
-      {/* Corpo do celular */}
+    <div className="relative flex-shrink-0 w-[180px] sm:w-[200px] md:w-[220px] lg:w-[240px] contain-layout">
       <div className="relative mx-auto w-full max-w-[180px] sm:max-w-[200px] md:max-w-[220px] lg:max-w-[240px]">
-        {/* Moldura do celular */}
         <div className="relative rounded-[1.75rem] sm:rounded-[2rem] border-[3px] sm:border-[4px] border-neutral-800 bg-neutral-900 shadow-xl overflow-hidden"
              style={{ aspectRatio: '9/19' }}>
-          {/* Notch */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-5 sm:h-6 bg-neutral-900 rounded-b-xl z-10 flex items-center justify-center gap-1.5">
             <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-neutral-700" />
           </div>
-          {/* Tela */}
           <div className="absolute inset-[3px] sm:inset-[4px] rounded-[1.5rem] sm:rounded-[1.75rem] overflow-hidden bg-white">
             <img
               src={src}
               alt={title}
               className="w-full h-full object-cover object-top"
               loading="lazy"
+              decoding="async"
             />
           </div>
         </div>
-        {/* Label */}
         <p className="text-center text-[10px] sm:text-xs text-neutral-400 mt-2 truncate px-1 font-medium">
           {title}
         </p>
@@ -86,23 +101,21 @@ function MobileMockupImage({ src, title }: { src: string; title: string }) {
 
 function DesktopImageCard({ item }: { item: CarouselItem }) {
   return (
-    <div className="relative flex-shrink-0 w-[260px] sm:w-[300px] md:w-[340px] lg:w-[380px]">
+    <div className="relative flex-shrink-0 w-[260px] sm:w-[300px] md:w-[340px] lg:w-[380px] contain-layout">
       <div className="relative overflow-hidden rounded-xl border border-neutral-200/60 bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
         <div className="aspect-[16/10] overflow-hidden">
           <img
             src={item.src}
             alt={item.title}
-            className="w-full h-full object-cover object-top transition-transform duration-700 hover:scale-105"
+            className="w-full h-full object-cover object-top"
             loading="lazy"
+            decoding="async"
           />
         </div>
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white/95 via-white/60 to-transparent p-3">
           <h3 className="text-xs sm:text-sm font-bold text-neutral-900 truncate">
             {item.title}
           </h3>
-          <p className="text-[10px] sm:text-xs text-neutral-600 mt-0.5 line-clamp-1 leading-tight">
-            {item.desc}
-          </p>
         </div>
       </div>
     </div>
@@ -114,7 +127,6 @@ function DesktopImageCard({ item }: { item: CarouselItem }) {
 function TripleCarouselRow({ items, direction, speed = 30, isMobile }: TripleCarouselRowProps) {
   const [isPaused, setIsPaused] = useState(false);
 
-  // Duplica os items para efeito de rolagem infinita (50% = clone)
   const doubled = [...items, ...items];
 
   return (
@@ -122,6 +134,8 @@ function TripleCarouselRow({ items, direction, speed = 30, isMobile }: TripleCar
       className="relative overflow-hidden w-full"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setIsPaused(false)}
     >
       <div
         className={`flex gap-3 sm:gap-4 md:gap-5 lg:gap-6 w-max ${
@@ -146,17 +160,11 @@ function TripleCarouselRow({ items, direction, speed = 30, isMobile }: TripleCar
 // ─── Componente Principal ─────────────────────────────────
 
 interface TripleCarouselProps {
-  /** Items da primeira faixa (→ direita) */
   row1: CarouselItem[];
-  /** Items da segunda faixa (← esquerda) */
   row2: CarouselItem[];
-  /** Items da terceira faixa (→ direita) */
   row3: CarouselItem[];
-  /** Velocidade base em segundos (default: 30) */
   speed?: number;
-  /** Se true, usa mockups de celular */
   isMobileStyle?: boolean;
-  /** Classe adicional */
   className?: string;
 }
 
@@ -176,21 +184,18 @@ export function TripleCarousel({
 
   return (
     <div className={`space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6 ${className}`}>
-      {/* Faixa 1 → direita */}
       <TripleCarouselRow
         items={row1}
         direction="right"
         speed={speed}
         isMobile={isMobileStyle}
       />
-      {/* Faixa 2 ← esquerda */}
       <TripleCarouselRow
         items={row2}
         direction="left"
         speed={speed * 1.15}
         isMobile={isMobileStyle}
       />
-      {/* Faixa 3 → direita */}
       <TripleCarouselRow
         items={row3}
         direction="right"

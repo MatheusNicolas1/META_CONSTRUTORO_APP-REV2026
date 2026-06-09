@@ -1,16 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import SEO from "@/components/SEO";
 import { seoPages } from '@/config/seo';
 import { Link } from 'react-router-dom';
-import { Check, ArrowRight, Zap, Shield, Star, HelpCircle, CreditCard, Building2, Sparkles, Crown } from 'lucide-react';
+import { Check, ArrowRight, Zap, Star, HelpCircle, CreditCard, Building2, Sparkles, Crown, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PublicLayout } from '@/components/public/PublicLayout';
 import { AnimatedSection } from '@/components/public/AnimatedSection';
 import { AnimatedGradient } from '@/components/public/AnimatedGradient';
 import { StaggerContainer, StaggerItem } from '@/components/public/StaggerContainer';
+import EnterpriseContactModal from '@/components/EnterpriseContactModal';
 
-const plans = [
+const ANNUAL_DISCOUNT = 0.20; // 20% off
+
+interface PlanCard {
+  name: string;
+  price: string;
+  period: string;
+  desc: string;
+  features: string[];
+  cta: string;
+  to: string;
+  popular: boolean;
+  highlight: boolean;
+  priceId: string | null;
+  slug: string | null;
+}
+
+const monthlyPlans: PlanCard[] = [
   {
     name: 'Grátis',
     price: 'R$ 0',
@@ -27,46 +44,70 @@ const plans = [
     to: '/criar-conta',
     popular: false,
     highlight: false,
+    priceId: null,
+    slug: null,
   },
   {
-    name: 'Pro',
-    price: 'R$ 97',
+    name: 'Básico',
+    price: 'R$ 129,90',
     period: '/mês',
-    desc: 'Para construtoras que precisam de gestão completa.',
+    desc: 'Perfeito para pequenas construtoras.',
     features: [
-      'Obras ilimitadas',
-      'RDOs com aprovação em tempo real',
-      'Relatórios em PDF profissionais',
-      'Documentos ilimitados',
-      'Equipes e colaboradores ilimitados',
-      'Suporte prioritário via WhatsApp',
-      'Dashboards personalizados',
+      'Até 3 usuários',
+      'Armazenamento ilimitado',
+      'RDO digital completo',
+      'Relatórios básicos',
+      'Suporte por email',
+      'Backup automático',
     ],
-    cta: 'Assinar Pro',
-    to: '/checkout?plan=pro',
-    popular: true,
-    highlight: true,
-    priceId: 'price_1R9iH9P9oSIg6t2i5qRwTl1R',
-  },
-  {
-    name: 'Premium',
-    price: 'R$ 197',
-    period: '/mês',
-    desc: 'Para construtoras que exigem performance máxima.',
-    features: [
-      'Tudo do plano Pro',
-      'API pública (REST + Webhooks)',
-      'Integração com ERP / SAP',
-      'Relatórios analíticos avançados',
-      'Múltiplos orçamentos por obra',
-      'Automações personalizadas',
-      'Suporte 24/7 dedicado',
-    ],
-    cta: 'Assinar Premium',
-    to: '/checkout?plan=premium',
+    cta: 'Assinar Básico',
+    to: '/checkout?plan=basic',
     popular: false,
     highlight: false,
-    priceId: 'price_1R9iIuP9oSIg6t2iCVG6z8OS',
+    priceId: 'price_1Spd6ICHfNdO9jxNRYj10lkA',
+    slug: 'basic',
+  },
+  {
+    name: 'Profissional',
+    price: 'R$ 199,90',
+    period: '/mês',
+    desc: 'Ideal para construtoras em crescimento.',
+    features: [
+      'Até 5 usuários',
+      'Obras ilimitadas',
+      'Relatórios avançados',
+      'Integrações WhatsApp',
+      'Suporte via chat 24h',
+      'Dashboard avançado',
+      'Controle de estoque',
+    ],
+    cta: 'Assinar Profissional',
+    to: '/checkout?plan=professional',
+    popular: true,
+    highlight: true,
+    priceId: 'price_1T1HSsCHfNdO9jxNDtPicSaZ',
+    slug: 'professional',
+  },
+  {
+    name: 'Master',
+    price: 'R$ 347,00',
+    period: '/mês',
+    desc: 'Para construtoras estabelecidas.',
+    features: [
+      'Até 15 usuários',
+      'Obras ilimitadas',
+      'Todas as funcionalidades do Profissional',
+      'API personalizada',
+      'Integração com ERP',
+      'Suporte prioritário (SLA 8h)',
+      'Treinamento dedicado',
+    ],
+    cta: 'Assinar Master',
+    to: '/checkout?plan=master',
+    popular: false,
+    highlight: true,
+    priceId: 'price_1TfSRPCHfNdO9jxNA6dpVV7D',
+    slug: 'master',
   },
   {
     name: 'Enterprise',
@@ -74,7 +115,7 @@ const plans = [
     period: '',
     desc: 'Para grandes operações com necessidades específicas.',
     features: [
-      'Tudo do plano Premium',
+      'Tudo do plano Master',
       'White label (sua marca)',
       'Single Sign-On (SSO)',
       'SLA garantido 99.9%',
@@ -86,29 +127,46 @@ const plans = [
     to: '/contato',
     popular: false,
     highlight: false,
+    priceId: null,
+    slug: null,
   },
 ];
 
+const yearlyPlans: PlanCard[] = monthlyPlans.map((p) => {
+  if (p.price === 'R$ 0' || p.price === 'Sob consulta') return { ...p };
+  const monthlyValue = parseFloat(p.price.replace('R$ ', '').replace(',', '.'));
+  const yearlyValue = monthlyValue * (1 - ANNUAL_DISCOUNT);
+  const totalYearly = yearlyValue * 12;
+  return {
+    ...p,
+    price: `R$ ${yearlyValue.toFixed(2).replace('.', ',')}`,
+    period: '/mês*',
+    desc: `Economia de 20% no plano anual. Apenas R$ ${totalYearly.toFixed(2).replace('.', ',')}/ano.`,
+    to: p.slug ? `/checkout?plan=${p.slug}&billing=yearly` : p.to,
+    cta: `Assinar ${p.name} (anual)`,
+  };
+});
+
 const comparisons = [
-  { feature: 'Obras ativas', free: '1', pro: 'Ilimitadas', premium: 'Ilimitadas', enterprise: 'Ilimitadas' },
-  { feature: 'RDOs', free: 'Ilimitados', pro: 'Ilimitados', premium: 'Ilimitados', enterprise: 'Ilimitados' },
-  { feature: 'Checklists', free: 'Básicos', pro: 'Avançados', premium: 'Inteligentes', enterprise: 'Customizados' },
-  { feature: 'Membros', free: '5', pro: 'Ilimitados', premium: 'Ilimitados', enterprise: 'Ilimitados' },
-  { feature: 'Relatórios PDF', free: '—', pro: '✓', premium: '✓', enterprise: '✓' },
-  { feature: 'Documentos', free: '50', pro: 'Ilimitados', premium: 'Ilimitados', enterprise: 'Ilimitados' },
-  { feature: 'API + Webhooks', free: '—', pro: '—', premium: '✓', enterprise: '✓' },
-  { feature: 'ERP / SAP', free: '—', pro: '—', premium: '✓', enterprise: '✓' },
-  { feature: 'White label', free: '—', pro: '—', premium: '—', enterprise: '✓' },
-  { feature: 'SSO', free: '—', pro: '—', premium: '—', enterprise: '✓' },
-  { feature: 'Suporte', free: 'Email', pro: 'WhatsApp', premium: '24/7 dedicado', enterprise: 'Concierge' },
+  { feature: 'Obras ativas', free: '1', basico: '3', profissional: 'Ilimitadas', master: 'Ilimitadas', enterprise: 'Ilimitadas' },
+  { feature: 'Usuários', free: '5', basico: 'Até 3', profissional: 'Até 5', master: 'Até 15', enterprise: 'Ilimitados' },
+  { feature: 'Armazenamento', free: 'Limitado', basico: 'Ilimitado', profissional: 'Ilimitado', master: 'Ilimitado', enterprise: 'Ilimitado' },
+  { feature: 'RDOs', free: 'Ilimitados', basico: '✓', profissional: '✓', master: '✓', enterprise: '✓' },
+  { feature: 'Relatórios', free: '—', basico: 'Básicos', profissional: 'Avançados', master: 'Avançados', enterprise: 'Customizados' },
+  { feature: 'WhatsApp', free: '—', basico: '—', profissional: '✓', master: '✓', enterprise: '✓' },
+  { feature: 'API + Webhooks', free: '—', basico: '—', profissional: '—', master: '✓', enterprise: '✓' },
+  { feature: 'ERP / SAP', free: '—', basico: '—', profissional: '—', master: '✓', enterprise: '✓' },
+  { feature: 'Controle de estoque', free: '—', basico: '—', profissional: '✓', master: '✓', enterprise: '✓' },
+  { feature: 'Suporte', free: 'Email', basico: 'Email', profissional: 'Chat 24h', master: 'Prioritário (SLA 8h)', enterprise: 'Concierge' },
 ];
 
 const faqItems = [
   { q: 'Posso trocar de plano depois?', a: 'Sim. Você pode fazer upgrade ou downgrade a qualquer momento. No upgrade, você paga apenas a diferença proporcional.' },
   { q: 'Como funciona o cancelamento?', a: 'Você pode cancelar a qualquer momento pelo painel. Seus dados ficam disponíveis para exportação por 30 dias.' },
   { q: 'Preciso de cartão para o plano grátis?', a: 'Não. O plano Grátis não pede cartão de crédito. Basta criar sua conta e começar a usar.' },
-  { q: 'Tem desconto no plano anual?', a: 'Sim! No plano anual você economiza 20% em relação ao valor mensal.' },
-  { q: 'O que acontece se eu atingir o limite de obras?', a: 'Você recebe um aviso e pode fazer upgrade para o plano Pro a qualquer momento, sem perder dados.' },
+  { q: 'Tem desconto no plano anual?', a: 'Sim! No plano anual você economiza 20% em relação ao valor mensal. Por exemplo, o plano Master sai de R$ 347,00/mês para R$ 277,60/mês — uma economia de R$ 832,80 por ano.' },
+  { q: 'Qual a diferença entre Profissional e Master?', a: 'O Master inclui tudo do Profissional, mais API personalizada, integração com ERP, suporte prioritário (SLA 8h) e treinamento dedicado.' },
+  { q: 'O que acontece se eu atingir o limite de obras?', a: 'Você recebe um aviso e pode fazer upgrade para o plano superior a qualquer momento, sem perder dados.' },
   { q: 'Vocês emitem nota fiscal?', a: 'Sim. Emitimos nota fiscal para todos os planos pagos.' },
 ];
 
@@ -118,6 +176,10 @@ const fadeInUp = {
 };
 
 export default function Preco() {
+  const [isYearly, setIsYearly] = useState(false);
+  const [enterpriseModalOpen, setEnterpriseModalOpen] = useState(false);
+  const plans = isYearly ? yearlyPlans : monthlyPlans;
+
   return (
     <PublicLayout>
       <SEO {...seoPages.preco} />
@@ -137,9 +199,43 @@ export default function Preco() {
               Simples e{' '}
               <AnimatedGradient as="span">transparente</AnimatedGradient>
             </h1>
-            <p className="text-[clamp(0.875rem,2.5vw,1.125rem)] text-neutral-600 max-w-lg mx-auto leading-relaxed">
+            <p className="text-[clamp(0.875rem,2.5vw,1.125rem)] text-neutral-600 max-w-lg mx-auto leading-relaxed mb-8">
               Comece grátis, escale conforme suas obras crescem. Sem taxas escondidas, sem surpresas.
             </p>
+
+            {/* Billing Toggle */}
+            <div className="flex items-center justify-center gap-3">
+              <span className={`text-sm font-medium transition-colors ${!isYearly ? 'text-neutral-900' : 'text-neutral-400'}`}>
+                Mensal
+              </span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={isYearly}
+                onClick={() => setIsYearly(!isYearly)}
+                className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors duration-300 ${
+                  isYearly ? 'bg-brand-orange' : 'bg-neutral-300'
+                }`}
+              >
+                <span
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform duration-300 ${
+                    isYearly ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+              <span className={`text-sm font-medium transition-colors ${isYearly ? 'text-neutral-900' : 'text-neutral-400'}`}>
+                Anual
+              </span>
+              {isYearly && (
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-xs font-bold text-brand-emerald bg-brand-emerald/10 px-2.5 py-0.5 rounded-full"
+                >
+                  −20%
+                </motion.span>
+              )}
+            </div>
           </motion.div>
         </div>
       </section>
@@ -147,9 +243,9 @@ export default function Preco() {
       {/* Plans Grid */}
       <AnimatedSection>
         <div className="container max-w-6xl mx-auto">
-          <StaggerContainer staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <StaggerContainer staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-4">
             {plans.map((plan, i) => {
-              const Icon = i === 0 ? Zap : i === 1 ? Star : i === 2 ? Crown : Building2;
+              const Icon = i === 0 ? Zap : i === 1 ? Star : i === 2 ? Crown : i === 3 ? Shield : Building2;
               const isEnterprise = i === plans.length - 1;
               return (
                 <StaggerItem
@@ -159,23 +255,28 @@ export default function Preco() {
                     plan.popular
                       ? 'border-brand-orange shadow-lg shadow-brand-orange/10 lg:scale-[1.02]'
                       : plan.highlight
-                        ? 'border-brand-orange-ghost shadow-md'
+                        ? 'border-neutral-200 shadow-md'
                         : 'border-neutral-100 shadow-sm'
                   }`}
                 >
                   {plan.popular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-orange text-white text-xs font-bold px-4 py-1 rounded-full flex items-center gap-1">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-orange text-white text-xs font-bold px-4 py-1 rounded-full flex items-center gap-1 whitespace-nowrap">
                       <Star className="w-3 h-3" /> Mais popular
                     </div>
                   )}
                   <div className="w-10 h-10 bg-brand-orange-ghost rounded-xl flex items-center justify-center mb-4">
-                    <Icon className={`w-5 h-5 ${plan.popular ? 'text-brand-orange' : 'text-brand-orange'}`} />
+                    <Icon className="w-5 h-5 text-brand-orange" />
                   </div>
                   <div className="text-sm font-semibold text-brand-orange mb-1">{plan.name}</div>
-                  <div className="flex items-baseline gap-1 mb-1">
-                    <span className="text-3xl lg:text-4xl font-extrabold text-neutral-900">{plan.price}</span>
-                    <span className="text-neutral-500 text-sm">{plan.period}</span>
+                  <div className="flex items-baseline gap-1 mb-1 flex-wrap">
+                    <span className="text-2xl lg:text-3xl font-extrabold text-neutral-900 whitespace-nowrap">{plan.price}</span>
+                    <span className="text-neutral-500 text-sm whitespace-nowrap">{plan.period}</span>
                   </div>
+                  {isYearly && plan.price !== 'R$ 0' && plan.price !== 'Sob consulta' && (
+                    <div className="text-[10px] text-brand-emerald font-medium whitespace-nowrap">
+                      {(parseFloat(plan.price.replace('R$ ', '').replace(',', '.')) * 12).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}/ano
+                    </div>
+                  )}
                   <p className="text-neutral-500 text-xs mb-5">{plan.desc}</p>
                   <ul className="space-y-2.5 mb-6 flex-1">
                     {plan.features.map((f, j) => (
@@ -189,9 +290,9 @@ export default function Preco() {
                     <Button
                       variant="outline"
                       className="w-full sm:w-auto border-neutral-200 hover:border-brand-orange hover:text-brand-orange rounded-full"
-                      asChild
+                      onClick={() => setEnterpriseModalOpen(true)}
                     >
-                      <Link to={plan.to}>{plan.cta} <ArrowRight className="ml-1 w-4 h-4 inline" /></Link>
+                      {plan.cta} <ArrowRight className="ml-1 w-4 h-4 inline" />
                     </Button>
                   ) : (
                     <Button
@@ -199,7 +300,9 @@ export default function Preco() {
                       className={`w-full sm:w-auto rounded-full ${
                         plan.popular
                           ? 'bg-brand-orange hover:bg-brand-orange-hover shadow-lg shadow-brand-orange/25'
-                          : 'border-neutral-200 hover:border-brand-orange hover:text-brand-orange'
+                          : plan.highlight && !plan.popular
+                            ? 'bg-neutral-900 hover:bg-neutral-800 text-white border-neutral-900 shadow-md'
+                            : 'border-neutral-200 hover:border-brand-orange hover:text-brand-orange'
                       }`}
                       asChild
                     >
@@ -215,7 +318,7 @@ export default function Preco() {
 
       {/* Comparison Table */}
       <AnimatedSection className="bg-neutral-50" distance={20}>
-        <div className="container max-w-5xl mx-auto">
+        <div className="container max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-extrabold text-neutral-900 mb-3">
               <AnimatedGradient as="span">Compare os planos</AnimatedGradient>
@@ -225,28 +328,32 @@ export default function Preco() {
 
           <div className="bg-white rounded-2xl border border-neutral-100 overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full min-w-[700px]">
                 <thead>
                   <tr className="border-b border-neutral-100">
-                    <th className="text-left py-4 px-6 text-sm font-semibold text-neutral-500">Funcionalidade</th>
-                    <th className="py-4 px-6 text-center text-sm font-semibold text-neutral-500">Grátis</th>
-                    <th className="py-4 px-6 text-center text-sm font-semibold text-brand-orange bg-brand-orange-ghost">Pro</th>
-                    <th className="py-4 px-6 text-center text-sm font-semibold text-amber-700 bg-amber-50">Premium</th>
-                    <th className="py-4 px-6 text-center text-sm font-semibold text-neutral-500">Enterprise</th>
+                    <th className="text-left py-4 px-4 text-sm font-semibold text-neutral-500">Funcionalidade</th>
+                    <th className="py-4 px-4 text-center text-sm font-semibold text-neutral-500">Grátis</th>
+                    <th className="py-4 px-4 text-center text-sm font-semibold text-brand-orange bg-brand-orange-ghost/50">Básico</th>
+                    <th className="py-4 px-4 text-center text-sm font-semibold text-amber-700 bg-amber-50/50">Profissional</th>
+                    <th className="py-4 px-4 text-center text-sm font-semibold text-purple-700 bg-purple-50/50">Master</th>
+                    <th className="py-4 px-4 text-center text-sm font-semibold text-neutral-500">Enterprise</th>
                   </tr>
                 </thead>
                 <tbody>
                   {comparisons.map((row, i) => (
                     <tr key={i} className="border-b border-neutral-50 hover:bg-neutral-50/50 transition-colors">
-                      <td className="py-4 px-6 text-sm font-medium text-neutral-800">{row.feature}</td>
-                      <td className="py-4 px-6 text-center text-sm text-neutral-600">{row.free}</td>
-                      <td className="py-4 px-6 text-center text-sm font-semibold text-brand-orange bg-brand-orange-ghost/50">
-                        {row.pro === '✓' ? <Check className="w-4 h-4 mx-auto text-brand-emerald" /> : row.pro}
+                      <td className="py-3 px-4 text-sm font-medium text-neutral-800">{row.feature}</td>
+                      <td className="py-3 px-4 text-center text-sm text-neutral-600">{row.free}</td>
+                      <td className="py-3 px-4 text-center text-sm font-semibold text-brand-orange bg-brand-orange-ghost/30">
+                        {row.basico === '✓' ? <Check className="w-4 h-4 mx-auto text-brand-emerald" /> : row.basico}
                       </td>
-                      <td className="py-4 px-6 text-center text-sm font-semibold text-amber-700 bg-amber-50/50">
-                        {row.premium === '✓' ? <Check className="w-4 h-4 mx-auto text-brand-emerald" /> : row.premium}
+                      <td className="py-3 px-4 text-center text-sm font-semibold text-amber-700 bg-amber-50/30">
+                        {row.profissional === '✓' ? <Check className="w-4 h-4 mx-auto text-brand-emerald" /> : row.profissional}
                       </td>
-                      <td className="py-4 px-6 text-center text-sm text-neutral-600">
+                      <td className="py-3 px-4 text-center text-sm font-semibold text-purple-700 bg-purple-50/30">
+                        {row.master === '✓' ? <Check className="w-4 h-4 mx-auto text-brand-emerald" /> : row.master}
+                      </td>
+                      <td className="py-3 px-4 text-center text-sm text-neutral-600">
                         {row.enterprise === '✓' ? <Check className="w-4 h-4 mx-auto text-brand-emerald" /> : row.enterprise}
                       </td>
                     </tr>
@@ -306,6 +413,7 @@ export default function Preco() {
           </motion.div>
         </div>
       </section>
+      <EnterpriseContactModal open={enterpriseModalOpen} onClose={() => setEnterpriseModalOpen(false)} />
     </PublicLayout>
   );
 }

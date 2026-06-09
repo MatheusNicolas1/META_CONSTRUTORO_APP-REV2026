@@ -1,0 +1,19 @@
+--- Starting Checkout Flow Test ---
+1. Creating/Signing in test user: test.checkout.1781008069974@example.com
+User authenticated. Token: eyJhbGciOiJIUzI1NiIs...
+2. Fetching available plans...
+Found 4 plans to test from DB: master, free, basic, professional
+
+Testing Plan: MASTER (master)
+FAILED: Error invoking function for master: Edge Function returned a non-2xx status code
+Context: {}
+
+Testing Plan: BÁSICO (basic)
+FAILED: Error invoking function for basic: Edge Function returned a non-2xx status code
+Context: {}
+
+Testing Plan: PROFISSIONAL (professional)
+FAILED: Error invoking function for professional: Edge Function returned a non-2xx status code
+Context: {}
+
+--- Test Complete ---

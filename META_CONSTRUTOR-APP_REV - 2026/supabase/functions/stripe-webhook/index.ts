@@ -61,6 +61,139 @@ const getPlanForSubscription = async (supabaseAdmin: any, subscription: Stripe.S
     return { plan: yearlyPlan || null, billingCycle: yearlyPlan ? 'yearly' : null, priceId }
 }
 
+// ============================================================================
+// PRD06: Programa de Afiliados — Processamento de Comissões
+// ============================================================================
+
+interface AffiliateCommissionInput {
+    affiliateId: string
+    referredUserId: string
+    subscriptionId: string
+    amount: number
+    percentage: number
+}
+
+/**
+ * Gera uma comissão de afiliado com base no pagamento aprovado.
+ * 1. Localiza o referral ativo (pending/converted) para o usuário indicado
+ * 2. Verifica autoindicação (afiliado ≠ indicado)
+ * 3. Calcula 40% do valor líquido
+ * 4. Insere na tabela affiliate_commissions
+ */
+async function processAffiliateCommission(
+    supabaseAdmin: any,
+    referredUserId: string,
+    invoice: Stripe.Invoice
+): Promise<void> {
+    // 1. Localizar referral ativo
+    const { data: referral } = await supabaseAdmin
+        .from('affiliate_referrals')
+        .select('id, affiliate_id, status')
+        .eq('referred_user_id', referredUserId)
+        .in('status', ['pending', 'converted'])
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+    if (!referral) {
+        logger.info('[Affiliate] No active referral found for user, skipping commission', {
+            referred_user_id: referredUserId
+        })
+        return
+    }
+
+    // 2. Verificar autoindicação (Módulo 09 — Anti-fraude)
+    if (referral.affiliate_id === referredUserId) {
+        logger.warn('[Affiliate] Self-referral detected, commission blocked', {
+            affiliate_id: referral.affiliate_id,
+            referred_user_id: referredUserId
+        })
+        return
+    }
+
+    // 3. Calcular comissão: 40% do valor líquido
+    // Valor líquido = total pago pelo cliente (após descontos/cupons)
+    const amountPaid = (invoice.amount_paid || invoice.total || 0) / 100 // Stripe cents → reais
+    const commissionPercentage = 40 // fixo 40%
+    const commissionAmount = Number((amountPaid * (commissionPercentage / 100)).toFixed(2))
+
+    if (commissionAmount <= 0) {
+        logger.info('[Affiliate] Commission amount is zero or negative, skipping', {
+            amount_paid: amountPaid,
+            commission: commissionAmount
+        })
+        return
+    }
+
+    // 4. Inserir comissão
+    const { error: commissionError } = await supabaseAdmin
+        .from('affiliate_commissions')
+        .insert({
+            affiliate_id: referral.affiliate_id,
+            referral_id: referral.id,
+            subscription_id: invoice.subscription as string || null,
+            amount: commissionAmount,
+            percentage: commissionPercentage,
+            status: 'approved', // Aprovado porque invoice.payment_succeeded já confirmou
+        })
+
+    if (commissionError) {
+        logger.error(`[Affiliate] Error creating commission: ${commissionError.message}`, {
+            affiliate_id: referral.affiliate_id,
+            referral_id: referral.id
+        }, commissionError)
+        return
+    }
+
+    // 5. Atualizar status do referral para 'converted'
+    await supabaseAdmin
+        .from('affiliate_referrals')
+        .update({ status: 'converted' })
+        .eq('id', referral.id)
+
+    logger.info(`[Affiliate] Commission created: R$${commissionAmount} (${commissionPercentage}%)`, {
+        affiliate_id: referral.affiliate_id,
+        referral_id: referral.id,
+        amount: commissionAmount,
+        percentage: commissionPercentage
+    })
+}
+
+/**
+ * Remove (cancela) comissões de afiliado quando há cancelamento ou reembolso.
+ */
+async function cancelAffiliateCommissions(
+    supabaseAdmin: any,
+    subscriptionId: string
+): Promise<void> {
+    const { data: commissions } = await supabaseAdmin
+        .from('affiliate_commissions')
+        .select('id, status')
+        .eq('subscription_id', subscriptionId)
+        .in('status', ['pending', 'approved', 'paid'])
+
+    if (!commissions || commissions.length === 0) return
+
+    const commissionIds = commissions.map((c: any) => c.id)
+
+    const { error } = await supabaseAdmin
+        .from('affiliate_commissions')
+        .update({ status: 'refunded' })
+        .in('id', commissionIds)
+
+    if (error) {
+        logger.error(`[Affiliate] Error canceling commissions: ${error.message}`, {
+            subscription_id: subscriptionId
+        }, error)
+        return
+    }
+
+    logger.info(`[Affiliate] ${commissions.length} commission(s) marked as refunded`, {
+        subscription_id: subscriptionId,
+        commission_ids: commissionIds
+    })
+}
+
 serve(async (req) => {
     const start = performance.now()
     const requestId = crypto.randomUUID()
@@ -146,8 +279,7 @@ serve(async (req) => {
                     const priceId = subscription.items.data[0]?.price.id;
 
                     // Metadata source: Check subscription metadata first, then invoice metadata
-                    // Metadata source: Check subscription metadata first, then invoice metadata
-                    const userId = subscription.metadata?.user_id || invoice.metadata?.user_id; // Keeping user_id for legacy/profile update
+                    const userId = subscription.metadata?.user_id || invoice.metadata?.user_id;
                     const orgId = subscription.metadata?.org_id || invoice.metadata?.org_id;
 
                     // Find Plan
@@ -172,12 +304,11 @@ serve(async (req) => {
                         const period = getSubscriptionPeriod(subscription);
 
                         // Upsert Subscription
-                        // M4.5: Write subscription truth to DB
                         const subscriptionData = {
                             stripe_subscription_id: subscription.id,
                             stripe_customer_id: subscription.customer as string,
                             stripe_price_id: priceId,
-                            org_id: orgId, // Use org_id from metadata
+                            org_id: orgId,
                             status: subscription.status,
                             plan_id: plan.id,
                             billing_cycle: billingCycle,
@@ -201,6 +332,9 @@ serve(async (req) => {
                                     plan_type: plan.slug
                                 })
                                 .eq('id', userId);
+
+                            // PRD06: Processar comissão de afiliado no pagamento aprovado
+                            await processAffiliateCommission(supabaseAdmin, userId, invoice);
                         }
                     } else {
                         throw new Error(`Missing ${!plan ? 'plan mapping' : 'org_id'} for subscription ${subscription.id}`);
@@ -391,9 +525,30 @@ serve(async (req) => {
                             plan_type: 'free'
                         })
                         .eq('stripe_customer_id', subscription.customer as string);
+
+                    // PRD06: Cancelar comissões de afiliado vinculadas a esta assinatura
+                    await cancelAffiliateCommissions(supabaseAdmin, subscription.id);
                     break;
                 }
 
+                case 'charge.refunded': {
+                    const charge = event.data.object as Stripe.Charge;
+                    if (charge.invoice && charge.paid === false) {
+                        logger.info('[Affiliate] Refund detected, checking for commissions to revoke', {
+                            request_id: requestId,
+                            function_name: 'stripe-webhook',
+                            charge_id: charge.id,
+                            invoice_id: charge.invoice as string
+                        }, { charge_id: charge.id, invoice_id: charge.invoice });
+
+                        // Buscar a invoice para obter o subscription_id
+                        const invoice = await stripe.invoices.retrieve(charge.invoice as string);
+                        if (invoice.subscription) {
+                            await cancelAffiliateCommissions(supabaseAdmin, invoice.subscription as string);
+                        }
+                    }
+                    break;
+                }
 
                 case 'invoice.payment_failed': {
                     const invoice = event.data.object as Stripe.Invoice

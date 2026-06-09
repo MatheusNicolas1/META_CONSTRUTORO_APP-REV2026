@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import SEO from '@/components/SEO';
 import LandingNavigation from '@/components/landing/LandingNavigation';
 import { useAuth } from '@/components/auth/AuthContext';
+import { NavigationSafety } from '@/utils/navigationSafety';
 
 const CheckoutCancel = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const CheckoutCancel = () => {
   };
 
   const handleBackToHome = () => {
-    navigate('/home');
+    NavigationSafety.safeNavigate(navigate, '/home');
   };
 
   return (

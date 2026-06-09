@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { BarChart3, PlayCircle, User, Shield, CreditCard } from "lucide-react";
+import { BarChart3, PlayCircle, User, Shield, CreditCard, Percent } from "lucide-react";
+import { AffiliateCard } from "@/components/profile/AffiliateCard";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -108,7 +109,7 @@ const Perfil = () => {
 
         {/* Content Tabs */}
         <Tabs defaultValue="personal" className="w-full space-y-8">
-          <TabsList className={`w-full grid h-auto p-1 bg-muted/50 rounded-xl ${canAccessMetrics ? "md:max-w-2xl grid-cols-2 sm:grid-cols-4" : "md:max-w-lg grid-cols-3"}`}>
+          <TabsList className={`w-full grid h-auto p-1 bg-muted/50 rounded-xl ${canAccessMetrics ? "md:max-w-3xl grid-cols-2 sm:grid-cols-5" : "md:max-w-xl grid-cols-4"}`}>
             <TabsTrigger value="personal" className="gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
               <User className="h-4 w-4" />
               <span className="hidden sm:inline">Dados Pessoais</span>
@@ -123,6 +124,11 @@ const Perfil = () => {
               <Shield className="h-4 w-4" />
               <span className="hidden sm:inline">Segurança</span>
               <span className="sm:hidden">Segurança</span>
+            </TabsTrigger>
+            <TabsTrigger value="affiliate" className="gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
+              <Percent className="h-4 w-4" />
+              <span className="hidden sm:inline">Afiliados</span>
+              <span className="sm:hidden">Afiliados</span>
             </TabsTrigger>
             {canAccessMetrics && (
               <TabsTrigger value="metrics" className="gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
@@ -144,6 +150,10 @@ const Perfil = () => {
 
           <TabsContent value="security" className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 focus-visible:outline-none focus-visible:ring-0">
             <SecurityCard />
+          </TabsContent>
+
+          <TabsContent value="affiliate" className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 focus-visible:outline-none focus-visible:ring-0">
+            <AffiliateCard />
           </TabsContent>
 
           {canAccessMetrics && (

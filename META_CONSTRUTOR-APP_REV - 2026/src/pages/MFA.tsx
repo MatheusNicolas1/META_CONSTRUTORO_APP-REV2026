@@ -1,13 +1,15 @@
 import { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { NavigationSafety } from '@/utils/navigationSafety';
 
 const MFA = () => {
+  const navigate = useNavigate();
   const [code, setCode] = useState("");
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -50,11 +52,9 @@ const MFA = () => {
               />
             </div>
             <Button type="submit" className="w-full">Verificar</Button>
-            <Button asChild variant="ghost" className="w-full">
-              <Link to="/login">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Voltar ao login
-              </Link>
+            <Button variant="ghost" className="w-full" onClick={() => NavigationSafety.safeNavigate(navigate, '/login')}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Voltar ao login
             </Button>
           </form>
         </CardContent>

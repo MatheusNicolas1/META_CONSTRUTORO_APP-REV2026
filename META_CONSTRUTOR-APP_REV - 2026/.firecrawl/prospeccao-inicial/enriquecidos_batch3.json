@@ -1,0 +1,1352 @@
+[
+  {
+    "site": "http://www.nassauflex.com.br",
+    "nome": "nassauflex",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "nassau@nassauflex.com.br"
+    ],
+    "telefones_encontrados": [],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construtoraeldorado.com.br",
+    "nome": "construtoraeldorado",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "rh02@eldorado.eng.br"
+    ],
+    "telefones_encontrados": [
+      "1563814684",
+      "1780782783",
+      "26277211348",
+      "33920818248",
+      "47598549138",
+      "63986003746",
+      "65551697859",
+      "73998310100",
+      "96761165143",
+      "99774301866"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construtorafama.com.br",
+    "nome": "construtorafama",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "atendimento@construtorafama.com.br"
+    ],
+    "telefones_encontrados": [
+      "(81) 3471-8288",
+      "1742285735",
+      "1742285740",
+      "1780461329"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construtoraholanda.com.br",
+    "nome": "construtoraholanda",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "https://www.machadoguimaraes.com.br",
+    "nome": "machadoguimaraes",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.construtorapadrao.com.br",
+    "nome": "construtorapadrao",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.bittencourt.com.br",
+    "nome": "bittencourt",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "bittencourt@bittencourt.com.br"
+    ],
+    "telefones_encontrados": [
+      "1695219322",
+      "1717679727",
+      "1717679822",
+      "1717679823",
+      "1732631396",
+      "1780927804",
+      "74510014841",
+      "8130321880"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.ribeirolopes.com.br",
+    "nome": "ribeirolopes",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "1780661677"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construtorasantoantonio.com.br",
+    "nome": "construtorasantoantonio",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "atendimento@construtorasantoantonio.com.br"
+    ],
+    "telefones_encontrados": [
+      "(81) 99132-1844",
+      "1743699362",
+      "1780928963",
+      "8134661485"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.soaresdeazevedo.com.br",
+    "nome": "soaresdeazevedo",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.grupovenancio.com.br",
+    "nome": "grupovenancio",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "1672080607",
+      "1672628954",
+      "1723472406"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.humbertolobo.com.br",
+    "nome": "humbertolobo",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.colil.com.br",
+    "nome": "colil",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "13689866977",
+      "1618423189",
+      "1780916555",
+      "71559942672",
+      "82 3328 3073",
+      "93335196230",
+      "96359442498",
+      "96359453027",
+      "96359461761",
+      "96359471838"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construtorapenedo.com.br",
+    "nome": "construtorapenedo",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.placic.com.br",
+    "nome": "placic",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(82) 3231-7300",
+      "(85) 3267-5722",
+      "1622125232",
+      "1622125497"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construtorabrascon.com.br",
+    "nome": "construtorabrascon",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(83) 3247 1647",
+      "(83) 98886 0362",
+      "83988860365"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construtorapiramide.com.br",
+    "nome": "construtorapiramide",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "cpl@construtorapiramide.com.br",
+      "piramide@construtorapiramide.com.br"
+    ],
+    "telefones_encontrados": [
+      "14582210023",
+      "14582213064",
+      "14582221016",
+      "14582226007",
+      "1531839644",
+      "1535372560",
+      "1537476861",
+      "45822028701",
+      "45822065702",
+      "83999280028"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.fibraconstrutora.com.br",
+    "nome": "fibraconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(83) 9137-3103",
+      "(83) 99137-3103",
+      "58391373103",
+      "73171386481"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.syerra.com.br",
+    "nome": "syerra",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.anglobrasileira.com.br",
+    "nome": "anglobrasileira",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(84) 3212-2529",
+      "(84) 3344-3280"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construtoracerta.com.br",
+    "nome": "construtoracerta",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "sac@certaengenharia.com.br",
+      "sac@construtoracerta.com.br"
+    ],
+    "telefones_encontrados": [
+      "84 3206-2999",
+      "84124423639"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.hazbun.com.br",
+    "nome": "hazbun",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.igpotiguar.com.br",
+    "nome": "igpotiguar",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.clcconstrutora.com.br",
+    "nome": "clcconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "clc@clcconstrutora.com.br"
+    ],
+    "telefones_encontrados": [
+      "(84) 3318-9500",
+      "(84) 8118-6465"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.mendoncajunior.com.br",
+    "nome": "mendoncajunior",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "contato@mendoncajunior.com.br"
+    ],
+    "telefones_encontrados": [
+      "(84) 3234-4017",
+      "11984742255",
+      "13753517307"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.elitim.com.br",
+    "nome": "elitim",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "contato@elitim.com.br"
+    ],
+    "telefones_encontrados": [
+      "(84) 3234-2412",
+      "1780923948",
+      "2812300476",
+      "58432342412",
+      "84981443084",
+      "84998144308"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.nacionalconstrutora.com.br",
+    "nome": "nacionalconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.acopi.com.br",
+    "nome": "acopi",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.bm.eng.br",
+    "nome": "bm",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "1545142290",
+      "1545143904",
+      "1611596182",
+      "1780463938",
+      "27311132933",
+      "36-5516-6104",
+      "46585237486",
+      "76-4753-8303",
+      "94715399906",
+      "94715701409",
+      "94716002912",
+      "99856979270"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.carneirodemelo.com.br",
+    "nome": "carneirodemelo",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "84785582939"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.atticaconstrutora.com.br",
+    "nome": "atticaconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.coigma.com.br",
+    "nome": "coigma",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "1742219105",
+      "1742219107",
+      "1780926612",
+      "1796481158",
+      "85987740103",
+      "89260043761"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.colmeia.com.br",
+    "nome": "colmeia",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(84) 4006-0900",
+      "(85) 3288-6600",
+      "(92) 3642-9330",
+      "1780929159"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construtoradube.com.br",
+    "nome": "construtoradube",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(85) 9149-5222",
+      "(99)91234-1234",
+      "1776221555",
+      "1780715652",
+      "1780715685",
+      "58532604006",
+      "8532604006"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.exataconstrutora.com.br",
+    "nome": "exataconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "exata@exataconstrutora.com.br"
+    ],
+    "telefones_encontrados": [
+      "(85) 3077-7800",
+      "33492030107",
+      "33492417712",
+      "33492499298",
+      "33494693135",
+      "33496652072",
+      "33748956574",
+      "36483471610",
+      "36483471615",
+      "36483471616",
+      "36483471617",
+      "37165423390",
+      "58530777800"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construtoraelos.com",
+    "nome": "construtoraelos",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.construtoraengeterra.com",
+    "nome": "construtoraengeterra",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.jsimoes.com.br",
+    "nome": "jsimoes",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(85) 3133-4058",
+      "58531334058",
+      "85982032700"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.cmarte.com.br",
+    "nome": "cmarte",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.construtoramontenegro.com.br",
+    "nome": "construtoramontenegro",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.cmveng.com.br",
+    "nome": "cmveng",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "73467579565"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.passarelli.com.br",
+    "nome": "passarelli",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.projecconstrutora.com.br",
+    "nome": "projecconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.reata.com.br",
+    "nome": "reata",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "contato@reata.com.br"
+    ],
+    "telefones_encontrados": [
+      "58531058000",
+      "68219016285",
+      "71242423521",
+      "93959316671"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construtorasamaria.com.br",
+    "nome": "construtorasamaria",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.construtoratriade.com.br",
+    "nome": "construtoratriade",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.crcoelho.com.br",
+    "nome": "crcoelho",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(88) 3571-1075",
+      "81416551909"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.jbmconstrutora.com.br",
+    "nome": "jbmconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.morefacil.com.br",
+    "nome": "morefacil",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "1563227748",
+      "8532735244",
+      "85989721571"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.redeaconstrutora.com.br",
+    "nome": "redeaconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.construtoraandradejunior.com.br",
+    "nome": "construtoraandradejunior",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(86) 3228-8900",
+      "86999711247"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construtoraboavista.com.br",
+    "nome": "construtoraboavista",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(86) 3221-8064",
+      "86994128383"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construtorahidros.com.br",
+    "nome": "construtorahidros",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.construtorajurema.com.br",
+    "nome": "construtorajurema",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "1740075915",
+      "1774447411",
+      "1780925542",
+      "1780929195"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construtorasucesso.com.br",
+    "nome": "construtorasucesso",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "contato@construtorasucesso.com.br"
+    ],
+    "telefones_encontrados": [
+      "15592301375",
+      "27540102829",
+      "28763127875",
+      "32699471079"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.grupoluanova.com.br",
+    "nome": "grupoluanova",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.engetechconstrutora.com.br",
+    "nome": "engetechconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.lealmoreira.com.br",
+    "nome": "lealmoreira",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "19724104242",
+      "91-4005-6800",
+      "91992008288"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.dellmoro.com.br",
+    "nome": "dellmoro",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "contatos@dellmoro.com.br"
+    ],
+    "telefones_encontrados": [
+      "91 3729 6260"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.linearconstrutora.net.br",
+    "nome": "linearconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.servic.com.br",
+    "nome": "servic",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.construtoracapital.com.br",
+    "nome": "construtoracapital",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "1778794590",
+      "1778794591",
+      "1780877127",
+      "37-4155-9594",
+      "96242635315"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.jmarquesconstrutora.com.br",
+    "nome": "jmarquesconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.construtorahoss.com.br",
+    "nome": "construtorahoss",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.robertopassarini.com.br",
+    "nome": "robertopassarini",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.talismaconstrutora.com.br",
+    "nome": "talismaconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "contato@talismaconstrutora.com.br",
+      "negocios@talismaconstrutora.com.br"
+    ],
+    "telefones_encontrados": [
+      "(63) 3217-4060",
+      "(63) 4101-2815",
+      "1494352166",
+      "31780929217",
+      "54178429003"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.aurora.com.br",
+    "nome": "aurora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "ajuda@aurora.com.br"
+    ],
+    "telefones_encontrados": [
+      "(11) 3623-2280",
+      "(11) 3623-2288",
+      "22780946076",
+      "51136232288",
+      "5267928325",
+      "5453587893",
+      "7579709015",
+      "78578109812",
+      "85415194176",
+      "99368703033"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.conengeconstrucao.com.br",
+    "nome": "conengeconstrucao",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(65)3611-0300"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.marcosbiancardini.com.br",
+    "nome": "marcosbiancardini",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "contato@marcosbiancardini.com.br"
+    ],
+    "telefones_encontrados": [
+      "(65) 98404-0805",
+      "11912273741",
+      "12215055144",
+      "21211352249",
+      "21736398395",
+      "21815104755",
+      "23161282131",
+      "26165158536",
+      "31307153628",
+      "31951371907",
+      "51229351616",
+      "51704281826",
+      "61644261900",
+      "61713217961",
+      "61718028639",
+      "61739008826",
+      "61740201407",
+      "61820474515",
+      "71131094510",
+      "71227416147",
+      "75215269599",
+      "81949421637",
+      "82206002465",
+      "82534128482",
+      "84911761986",
+      "91601249336"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.gerencialconstrutora.com.br",
+    "nome": "gerencialconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "1780596609",
+      "1780596610",
+      "1780596611",
+      "65 98407-7070"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.g7construtora.com.br",
+    "nome": "g7construtora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.sisanengenharia.com.br",
+    "nome": "sisanengenharia",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.vitisaconstrutora.com.br",
+    "nome": "vitisaconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.cobraviconstrutora.com.br",
+    "nome": "cobraviconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.combasedourados.com.br",
+    "nome": "combasedourados",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "combase@combasedourados.com.br"
+    ],
+    "telefones_encontrados": [
+      "(67) 3426-0100",
+      "1780929018",
+      "72924841359",
+      "85745315261"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.maksoudrahe.com.br",
+    "nome": "maksoudrahe",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(67) 3351-8122"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.cpbconstrutora.eng.br",
+    "nome": "cpbconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.engefconstrutora.com.br",
+    "nome": "engefconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.funsolos.com.br",
+    "nome": "funsolos",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "funsolos.cuiaba@funsolos.com",
+      "funsolos.matriz@funsolos.com",
+      "funsolos.sorriso@funsolos.com.br"
+    ],
+    "telefones_encontrados": [
+      "(65) 3637-5900",
+      "(66) 3544-9292",
+      "1774547968",
+      "1774547971",
+      "1774547972",
+      "67998774317"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.tqsconstrutora.com.br",
+    "nome": "tqsconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.abacoconstrutora.com.br",
+    "nome": "abacoconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(62) 3091-2131"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.calengenharia.com.br",
+    "nome": "calengenharia",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.cedroconstrutora.com",
+    "nome": "cedroconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.conscienteconstrutora.com.br",
+    "nome": "conscienteconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(62) 3086-5000",
+      "33357368295",
+      "4196078431",
+      "56230865000",
+      "93919900551"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.construinvest.com.br",
+    "nome": "construinvest",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.aguasantaconstrutora.com.br",
+    "nome": "aguasantaconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.construtoracampos.com.br",
+    "nome": "construtoracampos",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.ccbconstrutora.com.br",
+    "nome": "ccbconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(62) 3546-9000",
+      "1737037416",
+      "1737037417",
+      "1737116602",
+      "1763991816",
+      "1763991817",
+      "36964779854",
+      "46490383148"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.merzian.com.br",
+    "nome": "merzian",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "6239455900",
+      "62981460008",
+      "62981720575"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.cmoconstrutora.com.br",
+    "nome": "cmoconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.romanobarbosa.com.br",
+    "nome": "romanobarbosa",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.construtoraserragrande.com.br",
+    "nome": "construtoraserragrande",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "contato@construtoraserragrande.com.br"
+    ],
+    "telefones_encontrados": [
+      "(62) 3092-6852"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.engefortnet.com.br",
+    "nome": "engefortnet",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.epocaconstrutora.com.br",
+    "nome": "epocaconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.govesa.ind.br",
+    "nome": "govesa",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.himalaia.net.br",
+    "nome": "himalaia",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "contato@himalaia.net.br",
+      "csm@himalaia.net.br"
+    ],
+    "telefones_encontrados": [
+      "(62) 99969-7532",
+      "14285714286",
+      "1724956028",
+      "1731425405",
+      "1779959728",
+      "1779959762"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.innovarconstrutora.com.br",
+    "nome": "innovarconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "innovar@innovarconstrutora.com.br"
+    ],
+    "telefones_encontrados": [
+      "(62) 4006-2600",
+      "1770301827",
+      "21533603351",
+      "56240062600",
+      "75972036253"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.jl2construtora.com.br",
+    "nome": "jl2construtora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.lugasa.com.br",
+    "nome": "lugasa",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [
+      "contato@lugasa.com.br"
+    ],
+    "telefones_encontrados": [
+      "16559405148",
+      "1773909252",
+      "1780610290",
+      "1780610291",
+      "1780610292",
+      "1780610747",
+      "1780611082",
+      "1780918477",
+      "1780918479",
+      "1780929277",
+      "32763671875",
+      "62 3703-0510",
+      "62 99214-2147"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.mtkweb.com.br",
+    "nome": "mtkweb",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.mpaconstrutora.com.br",
+    "nome": "mpaconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro_motivo": "sem contato"
+  },
+  {
+    "site": "http://www.rodriguesdacunha.com.br",
+    "nome": "rodriguesdacunha",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(62) 99844-4009"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.teccril.com.br",
+    "nome": "teccril",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "(62) 3932-4432",
+      "(62) 3932-5532"
+    ],
+    "status": "ok"
+  },
+  {
+    "site": "http://www.tripoliconstrutora.com.br",
+    "nome": "tripoliconstrutora",
+    "estado": "",
+    "cidade": "",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "34368961178",
+      "46371393612",
+      "62) 3941-3060",
+      "62) 98160-0202"
+    ],
+    "status": "ok"
+  }
+]

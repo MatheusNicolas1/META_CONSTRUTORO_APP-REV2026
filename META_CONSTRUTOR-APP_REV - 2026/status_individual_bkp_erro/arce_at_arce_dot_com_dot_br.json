@@ -1,0 +1,24 @@
+{
+  "nome": "Construtora Arce",
+  "email": "arce@arce.com.br",
+  "campanha_26": {
+    "1": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    }
+  },
+  "onboarding": {
+    "1": {
+      "status": "enviado",
+      "data": "2026-06-08"
+    }
+  },
+  "contador_26": 1,
+  "contador_onb": 1,
+  "criado_em": "2026-06-08 12:03:07",
+  "ultimo_envio": "2026-06-08T15:08:33.644550+00:00",
+  "completo_26": false,
+  "completo_onb": false,
+  "proximo_dia_26": 2,
+  "indice_onb": 1
+}

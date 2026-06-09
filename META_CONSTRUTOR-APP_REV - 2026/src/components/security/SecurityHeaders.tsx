@@ -75,6 +75,8 @@ const buildCSP = (nonce: string): string => {
       "script-src 'self'",
       `'nonce-${nonce}'`,
       'https://js.stripe.com',
+      'https://www.googletagmanager.com',
+      'https://us-assets.i.posthog.com',
       ...(isDevelopment ? ["'unsafe-eval'"] : []),
     ].join(' '),
     "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
@@ -86,6 +88,12 @@ const buildCSP = (nonce: string): string => {
       "'self'",
       "https://api.stripe.com",
       "https://maps.googleapis.com",
+      // Google Analytics
+      "https://www.google-analytics.com",
+      "https://analytics.google.com",
+      // PostHog
+      "https://us-assets.i.posthog.com",
+      "https://us.i.posthog.com",
       // Supabase project (REST, Auth, Realtime)
       import.meta.env.VITE_SUPABASE_URL || "https://bgdvlhttyjeuprrfxgun.supabase.co",
       (import.meta.env.VITE_SUPABASE_URL ? import.meta.env.VITE_SUPABASE_URL.replace('https://', 'wss://') : "wss://bgdvlhttyjeuprrfxgun.supabase.co"),

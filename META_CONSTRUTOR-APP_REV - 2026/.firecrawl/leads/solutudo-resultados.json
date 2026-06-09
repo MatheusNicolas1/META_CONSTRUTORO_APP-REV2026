@@ -1,0 +1,3474 @@
+{
+  "totalCompanies": 320,
+  "scrapedDetails": 30,
+  "withEmails": 17,
+  "companies": [
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/lux-construtora-26682179",
+      "name": "LUX Construtora",
+      "emails": [],
+      "phones": [
+        "(11) 2189-9292",
+        "29930231012",
+        "1780855665",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 2189-9292",
+        "86906074462",
+        "2671500028",
+        "3768205298",
+        "2826682179",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/consorcio-nova-genesis-13106376",
+      "name": "Consorcio Nova Genesis",
+      "emails": [
+        "cadastro@passarelli.com.br"
+      ],
+      "phones": [
+        "(11) 3437-8400",
+        "(11) 3437-8499",
+        "29930231012",
+        "1780855665",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 3437-8400",
+        "11 3437-8499",
+        "2671500028",
+        "2813106376",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/empreiteira-de-mao-de-obra-araujo-soares-ltda-14314182",
+      "name": "Empreiteira De Mao De Obra Araujo &amp; Soares Ltda",
+      "emails": [
+        "andrea.alpha12@gmail.com"
+      ],
+      "phones": [
+        "(11) 5073-0302",
+        "(11) 5073-0291",
+        "29930231012",
+        "1780855666",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 5073-0302",
+        "11 5073-0291",
+        "2671500028",
+        "2814314182",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/max-construcoes-e-reformas-ltda-15375699",
+      "name": "Max Construcoes E Reformas Ltda",
+      "emails": [
+        "nilson@maxconstrucoes.com.br"
+      ],
+      "phones": [
+        "(11) 5504-1925",
+        "29930231012",
+        "1780855666",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 5504-1925",
+        "2671500028",
+        "2815375699",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/antonio-luis-puglia-ltda-16685181",
+      "name": "Antonio Luis Puglia Ltda.",
+      "emails": [
+        "puglia@pumapmp.com.br"
+      ],
+      "phones": [
+        "(11) 6688-1509",
+        "29930231012",
+        "1780855667",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 6688-1509",
+        "2671500028",
+        "2816685181",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/aerre-c-construcoes-e-servicos-ltda-17553229",
+      "name": "Aerre -c Construcoes E Servicos Ltda",
+      "emails": [
+        "mj-contabil@hotmail.com"
+      ],
+      "phones": [
+        "(11) 5938-1282",
+        "29930231012",
+        "1780855667",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 5938-1282",
+        "2671500028",
+        "2817553229",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/tf-engenharia-ltda-14403497",
+      "name": "Tf  Engenharia Ltda",
+      "emails": [
+        "auxiliarcontabil@ceplan.com.br"
+      ],
+      "phones": [
+        "(11) 2198-4677",
+        "29930231012",
+        "1780855668",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 2198-4677",
+        "2671500028",
+        "2814403497",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/arruda-arruda-construcoes-e-reformas-15394364",
+      "name": "Arruda &amp; Arruda Construcoes E Reformas",
+      "emails": [
+        "luciano@mattoscontabilidade.com.br"
+      ],
+      "phones": [
+        "(11) 5833-6488",
+        "(11) 5833-1588",
+        "29930231012",
+        "1780855669",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 5833-6488",
+        "11 5833-1588",
+        "2671500028",
+        "2815394364",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/draghi-demolicoes-17923854",
+      "name": "Draghi Demolicoes",
+      "emails": [],
+      "phones": [
+        "29930231012",
+        "1780855669",
+        "21162814725",
+        "37453753390",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "32113478806",
+        "2671500028",
+        "2817923854",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/vr-construcao-e-empreendimentos-imobiliarios-spe-ltda-26150565",
+      "name": "Vr Construcao E Empreendimentos Imobiliarios Spe Ltda",
+      "emails": [],
+      "phones": [
+        "(11) 2041-2343",
+        "29930231012",
+        "1780855670",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 2041-2343",
+        "2671500028",
+        "2826150565",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/mts-obras-e-estandes-ltda-12061805",
+      "name": "Mts Obras E Estandes Ltda",
+      "emails": [
+        "contatomts@outlook.com.br"
+      ],
+      "phones": [
+        "(11) 3337-3917",
+        "29930231012",
+        "1780855670",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 3337-3917",
+        "2671500028",
+        "2812061805",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/c-s-c-12476739",
+      "name": "C S C",
+      "emails": [],
+      "phones": [
+        "(11) 3741-0170",
+        "29930231012",
+        "1780855671",
+        "21162814725",
+        "2264625851",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 3741-0170",
+        "2671500028",
+        "2812476739",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/p-n-empreendimentos-imobiliarios-ltda-12327288",
+      "name": "P N Empreendimentos Imobiliarios Ltda",
+      "emails": [],
+      "phones": [
+        "29930231012",
+        "1780855671",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "2671500028",
+        "2812327288",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/ferraccini-construtora-empreiteira-ltda-25656487",
+      "name": "Ferraccini Construtora &amp; Empreiteira Ltda",
+      "emails": [],
+      "phones": [
+        "(11) 2051-5770",
+        "29930231012",
+        "1780855672",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 2051-5770",
+        "2671500028",
+        "2825656487",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/reveste-construcoes-ltda-16236014",
+      "name": "Reveste Construcoes Ltda",
+      "emails": [
+        "etecsp@terra.com.br"
+      ],
+      "phones": [
+        "(11) 2638-2368",
+        "29930231012",
+        "1780855673",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 2638-2368",
+        "2671500028",
+        "2816236014",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/l-maeda-construcao-civil-e-engenharia-23952863",
+      "name": "L Maeda Construcao Civil E Engenharia",
+      "emails": [],
+      "phones": [
+        "(11) 5667-3235",
+        "29930231012",
+        "1780855673",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 5667-3235",
+        "2671500028",
+        "2823952863",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/querino-projetos-ltda-26073500",
+      "name": "Querino Projetos Ltda",
+      "emails": [],
+      "phones": [
+        "(11) 6182-7425",
+        "29930231012",
+        "1780855674",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 6182-7425",
+        "2671500028",
+        "2826073500",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/consorcio-de-urbanizacao-embu-das-artes-17924543",
+      "name": "Consorcio De Urbanizacao Embu Das Artes",
+      "emails": [
+        "helio.sciascia@curb.com.br"
+      ],
+      "phones": [
+        "(11) 4872-0550",
+        "(11) 4872-0557",
+        "29930231012",
+        "1780855674",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 4872-0550",
+        "11 4872-0557",
+        "2671500028",
+        "2817924543",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/vlasic-incorporadora-ltda-25601342",
+      "name": "Vlasic Incorporadora Ltda",
+      "emails": [],
+      "phones": [
+        "(11) 4712-8768",
+        "(11) 4712-5053",
+        "29930231012",
+        "1780855675",
+        "21162814725",
+        "34069448347",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 4712-8768",
+        "11 4712-5053",
+        "2671500028",
+        "2825601342",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/consorcio-borboletas-spe-ltda-25068890",
+      "name": "Consorcio Borboletas Spe Ltda",
+      "emails": [],
+      "phones": [
+        "(11) 7467-0597",
+        "29930231012",
+        "1780855675",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 7467-0597",
+        "2671500028",
+        "2825068890",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/empreiteira-joia-do-mangalot-s-c-ltda-12373813",
+      "name": "Empreiteira Joia Do Mangalot S/C Ltda",
+      "emails": [],
+      "phones": [
+        "29930231012",
+        "1780855676",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "2671500028",
+        "2812373813",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/paifer-14871617",
+      "name": "Paifer",
+      "emails": [
+        "felcon@bol.com.br"
+      ],
+      "phones": [
+        "(11) 2016-5533",
+        "29930231012",
+        "1780855677",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 2016-5533",
+        "2671500028",
+        "2814871617",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/construmeg-incorporacoes-e-servicos-ltda-12360409",
+      "name": "Construmeg Incorporacoes E Servicos Ltda",
+      "emails": [
+        "ac.quintino@uol.com.br"
+      ],
+      "phones": [
+        "(11) 3667-2041",
+        "29930231012",
+        "1780855677",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 3667-2041",
+        "2671500028",
+        "2812360409",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/consorcio-contracta-telar-15021471",
+      "name": "Consorcio Contracta - Telar",
+      "emails": [
+        "rubens@khortywhite.com.br"
+      ],
+      "phones": [
+        "(11) 5054-5054",
+        "29930231012",
+        "1780855678",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 5054-5054",
+        "2671500028",
+        "2815021471",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/g-t-a-construcoes-15945130",
+      "name": "G.T.A. Construcoes",
+      "emails": [
+        "assessor.cont@superig.com.br"
+      ],
+      "phones": [
+        "(11) 2052-1313",
+        "29930231012",
+        "1780855678",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 2052-1313",
+        "2671500028",
+        "2815945130",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/village-santa-davina-spe-ltda-16934953",
+      "name": "Village Santa Davina Spe Ltda.",
+      "emails": [
+        "contato@sonarcontabilidade.com.br"
+      ],
+      "phones": [
+        "(11) 2956-7222",
+        "29930231012",
+        "1780855679",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 2956-7222",
+        "2671500028",
+        "2816934953",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/farisco-empreiteira-de-mao-de-obra-ltda-17910340",
+      "name": "Farisco Empreiteira De Mao De Obra Ltda",
+      "emails": [
+        "operacional@amfprofissionais.com"
+      ],
+      "phones": [
+        "(11) 3976-7866",
+        "(11) 3975-5170",
+        "29930231012",
+        "1780855679",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 3976-7866",
+        "11 3975-5170",
+        "2671500028",
+        "2817910340",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/aracon-construcao-e-comercio-de-materiais-ltda-13641889",
+      "name": "Aracon Construcao E Comercio De Materiais Ltda",
+      "emails": [
+        "societario@ocm7.com.br"
+      ],
+      "phones": [
+        "(11) 2097-2003",
+        "29930231012",
+        "1780855680",
+        "21162814725",
+        "10245190888",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 2097-2003",
+        "2671500028",
+        "2813641889",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/dadelos-servicos-de-engenharia-ltda-25726273",
+      "name": "Dadelos Servicos De Engenharia Ltda",
+      "emails": [],
+      "phones": [
+        "(11) 9295-0993",
+        "29930231012",
+        "1780855681",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "11 9295-0993",
+        "2671500028",
+        "2825726273",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/j-g-c-construcoes-e-planejamento-ltda-12366776",
+      "name": "J G C Construcoes E Planejamento Ltda",
+      "emails": [],
+      "phones": [
+        "(01) 16942-0992",
+        "29930231012",
+        "1780855682",
+        "21162814725",
+        "55149963409",
+        "3604925595",
+        "8830494517",
+        "01 16942-0992",
+        "2671500028",
+        "2812366776",
+        "3843425551",
+        "3654651466",
+        "3996566275",
+        "25546553148",
+        "1884649812",
+        "11778172276",
+        "17102744318"
+      ],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/g-b-construcoes-16936585",
+      "name": "g b construcoes",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/avdan-servicos-comercio-ltda-14068457",
+      "name": "avdan servicos comercio ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/fatto-construtora-ltda-16450955",
+      "name": "fatto construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/villa-borghesi-empreendimentos-imobiliarios-ltda-17725019",
+      "name": "villa borghesi empreendimentos imobiliarios ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/y-q-n-construtora-ltda-24106518",
+      "name": "y q n construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/intecon-engenharia-e-participacoes-ltda-12348179",
+      "name": "intecon engenharia e participacoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/cawan-administracao-15780231",
+      "name": "cawan administracao",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/berta-270-futura-unidade-105-ltda-scp-25685451",
+      "name": "berta 270 futura unidade 105 ltda scp",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/umapei-montagens-industrias-ltda-12313475",
+      "name": "umapei montagens industrias ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-paulo/construtoras/casa-orange-sp-06-desenvolvimento-imobiliario-ltda-16323402",
+      "name": "casa orange sp 06 desenvolvimento imobiliario ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-paulo",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/vento-nordeste-2819874",
+      "name": "vento nordeste",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/mendes-servicos-e-comercio-de-materiais-de-construcao-ltda-3010494",
+      "name": "mendes servicos e comercio de materiais de construcao ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/mleao-construtora-ltda-25055209",
+      "name": "mleao construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/dujan-construcoes-civis-2816374",
+      "name": "dujan construcoes civis",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/seemark-3126082",
+      "name": "seemark",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/enbracon-empreiteira-de-obras-ltda-2885136",
+      "name": "enbracon empreiteira de obras ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/sl-mandic-projetos-e-construcao-civil-ltda-2807286",
+      "name": "sl mandic projetos e construcao civil ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/construtora-novo-horizonte-3135086",
+      "name": "construtora novo horizonte",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/mirador-das-araucarias-spe-ltda-24398147",
+      "name": "mirador das araucarias spe ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/construtora-zoller-ltda-3135974",
+      "name": "construtora zoller ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/imperium-revestimento-27463999",
+      "name": "imperium revestimento",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/construtora-eba-ltda-3088285",
+      "name": "construtora eba ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/b-r-b-participacoes-ltda-2873767",
+      "name": "b r b participacoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/gmbs-pastuch-construcoes-e-empreendimentos-imobiliarios-ltda-25018242",
+      "name": "gmbs pastuch construcoes e empreendimentos imobiliarios ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/d-kuquer-construcoes-e-servicos-ltda-23666011",
+      "name": "d kuquer construcoes e servicos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/cjp-empreiteira-de-obras-2858739",
+      "name": "cjp empreiteira de obras",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/altria-engenharia-2847640",
+      "name": "altria engenharia",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/ow-onway-solucoes-em-tecnologia-ltda-3007130",
+      "name": "ow onway solucoes em tecnologia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/slc-empreendimentos-e-participacoes-ltda-2825235",
+      "name": "slc empreendimentos e participacoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/sperandio-construcoes-e-reformas-ltda-2902751",
+      "name": "sperandio construcoes e reformas ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/gigio-obras-e-reformas-ltda-3020361",
+      "name": "gigio obras e reformas ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/piva-construcoes-civis-ltda-3127787",
+      "name": "piva construcoes civis ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/baggio-filhos-ltda-3126191",
+      "name": "baggio filhos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/construtora-abage-ltda-3135920",
+      "name": "construtora abage ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/construtora-chsr-2801175",
+      "name": "construtora chsr",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/fundar-construcoes-ltda-3031516",
+      "name": "fundar construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/promagma-s-a-2808576",
+      "name": "promagma s a",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/glz-engenharia-e-construcoes-ltda-25432231",
+      "name": "glz engenharia e construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/gps-construtora-ltda-23704345",
+      "name": "gps construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/ochiliski-construcao-civil-ltda-2832264",
+      "name": "ochiliski construcao civil ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/construtora-mendex-ltda-3114550",
+      "name": "construtora mendex ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/well-home-servicos-e-manutencoes-prediais-ltda-24879688",
+      "name": "well home servicos e manutencoes prediais ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/neorealizza-construcoes-e-engenharia-ltda-2812116",
+      "name": "neorealizza construcoes e engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/santafe-pinhais-construcoes-civis-ltda-2804806",
+      "name": "santafe pinhais construcoes civis ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/gha-construcoes-ltda-2923389",
+      "name": "gha construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/anumaki-construcao-civil-ltda-24613390",
+      "name": "anumaki construcao civil ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/itaenge-construcoes-civis-ltda-3130407",
+      "name": "itaenge construcoes civis ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/investiterras-empreendimentos-imobiliarios-ltda-3140535",
+      "name": "investiterras empreendimentos imobiliarios ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/incorporacao-mont-carlo-ltda-3126115",
+      "name": "incorporacao mont carlo ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/pr/curitiba/construtoras/parceiros-empreendimentos-imobiliarios-ltda-3075437",
+      "name": "parceiros empreendimentos imobiliarios ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "curitiba",
+      "uf": "pr"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/dr-resolve-duque-de-caxias-22864346",
+      "name": "dr resolve duque de caxias",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/engemig-27464130",
+      "name": "engemig",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/es-vicente-rio-log-maquinas-transporte-e-logistica-ltda-25825717",
+      "name": "es vicente rio log maquinas transporte e logistica ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/ca-justino-silva-construcoes-17151196",
+      "name": "ca justino silva construcoes",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/spe-mozak-engenharia-omega-ltda-24104525",
+      "name": "spe mozak engenharia omega ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/brasfatex-construcoes-projetos-e-reformas-ltda-12254213",
+      "name": "brasfatex construcoes projetos e reformas ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/compax-do-brasil-engenharia-ltda-17551824",
+      "name": "compax do brasil engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/thuany-s-engenharia-ltda-17871031",
+      "name": "thuany s engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/lop-construtora-ltda-11716850",
+      "name": "lop construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/litter-construcoes-17748392",
+      "name": "litter construcoes",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/plannat-construcoes-e-instalacoes-industriais-ltda-12273457",
+      "name": "plannat construcoes e instalacoes industriais ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/c-brandao-almeida-administracao-de-obras-ltda-25756768",
+      "name": "c brandao almeida administracao de obras ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/construtora-fernandes-maffei-ltda-17836853",
+      "name": "construtora fernandes maffei ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/construtora-santa-isabel-s-a-12215819",
+      "name": "construtora santa isabel s a",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/smart-safira-instalacoes-ltda-25173992",
+      "name": "smart safira instalacoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/dioro-construcoes-ltda-12876327",
+      "name": "dioro construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/fhbs-servicos-de-subempreitada-ltda-17377451",
+      "name": "fhbs servicos de subempreitada ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/montec-brasil-engenharia-e-consultoria-em-projetos-ltda-17162579",
+      "name": "montec brasil engenharia e consultoria em projetos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/macedo-e-carvalho-engenharia-ltda-13049123",
+      "name": "macedo e carvalho engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/htb-engenharia-e-construcao-s-a-12398906",
+      "name": "htb engenharia e construcao s a",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/ecia-irmaos-araujo-engenharia-comercio-sa-12228461",
+      "name": "ecia irmaos araujo engenharia comercio sa",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/potigua-reformas-construcoes-e-instalacao-de-gesso-ltda-15121439",
+      "name": "potigua reformas construcoes e instalacao de gesso ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/marques-sampaio-servicos-de-arquitetura-e-construcao-ltda-14780527",
+      "name": "marques sampaio servicos de arquitetura e construcao ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/el-elyon-concretagem-e-servicos-ltda-23546168",
+      "name": "el elyon concretagem e servicos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/maria-de-jesus-construcoes-ltda-24467665",
+      "name": "maria de jesus construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/al-arquitetura-e-contrucao-17367334",
+      "name": "al arquitetura e contrucao",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/vectorial-empreendimento-e-participacoes-ltda-17949397",
+      "name": "vectorial empreendimento e participacoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/p-p-j-b-consultoria-de-engenharia-ltda-17375877",
+      "name": "p p j b consultoria de engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/sergus-construtora-ltda-12292821",
+      "name": "sergus construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/mjc-construcoes-e-reformas-ltda-17191990",
+      "name": "mjc construcoes e reformas ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/infinity-participacoes-construtora-e-incorporadora-ltda-23522424",
+      "name": "infinity participacoes construtora e incorporadora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/jmd-construcoes-e-reformas-ltda-16480134",
+      "name": "jmd construcoes e reformas ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/2-m-construcoes-e-instalacoes-ltda-13798591",
+      "name": "2 m construcoes e instalacoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/rogers-jordy-reformas-e-construcoes-ltda-14659045",
+      "name": "rogers jordy reformas e construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/cabral-construcoes-e-reformas-s-s-ltda-15124508",
+      "name": "cabral construcoes e reformas s s ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/guarani-engenharia-ltda-25316310",
+      "name": "guarani engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/construtora-barto-ltda-24965252",
+      "name": "construtora barto ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/cimob-investimentos-ltda-12268891",
+      "name": "cimob investimentos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/categoria-padrao-atualizar/genesis-construcao-e-pintura-22695935",
+      "name": "genesis construcao e pintura",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rj/rio-janeiro/construtoras/m3-construcoes-e-participacoes-ltda-17532335",
+      "name": "m3 construcoes e participacoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "rio-de-janeiro",
+      "uf": "rj"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/negretto-construtora-15834576",
+      "name": "negretto construtora",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/emefe-engenharia-ltda-17879754",
+      "name": "emefe engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/engefor-engenharia-e-construcoes-ltda-14978364",
+      "name": "engefor engenharia e construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/vilac-construtora-ltda-23934597",
+      "name": "vilac construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/construtora-daro-ltda-13166298",
+      "name": "construtora daro ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/citta-16884158",
+      "name": "citta",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/rhema-construcoes-e-reformas-prediais-ltda-15878262",
+      "name": "rhema construcoes e reformas prediais ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/gff-gerenciamento-facilities-e-frotas-ltda-25799862",
+      "name": "gff gerenciamento facilities e frotas ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/reformalar-ltda-14563385",
+      "name": "reformalar ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/imperio-negocios-imobiliarios-eireli-15434486",
+      "name": "imperio negocios imobiliarios eireli",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/dodda-engenharia-ltda-25359222",
+      "name": "dodda engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/tecnil-engenharia-civil-ltda-14396267",
+      "name": "tecnil engenharia civil ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/life333-empreendimentos-imobiliarios-spe-ltda-24819070",
+      "name": "life333 empreendimentos imobiliarios spe ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/assis-castro-engenharia-construcao-e-reforma-ltda-17551158",
+      "name": "assis castro engenharia construcao e reforma ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/fernando-diniz-imoveis-scp-bairro-sao-geraldo-12816429",
+      "name": "fernando diniz imoveis scp bairro sao geraldo",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/matheus-philipe-neves-de-alcantara-12494460662-24634612",
+      "name": "matheus philipe neves de alcantara 12494460662",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/echo-administracao-e-construcoes-ltda-25598532",
+      "name": "echo administracao e construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/direcional-engenharia-s-a-scp-05-13542549",
+      "name": "direcional engenharia s a scp 05",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/construtora-alhambra-ltda-25460277",
+      "name": "construtora alhambra ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/soemp-empreendimentos-e-construcoes-sociedade-anonima-16129623",
+      "name": "soemp empreendimentos e construcoes sociedade anonima",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/alea-s-a-23975493",
+      "name": "alea s a",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/direcional-engenharia-s-a-scp-pro-moradia-ii-15007005",
+      "name": "direcional engenharia s a scp pro moradia ii",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/ama-spe-11867645",
+      "name": "ama spe",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/f5-engenharia-e-construcao-ltda-13982129",
+      "name": "f5 engenharia e construcao ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/construtora-prata-lima-eireli-12067536",
+      "name": "construtora prata lima eireli",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/construtora-santos-eireli-14760100",
+      "name": "construtora santos eireli",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/bb-construtora-ltda-24531013",
+      "name": "bb construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/atmos-construtora-ltda-21355497",
+      "name": "atmos construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/metz-construcoes-12649878",
+      "name": "metz construcoes",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/thm-construcoes-eireli-13087883",
+      "name": "thm construcoes eireli",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/ciatti-empreendimentos-imobiliarios-spe-ltda-11567179",
+      "name": "ciatti empreendimentos imobiliarios spe ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/direcional-engenharia-s-a-16012757",
+      "name": "direcional engenharia s a",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/g-a-solucoes-em-obras-ltda-24260642",
+      "name": "g a solucoes em obras ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/scp-gurupi-13655245",
+      "name": "scp gurupi",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/hauz-construcoes-personalizadas-ltda-14629642",
+      "name": "hauz construcoes personalizadas ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/construtora-oliveira-e-silva-ltda-16755197",
+      "name": "construtora oliveira e silva ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/direcional-engenharia-s-a-scp-cidade-jardim-15007090",
+      "name": "direcional engenharia s a scp cidade jardim",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/scp-terrayama-lcm-dnit-manutencao-br-104-pe-25872466",
+      "name": "scp terrayama lcm dnit manutencao br 104 pe",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/laj-empreendimentos-administracao-e-incorporacao-ltda-16730016",
+      "name": "laj empreendimentos administracao e incorporacao ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/mg/belo-horizonte/construtoras/construtora-profeta-scp-25059881",
+      "name": "construtora profeta scp",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "belo-horizonte",
+      "uf": "mg"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/construville-5128020",
+      "name": "construville",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/lorentz-construcoes-ltda-5133369",
+      "name": "lorentz construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/jf-empreemdimentos-5090338",
+      "name": "jf empreemdimentos",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/cgs-construtora-e-incorporadora-ltda-24055024",
+      "name": "cgs construtora e incorporadora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/t-r-solucoes-prestacao-de-servicos-ltda-5016193",
+      "name": "t r solucoes prestacao de servicos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/eleven-construtora-ltda-5010458",
+      "name": "eleven construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/rodrigao-construcao-e-manutencao-ltda-5123551",
+      "name": "rodrigao construcao e manutencao ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/estilos-empreendimentos-imobiliarios-ltda-23612189",
+      "name": "estilos empreendimentos imobiliarios ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/galery-construcoes-e-incorporacoes-ltda-5123258",
+      "name": "galery construcoes e incorporacoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/natural-stones-do-brasil-comercio-de-granitos-ltda-4992152",
+      "name": "natural stones do brasil comercio de granitos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/obras-obras-4955511",
+      "name": "obras obras",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/empreiteira-esboco-5142065",
+      "name": "empreiteira esboco",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/valdecir-andrade-5136949",
+      "name": "valdecir andrade",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/rpetersen-5063589",
+      "name": "rpetersen",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/imotex-emppreendimentos-e-participacoes-ltda-4949113",
+      "name": "imotex emppreendimentos e participacoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/fsa-construcao-e-saneamento-ltda-25126090",
+      "name": "fsa construcao e saneamento ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/aleph-materiais-de-construcao-representacoes-ltda-4979555",
+      "name": "aleph materiais de construcao representacoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/plenolar-construcoes-ltda-5079368",
+      "name": "plenolar construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/consorcio-pvg-gc-5001056",
+      "name": "consorcio pvg gc",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/co-edificacoes-ltda-25186802",
+      "name": "co edificacoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/barili-construtora-e-incorporadora-ltda-5010460",
+      "name": "barili construtora e incorporadora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/de-siqueira-righi-obras-e-servicos-5020339",
+      "name": "de siqueira righi obras e servicos",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/coteplan-construcao-tecnica-e-planejamentos-ltda-5122336",
+      "name": "coteplan construcao tecnica e planejamentos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/snal-arquitetura-ltda-5124828",
+      "name": "snal arquitetura ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/alex-sandro-roduit-da-silva-ltda-24692904",
+      "name": "alex sandro roduit da silva ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/grecia-imoveis-ltda-4956621",
+      "name": "grecia imoveis ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/lnc-5127860",
+      "name": "lnc",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/nexus-engenharia-4944666",
+      "name": "nexus engenharia",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/mle-construcoes-e-servicos-ltda-4961858",
+      "name": "mle construcoes e servicos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/uniao-empreiteira-ltda-24979382",
+      "name": "uniao empreiteira ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/drywall-center-solucoes-em-construcao-ltda-4982502",
+      "name": "drywall center solucoes em construcao ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/rmc-manutencao-predial-ltda-25132727",
+      "name": "rmc manutencao predial ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/construtora-belo-paraiso-ltda-5052400",
+      "name": "construtora belo paraiso ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/matias-construcoes-5111066",
+      "name": "matias construcoes",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/mdcaio-engenharia-e-construcoes-ltda-4979309",
+      "name": "mdcaio engenharia e construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/fabemana-5127936",
+      "name": "fabemana",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/intex-construtora-ltda-23799413",
+      "name": "intex construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/c-i-p-a-l-c-o-n-s-t-r-u-t-o-r-a-4953388",
+      "name": "c i p a l c o n s t r u t o r a",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/gilmar-mazutti-5130342",
+      "name": "gilmar mazutti",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/rs/pto-alegre/construtoras/empreendimento-edificio-solar-da-praca-ltda-4996238",
+      "name": "empreendimento edificio solar da praca ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "porto-alegre",
+      "uf": "rs"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/flutua-arquitetura-interiores-reforma-e-paisagismo-27190721",
+      "name": "flutua arquitetura interiores reforma e paisagismo",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/solidez-engenharia-ltda-4328163",
+      "name": "solidez engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/notus-construtora-e-incorporadora-ltda-4259992",
+      "name": "notus construtora e incorporadora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/ramper-engenharia-ltda-4285074",
+      "name": "ramper engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/level-construcoes-e-reformas-ltda-4300383",
+      "name": "level construcoes e reformas ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/innovare-construtora-ltda-4271183",
+      "name": "innovare construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/edificio-recanto-dos-guarapuvus-spe-ltda-24431843",
+      "name": "edificio recanto dos guarapuvus spe ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/brandi-construcao-e-reformas-22782891",
+      "name": "brandi construcao e reformas",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/cooperativa-habitacional-solar-das-oliveiras-4275511",
+      "name": "cooperativa habitacional solar das oliveiras",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/nautic-administracao-imobiliaria-e-investimentos-ltda-25494477",
+      "name": "nautic administracao imobiliaria e investimentos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/beta-empreendimentos-spe-ltda-4292993",
+      "name": "beta empreendimentos spe ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/lc-engenharia-consultoria-e-construcoes-ltda-4251323",
+      "name": "lc engenharia consultoria e construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/vyu-empreendimentos-ltda-26072732",
+      "name": "vyu empreendimentos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/skill-engenharia-e-construcoes-ltda-25224359",
+      "name": "skill engenharia e construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/jls-traumhaus-construtora-e-incorporadora-ltda-24623131",
+      "name": "jls traumhaus construtora e incorporadora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/tamago-servicos-de-engenharia-ltda-24538273",
+      "name": "tamago servicos de engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/agronomica-golden-office-4275190",
+      "name": "agronomica golden office",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/scp-coronel-americo-4303281",
+      "name": "scp coronel americo",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/cosal-construcoes-e-saneamento-ltda-4328969",
+      "name": "cosal construcoes e saneamento ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/aesper-comercial-construtora-ltda-23802944",
+      "name": "aesper comercial construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/imperio-real-construtora-ltda-4298469",
+      "name": "imperio real construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/sakara-empreendimentos-imobiliarios-ltda-4278714",
+      "name": "sakara empreendimentos imobiliarios ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/carfe-incorporadora-e-construtora-ltda-4251573",
+      "name": "carfe incorporadora e construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/construtora-attalos-ltda-24711542",
+      "name": "construtora attalos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/metro-construcao-e-incorporacao-ltda-4328099",
+      "name": "metro construcao e incorporacao ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/maria-e-joao-construtora-e-incorporadora-ltda-4303448",
+      "name": "maria e joao construtora e incorporadora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/scire-barreiros-empreendimentos-imobiliarios-spe-ltda-25221710",
+      "name": "scire barreiros empreendimentos imobiliarios spe ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/2bt-construcoes-ltda-25210930",
+      "name": "2bt construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/mca-construcoes-e-incorporacoes-ltda-4269782",
+      "name": "mca construcoes e incorporacoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/formula-engenharia-realty-ltda-4325465",
+      "name": "formula engenharia realty ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/cristal-construtora-e-comercio-ltda-4317445",
+      "name": "cristal construtora e comercio ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/engenho-empreiteira-de-mao-de-obra-ltda-4272931",
+      "name": "engenho empreiteira de mao de obra ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/sanmar-empreendimentos-imobiliarios-ltda-4262463",
+      "name": "sanmar empreendimentos imobiliarios ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/jp-construcoes-4280535",
+      "name": "jp construcoes",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/hf-incorporadora-e-administradora-de-bens-4267198",
+      "name": "hf incorporadora e administradora de bens",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/junior-pereira-cardozo-empreiteira-de-mao-de-obra-ltda-25940243",
+      "name": "junior pereira cardozo empreiteira de mao de obra ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/unipoint-empreendimentos-imobiliarios-ltda-4309150",
+      "name": "unipoint empreendimentos imobiliarios ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/residencial-mirantes-da-ilha-construcoes-spe-ltda-4286709",
+      "name": "residencial mirantes da ilha construcoes spe ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/melo-construcao-e-reforma-ltda-4271811",
+      "name": "melo construcao e reforma ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sc/florianopolis/construtoras/as-ramos-empreendimentos-ltda-4253561",
+      "name": "as ramos empreendimentos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "florianopolis",
+      "uf": "sc"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/exp-engenharia-arquitetura-e-construcoes-ltda-25561113",
+      "name": "exp engenharia arquitetura e construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/usc-construcoes-ltda-25369842",
+      "name": "usc construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/sengel-construcoes-limitada-678917",
+      "name": "sengel construcoes limitada",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/ridarp-construcoes-ltda-766979",
+      "name": "ridarp construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/belcasa-incorporadora-ltda-679659",
+      "name": "belcasa incorporadora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/axp-construcoes-ltda-713356",
+      "name": "axp construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/celio-domingos-gomes-673640",
+      "name": "celio domingos gomes",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/brinck-administracao-e-corretagem-unipessoal-ltda-25179164",
+      "name": "brinck administracao e corretagem unipessoal ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/carlos-alfredo-roncatto-640667",
+      "name": "carlos alfredo roncatto",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/btcon-construtora-ltda-751410",
+      "name": "btcon construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/r-m-s-construcoes-campinas-ltda-24207185",
+      "name": "r m s construcoes campinas ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/prcr-projetos-e-construcoes-ltda-661029",
+      "name": "prcr projetos e construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/jc-paiva-construcoes-ltda-669673",
+      "name": "jc paiva construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/emc-obras-da-construcao-civil-ltda-24662787",
+      "name": "emc obras da construcao civil ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/jd-santos-empreiteira-681861",
+      "name": "jd santos empreiteira",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/steelcons-empreiteira-construcao-civil-ltda-631848",
+      "name": "steelcons empreiteira construcao civil ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/triguia-servicos-de-assessoria-ltda-725782",
+      "name": "triguia servicos de assessoria ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/soraia-de-fatima-dos-reis-pinheiro-construcoes-ltda-686636",
+      "name": "soraia de fatima dos reis pinheiro construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/mrs-construcoes-e-empreendimentos-ltda-671415",
+      "name": "mrs construcoes e empreendimentos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/helm-engenharia-ltda-25396993",
+      "name": "helm engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/gunther-empreendimentos-ltda-24718565",
+      "name": "gunther empreendimentos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/conceito-construcao-e-reformas-ltda-25018675",
+      "name": "conceito construcao e reformas ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/construtora-lix-da-cunha-s-a-764231",
+      "name": "construtora lix da cunha s a",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/hencar-construcoes-ltda-24057675",
+      "name": "hencar construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/josielmo-construtora-22111381",
+      "name": "josielmo construtora",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/ic2-servicos-de-administracao-de-obras-ltda-23959145",
+      "name": "ic2 servicos de administracao de obras ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/rfa-engenharia-e-construcoes-ltda-694203",
+      "name": "rfa engenharia e construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/construtora-a-a-m-ltda-628301",
+      "name": "construtora a a m ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/ilmar-francisco-arquitetura-ltda-765495",
+      "name": "ilmar francisco arquitetura ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/griga-construcoes-e-comercio-ltda-627470",
+      "name": "griga construcoes e comercio ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/jd-construcao-e-incorporacao-residencial-azaleia-spe-ltda-24067413",
+      "name": "jd construcao e incorporacao residencial azaleia spe ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/construtora-arruda-zimmermann-ltda-629776",
+      "name": "construtora arruda zimmermann ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/c-n-t-engenharia-630553",
+      "name": "c n t engenharia",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/irapu-gestao-de-servicos-ltda-24858033",
+      "name": "irapu gestao de servicos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/lg-engenharia-e-construcoes-ltda-24956344",
+      "name": "lg engenharia e construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/marcos-de-souza-bertonha-703656",
+      "name": "marcos de souza bertonha",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/alg-construcoes-e-incorporacao-ltda-739039",
+      "name": "alg construcoes e incorporacao ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/j-san-servicos-de-contrucao-civil-678097",
+      "name": "j san servicos de contrucao civil",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/b-m-construcoes-ltda-631360",
+      "name": "b m construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/campinas/construtoras/mineral-comercial-importacao-e-exportacao-648045",
+      "name": "mineral comercial importacao e exportacao",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "campinas",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/acm-vale-comunicacao-visual-e-estruturas-metalicas-21670162",
+      "name": "acm vale comunicacao visual e estruturas metalicas",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/w-azevedo-neves-engenharia-ltda-25986127",
+      "name": "w azevedo neves engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/esdras-construtora-e-incorporadora-ltda-scp-the-gold-936769",
+      "name": "esdras construtora e incorporadora ltda scp the gold",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/seixas-seixas-construcoes-e-manutencoes-ltda-888953",
+      "name": "seixas seixas construcoes e manutencoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/2pr-solucoes-ltda-931202",
+      "name": "2pr solucoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/hoy-engenharia-e-construtora-ltda-24138472",
+      "name": "hoy engenharia e construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/deborah-de-campos-mello-884794",
+      "name": "deborah de campos mello",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/empreiteira-santos-amorim-s-c-ltda-879350",
+      "name": "empreiteira santos amorim s c ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/i9-brasil-construcao-civil-ltda-900233",
+      "name": "i9 brasil construcao civil ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/dry-nova-servicos-ltda-25103728",
+      "name": "dry nova servicos ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/sodec-engenharia-integrada-ltda-26031644",
+      "name": "sodec engenharia integrada ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/tecnovale-engenharia-ltda-885105",
+      "name": "tecnovale engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/sistema-engenharia-e-comercio-ltda-948455",
+      "name": "sistema engenharia e comercio ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/ass-facility-services-ltda-25988878",
+      "name": "ass facility services ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/calhas-rocha-manutencao-e-instalacao-ltda-24034487",
+      "name": "calhas rocha manutencao e instalacao ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/miriade-construtora-ltda-884923",
+      "name": "miriade construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/litoral-engenharia-e-desenvolvimento-ltda-944691",
+      "name": "litoral engenharia e desenvolvimento ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/psm-construcoes-e-reformas-902836",
+      "name": "psm construcoes e reformas",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/gbr-construcao-e-engenharia-ltda-923406",
+      "name": "gbr construcao e engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/l-r-g-mota-ltda-25203878",
+      "name": "l r g mota ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/esdras-construtora-e-incorporadora-ltda-scp-mansoes-aquarius-25193667",
+      "name": "esdras construtora e incorporadora ltda scp mansoes aquarius",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/big-vale-construtora-e-incorporadora-ltda-903538",
+      "name": "big vale construtora e incorporadora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/w-c-construtora-ltda-25510721",
+      "name": "w c construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/construtora-verde-vale-ltda-24696346",
+      "name": "construtora verde vale ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/mariana-milanez-arquitetura-e-construcao-ltda-879233",
+      "name": "mariana milanez arquitetura e construcao ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/t-p-s-empreiteira-eireli-916851",
+      "name": "t p s empreiteira eireli",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/hydraumec-947405",
+      "name": "hydraumec",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/skalter-solutions-eletromecanica-ltda-25266859",
+      "name": "skalter solutions eletromecanica ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/mgv-construtora-ltda-926294",
+      "name": "mgv construtora ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/cns-controle-de-qualidade-ltda-889479",
+      "name": "cns controle de qualidade ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/g-n-eletrica-e-hidraulica-ltda-884523",
+      "name": "g n eletrica e hidraulica ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/evaldo-a-vaz-construtora-eireli-932536",
+      "name": "evaldo a vaz construtora eireli",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/nagano-engenharia-ltda-879458",
+      "name": "nagano engenharia ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/concrete-br-ltda-25899366",
+      "name": "concrete br ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/carvalho-construcoes-ltda-24932739",
+      "name": "carvalho construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/corpivale-878185",
+      "name": "corpivale",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/maria-zelia-de-alvarenga-ltda-883541",
+      "name": "maria zelia de alvarenga ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/silva-ribeiro-construcoes-ltda-898894",
+      "name": "silva ribeiro construcoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/jma-mao-de-obra-efetiva-894669",
+      "name": "jma mao de obra efetiva",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    },
+    {
+      "url": "https://www.solutudo.com.br/empresas/sp/s-jose-campos/construtoras/arpox-revestimentos-e-locacoes-ltda-918005",
+      "name": "arpox revestimentos e locacoes ltda",
+      "emails": [],
+      "phones": [],
+      "category": "construtoras",
+      "city": "sao-jose-dos-campos",
+      "uf": "sp"
+    }
+  ]
+}

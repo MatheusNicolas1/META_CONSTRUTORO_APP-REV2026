@@ -1,6 +1,7 @@
 import { ArrowRight, ClipboardCheck, FileText, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import Logo from "@/components/Logo";
 
 const heroPoints = [
   { icon: FileText, label: "RDO digital" },
@@ -57,7 +58,7 @@ export function HeroSectionNew() {
               <div>
                 <h2 className="mt-1 text-xl font-semibold">Registro, revisao e consulta</h2>
               </div>
-              <img src="/brand/meta-construtor-icon.png" alt="" className="h-10 w-10 rounded-md" />
+              <Logo size="md" className="text-neutral-300 brightness-150" />
             </div>
 
             <div className="grid gap-3">

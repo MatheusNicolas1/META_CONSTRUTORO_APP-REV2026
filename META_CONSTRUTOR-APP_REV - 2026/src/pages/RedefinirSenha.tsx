@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { NavigationSafety } from "@/utils/navigationSafety";
 import { ArrowLeft, CheckCircle, Eye, EyeOff, Lock } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
@@ -8,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 
 const RedefinirSenha = () => {
+  const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -62,8 +64,8 @@ const RedefinirSenha = () => {
             <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-4 text-sm text-foreground">
               Senha alterada com sucesso. Voce ja pode acessar com a nova senha.
             </div>
-            <Button asChild className="w-full">
-              <Link to="/login">Ir para login</Link>
+            <Button className="w-full" onClick={() => NavigationSafety.safeNavigate(navigate, '/login')}>
+              Ir para login
             </Button>
           </div>
         ) : (
@@ -115,11 +117,9 @@ const RedefinirSenha = () => {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Salvando..." : "Salvar nova senha"}
             </Button>
-            <Button asChild variant="ghost" className="w-full">
-              <Link to="/login">
+            <Button variant="ghost" className="w-full" onClick={() => NavigationSafety.safeNavigate(navigate, '/login')}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Voltar ao login
-              </Link>
             </Button>
           </form>
         )}

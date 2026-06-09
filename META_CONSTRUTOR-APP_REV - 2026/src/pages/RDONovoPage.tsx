@@ -6,6 +6,7 @@
  */
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { NavigationSafety } from "@/utils/navigationSafety";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -131,7 +132,7 @@ const RDONovoPage = () => {
                 files: data.files,
             });
             // onSuccess do hook já mostra toast.success
-            navigate("/app/rdo");
+            NavigationSafety.safeNavigate(navigate, "/app/rdo");
         } catch (err: any) {
             // onError do hook já mostra toast.error — mas garantimos fallback aqui
             console.error("[RDONovoPage] Erro ao salvar:", err);

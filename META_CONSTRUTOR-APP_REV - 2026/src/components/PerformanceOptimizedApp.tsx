@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, memo, type ReactNode } from 'react';
+import React, { Suspense, lazy, memo, useEffect, type ReactNode } from 'react';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
@@ -18,10 +18,13 @@ import type { UserRole } from '@/types/user';
 import { AuditProvider } from '@/components/security/AuditLogger';
 import { OrgProvider } from '@/contexts/OrgContext';
 import SecurityHeaders from '@/components/security/SecurityHeaders';
+import PublicThemeEffect from '@/components/public/PublicThemeEffect';
 import { ServiceWorkerManager } from '@/components/ServiceWorkerManager';
 import { InteractionTracker } from '@/components/InteractionTracker';
 import { SuccessCheck } from '@/components/Feedback/SuccessCheck';
 import PublicMarketingTracker from '@/components/analytics/PublicMarketingTracker';
+import { checkUrlForAffiliateRef } from '@/utils/affiliateTracker';
+import { AffiliateUrlWatcher } from '@/components/AffiliateUrlWatcher';
 
 // Query client configuration
 const queryClient = new QueryClient({
@@ -116,6 +119,12 @@ const ChecklistDetalhes = lazy(() =>
 
 const Equipes = lazy(() =>
   import('@/pages/Equipes').then(module => ({
+    default: module.default
+  }))
+);
+
+const Colaboradores = lazy(() =>
+  import('@/pages/Colaboradores').then(module => ({
     default: module.default
   }))
 );
@@ -242,6 +251,12 @@ const IntegracaoERPPage = lazy(() =>
 
 const PublicPortal = lazy(() =>
   import('@/pages/publicPortal').then((module) => ({
+    default: module.default
+  }))
+);
+
+const EmailLinkTracker = lazy(() =>
+  import('@/pages/EmailLinkTracker').then(module => ({
     default: module.default
   }))
 );
@@ -441,6 +456,7 @@ export const PerformanceOptimizedApp = memo(() => (
 
 
             <QueryClientProvider client={queryClient}>
+              <AffiliateUrlWatcher />
               <AuthWrapper>
                 <InteractionTracker />
                 <PublicMarketingTracker />
@@ -448,8 +464,9 @@ export const PerformanceOptimizedApp = memo(() => (
                   <AuditProvider>
                     <SecurityHeaders />
                     <Routes>
-                      {/* Rota raiz redireciona para home */}
-                      <Route path="/" element={<Navigate to="/home" replace />} />
+                      {/* Home é a raiz e /home redireciona */}
+                      <Route path="/" element={<><PublicThemeEffect /><Index /></>} />
+                      <Route path="/home" element={<Navigate to="/" replace />} />
                       {/* Rotas públicas sem layout */}
                       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
                       <Route path="/logout" element={<Logout />} />
@@ -459,15 +476,14 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/auth/callback" element={<SafeSuspense><AuthCallback /></SafeSuspense>} />
                       <Route path="/mfa" element={<PublicRoute><MFA /></PublicRoute>} />
                       <Route path="/renovar-sessao" element={<RenovarSessao />} />
-                      <Route path="/home" element={<Index />} />
-                      <Route path="/sobre" element={<SafeSuspense fallback={null}><Sobre /></SafeSuspense>} />
-                      <Route path="/contato" element={<SafeSuspense fallback={null}><Contato /></SafeSuspense>} />
-                      <Route path="/preco" element={<SafeSuspense fallback={null}><Preco /></SafeSuspense>} />
+                      <Route path="/sobre" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Sobre /></SafeSuspense></>} />
+                      <Route path="/contato" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Contato /></SafeSuspense></>} />
+                      <Route path="/preco" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Preco /></SafeSuspense></>} />
                       {/* Rotas públicas do rodapé */}
                       <Route path="/atualizacoes" element={<SafeSuspense fallback={null}><Atualizacoes /></SafeSuspense>} />
                       <Route path="/carreiras" element={<SafeSuspense fallback={null}><Carreiras /></SafeSuspense>} />
-                      <Route path="/blog" element={<SafeSuspense fallback={null}><Blog /></SafeSuspense>} />
-                      <Route path="/blog/:slug" element={<SafeSuspense fallback={null}><BlogArticle /></SafeSuspense>} />
+                      <Route path="/blog" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Blog /></SafeSuspense></>} />
+                      <Route path="/blog/:slug" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><BlogArticle /></SafeSuspense></>} />
                       <Route path="/legal/privacidade" element={<SafeSuspense fallback={null}><PrivacyPolicy /></SafeSuspense>} />
                       <Route path="/legal/termos" element={<SafeSuspense fallback={null}><TermsOfService /></SafeSuspense>} />
                       <Route path="/legal/cookies" element={<SafeSuspense fallback={null}><CookiePolicy /></SafeSuspense>} />
@@ -534,9 +550,9 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/app/equipes/novo" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
                       <Route path="/app/equipes/:id/editar" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
                       {/* Colaboradores */}
-                      <Route path="/app/colaboradores" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
-                      <Route path="/app/colaboradores/novo" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
-                      <Route path="/app/colaboradores/:id/editar" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Equipes /></ProtectedPage>} />
+                      <Route path="/app/colaboradores" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Colaboradores /></ProtectedPage>} />
+                      <Route path="/app/colaboradores/novo" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Colaboradores /></ProtectedPage>} />
+                      <Route path="/app/colaboradores/:id/editar" element={<ProtectedPage roles={["Administrador", "Gerente"]}><Colaboradores /></ProtectedPage>} />
                       {/* Equipamentos */}
                       <Route path="/app/equipamentos" element={<ProtectedPage><Equipamentos /></ProtectedPage>} />
                       {/* Mais - Menu PWA */}
@@ -583,6 +599,8 @@ export const PerformanceOptimizedApp = memo(() => (
                       {/* Perfil Público e Configurações */}
                       <Route path="/perfil/:slug" element={<PerfilPublico />} />
                       <Route path="/app/configurar-perfil" element={<ProtectedPage><ConfigurarPerfil /></ProtectedPage>} />
+                      {/* Tracking de cliques de email */}
+                      <Route path="/l/:campaignDay" element={<SafeSuspense fallback={null}><EmailLinkTracker /></SafeSuspense>} />
                       {/* 404 */}
                       <Route path="*" element={<SafeSuspense><NotFound /></SafeSuspense>} />
                     </Routes>

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { track } from "@/integrations/analytics";
+import { trackPageView } from "@/integrations/ga4";
 
 const PUBLIC_MARKETING_ROUTES = new Set([
   "/home",
@@ -47,6 +48,9 @@ const PublicMarketingTracker = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // GA4 pageview em toda rota (marketing ou não)
+    trackPageView(location.pathname + location.search, document.title);
+
     if (!PUBLIC_MARKETING_ROUTES.has(location.pathname)) {
       return;
     }

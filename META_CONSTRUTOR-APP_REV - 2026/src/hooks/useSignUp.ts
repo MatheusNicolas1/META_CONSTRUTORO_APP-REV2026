@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { getAffiliateCodeFromCookie, processAffiliateReferral } from '@/utils/affiliateTracker';
 
 interface SignUpData {
   name: string;
@@ -178,6 +179,19 @@ export const useSignUp = (): UseSignUpReturn => {
       if (signInError) {
         toast.success('Conta criada com sucesso! Faça login para continuar.');
         return false;
+      }
+
+      // Processar indicação de afiliado (se houver cookie affiliate_ref)
+      const affiliateCode = getAffiliateCodeFromCookie();
+      if (affiliateCode) {
+        // Não-blocking — o cadastro já foi concluído
+        processAffiliateReferral(affiliateCode, data.email).then((result) => {
+          if (result.success) {
+            console.info('[Affiliate] Referral registered successfully');
+          } else {
+            console.warn('[Affiliate] Referral not registered:', result.error);
+          }
+        });
       }
 
       toast.success('Conta criada com sucesso! Entrando na sua conta...');

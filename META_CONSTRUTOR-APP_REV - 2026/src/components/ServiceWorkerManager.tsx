@@ -3,16 +3,30 @@
 export const ServiceWorkerManager = () => {
   useEffect(() => {
     if ('serviceWorker' in navigator) {
-      // DESATIVAR/REMOVER Service Worker para evitar erros de rede/cache
+      // Gerenciamento seguro de Service Worker
+      // Evita race conditions no iOS/Safari onde cache.put() e unregister()
+      // concorrem pelo mesmo lock do Cache API, causando:
+      // "AbortError: Lock was stolen by another request"
+
       navigator.serviceWorker.getRegistrations().then(function (registrations) {
         for (let registration of registrations) {
-          registration.unregister();
+          // Aguarda o SW estar idle (sem fetch em andamento) antes de desregistrar
+          if (registration.active) {
+            registration.active.postMessage({ type: 'SKIP_WAITING' });
+          }
+          // Pequeno delay para evitar race condition com fetch handlers ativos
+          setTimeout(() => {
+            registration.unregister().catch(() => {
+              // Falha silenciosa — unregister pode falhar em iOS se cache está em uso
+              console.warn('[SW] Unregister falhou — possível cache lock concorrente');
+            });
+          }, 500);
         }
+      }).catch(() => {
+        // getRegistrations pode falhar em iOS com erro de permissão/timing
+        console.warn('[SW] Não foi possível listar registrations');
       });
     }
-
-    // Service Worker registration only
-    // Preloading removed to avoid 404s on non-existent API routes
   }, []);
 
   return null;

@@ -46,7 +46,7 @@ const Logo = ({ className, size = "md", variant = "full" }: LogoProps) => {
       )}
       aria-label="Meta Construtor"
     >
-      <span className="font-black uppercase text-construction-blue dark:text-white">
+      <span className="font-black uppercase text-construction-blue">
         META
       </span>
       <span className="font-black uppercase text-construction-orange">Construtor</span>

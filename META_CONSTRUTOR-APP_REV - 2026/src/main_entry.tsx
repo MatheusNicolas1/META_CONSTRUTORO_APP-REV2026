@@ -6,8 +6,10 @@ import './index.css';
 import './lib/i18n';
 import { initAnalytics } from './integrations/analytics';
 import { initSentry } from './integrations/sentry';
+import { initGA } from './integrations/ga4';
 
 initAnalytics();
+initGA();
 initSentry();
 
 const queryClient = new QueryClient();

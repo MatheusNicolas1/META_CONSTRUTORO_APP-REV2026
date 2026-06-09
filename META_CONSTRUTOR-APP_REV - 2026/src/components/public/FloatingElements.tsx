@@ -1,79 +1,97 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef, useEffect } from 'react';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
 
-interface FloatingElement {
-  width: number;
-  height: number;
-  top: string;
-  left: string;
-  color: string;
-  duration: number;
-  delay: number;
-  blur?: string;
-}
+// ─── Tipos ────────────────────────────────────────────────
 
 interface FloatingElementsProps {
-  className?: string;
   count?: number;
-  colors?: string[];
-  blur?: string;
+  className?: string;
 }
 
-const defaultColors = [
+// ─── Cores pré-definidas ──────────────────────────────────
+
+const COLORS = [
   'bg-brand-orange/5',
   'bg-brand-emerald/5',
   'bg-blue-400/5',
   'bg-purple-400/5',
-  'bg-pink-400/5',
-  'bg-yellow-400/5',
 ];
 
-function generateElements(count: number, colors: string[], blur: string): FloatingElement[] {
-  return Array.from({ length: count }, (_, i) => ({
-    width: 200 + Math.random() * 400,
-    height: 200 + Math.random() * 400,
-    top: `${Math.random() * 100}%`,
-    left: `${Math.random() * 100}%`,
-    color: colors[i % colors.length],
-    duration: 15 + Math.random() * 20,
-    delay: Math.random() * 5,
-    blur,
-  }));
-}
+// ─── SIZES ────────────────────────────────────────────────
 
-export function FloatingElements({
-  className = '',
-  count = 4,
-  colors = defaultColors,
-  blur = 'blur-3xl',
-}: FloatingElementsProps) {
-  const elements = React.useMemo(
-    () => generateElements(count, colors, blur),
-    [count, colors, blur]
-  );
+const SIZES = [200, 300, 350, 400];
+
+// ─── Posições fixas para evitar recálculo ─────────────────
+
+const POSITIONS = [
+  { top: '10%', right: '5%' },
+  { top: '60%', left: '5%' },
+  { bottom: '15%', right: '15%' },
+  { top: '35%', left: '20%' },
+];
+
+// ─── Componente com animação otimizada ────────────────────
+
+function FloatingOrb({
+  color,
+  size,
+  pos,
+  index,
+}: {
+  color: string;
+  size: number;
+  pos: { top?: string; bottom?: string; left?: string; right?: string };
+  index: number;
+}) {
+  // Usar keyframes CSS ao invés de Framer Motion para não gerar re-renders
+  const duration = 18 + index * 4;
+  const direction = index % 2 === 0 ? ['0', '30px', '-20px', '0'] : ['0', '-25px', '35px', '0'];
 
   return (
-    <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
-      {elements.map((el, i) => (
-        <motion.div
+    <motion.div
+      className={`absolute rounded-full blur-3xl pointer-events-none ${color}`}
+      style={{
+        width: size,
+        height: size,
+        ...pos,
+        willChange: 'transform',
+      }}
+      animate={{
+        x: direction,
+        y: [0, -20, 15, 0],
+      }}
+      transition={{
+        duration,
+        repeat: Infinity,
+        ease: 'linear',
+        repeatType: 'mirror',
+      }}
+    />
+  );
+}
+
+// ─── Componente Principal ─────────────────────────────────
+
+export function FloatingElements({ count = 4, className = '' }: FloatingElementsProps) {
+  // Em mobile com preferência reduzida, não renderiza nada
+  const [mounted, setMounted] = React.useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return (
+    <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}
+         aria-hidden="true">
+      {Array.from({ length: Math.min(count, 4) }).map((_, i) => (
+        <FloatingOrb
           key={i}
-          className={`absolute rounded-full ${el.color} ${el.blur} opacity-30 md:opacity-100`}
-          style={{
-            width: el.width,
-            height: el.height,
-            top: el.top,
-            left: el.left,
-          }}
-          animate={{
-            x: [0, 50 + Math.random() * 50, 0],
-            y: [0, -(20 + Math.random() * 30), 0],
-          }}
-          transition={{
-            duration: el.duration,
-            repeat: Infinity,
-            ease: 'linear',
-            delay: el.delay,
-          }}
+          color={COLORS[i % COLORS.length]}
+          size={SIZES[i % SIZES.length]}
+          pos={POSITIONS[i % POSITIONS.length]}
+          index={i}
         />
       ))}
     </div>

@@ -30,6 +30,8 @@ const SEO = ({
   const resolvedDescription =
     description || "Plataforma web para gestao de obras, RDO digital, equipes, documentos e relatorios.";
 
+  const schemas = normalizeJsonLd(jsonLd);
+
   return (
     <Helmet>
       <title>{title}</title>
@@ -50,7 +52,7 @@ const SEO = ({
       <meta name="twitter:description" content={resolvedDescription} />
       <meta name="twitter:image" content={imageUrl} />
 
-      {normalizeJsonLd(jsonLd).map((entry, index) => (
+      {schemas.map((entry, index) => (
         <script key={index} type="application/ld+json">
           {JSON.stringify(entry)}
         </script>

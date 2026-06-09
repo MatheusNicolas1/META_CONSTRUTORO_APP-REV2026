@@ -7,50 +7,70 @@ const MARKETING = '/marketing';
 
 const obrasRow1: CarouselItem[] = [
   {
-    src: `${MARKETING}/obras-reais/quadra-coberta-finalizada.jpg`,
-    title: 'Quadra Coberta Finalizada',
-    desc: 'Estrutura metálica completa — projeto executado pela nossa construtora parceira.',
+    src: `${MARKETING}/obras-reais/obra-16.jpg`,
+    title: 'RDO-2026-01-15',
   },
   {
-    src: `${MARKETING}/obras-reais/thumbnails/quadra-coberta-finalizada.jpg`,
-    title: 'Quadra Coberta',
-    desc: 'Vista frontal da estrutura finalizada.',
+    src: `${MARKETING}/obras-reais/obra-17.jpg`,
+    title: 'RDO-2026-01-22',
+  },
+  {
+    src: `${MARKETING}/obras-reais/obra-18.jpg`,
+    title: 'RDO-2026-02-05',
+  },
+  {
+    src: `${MARKETING}/obras-reais/obra-19.jpg`,
+    title: 'RDO-2026-02-14',
+  },
+  {
+    src: `${MARKETING}/obras-reais/obra-20.jpg`,
+    title: 'RDO-2026-02-28',
   },
 ];
 
 const obrasRow2: CarouselItem[] = [
   {
-    src: `${MARKETING}/obras-reais/equipe-cobertura-metalica.jpg`,
-    title: 'Equipe em Cobertura Metálica',
-    desc: 'Montagem de cobertura metálica com equipe especializada em altura.',
+    src: `${MARKETING}/obras-reais/obra-21.jpg`,
+    title: 'RDO-2026-03-10',
   },
   {
-    src: `${MARKETING}/obras-reais/thumbnails/equipe-cobertura-metalica.jpg`,
-    title: 'Montagem',
-    desc: 'Equipe técnica durante a instalação.',
+    src: `${MARKETING}/obras-reais/obra-22.jpg`,
+    title: 'RDO-2026-03-22',
   },
   {
-    src: `${MARKETING}/obras-reais/cobertura-metalica-canteiro.jpg`,
-    title: 'Cobertura Metálica em Canteiro',
-    desc: 'Estrutura pré-moldada sendo montada diretamente no canteiro de obras.',
+    src: `${MARKETING}/obras-reais/obra-23.jpg`,
+    title: 'RDO-2026-04-03',
+  },
+  {
+    src: `${MARKETING}/obras-reais/obra-24.jpg`,
+    title: 'RDO-2026-04-15',
+  },
+  {
+    src: `${MARKETING}/obras-reais/obra-25.jpg`,
+    title: 'RDO-2026-04-28',
   },
 ];
 
 const obrasRow3: CarouselItem[] = [
   {
-    src: `${MARKETING}/obras-reais/estrutura-metalica-aerea.jpg`,
-    title: 'Estrutura Metálica Aérea',
-    desc: 'Vista aérea da estrutura metálica durante a fase de montagem.',
+    src: `${MARKETING}/obras-reais/obra-26.jpg`,
+    title: 'RDO-2026-05-06',
   },
   {
-    src: `${MARKETING}/obras-reais/thumbnails/estrutura-metalica-aerea.jpg`,
-    title: 'Vista Aérea',
-    desc: 'Perspectiva ampla do projeto em andamento.',
+    src: `${MARKETING}/obras-reais/obra-01.jpg`,
+    title: 'RDO-2026-05-16',
   },
   {
-    src: `${MARKETING}/obras-reais/thumbnails/cobertura-metalica-canteiro.jpg`,
-    title: 'Montagem em Canteiro',
-    desc: 'Detalhe da montagem da cobertura metálica.',
+    src: `${MARKETING}/obras-reais/obra-02.jpg`,
+    title: 'RDO-2026-05-26',
+  },
+  {
+    src: `${MARKETING}/obras-reais/obra-03.jpg`,
+    title: 'RDO-2026-06-05',
+  },
+  {
+    src: `${MARKETING}/obras-reais/obra-04.jpg`,
+    title: 'RDO-2026-06-14',
   },
 ];
 
@@ -83,6 +103,7 @@ export default function ObrasReaisSection() {
         {/* Carrossel triplo com imagens de obras */}
         <motion.div
           initial={{ opacity: 0 }}
+
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
         >

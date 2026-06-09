@@ -13,6 +13,7 @@ export class NavigationSafety {
 
   static safeNavigate(navigate: (path: string) => void, path: string) {
     startTransition(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
       navigate(path);
     });
   }

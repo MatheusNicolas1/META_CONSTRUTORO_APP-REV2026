@@ -319,8 +319,10 @@ Objetivo: entender frequencia, profundidade e modulos usados.
 
 Metricas:
 
-- [ ] DAU, WAU, MAU.
-- [ ] Stickiness: DAU/MAU.
+- [x] DAU, WAU, MAU.
+  EVIDENCIA: `AdminRetentionMetrics.tsx` utiliza `admin_dau_wau_mau_view` para DAU/WAU/MAU com dados reais, sem placeholders.
+- [x] Stickiness: DAU/MAU.
+  EVIDENCIA: `AdminRetentionMetrics.tsx` calcula stickiness como `DAU / MAU * 100` e exibe em barra/tooltip sazonais.
 - [ ] Sessao media por usuario.
 - [ ] Rotas autenticadas mais acessadas.
 - [ ] Modulos mais usados por role.

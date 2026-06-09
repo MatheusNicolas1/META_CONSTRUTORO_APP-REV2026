@@ -56,6 +56,12 @@ verify_jwt = false
 [functions.send-rdo-email]
 verify_jwt = true
 
+[functions.send-test]
+verify_jwt = false
+
+[functions.send-campaign-now]
+verify_jwt = false
+
 [functions.send-email-rdo]
 verify_jwt = true
 
@@ -76,3 +82,18 @@ verify_jwt = true
 
 [functions.send-checklist-email]
 verify_jwt = true
+
+[functions.affiliate-tracker]
+verify_jwt = false
+
+[functions.process-affiliate-referral]
+verify_jwt = true
+
+[functions.email-inbound-responder]
+verify_jwt = false
+
+[functions.resend-domains]
+verify_jwt = false
+
+[functions.resend-tools]
+verify_jwt = false

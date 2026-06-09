@@ -1,0 +1,275 @@
+[
+  {
+    "name": "Grupo Avantti",
+    "url": "https://www.grupoavantti.com/contato/",
+    "city": "Curitiba",
+    "uf": "PR",
+    "emails": [
+      "comercial@grupoavantti.com"
+    ],
+    "phones": [
+      "(00) 00000-0000",
+      "(41) 3223-0808"
+    ]
+  },
+  {
+    "name": "MT Engenharia",
+    "url": "https://mtengenharia.com.br/construtora/nossaempresa/",
+    "city": "Curitiba",
+    "uf": "PR",
+    "emails": [
+      "contato@mtengenharia.com.br"
+    ],
+    "phones": [
+      "(41) 3072-0780"
+    ]
+  },
+  {
+    "name": "Construtora Resolucao",
+    "url": "https://www.construtoraresolucao.com.br/",
+    "city": "Curitiba",
+    "uf": "PR",
+    "emails": [
+      "adm@construtoraresolucao.com.br"
+    ],
+    "phones": [
+      "(41) 3556-0330",
+      "(41) 98736-6410"
+    ]
+  },
+  {
+    "name": "Artesa Construtora",
+    "url": "https://www.artesaconstrutora.com.br/",
+    "city": "Curitiba",
+    "uf": "PR",
+    "emails": [
+      "contato@artesa.eng.br"
+    ],
+    "phones": [
+      "(41) 4141-0021",
+      "(41) 98454-2918"
+    ]
+  },
+  {
+    "name": "Atenas Construtora",
+    "url": "https://atenasconstrutora.com.br/contato/",
+    "city": "Curitiba",
+    "uf": "PR",
+    "emails": [
+      "contato@atenasconstrutora.com.br",
+      "vendas@atenasconstrutora.com.br"
+    ],
+    "phones": [
+      "(41) 3257-6363",
+      "(41) 99621-7895",
+      "(41) 99906-4520"
+    ]
+  },
+  {
+    "name": "Construtora Altar",
+    "url": "https://www.construtoraaltar.com.br/",
+    "city": "Curitiba",
+    "uf": "PR",
+    "emails": [
+      "paulo@construtoraaltar.com.br"
+    ],
+    "phones": []
+  },
+  {
+    "name": "Costamar",
+    "url": "https://costamar.eng.br/",
+    "city": "Porto Alegre",
+    "uf": "RS",
+    "emails": [
+      "construtora@costamar.eng.br"
+    ],
+    "phones": []
+  },
+  {
+    "name": "Pelotense",
+    "url": "https://pelotense.com.br/",
+    "city": "Porto Alegre",
+    "uf": "RS",
+    "emails": [
+      "rh@pelotense.com.br"
+    ],
+    "phones": [
+      "(53)99947-2391",
+      "(51)3332-2700",
+      "(53)3223-1955"
+    ]
+  },
+  {
+    "name": "Construl",
+    "url": "https://www.construl.com/",
+    "city": "Porto Alegre",
+    "uf": "RS",
+    "emails": [
+      "atendimento@construl.com"
+    ],
+    "phones": []
+  },
+  {
+    "name": "Duo Construtora",
+    "url": "https://duoconstrutora.com.br/contato/",
+    "city": "Rio de Janeiro",
+    "uf": "RJ",
+    "emails": [
+      "duoconstrutora@duoconstrutora.com.br"
+    ],
+    "phones": [
+      "(21) 2537-7747"
+    ]
+  },
+  {
+    "name": "Construtora Santa Isabel",
+    "url": "https://www.csisabel.com.br/",
+    "city": "Rio de Janeiro",
+    "uf": "RJ",
+    "emails": [
+      "contato@gruposantaisabel.com.br"
+    ],
+    "phones": []
+  },
+  {
+    "name": "Lytorânea",
+    "url": "https://www.lytoranea.com.br/contato",
+    "city": "Rio de Janeiro",
+    "uf": "RJ",
+    "emails": [
+      "lytoranea@lytoranea.com.br"
+    ],
+    "phones": [
+      "(21) 2688-2063"
+    ]
+  },
+  {
+    "name": "RJ Engenharia",
+    "url": "https://www.rjengenharia.com/",
+    "city": "Rio de Janeiro",
+    "uf": "RJ",
+    "emails": [
+      "contato@rjengenharia.com",
+      "contato@fabrikamall.com.br",
+      "rh@rjengenharia.com",
+      "vendas@rjengenharia.com",
+      "sac@rjengenharia.com"
+    ],
+    "phones": [
+      "(21) 98462-8250",
+      "(21) 2023-0019"
+    ]
+  },
+  {
+    "name": "Cima Construtora",
+    "url": "https://cimaconstrutora.com.br/contato/",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "emails": [
+      "contato@cimaconstrutora.com.br"
+    ],
+    "phones": []
+  },
+  {
+    "name": "Gouv Engenharia",
+    "url": "https://www.gouv.com.br/",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "emails": [
+      "contato@gouv.com.br"
+    ],
+    "phones": []
+  },
+  {
+    "name": "Casa Forte",
+    "url": "https://construtoracasaforte.com.br/",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "emails": [
+      "atendimento@construtoracasaforte.com.br"
+    ],
+    "phones": [
+      "(31) 3494-3584"
+    ]
+  },
+  {
+    "name": "Comim Construtora",
+    "url": "https://comimconstrutora.com.br/",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "emails": [
+      "ouvidoria@comimconstrutora.com.br"
+    ],
+    "phones": [
+      "(31) 3048-2875"
+    ]
+  },
+  {
+    "name": "Estrutural EC",
+    "url": "https://estruturalec.com.br/contato",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "emails": [
+      "estruturalengenharia@estruturalec.com.br",
+      "rh@estruturalec.com.br",
+      "licitacoes@estruturalec.com.br"
+    ],
+    "phones": [
+      "(31) 99283-9644"
+    ]
+  },
+  {
+    "name": "Construtora Terraco",
+    "url": "https://construtoraterraco.com.br/contato/",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "emails": [
+      "terraco@construtoraterraco.com.br"
+    ],
+    "phones": [
+      "(31) 3261-7959"
+    ]
+  },
+  {
+    "name": "Eliger Construtora",
+    "url": "https://www.eliger.com.br/contato/",
+    "city": "Belo Horizonte",
+    "uf": "MG",
+    "emails": [
+      "rh@eliger.com.br",
+      "terrenos@eliger.com.br",
+      "financeiro@eliger.com.br",
+      "fornecedor@eliger.com.br",
+      "eliger@eliger.com.br"
+    ],
+    "phones": [
+      "(31) 99529-0433",
+      "(31) 98436-0428",
+      "(31) 3441-7974"
+    ]
+  },
+  {
+    "name": "Edge Construtora",
+    "url": "https://www.edgeconstrutora.com.br/contato",
+    "city": "Ribeirao Preto",
+    "uf": "SP",
+    "emails": [
+      "contato@edgeconstrutora.com.br"
+    ],
+    "phones": [
+      "(16) 99720-7739",
+      "(16) 99122-6312"
+    ]
+  },
+  {
+    "name": "Construtora Santa Helena",
+    "url": "https://www.construtorasantahelena.com.br/contato/",
+    "city": "Londrina",
+    "uf": "PR",
+    "emails": [
+      "atendimento@construtorasantahelena.com.br",
+      "contato@construtorasantahelena.com.br"
+    ],
+    "phones": []
+  }
+]

@@ -2,13 +2,14 @@
 import { motion } from 'framer-motion';
 import SEO from "@/components/SEO";
 import { seoPages } from '@/config/seo';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Mail, MessageCircle, MapPin, Send, CheckCircle, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PublicLayout } from '@/components/public/PublicLayout';
 import { AnimatedSection } from '@/components/public/AnimatedSection';
 import { AnimatedGradient } from '@/components/public/AnimatedGradient';
 import { StaggerContainer, StaggerItem } from '@/components/public/StaggerContainer';
+import { NavigationSafety } from '@/utils/navigationSafety';
 
 const contactChannels = [
   {
@@ -53,12 +54,38 @@ const fadeInUp = {
 };
 
 export default function Contato() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ name: '', email: '', company: '', phone: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSending(true);
+    setError('');
+
+    try {
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data?.error?.message || 'Erro ao enviar');
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Erro de rede. Tente novamente.';
+      setError(msg);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -133,14 +160,21 @@ export default function Contato() {
                 <div className="text-center py-12">
                   <CheckCircle className="w-16 h-16 text-brand-emerald mx-auto mb-4" />
                   <h3 className="text-2xl font-extrabold text-neutral-900 mb-2">Mensagem enviada!</h3>
-                  <p className="text-neutral-600 mb-6">Recebemos seu contato e responderemos em até 4 horas úteis.</p>
-                  <Button variant="outline" className="rounded-full" asChild>
-                    <Link to="/home">Voltar ao início</Link>
+                  <p className="text-neutral-600 mb-6">Recebemos seu contato e responderemos em ate 4 horas uteis.</p>
+                  <Button variant="outline" className="rounded-full" onClick={() => { setSubmitted(false); setFormData({ name: '', email: '', company: '', phone: '', subject: '', message: '' }); }}>
+                    Enviar novamente
                   </Button>
                 </div>
               ) : (
                 <>
-                  <h3 className="text-xl font-bold text-neutral-900 mb-6">Solicitar Orçamento Online</h3>
+                  <h3 className="text-xl font-bold text-neutral-900 mb-6">Solicitar Orcamento Online</h3>
+
+                  {error && (
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 text-sm text-red-700">
+                      {error}
+                    </div>
+                  )}
+
                   <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="grid sm:grid-cols-2 gap-5">
                       <div>
@@ -210,8 +244,18 @@ export default function Contato() {
                         placeholder="Conte como podemos ajudar..."
                       />
                     </div>
-                    <Button type="submit" className="w-full bg-brand-orange hover:bg-brand-orange-hover text-white rounded-xl py-6 text-base">
-                      <Send className="w-4 h-4 mr-2" /> Enviar Orçamento
+                    <Button type="submit" disabled={sending} className="w-full bg-brand-orange hover:bg-brand-orange-hover text-white rounded-xl py-6 text-base">
+                      {sending ? (
+                        <span className="flex items-center gap-2">
+                          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                          </svg>
+                          Enviando...
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-2"><Send className="w-4 h-4" /> Enviar Orcamento</span>
+                      )}
                     </Button>
                   </form>
                 </>

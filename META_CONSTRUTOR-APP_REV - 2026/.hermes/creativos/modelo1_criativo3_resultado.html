@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Criativo 3 - Resultado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0f0f1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  body { min-height: auto; padding: 20px 0; }
+  .card { width: 400px; min-height: 800px; background: linear-gradient(160deg, #052e16 0%, #14532d 30%, #0d2015 100%); border-radius: 24px; overflow: hidden; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.5); padding-bottom: 30px; }
+  .card::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px); pointer-events: none; }
+  
+  /* Decorative elements */
+  .circle-bg { position: absolute; top: -80px; right: -80px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(34,197,94,0.08), transparent 70%); pointer-events: none; }
+  .circle-bg2 { position: absolute; bottom: -40px; left: -60px; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(34,197,94,0.06), transparent 70%); pointer-events: none; }
+
+  .header { padding: 24px 20px 12px; display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; }
+  .logo { width: 36px; height: 36px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; font-size: 14px; }
+  .logo-text { color: white; font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+  .logo-text span { color: #22c55e; }
+
+  .main { padding: 0 20px; position: relative; z-index: 1; }
+
+  .badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.3); padding: 6px 14px; border-radius: 50px; font-size: 11px; color: #86efac; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; }
+  .badge::before { content: '🎯'; font-size: 12px; }
+
+  .headline { font-size: 32px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; color: white; margin-bottom: 6px; }
+  .headline .highlight { background: linear-gradient(135deg, #22c55e, #4ade80); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  .subheadline { font-size: 14px; color: #86efac; line-height: 1.5; margin-bottom: 20px; }
+
+  /* Before vs After */
+  .compare { display: flex; gap: 10px; margin-bottom: 18px; }
+  .compare-box { flex: 1; border-radius: 14px; overflow: hidden; }
+  .compare-box .label { padding: 6px; text-align: center; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .compare-box.before .label { background: rgba(239,68,68,0.2); color: #fca5a5; }
+  .compare-box.after .label { background: rgba(34,197,94,0.2); color: #86efac; }
+  .compare-box .content { padding: 10px; background: rgba(0,0,0,0.3); }
+  .compare-box .content .stat-num { font-size: 24px; font-weight: 800; }
+  .compare-box.before .content .stat-num { color: #f87171; }
+  .compare-box.after .content .stat-num { color: #4ade80; }
+  .compare-box .content .stat-label { font-size: 10px; color: #94a3b8; line-height: 1.3; }
+  .arrow-between { display: flex; align-items: center; color: #22c55e; font-size: 20px; }
+
+  /* Stats cards */
+  .result-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+  .result-card .main-result { text-align: center; margin-bottom: 12px; }
+  .result-card .main-result .number { font-size: 36px; font-weight: 800; background: linear-gradient(135deg, #22c55e, #4ade80); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .result-card .main-result .label { font-size: 12px; color: #94a3b8; font-weight: 600; }
+  .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .result-item { background: rgba(255,255,255,0.03); border-radius: 10px; padding: 10px; text-align: center; }
+  .result-item .icon { font-size: 18px; margin-bottom: 2px; }
+  .result-item .num { font-size: 18px; font-weight: 800; color: #86efac; }
+  .result-item .desc { font-size: 9px; color: #6b7280; line-height: 1.2; }
+
+  /* Testimonial mini */
+  .testimonial { background: rgba(255,255,255,0.03); border-left: 3px solid #22c55e; border-radius: 4px 10px 10px 4px; padding: 10px 14px; margin-bottom: 16px; }
+  .testimonial .text { font-size: 11px; color: #cbd5e1; font-style: italic; line-height: 1.4; }
+  .testimonial .author { font-size: 10px; color: #4ade80; font-weight: 600; margin-top: 4px; }
+
+  /* CTA */
+  .cta { background: linear-gradient(135deg, #22c55e, #16a34a); border: none; border-radius: 50px; padding: 15px 28px; width: 100%; color: white; font-size: 15px; font-weight: 700; text-align: center; cursor: pointer; box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+  .cta:hover { background: linear-gradient(135deg, #16a34a, #15803d); }
+
+  .footer { text-align: center; color: #4b5563; padding: 16px 0 8px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="circle-bg"></div>
+    <div class="circle-bg2"></div>
+    
+    <div style="height: 3px; background: #1f2937; margin: 0;">
+      <div style="width: 100%; height: 100%; background: linear-gradient(90deg, #22c55e, #4ade80); border-radius: 0 2px 2px 0;"></div>
+    </div>
+
+    <div class="header">
+      <div class="logo">MC</div>
+      <div class="logo-text">META <span>CONSTRUTOR</span></div>
+    </div>
+
+    <div class="main">
+      <div class="badge">Resultado</div>
+
+      <div class="headline">
+        Menos papel,<br>
+        <span class="highlight">mais obra</span>
+      </div>
+
+      <div class="subheadline">
+        O que os construtores que usam o Meta Construtor<br>
+        estão economizando:
+      </div>
+
+      <!-- Before vs After -->
+      <div class="compare">
+        <div class="compare-box before">
+          <div class="label">❌ Antes</div>
+          <div class="content">
+            <div class="stat-num">12h/sem</div>
+            <div class="stat-label">perdidas com burocracia<br>WhatsApp + planilhas</div>
+          </div>
+        </div>
+        <div class="arrow-between">➜</div>
+        <div class="compare-box after">
+          <div class="label">✅ Depois</div>
+          <div class="content">
+            <div class="stat-num">2h/sem</div>
+            <div class="stat-label">com RDOs organizados<br>Tudo em 1 app</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result card -->
+      <div class="result-card">
+        <div class="main-result">
+          <div class="number">83%</div>
+          <div class="label">menos tempo com relatórios</div>
+        </div>
+        <div class="result-grid">
+          <div class="result-item"><div class="icon">📋</div><div class="num">100%</div><div class="desc">RDOs concluídos no prazo</div></div>
+          <div class="result-item"><div class="icon">📸</div><div class="num">2x</div><div class="desc">mais fotos documentadas</div></div>
+          <div class="result-item"><div class="icon">👥</div><div class="num">4x</div><div class="desc">equipes gerenciadas</div></div>
+          <div class="result-item"><div class="icon">📊</div><div class="num">10min</div><div class="desc">relatório pronto</div></div>
+        </div>
+      </div>
+
+      <!-- Testimonial -->
+      <div class="testimonial">
+        <div class="text">"Antes eu passava o domingo organizando RDO da semana. Agora saio do canteiro e o relatório já tá pronto. Mudou minha rotina."</div>
+        <div class="author">— Eng. Ricardo, construtora em SP</div>
+      </div>
+
+      <a class="cta" href="#">
+        ⚡ Começar grátis agora
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div class="footer">3 / 3 • Carrossel</div>
+  </div>
+</body>
+</html>

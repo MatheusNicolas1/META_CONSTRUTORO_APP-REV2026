@@ -1,8 +1,10 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { NavigationSafety } from '@/utils/navigationSafety';
 
 const NotFound = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.error(
@@ -16,9 +18,9 @@ const NotFound = () => {
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4 text-foreground">404</h1>
         <p className="text-xl text-muted-foreground mb-4">Oops! Página não encontrada</p>
-        <a href="/home" className="text-construction-orange hover:text-construction-orange-light underline">
+        <button onClick={() => NavigationSafety.safeNavigate(navigate, '/home')} className="text-construction-orange hover:text-construction-orange-light underline cursor-pointer">
           Voltar ao Início
-        </a>
+        </button>
       </div>
     </div>
   );

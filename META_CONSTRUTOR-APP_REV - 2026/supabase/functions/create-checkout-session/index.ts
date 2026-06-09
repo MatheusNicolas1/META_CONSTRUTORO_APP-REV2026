@@ -116,9 +116,11 @@ serve(async (req) => {
             }
 
             const priceField = billing === "monthly" ? "stripe_price_id_monthly" : "stripe_price_id_yearly";
+            const monthlyField = "monthly_price_cents";
+            const yearlyField = "yearly_price_cents";
             const { data: planData, error: planError } = await supabaseAdmin
                 .from("plans")
-                .select(`id, ${priceField}`)
+                .select(`id, ${priceField}, ${monthlyField}, ${yearlyField}, name`)
                 .eq("slug", plan)
                 .eq("is_active", true)
                 .single();
@@ -126,14 +128,41 @@ serve(async (req) => {
             if (planError || !planData) throw new Error(`Plan not found: ${plan}`);
             resolvedPriceId = planData[priceField as keyof typeof planData] as string;
             planId = planData.id;
-        } else {
-            const { data: planData } = await supabaseAdmin
-                .from("plans")
-                .select("id")
-                .or(`stripe_price_id_monthly.eq.${resolvedPriceId},stripe_price_id_yearly.eq.${resolvedPriceId}`)
-                .eq("is_active", true)
-                .maybeSingle();
-            planId = planData?.id ?? null;
+
+            // If no Stripe Price ID exists, create one dynamically
+            if (!resolvedPriceId) {
+                const amountCents = billing === "monthly"
+                    ? (planData[monthlyField as keyof typeof planData] as number)
+                    : (planData[yearlyField as keyof typeof planData] as number);
+
+                if (!amountCents || amountCents <= 0) {
+                    throw new Error(`Invalid price for plan ${plan}: ${amountCents}`);
+                }
+
+                const interval = billing === "monthly" ? "month" : "year";
+                const newPrice = await stripe.prices.create({
+                    unit_amount: amountCents,
+                    currency: "brl",
+                    recurring: { interval },
+                    product_data: {
+                        name: `${planData.name} (${billing === "monthly" ? "Mensal" : "Anual"})`,
+                        description: `Plano ${planData.name} - ${billing === "monthly" ? "Mensal" : "Anual"}`,
+                    },
+                    metadata: {
+                        plan_slug: plan,
+                        billing,
+                        plan_id: planData.id,
+                    },
+                });
+
+                resolvedPriceId = newPrice.id;
+                console.log("Created new Stripe Price ID dynamically:", {
+                    priceId: newPrice.id,
+                    plan,
+                    billing,
+                    amountCents,
+                });
+            }
         }
 
         if (!resolvedPriceId) throw new Error("Stripe Price ID not found");
@@ -221,11 +250,23 @@ serve(async (req) => {
 
         const session = await stripe.checkout.sessions.create(sessionConfig);
 
+        console.log("Checkout session created successfully:", { sessionId: session.id, url: session.url, plan, billing });
+        console.log("Session metadata:", sessionConfig.metadata);
+        console.log("Customer:", { customerId, email: user.email });
+
         return new Response(JSON.stringify({ sessionId: session.id, url: session.url, appliedCoupon: appliedCoupon ? { code: appliedCoupon.code, discount_type: appliedCoupon.discount_type, discount_value: appliedCoupon.discount_value } : null }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
             status: 200,
         });
     } catch (error) {
+        console.error("Checkout session creation failed:", {
+            error: error.message,
+            plan,
+            billing,
+            resolvedPriceId,
+            customerId,
+            userId: user?.id,
+        });
         return new Response(JSON.stringify({ error: error.message }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
             status: 400,

@@ -1,27 +1,34 @@
-import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
-import SEO from "@/components/SEO";
-import { getBlogArticle } from "@/content/blogArticles";
-import { seoBlogArticles, seoPages } from "@/config/seo";
-import LandingNavigation from "@/components/landing/LandingNavigation";
-import FooterSection from "@/components/landing/FooterSection";
-import { Button } from "@/components/ui/button";
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, CheckCircle2, Camera } from 'lucide-react';
+import { useEffect } from 'react';
+import { NavigationSafety } from '@/utils/navigationSafety';
+import SEO from '@/components/SEO';
+import { getBlogArticle } from '@/content/blogArticles';
+import { seoBlogArticles, seoPages } from '@/config/seo';
+import LandingNavigation from '@/components/landing/LandingNavigation';
+import FooterSection from '@/components/landing/FooterSection';
+import { Button } from '@/components/ui/button';
 
 const BlogArticle = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const article = getBlogArticle(slug);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   if (!article) {
     return (
-      <>
+      <div className="force-light-blog">
         <SEO {...seoPages.blog} robots="noindex,follow" />
         <LandingNavigation />
         <main className="min-h-screen bg-background px-4 pb-20 pt-32 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
-            <Link to="/blog" className="inline-flex items-center gap-2 text-sm font-medium text-primary">
+            <button onClick={() => NavigationSafety.safeNavigate(navigate, '/blog')} className="inline-flex items-center gap-2 text-sm font-medium text-primary cursor-pointer">
               <ArrowLeft className="h-4 w-4" />
               Voltar ao blog
-            </Link>
+            </button>
             <h1 className="mt-8 text-4xl font-semibold tracking-tight text-foreground">
               Artigo nao encontrado
             </h1>
@@ -31,14 +38,14 @@ const BlogArticle = () => {
           </div>
         </main>
         <FooterSection />
-      </>
+      </div>
     );
   }
 
   const seo = seoBlogArticles[article.slug] ?? seoPages.blog;
 
   return (
-    <>
+    <div className="force-light-blog">
       <SEO {...seo} />
       <LandingNavigation />
 
@@ -46,10 +53,10 @@ const BlogArticle = () => {
         <article>
           <header className="border-b border-border bg-[#fbfaf7] px-4 py-12 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-4xl">
-              <Link to="/blog" className="inline-flex items-center gap-2 text-sm font-medium text-primary">
+              <button onClick={() => NavigationSafety.safeNavigate(navigate, '/blog')} className="inline-flex items-center gap-2 text-sm font-medium text-primary cursor-pointer">
                 <ArrowLeft className="h-4 w-4" />
                 Blog
-              </Link>
+              </button>
               <p className="mt-8 text-sm font-semibold text-primary">
                 {article.category} - {article.readingTime}
               </p>
@@ -80,6 +87,24 @@ const BlogArticle = () => {
                     <p className="mt-4 text-base leading-8 text-muted-foreground">
                       {section.body}
                     </p>
+                    {section.image ? (
+                      <figure className="mt-6 overflow-hidden rounded-xl border border-border bg-white">
+                        <img
+                          src={section.image.src}
+                          alt={section.image.alt}
+                          className="w-full object-cover"
+                          loading="lazy"
+                        />
+                        {(section.image.caption || section.image.credit) ? (
+                          <figcaption className="flex items-center gap-2 border-t border-border bg-[#fbfaf7] px-4 py-3 text-xs text-muted-foreground">
+                            <Camera className="h-3.5 w-3.5 shrink-0" />
+                            {section.image.caption}
+                            {section.image.caption && section.image.credit ? <span className="text-border">|</span> : null}
+                            {section.image.credit ? <span>{section.image.credit}</span> : null}
+                          </figcaption>
+                        ) : null}
+                      </figure>
+                    ) : null}
                     {section.items ? (
                       <ul className="mt-5 space-y-3 text-base leading-8 text-muted-foreground">
                         {section.items.map((item) => (
@@ -142,7 +167,7 @@ const BlogArticle = () => {
       </main>
 
       <FooterSection />
-    </>
+    </div>
   );
 };
 

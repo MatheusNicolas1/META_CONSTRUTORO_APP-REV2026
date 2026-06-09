@@ -1,0 +1,875 @@
+[
+  {
+    "name": "Sinduscon-SP",
+    "company": "Sinduscon-SP - Sindicato da Indústria da Construção Civil do Estado de São Paulo",
+    "site": "https://www.sindusconsp.com.br",
+    "email": "",
+    "state": "SP",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-MG",
+    "company": "Sinduscon-MG",
+    "site": "http://www.sinduscon-mg.org.br",
+    "email": "",
+    "state": "MG",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-RJ",
+    "company": "Sinduscon-Rio",
+    "site": "http://www.sinduscon-rio.com.br",
+    "email": "",
+    "state": "RJ",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-PR",
+    "company": "Sinduscon-PR",
+    "site": "http://www.sindusconpr.com.br",
+    "email": "",
+    "state": "PR",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-RS",
+    "company": "Sinduscon-RS",
+    "site": "http://www.sinduscon-rs.com.br",
+    "email": "",
+    "state": "RS",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-BA",
+    "company": "Sinduscon-BA",
+    "site": "http://www.sinduscon-ba.com.br",
+    "email": "",
+    "state": "BA",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-DF",
+    "company": "Sinduscon-DF",
+    "site": "http://www.sinduscondf.org.br/portal/",
+    "email": "",
+    "state": "DF",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-GO",
+    "company": "Sinduscon-GO",
+    "site": "http://www.sinduscongoias.com.br",
+    "email": "",
+    "state": "GO",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-CE",
+    "company": "Sinduscon-CE",
+    "site": "http://sindusconce.com.br",
+    "email": "",
+    "state": "CE",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-PE",
+    "company": "Sinduscon-PE",
+    "site": "http://www.sindusconpe.com.br",
+    "email": "",
+    "state": "PE",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-ES",
+    "company": "Sinduscon-ES",
+    "site": "http://www.sinduscon-es.com.br",
+    "email": "",
+    "state": "ES",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-SC (Joinville)",
+    "company": "Sinduscon-Joinville",
+    "site": "http://www.sinduscon-joinville.org.br",
+    "email": "",
+    "state": "SC",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-PA",
+    "company": "Sinduscon-PA",
+    "site": "http://www.sindusconpa.org.br",
+    "email": "",
+    "state": "PA",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-AM",
+    "company": "Sinduscon-AM",
+    "site": "http://sinduscon-am.org.br",
+    "email": "",
+    "state": "AM",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-MA",
+    "company": "Sinduscon-MA",
+    "site": "https://www.sinduscon-ma.com.br",
+    "email": "",
+    "state": "MA",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-RN",
+    "company": "Sinduscon-RN",
+    "site": "http://sindusconrn.com.br",
+    "email": "",
+    "state": "RN",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-PB",
+    "company": "Sinduscon-PB",
+    "site": "",
+    "email": "",
+    "state": "PB",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-AL",
+    "company": "Sinduscon-AL",
+    "site": "http://www.sindicatodaindustria.com.br/sindusconal",
+    "email": "",
+    "state": "AL",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-SE",
+    "company": "Sinduscon-SE",
+    "site": "http://www.sinduscon-se.com.br",
+    "email": "",
+    "state": "SE",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-RO",
+    "company": "Sinduscon-RO",
+    "site": "http://www.sindusconro.com.br/site/",
+    "email": "",
+    "state": "RO",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-AC",
+    "company": "Sinduscon-AC",
+    "site": "http://www.sindicatodaindustria.com.br/sindusconac",
+    "email": "",
+    "state": "AC",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-AP",
+    "company": "Sinduscon-AP",
+    "site": "http://www.sindicatodaindustria.com.br/sindusconap",
+    "email": "",
+    "state": "AP",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-RR",
+    "company": "Sinduscon-RR",
+    "site": "http://sinduscon-rr.org.br",
+    "email": "",
+    "state": "RR",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-MS",
+    "company": "Sinduscon-MS",
+    "site": "http://www.sindusconms.com.br",
+    "email": "",
+    "state": "MS",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Sinduscon-MT",
+    "company": "Sinduscon-MT",
+    "site": "",
+    "email": "",
+    "state": "MT",
+    "source": "CBIC",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "CBIC",
+    "company": "CBIC - Câmara Brasileira da Indústria da Construção",
+    "site": "https://cbic.org.br",
+    "email": "",
+    "state": "DF",
+    "source": "CBIC",
+    "type": "associacao_nacional"
+  },
+  {
+    "name": "Grupo Avantti",
+    "company": "Grupo Avantti",
+    "site": "https://www.grupoavantti.com/contato/",
+    "email": "comercial@grupoavantti.com",
+    "state": "PR",
+    "source": "GuiaFacilitou",
+    "type": "construtora"
+  },
+  {
+    "name": "MT Engenharia",
+    "company": "MT Engenharia",
+    "site": "https://mtengenharia.com.br",
+    "email": "contato@mtengenharia.com.br",
+    "state": "PR",
+    "source": "GuiaFacilitou",
+    "type": "engenharia"
+  },
+  {
+    "name": "Construtora Resolucao",
+    "company": "Construtora Resolucao",
+    "site": "https://www.construtoraresolucao.com.br/",
+    "email": "adm@construtoraresolucao.com.br",
+    "state": "PR",
+    "source": "GuiaFacilitou",
+    "type": "construtora"
+  },
+  {
+    "name": "Artesa Construtora",
+    "company": "Artesa Construtora",
+    "site": "https://www.artesaconstrutora.com.br/",
+    "email": "contato@artesa.eng.br",
+    "state": "PR",
+    "source": "GuiaFacilitou",
+    "type": "construtora"
+  },
+  {
+    "name": "Atenas Construtora",
+    "company": "Atenas Construtora",
+    "site": "https://atenasconstrutora.com.br/contato/",
+    "email": "contato@atenasconstrutora.com.br",
+    "state": "PR",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora Altar",
+    "company": "Construtora Altar",
+    "site": "https://www.construtoraaltar.com.br/",
+    "email": "paulo@construtoraaltar.com.br",
+    "state": "PR",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Costamar",
+    "company": "Costamar Engenharia",
+    "site": "https://costamar.eng.br/",
+    "email": "construtora@costamar.eng.br",
+    "state": "RS",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Pelotense",
+    "company": "Pelotense Construcoes",
+    "site": "https://pelotense.com.br/",
+    "email": "rh@pelotense.com.br",
+    "state": "RS",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Construl",
+    "company": "Construl Construcoes",
+    "site": "https://www.construl.com/",
+    "email": "atendimento@construl.com",
+    "state": "RS",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Duo Construtora",
+    "company": "Duo Construtora",
+    "site": "https://duoconstrutora.com.br/contato/",
+    "email": "duoconstrutora@duoconstrutora.com.br",
+    "state": "RJ",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora Santa Isabel",
+    "company": "Grupo Santa Isabel",
+    "site": "https://www.csisabel.com.br/",
+    "email": "contato@gruposantaisabel.com.br",
+    "state": "RJ",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Lytorânea",
+    "company": "Lytorânea Construcoes",
+    "site": "https://www.lytoranea.com.br/contato",
+    "email": "lytoranea@lytoranea.com.br",
+    "state": "RJ",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "RJ Engenharia",
+    "company": "RJ Engenharia",
+    "site": "https://www.rjengenharia.com/",
+    "email": "contato@rjengenharia.com",
+    "state": "RJ",
+    "source": "Contato direto",
+    "type": "engenharia"
+  },
+  {
+    "name": "Cima Construtora",
+    "company": "Cima Construtora",
+    "site": "https://cimaconstrutora.com.br/contato/",
+    "email": "contato@cimaconstrutora.com.br",
+    "state": "MG",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Gouv Engenharia",
+    "company": "Gouv Engenharia",
+    "site": "https://www.gouv.com.br/",
+    "email": "contato@gouv.com.br",
+    "state": "MG",
+    "source": "Contato direto",
+    "type": "engenharia"
+  },
+  {
+    "name": "Casa Forte Construtora",
+    "company": "Casa Forte",
+    "site": "https://construtoracasaforte.com.br/",
+    "email": "atendimento@construtoracasaforte.com.br",
+    "state": "MG",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Comim Construtora",
+    "company": "Comim Construtora",
+    "site": "https://comimconstrutora.com.br/",
+    "email": "ouvidoria@comimconstrutora.com.br",
+    "state": "MG",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Estrutural EC",
+    "company": "Estrutural Engenharia e Construcao",
+    "site": "https://estruturalec.com.br/contato",
+    "email": "estruturalengenharia@estruturalec.com.br",
+    "state": "MG",
+    "source": "Contato direto",
+    "type": "engenharia"
+  },
+  {
+    "name": "Construtora Terraco",
+    "company": "Construtora Terraco",
+    "site": "https://construtoraterraco.com.br/contato/",
+    "email": "terraco@construtoraterraco.com.br",
+    "state": "MG",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Eliger Construtora",
+    "company": "Eliger Construtora",
+    "site": "https://www.eliger.com.br/contato/",
+    "email": "eliger@eliger.com.br",
+    "state": "MG",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Edge Construtora",
+    "company": "Edge Construtora",
+    "site": "https://www.edgeconstrutora.com.br/contato",
+    "email": "contato@edgeconstrutora.com.br",
+    "state": "SP",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora Santa Helena",
+    "company": "Construtora Santa Helena",
+    "site": "https://www.construtorasantahelena.com.br/contato/",
+    "email": "atendimento@construtorasantahelena.com.br",
+    "state": "PR",
+    "source": "Contato direto",
+    "type": "construtora"
+  },
+  {
+    "name": "Consorcio Nova Genesis",
+    "company": "Passarelli",
+    "site": "",
+    "email": "cadastro@passarelli.com.br",
+    "state": "SP",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Empreiteira Araujo & Soares Ltda",
+    "company": "Araujo & Soares",
+    "site": "",
+    "email": "andrea.alpha12@gmail.com",
+    "state": "SP",
+    "source": "Solutudo SP",
+    "type": "empreiteira"
+  },
+  {
+    "name": "Max Construcoes E Reformas Ltda",
+    "company": "Max Construcoes",
+    "site": "",
+    "email": "nilson@maxconstrucoes.com.br",
+    "state": "SP",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Antonio Luis Puglia Ltda.",
+    "company": "Puglia",
+    "site": "",
+    "email": "puglia@pumapmp.com.br",
+    "state": "SP",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Mts Obras E Estandes Ltda",
+    "company": "MTS Obras",
+    "site": "",
+    "email": "contatomts@outlook.com.br",
+    "state": "SP",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Reveste Construcoes Ltda",
+    "company": "Reveste Construcoes",
+    "site": "",
+    "email": "etecsp@terra.com.br",
+    "state": "SP",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Consorcio De Urbanizacao Embu Das Artes",
+    "company": "Curb",
+    "site": "",
+    "email": "helio.sciascia@curb.com.br",
+    "state": "SP",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Paifer",
+    "company": "Paifer Construcoes",
+    "site": "",
+    "email": "felcon@bol.com.br",
+    "state": "SP",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Construmeg Incorporacoes E Servicos Ltda",
+    "company": "Construmeg",
+    "site": "",
+    "email": "ac.quintino@uol.com.br",
+    "state": "SP",
+    "source": "Solutudo SP",
+    "type": "incorporadora"
+  },
+  {
+    "name": "Consorcio Contracta - Telar",
+    "company": "Contracta-Telar",
+    "site": "",
+    "email": "rubens@khortywhite.com.br",
+    "state": "SP",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "G.T.A. Construcoes",
+    "company": "GTA Construcoes",
+    "site": "",
+    "email": "assessor.cont@superig.com.br",
+    "state": "SP",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "Farisco Empreiteira Ltda",
+    "company": "Farisco",
+    "site": "",
+    "email": "operacional@amfprofissionais.com",
+    "state": "SP",
+    "source": "Solutudo SP",
+    "type": "empreiteira"
+  },
+  {
+    "name": "Aracon Construcao E Comercio Ltda",
+    "company": "Aracon",
+    "site": "",
+    "email": "societario@ocm7.com.br",
+    "state": "SP",
+    "source": "Solutudo SP",
+    "type": "construtora"
+  },
+  {
+    "name": "MRV Engenharia",
+    "company": "MRV Engenharia",
+    "site": "https://www.mrv.com.br",
+    "email": "",
+    "state": "MG",
+    "source": "Pesquisa geral",
+    "type": "incorporadora"
+  },
+  {
+    "name": "Construtora Tenda",
+    "company": "Tenda",
+    "site": "https://www.tenda.com",
+    "email": "",
+    "state": "SP",
+    "source": "Pesquisa geral",
+    "type": "incorporadora"
+  },
+  {
+    "name": "Cyrela Brazil Realty",
+    "company": "Cyrela",
+    "site": "https://www.cyrela.com.br",
+    "email": "",
+    "state": "SP",
+    "source": "Pesquisa geral",
+    "type": "incorporadora"
+  },
+  {
+    "name": "EZCorp Incorporacoes",
+    "company": "EZCorp",
+    "site": "https://www.ezcorp.com.br",
+    "email": "",
+    "state": "SP",
+    "source": "Pesquisa geral",
+    "type": "incorporadora"
+  },
+  {
+    "name": "Construtora Camargo Correa",
+    "company": "Camargo Correa Infra",
+    "site": "https://www.camargocorrea.com.br",
+    "email": "",
+    "state": "SP",
+    "source": "Pesquisa geral",
+    "type": "construtora"
+  },
+  {
+    "name": "Andrade Gutierrez",
+    "company": "Andrade Gutierrez",
+    "site": "https://www.andradegutierrez.com.br",
+    "email": "",
+    "state": "MG",
+    "source": "Pesquisa geral",
+    "type": "construtora"
+  },
+  {
+    "name": "Construtora Norberto Odebrecht",
+    "company": "Odebrecht",
+    "site": "https://www.odebrecht.com.br",
+    "email": "",
+    "state": "BA",
+    "source": "Pesquisa geral",
+    "type": "construtora"
+  },
+  {
+    "name": "Queiroz Galvao Construcoes",
+    "company": "Queiroz Galvao",
+    "site": "https://www.queirozgalvao.com",
+    "email": "",
+    "state": "PE",
+    "source": "Pesquisa geral",
+    "type": "construtora"
+  },
+  {
+    "name": "Forma e Reforma",
+    "company": "Forma e Reforma",
+    "site": "",
+    "email": "contato@formaereforma.com",
+    "state": "RJ",
+    "source": "Web search",
+    "type": "construtora"
+  },
+  {
+    "name": "MR Engenharia",
+    "company": "MR Engenharia",
+    "site": "",
+    "email": "contato@mrengenharia.com.br",
+    "state": "SP",
+    "source": "Web search",
+    "type": "engenharia"
+  },
+  {
+    "name": "FADX Engenharia",
+    "company": "FADX Engenharia",
+    "site": "",
+    "email": "contato@fadx.com.br",
+    "state": "SP",
+    "source": "Web search",
+    "type": "engenharia"
+  },
+  {
+    "name": "GMB Pre-Moldados e Materiais de Construcao",
+    "company": "GMB Pre-Moldados",
+    "site": "https://www.guiamais.com.br/fortaleza-ce",
+    "email": "",
+    "state": "CE",
+    "source": "GuiaMais",
+    "type": "materiais_construcao"
+  },
+  {
+    "name": "Bracks Construcoes Ltda",
+    "company": "Bracks Construcoes",
+    "site": "",
+    "email": "",
+    "state": "PR",
+    "source": "Solutudo Curitiba",
+    "type": "construtora"
+  },
+  {
+    "name": "Brasil Cabbo Construtora E Energia Ltda",
+    "company": "Brasil Cabbo",
+    "site": "",
+    "email": "",
+    "state": "PR",
+    "source": "Solutudo Curitiba",
+    "type": "construtora"
+  },
+  {
+    "name": "Alex Zamuner",
+    "company": "Alex Zamuner Arquiteto",
+    "site": "https://www.solutudo.com.br/sp/tiete",
+    "email": "",
+    "state": "SP",
+    "source": "Solutudo",
+    "type": "arquiteto"
+  },
+  {
+    "name": "Construtora Via Construcoes",
+    "company": "Via Construcoes",
+    "site": "",
+    "email": "",
+    "state": "SP",
+    "source": "Solutudo",
+    "type": "construtora"
+  },
+  {
+    "name": "Sinduscon-SF (Sul Fluminense)",
+    "company": "Sinduscon Sul Fluminense",
+    "site": "http://www.sinduscon-sf.org.br",
+    "email": "sec@aceplanvr.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "associacao_sindical"
+  },
+  {
+    "name": "Antares Engenharia e Construcao",
+    "company": "Antares",
+    "site": "",
+    "email": "antares.engenhariaeconstrucao@gmail.com",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "engenharia"
+  },
+  {
+    "name": "Grupo Biotec",
+    "company": "Grupo Biotec",
+    "site": "",
+    "email": "nicolau.barbosa@grupobiotec.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Citrino Engenharia",
+    "company": "Citrino Engenharia",
+    "site": "",
+    "email": "leila.roner@citrinoengenharia.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "engenharia"
+  },
+  {
+    "name": "Construtora Santa Fe",
+    "company": "Construtora Santa Fe",
+    "site": "",
+    "email": "construtorasantafeltda@gmail.com",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "MN Construtora",
+    "company": "MN Construtora",
+    "site": "",
+    "email": "contato@mnconstrutora.com",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Correa Junior Construtora",
+    "company": "Correa Junior",
+    "site": "",
+    "email": "construtora@correajunior.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Engemater",
+    "company": "Engemater",
+    "site": "",
+    "email": "administrativo@engemater.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "engenharia"
+  },
+  {
+    "name": "IEL SUL Fluminense",
+    "company": "IEL SUL Fluminense",
+    "site": "",
+    "email": "ielsulf@ielsulf.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "fornecedor"
+  },
+  {
+    "name": "KVG Engenharia",
+    "company": "KVG Engenharia",
+    "site": "",
+    "email": "kvg@kvgengenharia.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "engenharia"
+  },
+  {
+    "name": "MA Industrial",
+    "company": "MA Industrial",
+    "site": "",
+    "email": "contato@maindustrial.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Maciele Melo",
+    "company": "Maciele Melo Construcoes",
+    "site": "",
+    "email": "financeiro@macielemelo.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "MS Projetos",
+    "company": "MS Projetos",
+    "site": "",
+    "email": "marcelo.seabra@msprojetos.ind.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "engenharia"
+  },
+  {
+    "name": "Moraes Lopes",
+    "company": "Moraes Lopes Engenharia",
+    "site": "",
+    "email": "atendimento@moraeslopes.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "engenharia"
+  },
+  {
+    "name": "Grupo Aceplan",
+    "company": "Grupo Aceplan",
+    "site": "",
+    "email": "tayanerodrigues@grupoaceplan.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "NPI Engenharia",
+    "company": "NPI Engenharia",
+    "site": "",
+    "email": "npi@npiengenharia.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "engenharia"
+  },
+  {
+    "name": "Construtora Polo",
+    "company": "Construtora Polo",
+    "site": "",
+    "email": "carlos@construtorapolo.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Riosul Construcoes",
+    "company": "Riosul Construcoes",
+    "site": "",
+    "email": "riosul@riosulconstrucoes.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "construtora"
+  },
+  {
+    "name": "Singular Arquitetura",
+    "company": "Singular Arquitetura",
+    "site": "",
+    "email": "singular@singulararquitetura.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "arquitetura"
+  },
+  {
+    "name": "Storm Geo Engenharia",
+    "company": "Storm Geo Engenharia",
+    "site": "",
+    "email": "samuel@stormgeoengenharia.com.br",
+    "state": "RJ",
+    "source": "Sinduscon-SF",
+    "type": "engenharia"
+  }
+]

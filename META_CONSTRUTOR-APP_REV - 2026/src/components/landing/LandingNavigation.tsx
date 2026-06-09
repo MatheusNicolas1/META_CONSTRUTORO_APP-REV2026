@@ -11,6 +11,7 @@ import { LogOut } from 'lucide-react';
 const menuItems = [
   { name: 'Apresentação', href: '/home' },
   { name: 'Preço', href: '/preco' },
+  { name: 'Blog', href: '/blog' },
   { name: 'Sobre', href: '/sobre' },
   { name: 'Contato', href: '/contato' },
 ];

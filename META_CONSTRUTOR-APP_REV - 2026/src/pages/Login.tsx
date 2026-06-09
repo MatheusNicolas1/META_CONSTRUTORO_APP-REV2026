@@ -66,8 +66,14 @@ const Login = () => {
 
     } catch (error: unknown) {
       // Erro já é tratado no AuthContext com toast
-      // Log sanitizado: sem PII
-    } finally {
+      // Mas precisamos garantir que isLoading seja resetado
+      if (error instanceof Error && error.message.includes('Failed to fetch')) {
+        toast({
+          title: "Erro de conexão",
+          description: "Não foi possível conectar ao servidor. Verifique sua internet ou tente novamente mais tarde.",
+          variant: "destructive",
+        });
+      }
       setIsLoading(false);
     }
 

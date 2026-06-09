@@ -6,14 +6,14 @@ const defaultImage = `${siteUrl}/marketing/obras-reais/estrutura-metalica-aerea.
 
 const routes = [
   {
-    path: "/home",
-    title: "Meta Construtor | Sistema de gestao de obras e RDO digital",
-    description: "Controle obras, RDOs, equipes, documentos e relatorios em uma plataforma web simples para construtoras.",
+    path: "/",
+    title: "Meta Construtor | Gestão de Obras para Engenheiros e Escritórios de Engenharia",
+    description: "Gerencia obras, RDOs, equipes, contratos e documentação em uma plataforma desenvolvida para engenheiros, construtoras e escritórios de estruturas metálicas.",
     priorityType: "SoftwareApplication",
   },
   {
     path: "/preco",
-    title: "Planos e precos | Meta Construtor",
+    title: "Planos e preços | Meta Construtor",
     description: "Escolha o plano ideal para gerenciar obras, RDOs, equipes e documentos com o Meta Construtor.",
   },
   {
@@ -35,7 +35,7 @@ const routes = [
   },
   {
     path: "/blog/o-que-e-rdo",
-    title: "O que e um RDO? Relatorio diario de obra | Meta Construtor",
+    title: "O que e um RDO? Entenda o relatorio diario de obra",
     description: "Entenda o que e RDO na construcao civil, para que serve e quais campos registrar no relatorio diario de obra.",
     priorityType: "Article",
     faqs: [
@@ -55,7 +55,7 @@ const routes = [
   },
   {
     path: "/blog/o-que-e-rdos",
-    title: "O que e RDOs? Plural de RDO explicado | Meta Construtor",
+    title: "O que e RDOs? Entenda o plural da sigla RDO",
     description: "RDOs e o plural de RDO. Entenda quando usar a sigla, como organizar varios relatorios diarios de obra e evitar confusao.",
     priorityType: "Article",
     faqs: [
@@ -75,7 +75,7 @@ const routes = [
   },
   {
     path: "/blog/rdo-na-policia",
-    title: "O que significa RDO na policia? | Meta Construtor",
+    title: "O que significa RDO na policia?",
     description: "Na policia, RDO costuma significar Registro Digital de Ocorrencia. Entenda a diferenca para o RDO de obras.",
     priorityType: "Article",
     faqs: [
@@ -95,7 +95,7 @@ const routes = [
   },
   {
     path: "/blog/rdo-de-empresa",
-    title: "O que e um RDO de empresa? | Meta Construtor",
+    title: "O que e um RDO de empresa?",
     description: "Entenda o que e RDO de empresa, como ele registra a rotina operacional e por que construtoras usam esse controle.",
     priorityType: "Article",
     faqs: [
@@ -115,20 +115,134 @@ const routes = [
   },
   {
     path: "/blog/como-estruturar-rdo",
-    title: "Como estruturar RDO util | Meta Construtor",
+    title: "Como estruturar um RDO util para campo, engenharia e cliente",
     description: "Veja como organizar RDO digital com clima, equipe, atividades, fotos, pendencias e aprovacao para reduzir retrabalho na obra.",
     priorityType: "Article",
   },
   {
     path: "/blog/documentos-por-obra",
-    title: "Documentos por obra | Meta Construtor",
+    title: "Quais documentos precisam estar ligados a cada obra",
     description: "Entenda como organizar documentos de obra por rotina, responsabilidade e finalidade para facilitar consulta, auditoria e entrega.",
     priorityType: "Article",
   },
   {
     path: "/blog/checklist-qualidade-obra",
-    title: "Checklist de qualidade na obra | Meta Construtor",
+    title: "Quando usar checklist, ocorrencia, atividade ou anexo",
     description: "Aprenda a separar checklist, ocorrencia, atividade e anexo na gestao de obras para melhorar qualidade, rastreabilidade e decisao.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/rdo-como-prova-tecnica",
+    title: "RDO como prova técnica: use o relatório diário de obra para mediação e faturamento",
+    description: "Aprenda como o RDO pode ser usado como prova técnica para medir avanço, liberar faturamento e comprovar serviço executado em construtoras de pequeno e médio porte.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/erros-comuns-preenchimento-rdo",
+    title: "Erros comuns no preenchimento de RDO (e como evitar)",
+    description: "Veja os erros mais frequentes no preenchimento de RDO — relatório genérico, foto sem contexto, campo vazio, registro atrasado — e aprenda a corrigir cada um na sua obra.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/dados-rdo-relatorio-gerencial",
+    title: "Dados de RDO viram relatório gerencial: o que o dono da construtora precisa ver",
+    description: "Saiba como consolidar RDOs por semana em um relatório executivo com indicadores de produtividade, adesão e avanço físico — feito para o dono da construtora.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/rdo-e-fotografia-de-obra",
+    title: "RDO e fotografia de obra: como provar o que foi executado?",
+    description: "Guia prático de evidência visual na obra: o que fotografar, quantas fotos, como nomear e como vincular cada imagem ao RDO.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/rdo-obras-publicas-vs-privadas",
+    title: "RDO em obras públicas vs. obras privadas: qual a diferença?",
+    description: "Obras públicas têm mais exigência documental, fiscalização dedicada e diário de obra contratual. Entenda como adequar o RDO para cada tipo de contrato.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/checklist-mais-rdo",
+    title: "Checklist + RDO: a combinação que reduz retrabalho na obra",
+    description: "Saiba como transformar checklist de qualidade em anexo do RDO e documentar a verificação de cada etapa construtiva.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/diario-de-obra-digital",
+    title: "Diário de Obra Digital: O fim da caderneta e do Excel na construção civil",
+    description: "O diário de obra digital está substituindo caderneta física e planilhas de Excel na construção civil. Veja as funcionalidades essenciais e como adotar.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/rdo-online-guia-completo",
+    title: "RDO Online: Guia completo para fazer o relatório diário de obra pela internet",
+    description: "Aprenda como fazer RDO online, quais campos usar, vantagens do digital sobre o papel e como escolher a melhor ferramenta para sua construtora de pequeno ou médio porte.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/rdo-online-faturamento-contratos",
+    title: "Como o RDO Online ajuda construtoras a faturar mais e discutir menos",
+    description: "RDO bem preenchido é a base da medição e do faturamento na construção. Veja como o RDO online reduz glosas, acelera pagamentos e melhora o fluxo de caixa da construtora.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/medicao-de-obra-guia-completo",
+    title: "Medição de Obra: Guia completo para medir serviços na construção civil",
+    description: "Guia completo sobre medição de obra na construção civil. Aprenda como medir serviços, quais documentos usar e como o RDO acelera o faturamento.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/medicao-obras-publicas",
+    title: "Medição de Obras Públicas: regras, prazos e documentação",
+    description: "Entenda as regras, prazos e documentação exigidos na medição de obras públicas, incluindo a Lei 8.666 e a IN 05/2017.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/controle-de-obra-planilha-ou-app",
+    title: "Controle de Obra: planilha ou app? Qual a melhor opção para sua construtora",
+    description: "Descubra as vantagens e desvantagens de usar planilhas ou aplicativos para controle de obra e veja qual solução atende melhor sua construtora.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/fiscal-de-obra-o-que-faz",
+    title: "Fiscal de Obra: o que faz, salário, como se tornar",
+    description: "Descubra o que faz um fiscal de obra, qual o salário médio, quais são as principais responsabilidades e como se tornar um profissional na área.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/seguranca-do-trabalho-obra-civil-nr18",
+    title: "Segurança do Trabalho na Construção Civil: guia completo NR-18 em 2026",
+    description: "Guia completo sobre segurança do trabalho na construção civil com foco na NR-18. Entenda as obrigações legais, os equipamentos de proteção, os documentos obrigatórios e como implementar um programa de segurança eficaz no canteiro de obras em 2026.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/relatorio-fotografico-de-obra-modelo",
+    title: "Relatório Fotográfico de Obra: modelo grátis e guia completo para fazer o seu",
+    description: "Guia completo sobre relatório fotográfico de obra: como fazer, o que incluir, modelo grátis para download e dicas de fotografia de canteiro de obras para construtoras, engenheiros e fiscais.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/app-gestao-de-obras-2026",
+    title: "App de Gestão de Obras: os 5 melhores aplicativos para construtoras em 2026",
+    description: "Descubra os melhores aplicativos para gestão de obras em 2026. Compare funcionalidades, preços e benefícios de cada ferramenta para sua construtora.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/gestao-construtoras-pequeno-porte",
+    title: "Gestão para Construtoras de Pequeno Porte: como organizar sem gastar muito",
+    description: "Aprenda como organizar sua construtora de pequeno porte com processos simples, ferramentas acessíveis e estratégias práticas de gestão de obras que não exigem grandes investimentos.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/almoxarifado-de-obra-organizacao",
+    title: "Almoxarifado de Obra: como organizar, controlar estoque e reduzir perdas",
+    description: "Guia prático para organizar o almoxarifado de obra, controlar entrada e saída de materiais, reduzir perdas por desvio e vencimento, e integrar o almoxarifado com o resto da gestão da construção civil.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/cronograma-de-obra-caixa-economica",
+    title: "Cronograma de Obra para Caixa Econômica: como elaborar passo a passo",
+    description: "Guia completo para elaborar o cronograma físico-financeiro de obra exigido pela Caixa Econômica Federal no financiamento habitacional. Modelos, etapas, prazos e dicas para aprovação.",
     priorityType: "Article",
   },
   {
@@ -225,27 +339,52 @@ const createJsonLd = ({ path, title, description, priorityType = "WebPage", faqs
     },
   };
 
-  const jsonLd = [
+  const jsonLd = [];
+
+  if (priorityType === "SoftwareApplication") {
+    jsonLd.push(
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "Meta Construtor",
+        url: siteUrl,
+        logo: `${siteUrl}/logo-meta-construtor.png`,
+        sameAs: [siteUrl],
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name: "Meta Construtor",
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Web, Android, iOS",
+        url: siteUrl,
+        description,
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "BRL",
+          priceValidUntil: "2027-12-31",
+          availability: "https://schema.org/InStock",
+        },
+      }
+    );
+  }
+
+  jsonLd.push(
     primary,
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Inicio",
-        item: `${siteUrl}/home`,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: title.replace(" | Meta Construtor", ""),
-        item: `${siteUrl}${path}`,
-      },
-    ],
-  },
-  ];
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Início",
+          item: `${siteUrl}/`,
+        },
+      ],
+    },
+  );
 
   if (faqs?.length) {
     jsonLd.push({

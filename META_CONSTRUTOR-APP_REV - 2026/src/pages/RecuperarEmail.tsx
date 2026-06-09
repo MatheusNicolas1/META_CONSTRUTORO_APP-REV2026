@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { NavigationSafety } from "@/utils/navigationSafety";
 import { User, Building2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -23,6 +24,7 @@ function CustomInput({ className, type, ...props }: React.ComponentProps<"input"
 }
 
 const RecuperarEmail = () => {
+  const navigate = useNavigate();
   const [cpfCnpj, setCpfCnpj] = useState("");
   const [tipoPessoa, setTipoPessoa] = useState("fisica");
   const [sent, setSent] = useState(false);
@@ -291,14 +293,14 @@ const RecuperarEmail = () => {
                     enviaremos um e-mail com suas informações de acesso.
                   </p>
                 </div>
-                
-                <Link 
-                  to="/login" 
-                  className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm group px-4 py-2 -mx-4 -my-2 touch-manipulation"
+
+                <button
+                  onClick={() => NavigationSafety.safeNavigate(navigate, '/login')}
+                  className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm group px-4 py-2 -mx-4 -my-2 touch-manipulation cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                   Voltar ao login
-                </Link>
+                </button>
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -388,13 +390,13 @@ const RecuperarEmail = () => {
                 </motion.div>
 
                 <div className="text-center">
-                  <Link 
-                    to="/login" 
-                    className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm group px-4 py-2 -mx-4 -my-2 touch-manipulation"
+                  <button
+                    onClick={() => NavigationSafety.safeNavigate(navigate, '/login')}
+                    className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm group px-4 py-2 -mx-4 -my-2 touch-manipulation cursor-pointer"
                   >
                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                     Voltar ao login
-                  </Link>
+                  </button>
                 </div>
               </form>
             )}

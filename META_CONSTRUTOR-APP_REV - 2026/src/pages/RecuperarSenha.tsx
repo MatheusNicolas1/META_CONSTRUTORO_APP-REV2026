@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { NavigationSafety } from "@/utils/navigationSafety";
 import { ArrowLeft, Mail } from "lucide-react";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 
 const RecuperarSenha = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -47,11 +49,9 @@ const RecuperarSenha = () => {
             <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-4 text-sm text-foreground">
               Se existir uma conta para <strong>{email}</strong>, enviaremos instrucoes para recuperar o acesso.
             </div>
-            <Button asChild variant="outline" className="w-full">
-              <Link to="/login">
+            <Button variant="outline" className="w-full" onClick={() => NavigationSafety.safeNavigate(navigate, '/login')}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Voltar ao login
-              </Link>
             </Button>
           </div>
         ) : (
@@ -70,11 +70,9 @@ const RecuperarSenha = () => {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Enviando..." : "Enviar link de recuperacao"}
             </Button>
-            <Button asChild variant="ghost" className="w-full">
-              <Link to="/login">
+            <Button variant="ghost" className="w-full" onClick={() => NavigationSafety.safeNavigate(navigate, '/login')}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Voltar ao login
-              </Link>
             </Button>
           </form>
         )}

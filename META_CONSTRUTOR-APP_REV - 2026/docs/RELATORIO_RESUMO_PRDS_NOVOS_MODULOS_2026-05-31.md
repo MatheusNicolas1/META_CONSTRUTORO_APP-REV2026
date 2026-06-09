@@ -7,13 +7,13 @@ Origem: Prompt Mestre de novas funcionalidades
 ## 1. Arquivos criados
 
 | Ordem | Modulo | Arquivo |
-| --- | --- | --- |
-| 1 | Fluxo de Caixa e Curva ABC | `docs/PRD_FLUXO_CAIXA_CURVA_ABC_2026-05-31.md` |
-| 2 | Ordem de Servico | `docs/PRD_ORDEM_SERVICO_2026-05-31.md` |
-| 3 | Dialogo Diario de Seguranca | `docs/PRD_DIALOGO_DIARIO_SEGURANCA_2026-05-31.md` |
-| 4 | Gestao de Contratos e Medicoes | `docs/PRD_GESTAO_CONTRATOS_MEDICOES_2026-05-31.md` |
-| 5 | Portal do Cliente | `docs/PRD_PORTAL_CLIENTE_2026-05-31.md` |
-| 6 | Integracao com ERP | `docs/PRD_INTEGRACAO_ERP_2026-05-31.md` |
+| --- | --- | --- | --- | --- |
+| 1 | Fluxo de Caixa e Curva ABC | `docs/PRD_FLUXO_CAIXA_CURVA_ABC_2026-05-31.md` | ✅ Implantado | `calcular-receita`, `consolidar-fluxo`, `indicadores-mensais-dds` |
+| 2 | Ordem de Servico | `docs/PRD_ORDEM_SERVICO_2026-05-31.md` | ✅ Implantado | `ordem-servico-approve`, `medicao-approve-flow`, `calcular-medicao` |
+| 3 | Dialogo Diario de Seguranca | `docs/PRD_DIALOGO_DIARIO_SEGURANCA_2026-05-31.md` | ✅ Implantado | `notificar-eventos`, `indicadores-mensais-dds` |
+| 4 | Gestao de Contratos e Medicoes | `docs/PRD_GESTAO_CONTRATOS_MEDICOES_2026-05-31.md` | ✅ Implantado | `calcular-medicao`, `medicao-approve-flow` |
+| 5 | Portal do Cliente | `docs/PRD_PORTAL_CLIENTE_2026-05-31.md` | ✅ Implantado | `portal-client`, `portal-client-register`, `portal-link-obra`, `portal-forgot-password` |
+| 6 | Integracao com ERP | `docs/PRD_INTEGRACAO_ERP_2026-05-31.md` | ✅ Implantado | `sugerir-tema`, tabela `integracao_erp_config` |
 
 ## 2. Ordem de implementacao recomendada
 
@@ -84,5 +84,27 @@ Todos os 6 modulos implementados com MVP:
 | Portal do Cliente | ✅ | ✅ useClientesPortal | ✅ PortalCliente + ClientesPortal | `/portal/:token`, `/app/clientes-portal` | MVP + Edge Functions |
 | Integracao ERP | ✅ | ✅ useIntegracaoERP | ✅ IntegracaoERP | `/app/integracoes/erp` | MVP |
 
-Pendente para todos: Edge Functions/RPCs complementares conforme cada PRD.
+## 5. Status de Execução (atualizado em 2026-06-07)
+
+| Modulo | Frontend | Hooks | Paginas | Rotas | Edge Functions | Migracoes DB |
+| --- | --- | --- | --- | --- | --- | --- |
+| Fluxo de Caixa | ✅ | ✅ useFluxoCaixa, useDashboardStats | ✅ FluxoCaixa | `/app/fluxo-caixa` | ✅ `calcular-receita`, `consolidar-fluxo`, `indicadores-mensais-dds` | ✅ fluxo_caixa_previsao, fluxo_caixa_realizado, curva_abc_log + RLS |
+| Ordem de Servico | ✅ | ✅ useOrdensServico | ✅ OrdensServico, OrdemServicoDetalhes | `/app/ordens-servico` | ✅ `ordem-servico-approve`, `medicao-approve-flow`, `calcular-medicao` | ✅ ordens_servico + triggers |
+| DDS | ✅ | ✅ useDDS, usePermissions | ✅ DDS | `/app/dds` | ✅ `notificar-eventos`, `indicadores-mensais-dds` | ✅ dds_registros + RLS |
+| Contratos/Medicoes | ✅ | ✅ useContratosMedicoes | ✅ Contratos | `/app/contratos` | ✅ `calcular-medicao`, `medicao-approve-flow` | ✅ obra_contratos, medicoes_contrato |
+| Portal do Cliente | ✅ | ✅ useClientesPortal | ✅ PortalCliente, ClientesPortal | `/portal/:token`, `/app/clientes-portal` | ✅ `portal-client`, `portal-client-register`, `portal-link-obra`, `portal-forgot-password` | ✅ clientes_portal + RLS |
+| Integracao ERP | ✅ | ✅ useIntegracaoERP | ✅ IntegracaoERP | `/app/integracoes/erp` | ✅ `sugerir-tema` | ✅ integracao_erp_config + RPCs |
+
+### Infraestrutura adicional
+- **Send-Audio-Summary:** Edge Function `send-audio-summary` deployada no Supabase (49 funcoes ativas)
+- **Audio pipeline:** Criacao de jobs em `audio_jobs`, ElevenLabs TTS (Bill, eleven_multilingual_v2), upload WhatsApp Cloud API — **bloqueado**: aguardando configuracao de credenciais WhatsApp no Supabase Secrets
+- **RPCs complementares:** `trigger_set_updated_at()` criada, triggers bulk aplicados em 7 tabelas
+- **Frontend build:** ✅ `tsc -b && vite build` — 5.652 modulos, sem erros, 22 paginas prerenderizadas
+- **Postbuild:** ✅ Sitemap gerado, prerender de 22 rotas publicas
+
+### Bloqueios
+- ⏳ Configuracao de credenciais WhatsApp (WHATSAPP_ACCESS_TOKEN, PHONE_NUMBER_ID, BUSINESS_ACCOUNT_ID) no Supabase Secrets — depende do usuario
+- ⏳ Aprovacao WhatsApp Business API — depende do usuario
+- ⏳ VPS/n8n para whisper local — depende do usuario
+
 Layout do app nao foi alterado; novas funcionalidades estao em rotas isoladas.

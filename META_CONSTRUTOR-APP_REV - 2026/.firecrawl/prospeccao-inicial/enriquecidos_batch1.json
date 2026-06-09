@@ -1,0 +1,1556 @@
+[
+  {
+    "site": "http://www.ach.com.br",
+    "nome": "A C H Engenharia Construtora",
+    "estado": "SP",
+    "cidade": "São Paulo",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+5511995735221",
+      "+5511947752153",
+      "+5511997231233",
+      "+551155757666",
+      "+55 (11) 99573-5221",
+      "+55 (11) 5575-7666",
+      "+55 (11) 94775-2153"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.absolutaconstrutora.com.br",
+    "nome": "Absoluta Construtora e Incorporadora",
+    "estado": "SP",
+    "cidade": "São Bernardo do Campo",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+55 (11) 4123-6500"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.ademirfresca.com.br",
+    "nome": "Ademir Fresca Construtora Incorporadora",
+    "estado": "SP",
+    "cidade": "Taubaté",
+    "emails_encontrados": [
+      "contato@ademirfresca.com.br"
+    ],
+    "telefones_encontrados": [
+      "+55 (12) 3681-1380"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.airesimoveis.com.br",
+    "nome": "Aires construtora",
+    "estado": "SP",
+    "cidade": "Praia Grande",
+    "emails_encontrados": [
+      "construtora@airesimoveis.com.br"
+    ],
+    "telefones_encontrados": [
+      "+551126806726",
+      "+55 (13) 3481-3100"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.alfatechconstrutora.com.br",
+    "nome": "Alfatech Construtora",
+    "estado": "SP",
+    "cidade": "São Paulo",
+    "emails_encontrados": [
+      "alfatech@alfatechconstrutora.com.br"
+    ],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.aliancaconstrutora.com.br",
+    "nome": "Aliança Construtora",
+    "estado": "SP",
+    "cidade": "Santos",
+    "emails_encontrados": [
+      "alianca@aliancaconstrutora.com.br"
+    ],
+    "telefones_encontrados": [
+      "+5513982212121",
+      "+55 (13) 98221-2121",
+      "+55 (13) 3229-3255"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.arquitetoaquiles.com.br",
+    "nome": "Argos Construtora e Arquitetura Ltda",
+    "estado": "SP",
+    "cidade": "Americana",
+    "emails_encontrados": [
+      "aquiles@arquitetoaquiles.com.br;",
+      "aquiles@arquitetoaquiles.com.br"
+    ],
+    "telefones_encontrados": [
+      "551934623674",
+      "551934067173",
+      "+5519997661990",
+      "+55 (19) 3462-3674",
+      "+55 (19) 99766-1990",
+      "+551934067173",
+      "+55 (19) 3406-7173",
+      "+551934623674"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.aureaconstrutora.com.br",
+    "nome": "AUREA CONSTRUTORA",
+    "estado": "SP",
+    "cidade": "Paulínia",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.baos.com.br",
+    "nome": "BAOS ARQUITETURA E CONSTRUTORA",
+    "estado": "SP",
+    "cidade": "São Carlos",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.barbiericonstrutora.com.br",
+    "nome": "Barbieri Construtora e Incorporadora Ltda.",
+    "estado": "SP",
+    "cidade": "Bertioga",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "1137431552"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.cafconstrutora.com.br",
+    "nome": "Caf Construtora Comércio",
+    "estado": "SP",
+    "cidade": "Sertãozinho",
+    "emails_encontrados": [
+      "comercial@cafconstrutora.com.br",
+      "info@realestate.com"
+    ],
+    "telefones_encontrados": [
+      "1639426501",
+      "+55 (16) 3942-6501",
+      "+55(16)39426501"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.casasecasasconstrutora.com.br",
+    "nome": "Casas e Casas Construtora",
+    "estado": "SP",
+    "cidade": "Mogi das Cruzes",
+    "emails_encontrados": [
+      "atendimento@prtcasasconstrutora.com.br"
+    ],
+    "telefones_encontrados": [
+      "//(11) 93953-9064",
+      "+551139077762",
+      "+551140040571",
+      "+11939539064",
+      "+55 (11) 3907-7762",
+      "+55 (11) 4004-0571",
+      "+55 (11) 93953-9064"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.casoconstrutora.com.br",
+    "nome": "Caso Construtora Ltda",
+    "estado": "SP",
+    "cidade": "São José do Rio Preto",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.catagua.com.br",
+    "nome": "Cataguá Construtora",
+    "estado": "SP",
+    "cidade": "Piracicaba",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+551140042964",
+      "+55 (11) 4004-2964"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.cemdezconstrutora.com.br",
+    "nome": "Cem Dez Construtora",
+    "estado": "SP",
+    "cidade": "Bragança Paulista",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.cemdezconstrutora.com.br', port=80): Max retries ex"
+  },
+  {
+    "site": "http://www.cisa.com.br",
+    "nome": "Cisa Construtora e Incorporadora",
+    "estado": "SP",
+    "cidade": "São José dos Campos",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.cisa.com.br', port=80): Max retries exceeded with u"
+  },
+  {
+    "site": "http://www.construtorappr.com.br",
+    "nome": "Comercial Construtora PPR Ltda",
+    "estado": "SP",
+    "cidade": "São Paulo",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "timeout"
+  },
+  {
+    "site": "http://www.prohidro.com",
+    "nome": "Comercial Construtora Prohidro",
+    "estado": "SP",
+    "cidade": "Sorocaba",
+    "emails_encontrados": [
+      "atendimento@prohidro.com"
+    ],
+    "telefones_encontrados": [
+      "+5515997408178",
+      "+55 (15) 3331-8484",
+      "+55(15)33318484"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.conelesteconstrutora.com.br",
+    "nome": "Coneleste Construtora",
+    "estado": "SP",
+    "cidade": "São José dos Campos",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+55 (12) 3206-7542",
+      "+55(12)32067542"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.conepura.com.br",
+    "nome": "Conepura Construtora Incorporadora",
+    "estado": "SP",
+    "cidade": "São José dos Campos",
+    "emails_encontrados": [
+      "conepura@conepura.com.br",
+      "vendas@conepura.com.br"
+    ],
+    "telefones_encontrados": [
+      "+551239416810",
+      "+55(12)39416810",
+      "+55(12)39416833",
+      "+55 (12) 3941-6810",
+      "+55 (12) 3941-6833"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.constilo.com.br",
+    "nome": "Constilo Construtora",
+    "estado": "SP",
+    "cidade": "Campinas",
+    "emails_encontrados": [
+      "constilo@constilo.com.br"
+    ],
+    "telefones_encontrados": [
+      "+55 (19) 3251-6786"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.constroem.com.br",
+    "nome": "Constroem S/A Construtora Empreendimentos",
+    "estado": "SP",
+    "cidade": "Taubaté",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.constroem.com.br', port=80): Max retries exceeded w"
+  },
+  {
+    "site": "http://www.construlemes.com.br",
+    "nome": "Construlemes Construtora",
+    "estado": "SP",
+    "cidade": "Bragança Paulista",
+    "emails_encontrados": [
+      "construlemesconstrutora@gmail.com"
+    ],
+    "telefones_encontrados": [
+      "(11) 4032-1020",
+      "(11) 99948-7929",
+      "(11) 97137-3033",
+      "+55 (11) 4032-1028",
+      "+55 (12) 0462-8533",
+      "+55 (11) 99948-7929",
+      "+55 (11) 4034-5027",
+      "+55 (12) 04628-5330",
+      "+55 (11) 97137-3033",
+      "(11) 4034-5027",
+      "(11) 4032-1028"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construmoura.com.br",
+    "nome": "Construmoura Construtora Empreendimentos",
+    "estado": "SP",
+    "cidade": "Mongaguá",
+    "emails_encontrados": [
+      "mrjacad@gmail.com",
+      "atendimento@construmoura.com.br"
+    ],
+    "telefones_encontrados": [
+      "+55 (13) 3505-5700",
+      "+55 (13) 99640-0343"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtoraaltoastral.com.br",
+    "nome": "Construtora Alto Astral",
+    "estado": "SP",
+    "cidade": "Praia Grande",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+1-0120-400-00-00"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.anastacio.com.br",
+    "nome": "Construtora Anastácio",
+    "estado": "SP",
+    "cidade": "Osasco",
+    "emails_encontrados": [
+      "contato@anastacio.com.br"
+    ],
+    "telefones_encontrados": [
+      "+5511942597234"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtoraangra.com.br",
+    "nome": "Construtora Angra",
+    "estado": "SP",
+    "cidade": "Santos",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.alconconstrutora.com.br",
+    "nome": "Alcon Construtora",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+5521)24916970",
+      "+55 (21) 2491-6970"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.bacosconstrutora.com.br",
+    "nome": "Bacos Construtora",
+    "estado": "RJ",
+    "cidade": "Niterói",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+552126204488",
+      "2126204488",
+      "+55 (21) 2620-4488",
+      "+55 (21) 2620-4145"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.conasa.com.br",
+    "nome": "C O N A S A Construtora",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [
+      "faleconosco@conasa.com"
+    ],
+    "telefones_encontrados": [
+      "+554330253636",
+      "+55 (43) 3025-3636"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.call-construtora.com.br",
+    "nome": "CALL Construtora Alves Lopes",
+    "estado": "RJ",
+    "cidade": "Niterói",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.cohani.com.br",
+    "nome": "Cohani-construtora Haim Nigri",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.conscam.com.br",
+    "nome": "Conscam-construtora Campos Ltda",
+    "estado": "RJ",
+    "cidade": "Campos dos Goytacazes",
+    "emails_encontrados": [
+      "conscam@conscam.com.br"
+    ],
+    "telefones_encontrados": [
+      "+55 (22) 3033-9709",
+      "+55 (22) 99982-9821"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.constantconstrutora.com.br",
+    "nome": "Constant Construtora",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "http_404"
+  },
+  {
+    "site": "http://www.affonseca.com.br",
+    "nome": "Construtora Affonseca Internacional",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.affonseca.com.br', port=80): Max retries exceeded w"
+  },
+  {
+    "site": "http://www.algarve.com.br",
+    "nome": "Construtora Algarve",
+    "estado": "RJ",
+    "cidade": "Teresópolis",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.cortein.com.br",
+    "nome": "Construtora Cortein",
+    "estado": "RJ",
+    "cidade": "Petrópolis",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.entreosrios.com.br",
+    "nome": "Construtora Entre os Rios Ltda",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [
+      "suprimentos@entreosrios.com.br",
+      "construtora@entreosrios.com.br"
+    ],
+    "telefones_encontrados": [
+      "+55 (21) 2595-3838",
+      "+55 (21) 2595-5959"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.gruporozental.com.br",
+    "nome": "Construtora F Rozental",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "212537-5444",
+      "+55 (21) 2537-5444"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.fernandesmaciel.com.br",
+    "nome": "Construtora Fernandes Maciel",
+    "estado": "RJ",
+    "cidade": "Niterói",
+    "emails_encontrados": [
+      "sac@fernandesmaciel.com.br"
+    ],
+    "telefones_encontrados": [
+      "+552126215600",
+      "+552126133752",
+      "+552136200101",
+      "+552131954606",
+      "+5521935008261",
+      "+5521989992689",
+      "+55 (21) 98999-2689",
+      "+55 (21) 2621-5600"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtorainternacional.com.br",
+    "nome": "Construtora Internacional",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtoramadel.com.br",
+    "nome": "Construtora Madel Ltda",
+    "estado": "RJ",
+    "cidade": "Niterói",
+    "emails_encontrados": [
+      "contato@construtoramadel.com.br"
+    ],
+    "telefones_encontrados": [
+      "+55 (21) 3620-4004",
+      "+55 (21) 3620-5002",
+      "+55 (21) 3620-5006",
+      "+55 (21) 3620-5010",
+      "+55 (21) 2710-4011"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.monjardimconstrucoes.com.br",
+    "nome": "Construtora Monjardim Marques",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [
+      "contato@monjardimconstrucoes.com.br"
+    ],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.montserrat.com.br",
+    "nome": "Construtora Mont Serrat",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [
+      "atendimento@montserrat.com.br"
+    ],
+    "telefones_encontrados": [
+      "+55 (21) 3416-9001"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.munizalbuquerque.com.br",
+    "nome": "Construtora Muniz Albuquerque",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.munizalbuquerque.com.br', port=80): Max retries exc"
+  },
+  {
+    "site": "http://www.construtoraquartzo.com.br",
+    "nome": "Construtora Quartzo",
+    "estado": "RJ",
+    "cidade": "Maricá",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.construtoraquartzo.com.br', port=80): Max retries e"
+  },
+  {
+    "site": "http://www.rcbotelho.com.br",
+    "nome": "Construtora RC BOTELHO",
+    "estado": "RJ",
+    "cidade": "Amendoeira",
+    "emails_encontrados": [
+      "contato@rcbotelho.com.br"
+    ],
+    "telefones_encontrados": [
+      "+55 (21) 99423-1277",
+      "+5521994231277"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.rochaalmeida.com.br",
+    "nome": "Construtora Rocha de Almeida",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "http_404"
+  },
+  {
+    "site": "http://www.saimel.com.br",
+    "nome": "Construtora Saimel",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [
+      "saimel@saimel.com.br"
+    ],
+    "telefones_encontrados": [
+      "+55 (21) 97140-4058",
+      "+55 (21) 2576-6792"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.santacecilia.net",
+    "nome": "Construtora Santa Cecília",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "2145601620",
+      "2132063930",
+      "2130301900",
+      "2132063860",
+      "+55 (21) 3030-1900",
+      "+55 (21) 2274-0717",
+      "+55 (21) 3206-3860",
+      "+55 (21) 4560-1620"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.csisabel.com.br",
+    "nome": "Construtora Santa Isabel",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtorasaobento.com.br",
+    "nome": "Construtora São Bento",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.construtorasaobento.com.br', port=80): Max retries "
+  },
+  {
+    "site": "http://www.solidum.com.br",
+    "nome": "CONSTRUTORA SOLIDUM LTDA",
+    "estado": "RJ",
+    "cidade": "Petrópolis",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPSConnectionPool(host='solidum.com.br', port=443): Max retries exceeded with "
+  },
+  {
+    "site": "http://www.tardock.com.br",
+    "nome": "Construtora Tardock",
+    "estado": "RJ",
+    "cidade": "Nova Friburgo",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.tardock.com.br', port=80): Max retries exceeded wit"
+  },
+  {
+    "site": "http://www.terreng.com.br",
+    "nome": "Construtora Terreng",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "http_404"
+  },
+  {
+    "site": "http://www.construtoratotal.com.br",
+    "nome": "Construtora Total | Construção | Reformas | Rio de Janeiro | RJ",
+    "estado": "RJ",
+    "cidade": "Duque de Caxias",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.construtoratotal.com.br', port=80): Max retries exc"
+  },
+  {
+    "site": "http://www.construtoravolendam.com.br",
+    "nome": "Construtora Volendam",
+    "estado": "RJ",
+    "cidade": "Cabo Frio",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPSConnectionPool(host='www.construtoravolendam.com.br', port=443): Max retrie"
+  },
+  {
+    "site": "http://www.atrmais.com.br",
+    "nome": "ATR Mais - Construtora",
+    "estado": "MG",
+    "cidade": "Lavras",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.atrmais.com.br', port=80): Max retries exceeded wit"
+  },
+  {
+    "site": "http://www.avwconstrutora.com.br",
+    "nome": "AVW Construtora Ltda",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+55 (31) 3464-4131"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtoracea.com.br",
+    "nome": "C e A Construtora",
+    "estado": "MG",
+    "cidade": "Uberlândia",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.barbosamello.com.br",
+    "nome": "CBM - Construtora Barbosa Mello",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "http_404"
+  },
+  {
+    "site": "http://www.grupoccn.com.br",
+    "nome": "CCN Construtora Cidade Nova Ltda",
+    "estado": "MG",
+    "cidade": "Patrocínio",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.grupocnt.com.br",
+    "nome": "CNT-Construtora Novo Tempo Ltda",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+55 (31) 3786-8464"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.collem.com.br",
+    "nome": "Collem Construtora Mohallem",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "http_403"
+  },
+  {
+    "site": "http://www.concretizarconstrutora.com.br",
+    "nome": "Concretizar Construtora Ltda",
+    "estado": "MG",
+    "cidade": "Caiçara",
+    "emails_encontrados": [
+      "contato@concretizarconstrutora.com.br"
+    ],
+    "telefones_encontrados": [
+      "+553134119398",
+      "+55 (31) 99175-2014"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.condaeng.com.br",
+    "nome": "Conda Construtora Daher Ltda",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+55 (31) 3332-0517",
+      "+55 (31) 3334-3114"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.conel.com.br",
+    "nome": "CONEL CONSTRUTORA LTDA",
+    "estado": "MG",
+    "cidade": "Uberlândia",
+    "emails_encontrados": [
+      "conel@conel.com.br"
+    ],
+    "telefones_encontrados": [
+      "+55(34)32368600",
+      "+55 (34) 3236-8600"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtoraconmar.com.br",
+    "nome": "Conmar Construtora",
+    "estado": "MG",
+    "cidade": "Nova Lima",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.construtoraconmar.com.br', port=80): Max retries ex"
+  },
+  {
+    "site": "http://www.constralminas.com.br",
+    "nome": "Constral Construtora Araujo LTDA.",
+    "estado": "MG",
+    "cidade": "Araguari",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "timeout"
+  },
+  {
+    "site": "http://www.construfelconstrutora.com.br",
+    "nome": "Construfel Construtora Ferroviária Ltda",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.construfelconstrutora.com.br', port=80): Max retrie"
+  },
+  {
+    "site": "http://www.construtora2a.com.br",
+    "nome": "Construtora 2A Ltda",
+    "estado": "MG",
+    "cidade": "Brumadinho",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.construtora2a.com.br', port=80): Max retries exceed"
+  },
+  {
+    "site": "http://www.addymagalhaes.com.br",
+    "nome": "Construtora Addy Magalhães",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+553132182500",
+      "+55 (31) 99236-0307",
+      "+55 (31) 3218-2500"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtoraagata.com.br",
+    "nome": "Construtora Agata Ltda",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.construtoraagata.com.br', port=80): Max retries exc"
+  },
+  {
+    "site": "http://www.agmar.com.br",
+    "nome": "Construtora Agmar",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [
+      "construtora@agmar.com.br"
+    ],
+    "telefones_encontrados": [
+      "3133438000",
+      "+553196166520",
+      "+55 (31) 3343-8000",
+      "+55 (31) 99616-6520"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtoraalmeidacosta.com.br",
+    "nome": "Construtora Almeida Costa",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+55 (31) 3273-5955",
+      "+553132735955"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtoraalterosa.com.br",
+    "nome": "Construtora Alterosa",
+    "estado": "MG",
+    "cidade": "Carangola",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.altti.com.br",
+    "nome": "Construtora Altti",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [
+      "contato@altti.com.br"
+    ],
+    "telefones_encontrados": [
+      "3132865772",
+      "+5531986848860",
+      "+55 (31) 3286-5772",
+      "+55 (31) 98684-8860"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.andradegutierrez.com.br",
+    "nome": "Construtora Andrade Gutierrez",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtoraapice.com.br",
+    "nome": "Construtora Ápice",
+    "estado": "MG",
+    "cidade": "Itabira",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.apoconstrutora.com.br",
+    "nome": "Construtora Apo Ltda",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+55 (31) 3223-5871",
+      "+55(31)32235871"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.araujolima.com",
+    "nome": "Construtora Araújo Lima",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [
+      "vendas@araujolima.com"
+    ],
+    "telefones_encontrados": [
+      "+5531984951360",
+      "+55 (31) 3303-6700",
+      "+55 (31) 98495-1360"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtoraarco.com.br",
+    "nome": "Construtora Arco",
+    "estado": "MG",
+    "cidade": "Passos",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+55 (35) 3521-8389"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtoraarphe.com.br",
+    "nome": "Construtora ARPHE",
+    "estado": "MG",
+    "cidade": "Pitangui",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.construtoraarphe.com.br', port=80): Max retries exc"
+  },
+  {
+    "site": "http://www.construtoraatrium.com.br",
+    "nome": "Construtora Atrium",
+    "estado": "MG",
+    "cidade": "Serra Del Rei",
+    "emails_encontrados": [
+      "atendimento@construtoraatrium.com.br"
+    ],
+    "telefones_encontrados": [
+      "+55 (31) 3589-4000",
+      "+55(31)35894000"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtorabge.com.br",
+    "nome": "Construtora Bge Ltda",
+    "estado": "MG",
+    "cidade": "Itaúna",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.construtorabge.com.br', port=80): Max retries excee"
+  },
+  {
+    "site": "http://www.ecbsa.com.br",
+    "nome": "Construtora Brasil",
+    "estado": "MG",
+    "cidade": "Belo Horizonte",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPSConnectionPool(host='ecbsa.com.br', port=443): Max retries exceeded with ur"
+  },
+  {
+    "site": "http://www.agataconstrutora.com.br",
+    "nome": "Agata Construtora e Incorporadora",
+    "estado": "ES",
+    "cidade": "Vitória",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "552732252411",
+      "+552732252411",
+      "+55 (27) 3225-2411"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.barbosabarros.com.br",
+    "nome": "Barbosa Barros Construtora e Incorporadora",
+    "estado": "ES",
+    "cidade": "Vila Velha",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+5527992424268",
+      "+55 (27) 3149-2400",
+      "+55 (27) 3389-6009",
+      "+55 (27) 99242-4268"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.cbcconstrutora.com.br",
+    "nome": "CBC Construtora",
+    "estado": "ES",
+    "cidade": "Riacho",
+    "emails_encontrados": [
+      "rodrigo@cbcconstrutora.com.br",
+      "marcelo.dipre@cbcconstrutora.com.br",
+      "waldir@cbcconstrutora.com.br"
+    ],
+    "telefones_encontrados": [
+      "+55 (27) 3250-9006",
+      "+552732509006",
+      "+55 (27) 3228-0100",
+      "+552732280100"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.abaurre.com.br",
+    "nome": "Construtora Abaurre Ltda",
+    "estado": "ES",
+    "cidade": "Vitória",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtoraarpa.com.br",
+    "nome": "Construtora Arpa e Serviços Ltda",
+    "estado": "ES",
+    "cidade": "Colatina",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.construtoraarpa.com.br', port=80): Max retries exce"
+  },
+  {
+    "site": "http://www.construtoracapitania.com.br",
+    "nome": "Construtora Capitânia",
+    "estado": "ES",
+    "cidade": "Vitória",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "timeout"
+  },
+  {
+    "site": "http://www.construtoraepura.com",
+    "nome": "Construtora Épura",
+    "estado": "ES",
+    "cidade": "Vitória",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+55027995834432",
+      "+5502732004422",
+      "+55027999325839",
+      "+5502733296677",
+      "+55 (27) 3329-6677",
+      "+55 (27) 99932-5839",
+      "+55 (27) 99583-4432",
+      "+55 (27) 3200-4422"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtorapj.com.br",
+    "nome": "Construtora P J Ltda",
+    "estado": "ES",
+    "cidade": "Colatina",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "http_500"
+  },
+  {
+    "site": "http://www.sacavalcante.com.br",
+    "nome": "Construtora Sá Cavalcante Ltda",
+    "estado": "ES",
+    "cidade": "Vitória",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+5527999482357",
+      "+55(98)33343201",
+      "+55 (98) 3334-3201",
+      "+55 (27) 3205-7200",
+      "+55(86)33011600",
+      "+55(27)32057200",
+      "+55 (21) 3003-5050",
+      "+55 (86) 3301-1600",
+      "+55(21)30035050",
+      "+55 (86) 98166-2454"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.smconstrutora.com.br",
+    "nome": "Construtora Secchim Meira",
+    "estado": "ES",
+    "cidade": "Guarapari",
+    "emails_encontrados": [
+      "contato@smconstrutora.com.br"
+    ],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.vigaconstrutora.com.br",
+    "nome": "Construtora Viga",
+    "estado": "ES",
+    "cidade": "Vitória",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "027998899876",
+      "02733256565",
+      "+5527998899876",
+      "+55 (27) 3325-6565",
+      "+55 (27) 9988-9987"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.francavilla.com.br",
+    "nome": "Francavilla Construtora e Incorporadora Ltda",
+    "estado": "ES",
+    "cidade": "Vitória",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.francavilla.com.br', port=80): Max retries exceeded"
+  },
+  {
+    "site": "http://www.galwan.com.br",
+    "nome": "Galwan Construtora e Incorporadora Ltda.",
+    "estado": "ES",
+    "cidade": "Vila Velha",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "2733207600",
+      "2732004004",
+      "27997001004",
+      "+5527997001004",
+      "+55 (27) 3200-4004",
+      "+55 (27) 99700-1004",
+      "+55 (27) 3320-7600"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.javeconstrutora.com.br",
+    "nome": "Javé Construtora e Incorporadora - Construtora em Vila Velha - ES",
+    "estado": "ES",
+    "cidade": "Vila Velha",
+    "emails_encontrados": [
+      "contato@javeconstrutora.com.br"
+    ],
+    "telefones_encontrados": [
+      "+552733491414",
+      "+552730771414",
+      "+55 (27) 3077-1414",
+      "+55 (27) 3349-1414"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.marcaambiental.com.br",
+    "nome": "Marca Construtora e Serviços Ltda.",
+    "estado": "ES",
+    "cidade": "Cariacica",
+    "emails_encontrados": [
+      "atendimento.cliente@marcaambiental.com.br"
+    ],
+    "telefones_encontrados": [
+      "+55 27 98838-2291",
+      "+55 (27) 98838-2291",
+      "+5527988382291",
+      "0800 810 8099"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.mazzinigomes.com.br",
+    "nome": "Mazzini Gomes Construtora e Incorporadora Ltda",
+    "estado": "ES",
+    "cidade": "Vitória",
+    "emails_encontrados": [
+      "mazzini@mazzinigomes.com.br",
+      "contato@mazzinigomes.com.br"
+    ],
+    "telefones_encontrados": [
+      "02733571099",
+      "+55 (27) 3357-1099"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.morar.com",
+    "nome": "Morar Construtora e Incorp-Setor de Vendas",
+    "estado": "ES",
+    "cidade": "Vitória",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPSConnectionPool(host='www.morar.com', port=443): Max retries exceeded with u"
+  },
+  {
+    "site": "http://www.sfranco.com.br",
+    "nome": "S. Franco Construtora Ltda",
+    "estado": "ES",
+    "cidade": "Vitória",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+55 (31) 3225-1466"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.signusconstrutora.com.br",
+    "nome": "Signus Construtora",
+    "estado": "ES",
+    "cidade": "Vitória",
+    "emails_encontrados": [
+      "engenharia@signusconstrutora.com.br",
+      "fornecedores@signusconstrutora.com.br"
+    ],
+    "telefones_encontrados": [
+      "+55(27)32255444",
+      "+55 (27) 3225-5444"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.tmaconstrutora.com.br",
+    "nome": "Tuma Construtora e Incorporadora",
+    "estado": "ES",
+    "cidade": "Vitória",
+    "emails_encontrados": [
+      "contato@tmaconstrutora.com.br",
+      "vendas@tmaconstrutora.com.br"
+    ],
+    "telefones_encontrados": [
+      "+5527992393968",
+      "2733141491",
+      "2733141177",
+      "27992393968",
+      "27998967465",
+      "+55 (27) 99239-3968",
+      "+55 (27) 99896-7465",
+      "+55 (27) 3314-1177",
+      "+55 (27) 3314-1491"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.vargasconstrutora.com.br",
+    "nome": "Vargas Construtora Ltda",
+    "estado": "ES",
+    "cidade": "Guarapari",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.doisz.com.br",
+    "nome": "2z Construtora",
+    "estado": "RS",
+    "cidade": "Bento Gonçalves",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.doisz.com.br', port=80): Max retries exceeded with "
+  },
+  {
+    "site": "http://www.anguloconstrutora.com.br",
+    "nome": "Angulo Construtora Drywall And Steel Frane",
+    "estado": "RS",
+    "cidade": "Porto Alegre",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.anguloconstrutora.com.br', port=80): Max retries ex"
+  },
+  {
+    "site": "http://www.besconstrutora.com.br",
+    "nome": "Bes Construtora e Incorporadora Ltda",
+    "estado": "RS",
+    "cidade": "Porto Alegre",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.besconstrutora.com.br', port=80): Max retries excee"
+  },
+  {
+    "site": "http://www.bwbincorporadora.com.br",
+    "nome": "BWB Construtora e Incorporadora Ltda",
+    "estado": "RS",
+    "cidade": "Caxias do Sul",
+    "emails_encontrados": [
+      "atendimento@bwbincorporadora.com.br",
+      "contato@bwbilha.com.br"
+    ],
+    "telefones_encontrados": [
+      "+555432041220",
+      "+55 (54) 3204-1220"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.clave.com.br",
+    "nome": "Clave Construtora",
+    "estado": "RS",
+    "cidade": "Porto Alegre",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+555198816665",
+      "+55 (51) 99881-6665",
+      "+55 (51) 3061-6665"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtoracoase.com.br",
+    "nome": "COASE Construtora e Incorporadora Ltda.",
+    "estado": "RS",
+    "cidade": "Santa Maria",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "http_404"
+  },
+  {
+    "site": "http://www.construbras-rs.com.br",
+    "nome": "Construbras Construtora de Obras Rodoviárias Ltda",
+    "estado": "RS",
+    "cidade": "Barra Funda",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+55 (55) 99991-3361",
+      "+55 (54) 99906-4986",
+      "+55 (54) 99683-5892",
+      "+55 (54) 99951-7083",
+      "+55 (54) 3361-3307"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construirconstrutora.com.br",
+    "nome": "Construir Construtora e Incorporadora Ltda",
+    "estado": "RS",
+    "cidade": "Constantina",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.arquisul.com.br",
+    "nome": "Construtora Arquisul",
+    "estado": "RS",
+    "cidade": "Porto Alegre",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "5132355200",
+      "+5551993761091",
+      "+55(51)993761091",
+      "+55 (51) 99376-1091",
+      "+55 (51) 3235-5200",
+      "+55(51)32355200"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtorabadalotti.com.br",
+    "nome": "Construtora Badalotti Ltda",
+    "estado": "RS",
+    "cidade": "Erechim",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.baldasso.com.br",
+    "nome": "Construtora Baldasso Ltda",
+    "estado": "RS",
+    "cidade": "Porto Alegre",
+    "emails_encontrados": [],
+    "telefones_encontrados": [
+      "+55 (51) 3341-3010"
+    ],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.bonauer.com.br",
+    "nome": "Construtora Bonauer Ltda",
+    "estado": "RS",
+    "cidade": "Caxias do Sul",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "ok",
+    "erro": null
+  },
+  {
+    "site": "http://www.construtoracasadamontanha.com.br",
+    "nome": "Construtora Casa da Montanha",
+    "estado": "RS",
+    "cidade": "Gramado",
+    "emails_encontrados": [],
+    "telefones_encontrados": [],
+    "status": "erro",
+    "erro": "connection_error: HTTPConnectionPool(host='www.construtoracasadamontanha.com.br', port=80): Max re"
+  }
+]

@@ -67,6 +67,7 @@ export const initSentry = () => {
     tracePropagationTargets: ['localhost', PROD_ORIGIN, PROD_WWW_ORIGIN],
     replaysSessionSampleRate: 0,
     replaysOnErrorSampleRate: 1.0,
+    tunnel: undefined, // Desabilita preflight DSN (sntrys) que viola CSP
     release: import.meta.env.VITE_APP_VERSION || undefined,
     environment: import.meta.env.VITE_SENTRY_ENVIRONMENT || import.meta.env.MODE,
     sendDefaultPii: false,

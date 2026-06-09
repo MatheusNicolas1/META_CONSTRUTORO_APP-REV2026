@@ -91,9 +91,12 @@ const buildCSP = (nonce: string): string => {
       // Google Analytics
       "https://www.google-analytics.com",
       "https://analytics.google.com",
+      "https://www.google.com",
       // PostHog
+      "https://app.posthog.com",
       "https://us-assets.i.posthog.com",
       "https://us.i.posthog.com",
+      "https://eu.i.posthog.com",
       // Supabase project (REST, Auth, Realtime)
       import.meta.env.VITE_SUPABASE_URL || "https://bgdvlhttyjeuprrfxgun.supabase.co",
       (import.meta.env.VITE_SUPABASE_URL ? import.meta.env.VITE_SUPABASE_URL.replace('https://', 'wss://') : "wss://bgdvlhttyjeuprrfxgun.supabase.co"),

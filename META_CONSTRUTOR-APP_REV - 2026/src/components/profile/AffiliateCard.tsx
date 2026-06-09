@@ -59,6 +59,13 @@ interface Commission {
   status: "pending" | "approved" | "paid" | "cancelled" | "refunded";
 }
 
+interface ChartData {
+  cliques: number[];
+  cadastros: number[];
+  conversoes: number[];
+  comissoes: number[];
+}
+
 // ── Helpers ──────────────────────────────────────────
 const formatBRL = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -81,98 +88,21 @@ const statusVariant: Record<string, "secondary" | "default" | "destructive" | "o
   refunded: "destructive",
 };
 
-// ── Dados mockados para demonstração inicial ────────
-const MOCK_AFFILIATE_CODE = "MC8F2A4D9";
-const MOCK_LINK = `https://metaconstrutor.app.br?ref=${MOCK_AFFILIATE_CODE}`;
-
-const MOCK_SUMMARY: AffiliateSummary = {
-  saldoDisponivel: 159.84,
-  saldoPendente: 79.92,
-  totalRecebido: 239.76,
-  totalIndicacoes: 4,
-  totalVendas: 3,
-  taxaConversao: 75,
-};
-
-const MOCK_REFERRALS: Referral[] = [
-  {
-    id: "r1",
-    nome: "Carlos Silva",
-    email: "carlos.silva@exemplo.com",
-    plano: "Master",
-    data: "02/06/2026",
-    status: "converted",
-    valor: 99.9,
-    comissao: 39.96,
-  },
-  {
-    id: "r2",
-    nome: "Ana Oliveira",
-    email: "ana.o@exemplo.com",
-    plano: "Pro",
-    data: "28/05/2026",
-    status: "converted",
-    valor: 49.9,
-    comissao: 19.96,
-  },
-  {
-    id: "r3",
-    nome: "João Santos",
-    email: "joao.santos@exemplo.com",
-    plano: "Start",
-    data: "15/05/2026",
-    status: "converted",
-    valor: 29.9,
-    comissao: 11.96,
-  },
-  {
-    id: "r4",
-    nome: "Maria Costa",
-    email: "maria.c@exemplo.com",
-    plano: "Master",
-    data: "10/05/2026",
-    status: "pending",
-    valor: 99.9,
-    comissao: 39.96,
-  },
-];
-
-const MOCK_COMMISSIONS: Commission[] = [
-  {
-    id: "c1",
-    data: "03/06/2026",
-    cliente: "Carlos Silva",
-    plano: "Master",
-    valorPago: 99.9,
-    comissao: 39.96,
-    status: "approved",
-  },
-  {
-    id: "c2",
-    data: "29/05/2026",
-    cliente: "Ana Oliveira",
-    plano: "Pro",
-    valorPago: 49.9,
-    comissao: 19.96,
-    status: "paid",
-  },
-  {
-    id: "c3",
-    data: "16/05/2026",
-    cliente: "João Santos",
-    plano: "Start",
-    valorPago: 29.9,
-    comissao: 11.96,
-    status: "paid",
-  },
-];
-
-const CHART_DATA = {
-  cliques: [12, 8, 15, 10, 20, 14, 18, 22, 16, 25, 19, 30],
-  cadastros: [2, 1, 3, 2, 4, 2, 3, 5, 3, 6, 4, 7],
-  conversoes: [1, 1, 2, 1, 2, 1, 2, 2, 1, 3, 2, 3],
-  comissoes: [11.96, 19.96, 39.96, 11.96, 39.96, 11.96, 19.96, 39.96, 11.96, 59.94, 19.96, 79.92],
-};
+// ── Helper para serializar nomes dos indicados com dados reais ──
+// Busca o nome do usuário a partir do email ou user_id
+async function getUserDisplayName(authUserId: string | null): Promise<string> {
+  if (!authUserId) return "---";
+  try {
+    const { data } = await supabase
+      .from("profiles")
+      .select("name")
+      .eq("id", authUserId)
+      .maybeSingle();
+    return data?.name || "Usuário";
+  } catch {
+    return "Usuário";
+  }
+}
 
 // ── Subcomponentes ──────────────────────────────────
 
@@ -248,13 +178,13 @@ function ResumoSection({ summary }: { summary: AffiliateSummary }) {
   );
 }
 
-function MeuLinkSection() {
+function MeuLinkSection({ affiliateLink }: { affiliateLink: string }) {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(MOCK_LINK);
+      await navigator.clipboard.writeText(affiliateLink);
       setCopied(true);
       toast({ title: "Link copiado!", description: "Link de afiliado copiado para a área de transferência." });
       setTimeout(() => setCopied(false), 2000);
@@ -265,21 +195,21 @@ function MeuLinkSection() {
 
   const compartilharWhatsApp = () => {
     const msg = encodeURIComponent(
-      `🚀 *Meta Construtor* - Gestão de obras completa!\n\nUse meu link e ganhe benefícios:\n${MOCK_LINK}`
+      `🚀 *Meta Construtor* - Gestão de obras completa!\n\nUse meu link e ganhe benefícios:\n${affiliateLink}`
     );
     window.open(`https://wa.me/?text=${msg}`, "_blank");
   };
 
   const compartilharTelegram = () => {
     const msg = encodeURIComponent(
-      `🚀 Meta Construtor - Gestão de obras completa!\n\nUse meu link e ganhe benefícios:\n${MOCK_LINK}`
+      `🚀 Meta Construtor - Gestão de obras completa!\n\nUse meu link e ganhe benefícios:\n${affiliateLink}`
     );
-    window.open(`https://t.me/share/url?url=${encodeURIComponent(MOCK_LINK)}&text=${msg}`, "_blank");
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(affiliateLink)}&text=${msg}`, "_blank");
   };
 
   const compartilharLinkedin = () => {
     window.open(
-      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(MOCK_LINK)}`,
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(affiliateLink)}`,
       "_blank"
     );
   };
@@ -287,7 +217,7 @@ function MeuLinkSection() {
   const compartilharEmail = () => {
     const subject = encodeURIComponent("Conheça o Meta Construtor - Gestão de Obras");
     const body = encodeURIComponent(
-      `Olá!\n\nEstou usando o Meta Construtor e recomendo!\n\nAcesse: ${MOCK_LINK}\n\nFerramenta completa para gestão de obras.`
+      `Olá!\n\nEstou usando o Meta Construtor e recomendo!\n\nAcesse: ${affiliateLink}\n\nFerramenta completa para gestão de obras.`
     );
     window.open(`mailto:?subject=${subject}&body=${body}`, "_blank");
   };
@@ -306,7 +236,7 @@ function MeuLinkSection() {
       <CardContent className="space-y-4">
         {/* URL display */}
         <div className="flex items-center gap-2">
-          <Input value={MOCK_LINK} readOnly className="font-mono text-sm bg-muted/50" />
+          <Input value={affiliateLink} readOnly className="font-mono text-sm bg-muted/50" />
           <Button variant="outline" size="icon" onClick={handleCopy} className="shrink-0">
             {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
           </Button>
@@ -344,6 +274,27 @@ function MeuLinkSection() {
 }
 
 function IndicacoesSection({ referrals }: { referrals: Referral[] }) {
+  if (referrals.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Users className="h-5 w-5 text-primary" />
+            Indicações
+          </CardTitle>
+          <CardDescription>Histórico de usuários que você indicou para a plataforma.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8 text-muted-foreground">
+            <Users className="h-12 w-12 mx-auto mb-3 opacity-40" />
+            <p className="font-medium">Nenhuma indicação ainda</p>
+            <p className="text-sm mt-1">Compartilhe seu link de afiliado para começar a ganhar comissões.</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -392,6 +343,27 @@ function IndicacoesSection({ referrals }: { referrals: Referral[] }) {
 }
 
 function ComissoesSection({ commissions }: { commissions: Commission[] }) {
+  if (commissions.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <DollarSign className="h-5 w-5 text-primary" />
+            Comissões
+          </CardTitle>
+          <CardDescription>Histórico de comissões geradas pelas suas indicações.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8 text-muted-foreground">
+            <DollarSign className="h-12 w-12 mx-auto mb-3 opacity-40" />
+            <p className="font-medium">Nenhuma comissão gerada ainda</p>
+            <p className="text-sm mt-1">Quando suas indicações realizarem pagamentos, as comissões aparecerão aqui.</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -437,7 +409,7 @@ function ComissoesSection({ commissions }: { commissions: Commission[] }) {
   );
 }
 
-function GraficosSection() {
+function GraficosSection({ chartData }: { chartData: ChartData }) {
   const [periodo, setPeriodo] = useState<"7d" | "30d" | "90d" | "12m">("30d");
   const periodos: { key: typeof periodo; label: string }[] = [
     { key: "7d", label: "7 dias" },
@@ -446,8 +418,10 @@ function GraficosSection() {
     { key: "12m", label: "12 meses" },
   ];
 
-  // Gráfico simples com barras CSS (sem dependência externa)
-  const maxValue = Math.max(...CHART_DATA.comissoes);
+  const maxCommission = Math.max(...chartData.comissoes, 1);
+  const maxClicks = Math.max(...chartData.cliques, 1);
+  const maxCadastros = Math.max(...chartData.cadastros, 1);
+  const maxConversoes = Math.max(...chartData.conversoes, 1);
 
   return (
     <Card>
@@ -484,11 +458,11 @@ function GraficosSection() {
               <span className="text-sm font-medium">Cliques</span>
             </div>
             <div className="flex items-end gap-1 h-24">
-              {CHART_DATA.cliques.slice(0, periodo === "7d" ? 7 : periodo === "30d" ? 12 : 12).map((v, i) => (
+              {chartData.cliques.slice(0, periodo === "7d" ? 7 : periodo === "30d" ? 12 : 12).map((v, i) => (
                 <div
                   key={i}
                   className="flex-1 bg-blue-500/60 dark:bg-blue-400/40 rounded-t transition-all hover:bg-blue-500/80"
-                  style={{ height: `${(v / Math.max(...CHART_DATA.cliques)) * 100}%`, minHeight: "4px" }}
+                  style={{ height: `${(v / maxClicks) * 100}%`, minHeight: "4px" }}
                   title={`${v} cliques`}
                 />
               ))}
@@ -502,11 +476,11 @@ function GraficosSection() {
               <span className="text-sm font-medium">Cadastros</span>
             </div>
             <div className="flex items-end gap-1 h-24">
-              {CHART_DATA.cadastros.slice(0, periodo === "7d" ? 7 : periodo === "30d" ? 12 : 12).map((v, i) => (
+              {chartData.cadastros.slice(0, periodo === "7d" ? 7 : periodo === "30d" ? 12 : 12).map((v, i) => (
                 <div
                   key={i}
                   className="flex-1 bg-emerald-500/60 dark:bg-emerald-400/40 rounded-t transition-all hover:bg-emerald-500/80"
-                  style={{ height: `${(v / Math.max(...CHART_DATA.cadastros)) * 100}%`, minHeight: "4px" }}
+                  style={{ height: `${(v / maxCadastros) * 100}%`, minHeight: "4px" }}
                   title={`${v} cadastros`}
                 />
               ))}
@@ -520,11 +494,11 @@ function GraficosSection() {
               <span className="text-sm font-medium">Conversões</span>
             </div>
             <div className="flex items-end gap-1 h-24">
-              {CHART_DATA.conversoes.slice(0, periodo === "7d" ? 7 : periodo === "30d" ? 12 : 12).map((v, i) => (
+              {chartData.conversoes.slice(0, periodo === "7d" ? 7 : periodo === "30d" ? 12 : 12).map((v, i) => (
                 <div
                   key={i}
                   className="flex-1 bg-violet-500/60 dark:bg-violet-400/40 rounded-t transition-all hover:bg-violet-500/80"
-                  style={{ height: `${(v / Math.max(...CHART_DATA.conversoes)) * 100}%`, minHeight: "4px" }}
+                  style={{ height: `${(v / maxConversoes) * 100}%`, minHeight: "4px" }}
                   title={`${v} conversões`}
                 />
               ))}
@@ -538,11 +512,11 @@ function GraficosSection() {
               <span className="text-sm font-medium">Comissões</span>
             </div>
             <div className="flex items-end gap-1 h-24">
-              {CHART_DATA.comissoes.slice(0, periodo === "7d" ? 7 : periodo === "30d" ? 12 : 12).map((v, i) => (
+              {chartData.comissoes.slice(0, periodo === "7d" ? 7 : periodo === "30d" ? 12 : 12).map((v, i) => (
                 <div
                   key={i}
                   className="flex-1 bg-amber-500/60 dark:bg-amber-400/40 rounded-t transition-all hover:bg-amber-500/80"
-                  style={{ height: `${(v / maxValue) * 100}%`, minHeight: "4px" }}
+                  style={{ height: `${(v / maxCommission) * 100}%`, minHeight: "4px" }}
                   title={`${formatBRL(v)}`}
                 />
               ))}
@@ -560,31 +534,181 @@ export function AffiliateCard() {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [affiliateCode, setAffiliateCode] = useState<string | null>(null);
-  const [summary] = useState<AffiliateSummary>(MOCK_SUMMARY);
-  const [referrals] = useState<Referral[]>(MOCK_REFERRALS);
-  const [commissions] = useState<Commission[]>(MOCK_COMMISSIONS);
+  const [affiliateId, setAffiliateId] = useState<string | null>(null);
+  const [summary, setSummary] = useState<AffiliateSummary>({
+    saldoDisponivel: 0,
+    saldoPendente: 0,
+    totalRecebido: 0,
+    totalIndicacoes: 0,
+    totalVendas: 0,
+    taxaConversao: 0,
+  });
+  const [referrals, setReferrals] = useState<Referral[]>([]);
+  const [commissions, setCommissions] = useState<Commission[]>([]);
+  const [chartData, setChartData] = useState<ChartData>({
+    cliques: [],
+    cadastros: [],
+    conversoes: [],
+    comissoes: [],
+  });
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadAffiliateProfile();
+    loadAffiliateData();
   }, [user]);
 
-  const loadAffiliateProfile = async () => {
-    if (!user) return;
+  const loadAffiliateData = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
+    setError(null);
+
     try {
-      const { data } = await supabase
+      // 1. Carregar perfil de afiliado
+      const { data: profile, error: profileErr } = await supabase
         .from("affiliate_profiles")
-        .select("affiliate_code")
+        .select("*")
         .eq("user_id", user.id)
         .maybeSingle();
 
-      if (data?.affiliate_code) {
-        setAffiliateCode(data.affiliate_code);
+      if (profileErr) throw profileErr;
+
+      if (!profile) {
+        setLoading(false);
+        return;
       }
-    } catch (err) {
-      console.error("Erro ao carregar perfil de afiliado:", err);
+
+      setAffiliateCode(profile.affiliate_code);
+      setAffiliateId(profile.id);
+
+      // 2. Carregar indicações
+      const { data: refs, error: refsErr } = await supabase
+        .from("affiliate_referrals")
+        .select("*")
+        .eq("affiliate_id", profile.id)
+        .order("created_at", { ascending: false });
+
+      if (refsErr) throw refsErr;
+
+      const referralList: Referral[] = (refs || []).map((r: any) => ({
+        id: r.id,
+        nome: r.referred_email?.split("@")[0] || "Usuário",
+        email: r.referred_email || "",
+        plano: "",
+        data: new Date(r.created_at).toLocaleDateString("pt-BR"),
+        status: r.status as Referral["status"],
+        valor: 0,
+        comissao: 0,
+      }));
+
+      setReferrals(referralList);
+
+      // 3. Carregar comissões
+      const { data: comms, error: commsErr } = await supabase
+        .from("affiliate_commissions")
+        .select("*")
+        .eq("affiliate_id", profile.id)
+        .order("created_at", { ascending: false });
+
+      if (commsErr) throw commsErr;
+
+      const commissionList: Commission[] = (comms || []).map((c: any) => ({
+        id: c.id,
+        data: new Date(c.created_at).toLocaleDateString("pt-BR"),
+        cliente: "Indicado",
+        plano: "",
+        valorPago: c.gross_amount || c.net_amount || 0,
+        comissao: c.amount || 0,
+        status: c.status as Commission["status"],
+      }));
+
+      setCommissions(commissionList);
+
+      // 4. Calcular resumo
+      const totalIndicacoes = refs?.length || 0;
+      const vendas = (comms || []).filter((c: any) =>
+        ["approved", "paid"].includes(c.status)
+      ).length;
+
+      const saldoDisponivel = (comms || [])
+        .filter((c: any) => c.status === "paid")
+        .reduce((sum: number, c: any) => sum + (c.amount || 0), 0);
+
+      const saldoPendente = (comms || [])
+        .filter((c: any) => c.status === "approved")
+        .reduce((sum: number, c: any) => sum + (c.amount || 0), 0);
+
+      const totalRecebido = (comms || [])
+        .filter((c: any) => ["approved", "paid"].includes(c.status))
+        .reduce((sum: number, c: any) => sum + (c.amount || 0), 0);
+
+      setSummary({
+        saldoDisponivel,
+        saldoPendente,
+        totalRecebido,
+        totalIndicacoes,
+        totalVendas: vendas,
+        taxaConversao: totalIndicacoes > 0
+          ? Math.round((vendas / totalIndicacoes) * 100)
+          : 0,
+      });
+
+      // 5. Montar dados para gráficos (agregação mensal dos últimos 12 meses)
+      const hoje = new Date();
+      const meses = Array.from({ length: 12 }, (_, i) => {
+        const d = new Date(hoje);
+        d.setMonth(d.getMonth() - (11 - i));
+        return d;
+      });
+
+      const cliquesChart: number[] = [];
+      const cadastrosChart: number[] = [];
+      const conversoesChart: number[] = [];
+      const comissoesChart: number[] = [];
+
+      for (const mes of meses) {
+        const mesInicio = new Date(mes.getFullYear(), mes.getMonth(), 1);
+        const mesFim = new Date(mes.getFullYear(), mes.getMonth() + 1, 1);
+
+        cliquesChart.push(profile.total_clicks);
+
+        const referralsNoMes = (refs || []).filter((r: any) => {
+          const d = new Date(r.created_at);
+          return d >= mesInicio && d < mesFim;
+        }).length;
+        cadastrosChart.push(referralsNoMes);
+
+        const comissoesNoMes = (comms || []).filter((c: any) => {
+          const d = new Date(c.created_at);
+          return d >= mesInicio && d < mesFim;
+        });
+        const convertidas = comissoesNoMes.filter((c: any) =>
+          ["approved", "paid"].includes(c.status)
+        ).length;
+        conversoesChart.push(convertidas);
+
+        comissoesChart.push(
+          comissoesNoMes
+            .filter((c: any) => ["approved", "paid"].includes(c.status))
+            .reduce((sum: number, c: any) => sum + (c.amount || 0), 0)
+        );
+      }
+
+      setChartData({
+        cliques: cliquesChart,
+        cadastros: cadastrosChart,
+        conversoes: conversoesChart,
+        comissoes: comissoesChart,
+      });
+
+    } catch (err: any) {
+      console.error("Erro ao carregar dados de afiliado:", err);
+      setError(err?.message || "Erro ao carregar dados de afiliado");
     } finally {
       setLoading(false);
     }
@@ -592,64 +716,84 @@ export function AffiliateCard() {
 
   const affiliateLink = affiliateCode
     ? `https://metaconstrutor.app.br?ref=${affiliateCode}`
-    : MOCK_LINK;
+    : "";
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!affiliateCode) {
+    return (
+      <div className="text-center py-12 text-muted-foreground">
+        <Users className="h-12 w-12 mx-auto mb-3 opacity-40" />
+        <p className="font-medium">Programa de Afiliados</p>
+        <p className="text-sm mt-1">Seu perfil de afiliado será ativado automaticamente.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto md:mx-0">
-      {loading && (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      {error && (
+        <div className="bg-destructive/10 border border-destructive/30 text-destructive rounded-lg p-4 text-sm">
+          {error}
         </div>
       )}
 
-      {!loading && (
-        <>
-          {/* Seção 01: Resumo */}
-          <div>
-            <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-primary" />
-              Resumo do Programa
-            </h2>
-            <ResumoSection summary={summary} />
-          </div>
+      {/* Seção 01: Resumo */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+            <BarChart3 className="h-5 w-5 text-primary" />
+            Resumo do Programa
+          </h2>
+          <Button variant="outline" size="sm" onClick={loadAffiliateData} className="gap-2">
+            <RefreshCw className="h-4 w-4" />
+            Atualizar
+          </Button>
+        </div>
+        <ResumoSection summary={summary} />
+      </div>
 
-          {/* Seção 02: Meu Link */}
-          <MeuLinkSection />
+      {/* Seção 02: Meu Link */}
+      {affiliateLink && <MeuLinkSection affiliateLink={affiliateLink} />}
 
-          {/* Sub-tabs: Indicações, Comissões, Gráficos */}
-          <Tabs defaultValue="indicacoes" className="w-full">
-            <TabsList className="w-full grid grid-cols-3 h-auto p-1 bg-muted/50 rounded-xl max-w-md">
-              <TabsTrigger value="indicacoes" className="gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
-                <Users className="h-4 w-4" />
-                <span className="hidden sm:inline">Indicações</span>
-                <span className="sm:hidden">Indic.</span>
-              </TabsTrigger>
-              <TabsTrigger value="comissoes" className="gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
-                <DollarSign className="h-4 w-4" />
-                <span className="hidden sm:inline">Comissões</span>
-                <span className="sm:hidden">Comiss.</span>
-              </TabsTrigger>
-              <TabsTrigger value="graficos" className="gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
-                <BarChart3 className="h-4 w-4" />
-                <span className="hidden sm:inline">Gráficos</span>
-                <span className="sm:hidden">Gráf.</span>
-              </TabsTrigger>
-            </TabsList>
+      {/* Sub-tabs: Indicações, Comissões, Gráficos */}
+      <Tabs defaultValue="indicacoes" className="w-full">
+        <TabsList className="w-full grid grid-cols-3 h-auto p-1 bg-muted/50 rounded-xl max-w-md">
+          <TabsTrigger value="indicacoes" className="gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
+            <Users className="h-4 w-4" />
+            <span className="hidden sm:inline">Indicações</span>
+            <span className="sm:hidden">Indic.</span>
+          </TabsTrigger>
+          <TabsTrigger value="comissoes" className="gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
+            <DollarSign className="h-4 w-4" />
+            <span className="hidden sm:inline">Comissões</span>
+            <span className="sm:hidden">Comiss.</span>
+          </TabsTrigger>
+          <TabsTrigger value="graficos" className="gap-2 py-3 data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
+            <BarChart3 className="h-4 w-4" />
+            <span className="hidden sm:inline">Gráficos</span>
+            <span className="sm:hidden">Gráf.</span>
+          </TabsTrigger>
+        </TabsList>
 
-            <TabsContent value="indicacoes" className="mt-6 animate-in fade-in slide-in-from-left-4 duration-300">
-              <IndicacoesSection referrals={referrals} />
-            </TabsContent>
+        <TabsContent value="indicacoes" className="mt-6 animate-in fade-in slide-in-from-left-4 duration-300">
+          <IndicacoesSection referrals={referrals} />
+        </TabsContent>
 
-            <TabsContent value="comissoes" className="mt-6 animate-in fade-in slide-in-from-right-4 duration-300">
-              <ComissoesSection commissions={commissions} />
-            </TabsContent>
+        <TabsContent value="comissoes" className="mt-6 animate-in fade-in slide-in-from-right-4 duration-300">
+          <ComissoesSection commissions={commissions} />
+        </TabsContent>
 
-            <TabsContent value="graficos" className="mt-6 animate-in fade-in slide-in-from-right-4 duration-300">
-              <GraficosSection />
-            </TabsContent>
-          </Tabs>
-        </>
-      )}
+        <TabsContent value="graficos" className="mt-6 animate-in fade-in slide-in-from-right-4 duration-300">
+          <GraficosSection chartData={chartData} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

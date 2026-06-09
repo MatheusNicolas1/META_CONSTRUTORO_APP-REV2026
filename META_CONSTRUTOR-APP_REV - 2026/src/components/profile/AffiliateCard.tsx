@@ -18,12 +18,31 @@ import {
   MousePointerClick,
   UserPlus,
   RefreshCw,
+  Wallet,
+  QrCode,
+  AlertCircle,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Banknote,
+  ArrowUpRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/components/auth/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -106,7 +125,307 @@ async function getUserDisplayName(authUserId: string | null): Promise<string> {
 
 // ── Subcomponentes ──────────────────────────────────
 
-function ResumoSection({ summary }: { summary: AffiliateSummary }) {
+interface PixSaqueModalProps {
+  saldoDisponivel: number;
+  affiliateId: string;
+  onSuccess: () => void;
+}
+
+function PixSaqueModal({ saldoDisponivel, affiliateId, onSuccess }: PixSaqueModalProps) {
+  const { toast } = useToast();
+  const [open, setOpen] = useState(false);
+  const [amount, setAmount] = useState("");
+  const [pixKeyType, setPixKeyType] = useState<string>("cpf");
+  const [pixKey, setPixKey] = useState("");
+  const [pixHolderName, setPixHolderName] = useState("");
+  const [pixCity, setPixCity] = useState("");
+  const [sending, setSending] = useState(false);
+  const [pixRequests, setPixRequests] = useState<any[]>([]);
+  const [loadingRequests, setLoadingRequests] = useState(true);
+
+  // Carregar solicitações existentes
+  useEffect(() => {
+    if (open && affiliateId) {
+      loadPixRequests();
+    }
+  }, [open, affiliateId]);
+
+  const loadPixRequests = async () => {
+    setLoadingRequests(true);
+    try {
+      const { data, error } = await supabase
+        .from("affiliate_pix_requests")
+        .select("*")
+        .eq("affiliate_id", affiliateId)
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+      setPixRequests(data || []);
+    } catch (err) {
+      console.error("Erro ao carregar solicitações:", err);
+    } finally {
+      setLoadingRequests(false);
+    }
+  };
+
+  const handleSolicitar = async () => {
+    // Validar valor
+    const valor = parseFloat(amount.replace(/[^\d,.]/g, "").replace(",", "."));
+    if (!valor || isNaN(valor)) {
+      toast({ title: "Valor inválido", description: "Digite um valor válido.", variant: "destructive" });
+      return;
+    }
+    if (valor < 10) {
+      toast({ title: "Valor mínimo", description: "O valor mínimo para saque é R$ 10,00.", variant: "destructive" });
+      return;
+    }
+    if (valor > saldoDisponivel) {
+      toast({ title: "Saldo insuficiente", description: `Seu saldo disponível é ${formatBRL(saldoDisponivel)}.`, variant: "destructive" });
+      return;
+    }
+    if (!pixKey || pixKey.trim().length === 0) {
+      toast({ title: "Chave PIX obrigatória", description: "Informe sua chave PIX.", variant: "destructive" });
+      return;
+    }
+
+    setSending(true);
+    try {
+      const { data, error } = await supabase.rpc("request_affiliate_pix_withdrawal", {
+        p_amount: valor,
+        p_pix_key: pixKey.trim(),
+        p_pix_key_type: pixKeyType,
+        p_pix_holder_name: pixHolderName.trim(),
+        p_pix_city: pixCity.trim(),
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast({
+          title: "Solicitação enviada! 🎉",
+          description: `Saque de ${formatBRL(valor)} solicitado. Aguarde o processamento (até 48h úteis).`,
+        });
+        setOpen(false);
+        setAmount("");
+        setPixKey("");
+        setPixHolderName("");
+        setPixCity("");
+        onSuccess();
+      } else {
+        toast({
+          title: "Erro ao solicitar",
+          description: data?.error || "Não foi possível processar a solicitação.",
+          variant: "destructive",
+        });
+      }
+    } catch (err: any) {
+      console.error("Erro ao solicitar saque:", err);
+      toast({
+        title: "Erro",
+        description: err?.message || "Erro de conexão. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const formatAmount = (value: string) => {
+    const nums = value.replace(/\D/g, "");
+    if (nums.length === 0) return "";
+    const intPart = nums.slice(0, -2) || "0";
+    const decPart = nums.slice(-2).padStart(2, "0");
+    return `${parseInt(intPart).toLocaleString("pt-BR")},${decPart}`;
+  };
+
+  const statusIcon = (status: string) => {
+    switch (status) {
+      case "completed": return <CheckCircle2 className="h-4 w-4 text-green-500" />;
+      case "rejected": return <XCircle className="h-4 w-4 text-red-500" />;
+      case "cancelled": return <XCircle className="h-4 w-4 text-gray-400" />;
+      default: return <Clock className="h-4 w-4 text-amber-500" />;
+    }
+  };
+
+  const statusLabelPix: Record<string, string> = {
+    pending: "Pendente",
+    approved: "Aprovado",
+    processing: "Processando",
+    completed: "Concluído",
+    rejected: "Rejeitado",
+    cancelled: "Cancelado",
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          size="sm"
+          className="gap-2 bg-green-600 hover:bg-green-700 text-white shadow-md"
+          disabled={saldoDisponivel < 10}
+        >
+          <Wallet className="h-4 w-4" />
+          {saldoDisponivel >= 10 ? "Sacar via PIX" : "Saldo Mínimo: R$ 10"}
+        </Button>
+      </DialogTrigger>
+
+      <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <QrCode className="h-5 w-5 text-green-600" />
+            Saque via PIX
+          </DialogTitle>
+          <DialogDescription>
+            Solicite o saque do seu saldo disponível. Processamos em até 48h úteis.
+          </DialogDescription>
+        </DialogHeader>
+
+        {/* Saldo disponível */}
+        <div className="bg-green-50 dark:bg-green-950/30 rounded-lg p-4 text-center">
+          <p className="text-sm text-muted-foreground mb-1">Saldo Disponível para Saque</p>
+          <p className="text-3xl font-bold text-green-700 dark:text-green-300">
+            {formatBRL(saldoDisponivel)}
+          </p>
+        </div>
+
+        {saldoDisponivel >= 10 && (
+          <>
+            {/* Valor */}
+            <div className="space-y-2">
+              <Label htmlFor="amount">Valor do Saque</Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-lg font-semibold text-muted-foreground">R$</span>
+                <Input
+                  id="amount"
+                  className="pl-10 text-lg font-semibold h-12"
+                  placeholder="0,00"
+                  value={amount}
+                  onChange={(e) => setAmount(formatAmount(e.target.value))}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">Mínimo: R$ 10,00 | Máximo: {formatBRL(saldoDisponivel)}</p>
+            </div>
+
+            {/* Tipo de chave PIX */}
+            <div className="space-y-2">
+              <Label>Tipo de Chave PIX</Label>
+              <RadioGroup value={pixKeyType} onValueChange={setPixKeyType} className="grid grid-cols-2 gap-2">
+                {[
+                  { value: "cpf", label: "CPF" },
+                  { value: "cnpj", label: "CNPJ" },
+                  { value: "email", label: "E-mail" },
+                  { value: "phone", label: "Telefone" },
+                  { value: "random", label: "Aleatória" },
+                ].map((opt) => (
+                  <div key={opt.value} className="flex items-center gap-2 border rounded-lg p-3 cursor-pointer hover:bg-muted/50 transition-colors">
+                    <RadioGroupItem value={opt.value} id={`pix-${opt.value}`} />
+                    <Label htmlFor={`pix-${opt.value}`} className="cursor-pointer text-sm">{opt.label}</Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+
+            {/* Chave PIX */}
+            <div className="space-y-2">
+              <Label htmlFor="pixKey">Chave PIX</Label>
+              <Input
+                id="pixKey"
+                placeholder={
+                  pixKeyType === "cpf" ? "000.000.000-00" :
+                  pixKeyType === "cnpj" ? "00.000.000/0000-00" :
+                  pixKeyType === "email" ? "seu@email.com" :
+                  pixKeyType === "phone" ? "+5511999999999" :
+                  "Chave aleatória"
+                }
+                value={pixKey}
+                onChange={(e) => setPixKey(e.target.value)}
+              />
+            </div>
+
+            {/* Nome do titular (opcional, útil para chave aleatória) */}
+            {pixKeyType === "random" && (
+              <div className="space-y-2">
+                <Label htmlFor="holderName">Nome do Titular (opcional)</Label>
+                <Input
+                  id="holderName"
+                  placeholder="Nome completo"
+                  value={pixHolderName}
+                  onChange={(e) => setPixHolderName(e.target.value)}
+                />
+              </div>
+            )}
+
+            {/* Cidade (opcional) */}
+            <div className="space-y-2">
+              <Label htmlFor="city">Cidade (opcional)</Label>
+              <Input
+                id="city"
+                placeholder="Sua cidade"
+                value={pixCity}
+                onChange={(e) => setPixCity(e.target.value)}
+              />
+            </div>
+
+            <Button
+              className="w-full h-12 text-base gap-2 bg-green-600 hover:bg-green-700"
+              onClick={handleSolicitar}
+              disabled={sending}
+            >
+              {sending ? (
+                <><Loader2 className="h-5 w-5 animate-spin" /> Enviando...</>
+              ) : (
+                <><Banknote className="h-5 w-5" /> Solicitar Saque</>
+              )}
+            </Button>
+          </>
+        )}
+
+        {/* Histórico de solicitações */}
+        {pixRequests.length > 0 && (
+          <div className="border-t pt-4 mt-2">
+            <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              Histórico de Solicitações
+            </h4>
+            <div className="space-y-2">
+              {pixRequests.map((req) => (
+                <div key={req.id} className="flex items-center justify-between bg-muted/30 rounded-lg p-3 text-sm">
+                  <div className="flex items-center gap-2">
+                    {statusIcon(req.status)}
+                    <div>
+                      <p className="font-medium">{formatBRL(req.amount)}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(req.requested_at || req.created_at).toLocaleDateString("pt-BR")}
+                        {" • "}
+                        {statusLabelPix[req.status] || req.status}
+                      </p>
+                    </div>
+                  </div>
+                  <Badge variant={req.status === "completed" ? "default" : req.status === "rejected" ? "destructive" : "secondary"}>
+                    {statusLabelPix[req.status] || req.status}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {loadingRequests && (
+          <div className="flex justify-center py-2">
+            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+          </div>
+        )}
+
+        <DialogFooter className="text-xs text-muted-foreground text-center sm:text-center">
+          Os saques são processados em até 48h úteis após aprovação.
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function ResumoSection({ summary, affiliateId, onPixSuccess }: { summary: AffiliateSummary; affiliateId?: string; onPixSuccess?: () => void }) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
       <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950/30 dark:to-green-900/20 border-green-200 dark:border-green-800">
@@ -118,6 +437,15 @@ function ResumoSection({ summary }: { summary: AffiliateSummary }) {
           <p className="text-2xl font-bold text-green-700 dark:text-green-300">
             {formatBRL(summary.saldoDisponivel)}
           </p>
+          {affiliateId && summary.saldoDisponivel >= 10 && (
+            <div className="mt-3">
+              <PixSaqueModal
+                saldoDisponivel={summary.saldoDisponivel}
+                affiliateId={affiliateId}
+                onSuccess={onPixSuccess || (() => {})}
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -756,7 +1084,7 @@ export function AffiliateCard() {
             Atualizar
           </Button>
         </div>
-        <ResumoSection summary={summary} />
+        <ResumoSection summary={summary} affiliateId={affiliateId || undefined} onPixSuccess={loadAffiliateData} />
       </div>
 
       {/* Seção 02: Meu Link */}

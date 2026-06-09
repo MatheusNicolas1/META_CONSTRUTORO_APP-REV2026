@@ -54,6 +54,16 @@ export const initSentry = () => {
     return false;
   }
 
+  // Validar formato do DSN: apenas formato clássico https://...@o....ingest...sentry.io
+  // ignorar sntrys_ (novo formato que exige tunnel/proxy server)
+  const isValidDsn = /^https:\/\/[^@]+@o\d+\.ingest\.sentry\.io\/\d+$/.test(dsn);
+  if (!isValidDsn) {
+    if (import.meta.env.DEV) {
+      console.debug('[Sentry] DSN inválido ou formato sntrys_ ignorado:', dsn.slice(0, 20) + '...');
+    }
+    return false;
+  }
+
   Sentry.init({
     dsn,
     integrations: [

@@ -1,0 +1,27 @@
+{
+  "nome": "Construtora Luiz Costa",
+  "email": "clc@clcconstrutora.com.br",
+  "campanha_26": {
+    "2": {
+      "status": "enviado",
+      "data": "2026-06-09"
+    }
+  },
+  "onboarding": {
+    "1": {
+      "status": "enviado",
+      "data": "2026-06-09"
+    }
+  },
+  "contador_26": 2,
+  "contador_onb": 1,
+  "criado_em": "2026-06-08 12:03:07",
+  "ultimo_envio": "2026-06-09T12:36:25.869941+00:00",
+  "completo_26": false,
+  "completo_onb": false,
+  "proximo_dia_26": 3,
+  "enviados_26": [],
+  "enviados_onboarding": [],
+  "proximo_envio": null,
+  "indice_onb": 1
+}

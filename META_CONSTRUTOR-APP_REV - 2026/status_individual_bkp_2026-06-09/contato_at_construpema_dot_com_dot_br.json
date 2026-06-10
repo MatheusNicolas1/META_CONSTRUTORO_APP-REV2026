@@ -1,0 +1,16 @@
+{
+  "nome": "Empresa",
+  "email": "contato@construpema.com.br",
+  "campanha_26": {},
+  "onboarding": {},
+  "contador_26": 0,
+  "contador_onb": 0,
+  "criado_em": "2026-06-08 12:03:07",
+  "ultimo_envio": null,
+  "completo_26": false,
+  "completo_onb": false,
+  "proximo_dia_26": 2,
+  "enviados_26": [],
+  "enviados_onboarding": [],
+  "proximo_envio": null
+}

@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { getOptimizedImageUrl } from '@/hooks/useOptimizedImage';
 
 // ─── Tipos ────────────────────────────────────────────────
 
@@ -71,6 +72,7 @@ function injectKeyframes() {
 // ─── Imagem com Mockup de Celular ─────────────────────────
 
 function MobileMockupImage({ src, title }: { src: string; title: string }) {
+  const optimizedSrc = getOptimizedImageUrl(src, { width: 300 }) || src;
   return (
     <div className="relative flex-shrink-0 w-[180px] sm:w-[200px] md:w-[220px] lg:w-[240px] contain-layout">
       <div className="relative mx-auto w-full max-w-[180px] sm:max-w-[200px] md:max-w-[220px] lg:max-w-[240px]">
@@ -81,7 +83,7 @@ function MobileMockupImage({ src, title }: { src: string; title: string }) {
           </div>
           <div className="absolute inset-[3px] sm:inset-[4px] rounded-[1.5rem] sm:rounded-[1.75rem] overflow-hidden bg-white">
             <img
-              src={src}
+              src={optimizedSrc}
               alt={title}
               className="w-full h-full object-cover object-top"
               loading="lazy"

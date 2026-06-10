@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import confetti from 'canvas-confetti';
 import SEO from "@/components/SEO";
 import { seoPages } from '@/config/seo';
 import { Link } from 'react-router-dom';
-import { Check, ArrowRight, Zap, Star, HelpCircle, CreditCard, Building2, Sparkles, Crown, Shield } from 'lucide-react';
+import { Check, ArrowRight, Zap, Star, CreditCard, Building2, Crown, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PublicLayout } from '@/components/public/PublicLayout';
 import { AnimatedSection } from '@/components/public/AnimatedSection';
 import { AnimatedGradient } from '@/components/public/AnimatedGradient';
 import { StaggerContainer, StaggerItem } from '@/components/public/StaggerContainer';
 import EnterpriseContactModal from '@/components/EnterpriseContactModal';
+import { cn } from '@/lib/utils';
 
-const ANNUAL_DISCOUNT = 0.20; // 20% off
+const ANNUAL_DISCOUNT = 0.20;
 
 interface PlanCard {
   name: string;
-  price: string;
-  period: string;
+  priceMonthly: number;  // em centavos (ex: 12990)
+  priceYearly: number;   // em centavos (ex: 103920)
   desc: string;
   features: string[];
   cta: string;
@@ -27,11 +29,11 @@ interface PlanCard {
   slug: string | null;
 }
 
-const monthlyPlans: PlanCard[] = [
+const plans: PlanCard[] = [
   {
     name: 'Grátis',
-    price: 'R$ 0',
-    period: '/mês',
+    priceMonthly: 0,
+    priceYearly: 0,
     desc: 'Ideal para começar e testar a plataforma.',
     features: [
       '1 obra ativa',
@@ -49,8 +51,8 @@ const monthlyPlans: PlanCard[] = [
   },
   {
     name: 'Básico',
-    price: 'R$ 129,90',
-    period: '/mês',
+    priceMonthly: 12990,
+    priceYearly: 103920,
     desc: 'Perfeito para pequenas construtoras.',
     features: [
       'Até 3 usuários',
@@ -69,8 +71,8 @@ const monthlyPlans: PlanCard[] = [
   },
   {
     name: 'Profissional',
-    price: 'R$ 199,90',
-    period: '/mês',
+    priceMonthly: 19990,
+    priceYearly: 159920,
     desc: 'Ideal para construtoras em crescimento.',
     features: [
       'Até 5 usuários',
@@ -90,8 +92,8 @@ const monthlyPlans: PlanCard[] = [
   },
   {
     name: 'Master',
-    price: 'R$ 347,00',
-    period: '/mês',
+    priceMonthly: 34700,
+    priceYearly: 333120,
     desc: 'Para construtoras estabelecidas.',
     features: [
       'Até 15 usuários',
@@ -111,8 +113,8 @@ const monthlyPlans: PlanCard[] = [
   },
   {
     name: 'Enterprise',
-    price: 'Sob consulta',
-    period: '',
+    priceMonthly: 0,
+    priceYearly: 0,
     desc: 'Para grandes operações com necessidades específicas.',
     features: [
       'Tudo do plano Master',
@@ -131,21 +133,6 @@ const monthlyPlans: PlanCard[] = [
     slug: null,
   },
 ];
-
-const yearlyPlans: PlanCard[] = monthlyPlans.map((p) => {
-  if (p.price === 'R$ 0' || p.price === 'Sob consulta') return { ...p };
-  const monthlyValue = parseFloat(p.price.replace('R$ ', '').replace(',', '.'));
-  const yearlyValue = monthlyValue * (1 - ANNUAL_DISCOUNT);
-  const totalYearly = yearlyValue * 12;
-  return {
-    ...p,
-    price: `R$ ${yearlyValue.toFixed(2).replace('.', ',')}`,
-    period: '/mês*',
-    desc: `Economia de 20% no plano anual. Apenas R$ ${totalYearly.toFixed(2).replace('.', ',')}/ano.`,
-    to: p.slug ? `/checkout?plan=${p.slug}&billing=yearly` : p.to,
-    cta: `Assinar ${p.name} (anual)`,
-  };
-});
 
 const comparisons = [
   { feature: 'Obras ativas', free: '1', basico: '3', profissional: 'Ilimitadas', master: 'Ilimitadas', enterprise: 'Ilimitadas' },
@@ -175,10 +162,54 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
 };
 
+function formatPrice(cents: number): string {
+  return (cents / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 export default function Preco() {
   const [isYearly, setIsYearly] = useState(false);
   const [enterpriseModalOpen, setEnterpriseModalOpen] = useState(false);
-  const plans = isYearly ? yearlyPlans : monthlyPlans;
+
+  const fireConfetti = useCallback(() => {
+    const duration = 2000;
+    const end = Date.now() + duration;
+
+    const frame = () => {
+      confetti({
+        particleCount: 4,
+        angle: 60,
+        spread: 60,
+        origin: { x: 0, y: 0.6 },
+        colors: ['#FF6B35', '#FFB347', '#34D399', '#60A5FA'],
+      });
+      confetti({
+        particleCount: 4,
+        angle: 120,
+        spread: 60,
+        origin: { x: 1, y: 0.6 },
+        colors: ['#FF6B35', '#FFB347', '#34D399', '#60A5FA'],
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    };
+    frame();
+  }, []);
+
+  const handleToggleYearly = useCallback(() => {
+    const next = !isYearly;
+    setIsYearly(next);
+    if (next) {
+      setTimeout(fireConfetti, 100);
+    }
+  }, [isYearly, fireConfetti]);
+
+  const getDisplayPrice = (plan: PlanCard) => {
+    if (plan.priceMonthly === 0) return null;
+    if (isYearly && plan.priceYearly > 0) return plan.priceYearly / 12;
+    return plan.priceMonthly;
+  };
 
   return (
     <PublicLayout>
@@ -212,7 +243,7 @@ export default function Preco() {
                 type="button"
                 role="switch"
                 aria-checked={isYearly}
-                onClick={() => setIsYearly(!isYearly)}
+                onClick={handleToggleYearly}
                 className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors duration-300 ${
                   isYearly ? 'bg-brand-orange' : 'bg-neutral-300'
                 }`}
@@ -240,75 +271,117 @@ export default function Preco() {
         </div>
       </section>
 
-      {/* Plans Grid */}
+      {/* Plans Grid — estilo consistente com PlanCarousel do app */}
       <AnimatedSection>
         <div className="container max-w-6xl mx-auto">
           <StaggerContainer staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-4">
             {plans.map((plan, i) => {
+              const displayPrice = getDisplayPrice(plan);
+              const isFree = plan.priceMonthly === 0 && plan.slug === null && plan.name === 'Grátis';
+              const isEnterprise = plan.name === 'Enterprise';
+              const showYearlyDetails = isYearly && !isFree && !isEnterprise;
               const Icon = i === 0 ? Zap : i === 1 ? Star : i === 2 ? Crown : i === 3 ? Shield : Building2;
-              const isEnterprise = i === plans.length - 1;
+              const isPopular = plan.popular;
+
               return (
                 <StaggerItem
                   key={i}
                   whileHover={{ y: -6 }}
-                  className={`relative bg-white border-2 rounded-2xl p-5 md:p-6 flex flex-col transition-shadow duration-300 hover:shadow-xl ${
-                    plan.popular
-                      ? 'border-brand-orange shadow-lg shadow-brand-orange/10 lg:scale-[1.02]'
-                      : plan.highlight
-                        ? 'border-neutral-200 shadow-md'
-                        : 'border-neutral-100 shadow-sm'
-                  }`}
                 >
-                  {plan.popular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-orange text-white text-xs font-bold px-4 py-1 rounded-full flex items-center gap-1 whitespace-nowrap">
-                      <Star className="w-3 h-3" /> Mais popular
+                  <div
+                    className={cn(
+                      "flex flex-col h-full relative border-2 rounded-2xl p-5 md:p-6 transition-all duration-300 bg-white",
+                      isPopular
+                        ? "border-brand-orange shadow-xl shadow-brand-orange/10 lg:scale-[1.02] z-10"
+                        : plan.highlight && !isPopular
+                          ? "border-neutral-200 shadow-md"
+                          : "border-neutral-100 shadow-sm hover:border-brand-orange/50"
+                    )}
+                  >
+                    {isPopular && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-orange text-white text-xs font-bold px-4 py-1 rounded-full flex items-center gap-1 whitespace-nowrap z-20 shadow-md">
+                        <Star className="w-3 h-3 fill-current" /> Mais popular
+                      </div>
+                    )}
+
+                    {/* Icon */}
+                    <div className="w-10 h-10 bg-brand-orange-ghost rounded-xl flex items-center justify-center mb-4">
+                      <Icon className="w-5 h-5 text-brand-orange" />
                     </div>
-                  )}
-                  <div className="w-10 h-10 bg-brand-orange-ghost rounded-xl flex items-center justify-center mb-4">
-                    <Icon className="w-5 h-5 text-brand-orange" />
+
+                    {/* Name + Price — estilo PlanCarousel */}
+                    <div className="text-sm font-semibold text-brand-orange mb-1">{plan.name}</div>
+
+                    {isFree ? (
+                      <div className="flex min-h-[48px] items-center mt-2">
+                        <span className="text-2xl sm:text-3xl font-bold text-neutral-900">Grátis</span>
+                      </div>
+                    ) : isEnterprise ? (
+                      <div className="flex min-h-[48px] items-center mt-2">
+                        <span className="text-2xl sm:text-3xl font-bold text-neutral-900">Sob consulta</span>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex items-baseline gap-1 mt-2 flex-wrap">
+                          <span className="text-sm text-neutral-500">R$</span>
+                          <span className="text-3xl sm:text-4xl font-bold text-neutral-900">
+                            {formatPrice(displayPrice!)}
+                          </span>
+                          <span className="text-sm text-neutral-500 font-medium">/mês</span>
+                        </div>
+                        {showYearlyDetails && (
+                          <div className="mt-1 space-y-0.5">
+                            <div className="text-xs text-green-600 font-medium">
+                              Economize 20% com o plano anual
+                            </div>
+                            <div className="text-xs text-neutral-500">
+                              {(plan.priceYearly / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}/ano
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    <p className="text-neutral-500 text-xs mb-5 mt-2">{plan.desc}</p>
+
+                    {/* Features */}
+                    <ul className="space-y-2.5 mb-6 flex-1">
+                      {plan.features.map((f, j) => (
+                        <li key={j} className="flex items-start gap-2 text-sm text-neutral-700">
+                          <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* CTA */}
+                    {isEnterprise ? (
+                      <Button
+                        variant="outline"
+                        className="w-full sm:w-auto border-neutral-200 hover:border-brand-orange hover:text-brand-orange rounded-full"
+                        onClick={() => setEnterpriseModalOpen(true)}
+                      >
+                        {plan.cta} <ArrowRight className="ml-1 w-4 h-4 inline" />
+                      </Button>
+                    ) : (
+                      <Button
+                        variant={isPopular ? 'default' : 'default'}
+                        className={cn(
+                          "w-full sm:w-auto rounded-full",
+                          isPopular
+                            ? 'bg-brand-orange hover:bg-brand-orange-hover shadow-lg shadow-brand-orange/25'
+                            : plan.highlight && !isPopular
+                              ? 'bg-neutral-900 hover:bg-neutral-800 shadow-md text-white'
+                              : 'bg-brand-orange hover:bg-brand-orange-hover shadow-lg shadow-brand-orange/25'
+                        )}
+                        asChild
+                      >
+                        <Link to={plan.to}>
+                          {plan.cta} <ArrowRight className="ml-1 w-4 h-4 inline" />
+                        </Link>
+                      </Button>
+                    )}
                   </div>
-                  <div className="text-sm font-semibold text-brand-orange mb-1">{plan.name}</div>
-                  <div className="flex items-baseline gap-1 mb-1 flex-wrap">
-                    <span className="text-2xl lg:text-3xl font-extrabold text-neutral-900 whitespace-nowrap">{plan.price}</span>
-                    <span className="text-neutral-500 text-sm whitespace-nowrap">{plan.period}</span>
-                  </div>
-                  {isYearly && plan.price !== 'R$ 0' && plan.price !== 'Sob consulta' && (
-                    <div className="text-[10px] text-brand-emerald font-medium whitespace-nowrap">
-                      {(parseFloat(plan.price.replace('R$ ', '').replace(',', '.')) * 12).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}/ano
-                    </div>
-                  )}
-                  <p className="text-neutral-500 text-xs mb-5">{plan.desc}</p>
-                  <ul className="space-y-2.5 mb-6 flex-1">
-                    {plan.features.map((f, j) => (
-                      <li key={j} className="flex items-start gap-2 text-sm text-neutral-700">
-                        <Check className="w-4 h-4 text-brand-emerald mt-0.5 flex-shrink-0" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  {isEnterprise ? (
-                    <Button
-                      variant="outline"
-                      className="w-full sm:w-auto border-neutral-200 hover:border-brand-orange hover:text-brand-orange rounded-full"
-                      onClick={() => setEnterpriseModalOpen(true)}
-                    >
-                      {plan.cta} <ArrowRight className="ml-1 w-4 h-4 inline" />
-                    </Button>
-                  ) : (
-                    <Button
-                      variant={plan.popular ? 'default' : 'outline'}
-                      className={`w-full sm:w-auto rounded-full ${
-                        plan.popular
-                          ? 'bg-brand-orange hover:bg-brand-orange-hover shadow-lg shadow-brand-orange/25'
-                          : plan.highlight && !plan.popular
-                            ? 'bg-neutral-900 hover:bg-neutral-800 text-white border-neutral-900 shadow-md'
-                            : 'border-neutral-200 hover:border-brand-orange hover:text-brand-orange'
-                      }`}
-                      asChild
-                    >
-                      <Link to={plan.to}>{plan.cta} <ArrowRight className="ml-1 w-4 h-4 inline" /></Link>
-                    </Button>
-                  )}
                 </StaggerItem>
               );
             })}

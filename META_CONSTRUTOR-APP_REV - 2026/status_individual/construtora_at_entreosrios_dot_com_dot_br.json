@@ -5,6 +5,10 @@
     "2": {
       "status": "enviado",
       "data": "2026-06-09"
+    },
+    "3": {
+      "status": "enviado",
+      "data": "2026-06-09"
     }
   },
   "onboarding": {
@@ -13,15 +17,19 @@
       "data": "2026-06-09"
     }
   },
-  "contador_26": 2,
+  "contador_26": 3,
   "contador_onb": 1,
   "criado_em": "2026-06-08 12:03:07",
-  "ultimo_envio": "2026-06-09T12:36:25.869941+00:00",
+  "ultimo_envio": "2026-06-09T17:01:06.042466+00:00",
   "completo_26": false,
   "completo_onb": false,
-  "proximo_dia_26": 3,
+  "proximo_dia_26": 4,
   "enviados_26": [],
   "enviados_onboarding": [],
-  "proximo_envio": null,
-  "indice_onb": 1
+  "proximo_envio": "2026-06-10",
+  "indice_onb": 1,
+  "dia": 3,
+  "enviado": true,
+  "ja_enviado_hoje": true,
+  "pendente_segundo_email": false
 }

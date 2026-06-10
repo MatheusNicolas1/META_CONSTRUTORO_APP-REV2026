@@ -45,7 +45,7 @@ export function HeroSectionNew() {
         <section aria-label="Fluxo principal do produto" className="bg-[#101f31] p-5">
           <figure className="mb-5 overflow-hidden">
             <img
-              src="/marketing/obras-reais/estrutura-metalica-aerea.jpg"
+              src="/marketing/obras-reais/estrutura-metalica-aerea.webp"
               alt="Vista aerea de estrutura metalica em obra, usada como exemplo de canteiro acompanhado por registros digitais"
               className="h-48 w-full object-cover sm:h-56"
               loading="eager"

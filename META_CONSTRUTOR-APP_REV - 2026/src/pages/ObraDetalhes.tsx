@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getOptimizedImageUrl } from "@/hooks/useOptimizedImage";
 import {
   Building2,
   MapPin,
@@ -25,7 +26,9 @@ import {
   Download,
   Filter,
   AlertTriangle,
-  PieChart
+  PieChart,
+  ZoomIn as ZoomInIcon,
+  Loader2
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { NavigationSafety } from "@/utils/navigationSafety";
@@ -37,6 +40,8 @@ import { DocumentType, useDocuments } from "@/hooks/useDocuments";
 import { FileText as FileTextIcon, Clock, CheckCircle, AlertCircle, Wrench as WrenchIcon } from "lucide-react";
 import { useReportPdfDownload } from "@/hooks/useReportPdfDownload";
 import { DOCUMENT_UPLOAD_ACCEPT, DOCUMENT_UPLOAD_HELP_TEXT } from "@/utils/documentUploadValidation";
+import { ImageViewerDialog } from "@/components/ImageViewerDialog";
+import { getPublicUrl, getSignedUrl, downloadStorageFileToDevice } from "@/utils/storageUtils";
 
 const ObraDetalhes = () => {
   const { id } = useParams();
@@ -407,7 +412,10 @@ const ObraDetalhes = () => {
                         </p>
                       </div>
                     </div>
-                    <Badge variant="outline">{formatDate(documento.created_at)}</Badge>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <DocumentDownloadButton url={documento.url} nome={documento.nome} bucket="documentos" />
+                      <Badge variant="outline">{formatDate(documento.created_at)}</Badge>
+                    </div>
                   </div>
                 ))
               )}
@@ -939,6 +947,25 @@ type ObraImagemPreview = {
 const isRenderableImageUrl = (value?: string | null) =>
   Boolean(value && /^(https?:|blob:|data:)/i.test(value));
 
+function DocumentDownloadButton({ url, nome, bucket }: { url: string; nome: string; bucket: string }) {
+  const [loading, setLoading] = useState(false);
+  const handleClick = async () => {
+    setLoading(true);
+    try {
+      await downloadStorageFileToDevice(bucket, url, nome);
+    } catch (err) {
+      console.error('Erro ao baixar documento:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  return (
+    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleClick} disabled={loading}>
+      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+    </Button>
+  );
+}
+
 const formatImageDate = (dateString?: string) => {
   if (!dateString) return '-';
   return new Date(dateString.includes('T') ? dateString : `${dateString}T00:00:00`).toLocaleDateString('pt-BR');
@@ -946,40 +973,105 @@ const formatImageDate = (dateString?: string) => {
 
 function ObraImagePreviewCard({ imagem }: { imagem: ObraImagemPreview }) {
   const [previewFailed, setPreviewFailed] = useState(false);
-  const fallbackUrl = isRenderableImageUrl(imagem.url) ? imagem.url : null;
-  const previewSrc = imagem.previewUrl || fallbackUrl;
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [downloadLoading, setDownloadLoading] = useState(false);
+  const [previewSrc, setPreviewSrc] = useState<string | null>(null);
+
+  // Carrega a URL da imagem: tenta previewUrl (do hook), depois publicUrl, depois signedUrl
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      // 1. previewUrl do hook (se veio signed do backend)
+      if (imagem.previewUrl) {
+        if (!cancelled) setPreviewSrc(getOptimizedImageUrl(imagem.previewUrl, { width: 600 }) || imagem.previewUrl);
+        return;
+      }
+      // 2. URL pública
+      const pubUrl = getPublicUrl(imagem.url, 'documentos');
+      if (pubUrl) {
+        const optim = getOptimizedImageUrl(pubUrl, { width: 600 });
+        if (!cancelled) setPreviewSrc(optim || pubUrl);
+        return;
+      }
+      // 3. Signed URL como fallback (bucket privado)
+      const signed = await getSignedUrl(imagem.url, 'documentos', 120);
+      if (!cancelled) setPreviewSrc(signed);
+    };
+    load();
+    return () => { cancelled = true; };
+  }, [imagem.url, imagem.previewUrl]);
+
   const showPreview = Boolean(previewSrc) && !previewFailed;
 
+  const handleDownload = async () => {
+    setDownloadLoading(true);
+    try {
+      await downloadStorageFileToDevice('documentos', imagem.url, imagem.nome);
+    } catch (err) {
+      console.error('Erro ao baixar imagem:', err);
+    } finally {
+      setDownloadLoading(false);
+    }
+  };
+
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-muted/30 transition-colors hover:bg-muted/40">
-      <div className="relative aspect-[4/3] bg-muted/40">
-        {showPreview ? (
-          <img
-            src={previewSrc!}
-            alt={`Pre-visualizacao de ${imagem.nome}`}
-            loading="lazy"
-            className="h-full w-full object-cover"
-            onError={() => setPreviewFailed(true)}
-          />
-        ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
-            <ImageIcon className="h-8 w-8" />
-            <span className="text-xs">Preview indisponivel</span>
+    <>
+      <div
+        className="overflow-hidden rounded-lg border border-border bg-muted/30 transition-colors hover:bg-muted/40 cursor-pointer group"
+        onClick={() => setViewerOpen(true)}
+      >
+        <div className="relative aspect-[4/3] bg-muted/40">
+          {showPreview ? (
+            <img
+              src={previewSrc!}
+              alt={`Pre-visualizacao de ${imagem.nome}`}
+              loading="lazy"
+              className="h-full w-full object-cover transition-transform group-hover:scale-105"
+              onError={() => setPreviewFailed(true)}
+            />
+          ) : (
+            <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
+              <ImageIcon className="h-8 w-8" />
+              <span className="text-xs">Preview indisponivel</span>
+            </div>
+          )}
+          <Badge variant="secondary" className="absolute left-2 top-2 bg-background/90 text-[11px]">
+            {imagem.origem}
+          </Badge>
+
+          {/* Overlay de ações no hover */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+            <span className="bg-background/90 rounded-full p-2 shadow-sm hover:bg-background transition-colors"
+              onClick={(e) => { e.stopPropagation(); setViewerOpen(true); }}>
+              <ZoomInIcon className="h-4 w-4" />
+            </span>
+            <span className="bg-background/90 rounded-full p-2 shadow-sm hover:bg-background transition-colors"
+              onClick={(e) => { e.stopPropagation(); handleDownload(); }}>
+              {downloadLoading
+                ? <Loader2 className="h-4 w-4 animate-spin" />
+                : <Download className="h-4 w-4" />
+              }
+            </span>
           </div>
-        )}
-        <Badge variant="secondary" className="absolute left-2 top-2 bg-background/90 text-[11px]">
-          {imagem.origem}
-        </Badge>
+        </div>
+        <div className="p-3">
+          <p className="truncate font-medium text-card-foreground" title={imagem.nome}>
+            {imagem.nome}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {formatImageDate(imagem.created_at)}
+          </p>
+        </div>
       </div>
-      <div className="p-3">
-        <p className="truncate font-medium text-card-foreground" title={imagem.nome}>
-          {imagem.nome}
-        </p>
-        <p className="text-xs text-muted-foreground">
-          {formatImageDate(imagem.created_at)}
-        </p>
-      </div>
-    </div>
+
+      <ImageViewerDialog
+        isOpen={viewerOpen}
+        onClose={() => setViewerOpen(false)}
+        src={imagem.url}
+        title={imagem.nome}
+        bucket="documentos"
+      />
+    </>
   );
 }
 

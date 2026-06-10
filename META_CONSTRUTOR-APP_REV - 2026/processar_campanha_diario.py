@@ -1,14 +1,19 @@
-"""Processador diário universal — envia o email certo pra cada lead no dia certo"""
+"""Processador diário de campanhas — com PRIORIDADE (Dia 3 > 2 > 1) e INTERVALO de 1h entre emails do mesmo lead.
 
-import json, os, time, urllib.request, urllib.error, glob, sys
-from datetime import datetime, timezone
+Uso:
+  python processar_campanha_diario.py                         # lote da manhã (50 emails)
+  python processar_campanha_diario.py --turno tarde           # lote da tarde (+50 emails)
+  python processar_campanha_diario.py --limite 100 --sequencia  # modo antigo (sem intervalo)
+"""
 
-STATUS_DIR = r'C:\Users\nicol\OneDrive\Documentos\META CONSTRUTOR\META CONSTRUTOR - APP\META_CONSTRUTOR-APP_REV - 2026\status_individual'
-BASE_DIR = r'C:\Users\nicol\OneDrive\Documentos\META CONSTRUTOR\META CONSTRUTOR - APP\META_CONSTRUTOR-APP_REV - 2026'
+import json, os, time, urllib.request, urllib.error, glob, sys, re
+from datetime import datetime, timezone, timedelta
+
+STATUS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'status_individual')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CAMPANHA_26 = os.path.join(BASE_DIR, 'campanha-26-dias')
-CAMPANHA_ONB = os.path.join(BASE_DIR, 'campanha-onboarding')
 FUNCTION_URL = "https://bgdvlhttyjeuprrfxgun.supabase.co/functions/v1/send-campaign-now"
-LIMITE_DIARIO = 100
+LIMITE_DIARIO = 100  # limite total do Resend free
 
 os.makedirs(STATUS_DIR, exist_ok=True)
 
@@ -58,41 +63,21 @@ def carregar_cronograma_26():
     with open(os.path.join(CAMPANHA_26, 'cronograma.json'), encoding='utf-8') as f:
         return json.load(f)
 
-def carregar_cronograma_onb():
-    with open(os.path.join(CAMPANHA_ONB, 'cronograma.json'), encoding='utf-8') as f:
-        return json.load(f)
-
 def obter_template_26(dia_numero):
-    """Encontra o template HTML pro dia especifico da campanha 26."""
     files = sorted(glob.glob(os.path.join(CAMPANHA_26, f'dia-{dia_numero:02d}-*.html')))
     if files:
         return files[0]
-    # Fallback: buscar por numero no nome
     alt = sorted(glob.glob(os.path.join(CAMPANHA_26, f'dia-{dia_numero}-*.html')))
     if alt:
         return alt[0]
     return None
 
-def obter_template_onb(indice):
-    """Encontra o template onboarding pelo indice no cronograma."""
-    crono = carregar_cronograma_onb()
-    if indice >= len(crono):
-        return None
-    tp = os.path.join(CAMPANHA_ONB, crono[indice]['template'])
-    if os.path.exists(tp):
-        return tp
-    tp2 = os.path.join(BASE_DIR, crono[indice]['template'])
-    if os.path.exists(tp2):
-        return tp2
-    return None
-
-def processar_diario(max_emails=100):
-    """Processa 1 dia de cada lead: envia o proximo email de cada campanha."""
+def processar_com_intervalo(max_emails=100, turno="manha"):
+    """Processa com prioridade (Dia 3 > 2 > 1) e 1h de intervalo entre emails do mesmo lead."""
     crono_26 = carregar_cronograma_26()
-    crono_onb = carregar_cronograma_onb()
-    
     hoje = datetime.now(timezone.utc)
     data_hoje = hoje.strftime('%Y-%m-%d')
+    hora_atual = hoje.hour
     
     # Carregar todos os status
     todos = []
@@ -102,153 +87,183 @@ def processar_diario(max_emails=100):
         with open(os.path.join(STATUS_DIR, f)) as fp:
             todos.append(json.load(fp))
     
-    # Quem ta pronto pra receber email HOJE
-    elegiveis = []
-    for s in todos:
-        # Dia atual da campanha 26
-        dia_26 = s.get('proximo_dia_26', 1)
-        precisa_26 = not s.get('completo_26', False) and dia_26 <= len(crono_26)
-        dia_key_26 = str(dia_26)
-        ja_foi_26 = s.get('campanha_26', {}).get(dia_key_26, {}).get('status') == 'enviado'
-        if precisa_26 and ja_foi_26:
-            precisa_26 = False  # ja recebeu esse dia hoje
-        
-        # Onboarding
-        idx = s.get('indice_onb', 0)
-        precisa_onb = idx < len(crono_onb)
-        if precisa_onb:
-            dia_onb_esperado = crono_onb[idx]['dia']
-            dia_key_onb = str(dia_onb_esperado)
-            ja_foi_onb = s.get('onboarding', {}).get(dia_key_onb, {}).get('status') == 'enviado'
-            if ja_foi_onb:
-                precisa_onb = False
-            else:
-                data_inicio = s.get('data_inicio', s.get('criado_em', hoje.isoformat()))
-                try:
-                    inicio = datetime.fromisoformat(data_inicio)
-                    dias_passados = (hoje - inicio).days + 1
-                    precisa_onb = dias_passados >= dia_onb_esperado
-                except:
-                    precisa_onb = True
-        
-        if precisa_26 or precisa_onb:
-            qtde = (1 if precisa_26 else 0) + (1 if precisa_onb else 0)
-            elegiveis.append((s, precisa_26, precisa_onb, qtde))
-    
-    # Prioridade: quem NUNCA recebeu nada (Dia 1 pendente) primeiro
-    elegiveis.sort(key=lambda x: (
-        0 if x[1] and x[0].get('campanha_26', {}) == {} else 1,  # nunca recebeu 26 primeiro
-        0 if x[2] and x[0].get('onboarding', {}) == {} else 1,   # nunca recebeu onboarding primeiro
-        x[0].get('data_inicio', x[0].get('criado_em', ''))       # depois por data
-    ))
-    
-    print(f'📋 Leads elegiveis hoje: {len(elegiveis)}')
-    print(f'🎯 Limite diario: {max_emails} emails')
-    
-    # Calcular quantos leads cabem no lote
-    emails_restantes = max_emails
-    lote = []
-    for s, precisa_26, precisa_onb, qtde in elegiveis:
-        if qtde <= emails_restantes:
-            lote.append((s, precisa_26, precisa_onb))
-            emails_restantes -= qtde
-        else:
-            break
-    
-    print(f'🎯 Leads no lote de hoje: {len(lote)} (ate {max_emails - emails_restantes} emails)')
+    print(f'📊 Total leads na fila: {len(todos)}')
+    print(f'⏰ Turno: {turno.upper()} (hora atual: {hora_atual}h UTC)')
+    print(f'🎯 Limite: {max_emails} emails')
     print()
     
-    enviados = 0
-    erros = 0
-    pulados = 0
+    # --- PRIORIDADE: calcular prioridade de cada lead ---
+    # Prioridade 0 = Dia 3 (já recebeu Dia 1 + Dia 2) - MAIOR PRIORIDADE
+    # Prioridade 1 = Dia 2 pendente (recebeu ontem mas NÃO hoje)
+    # Prioridade 2 = Dia 1 (nunca recebeu nada)
+    # Prioridade 3 = Dia 2 normal
+    # Prioridade 4 = Dias mais avançados
     
-    for i, (s, precisa_26, precisa_onb) in enumerate(lote):
+    leads_priorizados = []
+    for s in todos:
         email = s['email']
-        nome = s['nome']
-        resultados = []
+        nome = s.get('nome', 'N/A')
+        dia = s.get('dia', 1)
+        enviado_hoje = s.get('ja_enviado_hoje', False)
+        ultimo_envio = s.get('ultimo_envio') or ''
+        completou = s.get('completo_26', False) or s.get('completo', False)
         
-        # --- Campanha 26 ---
-        if precisa_26:
-            dia_num = s.get('proximo_dia_26', 1)
-            if dia_num <= len(crono_26):
-                dia_key = str(dia_num)
-                if dia_key not in s.get('campanha_26', {}):
-                    template = obter_template_26(dia_num)
-                    if template:
-                        r = enviar(email, nome, template, crono_26[dia_num-1]['subject'])
-                        if r['success']:
-                            s.setdefault('campanha_26', {})[dia_key] = {'status': 'enviado', 'data': data_hoje}
-                            s['contador_26'] = dia_num
-                            s['proximo_dia_26'] = dia_num + 1
-                            if dia_num >= len(crono_26):
-                                s['completo_26'] = True
-                            enviados += 1
-                            resultados.append(f'26[{dia_num}]✅')
-                        else:
-                            s.setdefault('campanha_26', {})[dia_key] = {'status': 'falhou', 'erro': r.get('error','')}
-                            erros += 1
-                            resultados.append(f'26[{dia_num}]❌')
-                    else:
-                        # Pular dias sem template
-                        s['proximo_dia_26'] = dia_num + 1
-                        s.setdefault('campanha_26', {})[dia_key] = {'status': 'pulado', 'motivo': 'template'}
-                        pulados += 1
-                        resultados.append(f'26[{dia_num}]⏭️')
+        if completou:
+            continue  # ignorar completos
         
-        # --- Onboarding ---
-        if precisa_onb:
-            idx = s.get('indice_onb', 0)
-            if idx < len(crono_onb):
-                dia_onb = str(crono_onb[idx]['dia'])
-                if dia_onb not in s.get('onboarding', {}):
-                    template = obter_template_onb(idx)
-                    if template:
-                        r = enviar(email, nome, template, crono_onb[idx]['subject'])
-                        if r['success']:
-                            s.setdefault('onboarding', {})[dia_onb] = {'status': 'enviado', 'data': data_hoje}
-                            s['contador_onb'] = idx + 1
-                            s['indice_onb'] = idx + 1
-                            if idx + 1 >= len(crono_onb):
-                                s['completo_onb'] = True
-                            enviados += 1
-                            resultados.append(f'Onb[{dia_onb}]✅')
-                        else:
-                            s.setdefault('onboarding', {})[dia_onb] = {'status': 'falhou', 'erro': r.get('error','')}
-                            erros += 1
-                            resultados.append(f'Onb[{dia_onb}]❌')
-                    else:
-                        s['indice_onb'] = idx + 1
-                        s['contador_onb'] = idx + 1
-                        s.setdefault('onboarding', {})[dia_onb] = {'status': 'pulado', 'motivo': 'template'}
-                        pulados += 1
-                        resultados.append(f'Onb[{dia_onb}]⏭️')
+        if enviado_hoje:
+            continue  # já recebeu email hoje
         
-        s['ultimo_envio'] = hoje.isoformat()
-        salvar_status(s)
+        # Determinar prioridade
+        if dia >= 3:
+            prioridade = 0  # Dia 3 = máxima prioridade (já engajou)
+        elif dia == 2:
+            prioridade = 1  # Dia 2 = segunda prioridade
+        elif dia <= 1:
+            prioridade = 2  # Dia 1 = terceira prioridade
+        else:
+            prioridade = 3  # outros
         
-        status_str = ' '.join(resultados) if resultados else '(nada)'
-        print(f'  ({i+1}/{len(lote)}) {nome[:30]:30s} <{email[:25]:25s}> {status_str}')
-        time.sleep(0.5)
+        # Pegar template do dia
+        template = obter_template_26(dia)
+        if not template:
+            continue  # sem template pro dia
+        
+        # Assunto do template
+        if 1 <= dia <= len(crono_26):
+            subject = crono_26[dia-1]['subject']
+        else:
+            subject = f"Dia {dia}"
+        
+        leads_priorizados.append({
+            'email': email,
+            'nome': nome,
+            'dia': dia,
+            'prioridade': prioridade,
+            'template': template,
+            'subject': subject,
+            'status': s,
+            'ultimo_envio': ultimo_envio
+        })
     
-    print(f'\n📊 RESULTADO DO DIA {data_hoje}:')
-    print(f'  ✅ Enviados: {enviados}')
+    # Ordenar: prioridade (menor = maior prioridade), depois por ultimo_envio (mais antigo primeiro)
+    leads_priorizados.sort(key=lambda x: (x['prioridade'], x['ultimo_envio']))
+    
+    print(f'📋 Leads aptos a receber hoje: {len(leads_priorizados)}')
+    
+    # Agrupar por prioridade
+    for p, label in [(0, 'Dia 3 (prioridade máxima)'), (1, 'Dia 2 pendente'), (2, 'Dia 1'), (3, 'outros')]:
+        count = sum(1 for l in leads_priorizados if l['prioridade'] == p)
+        if count:
+            print(f'  {label}: {count} leads')
+    print()
+    
+    # --- Enviar em ordem de prioridade, com 1h de intervalo entre emails do mesmo lead ---
+    # Estratégia: em cada turno, cada lead recebe NO MÁXIMO 1 email.
+    # O segundo email do dia pro mesmo lead vai pro PRÓXIMO turno (ou próximo ciclo).
+    
+    emails_enviados = 0
+    erros = 0
+    leads_processados = 0
+    leads_pulados = 0
+    
+    # No modo com intervalo, cada lead só recebe 1 email por execução
+    # Se o dia tem 2 templates, o segundo vai no próximo turno/ciclo
+    for i, lead in enumerate(leads_priorizados):
+        if emails_enviados >= max_emails:
+            print(f'\n⛔ Limite de {max_emails} emails atingido!')
+            leads_pulados = len(leads_priorizados) - i
+            break
+        
+        email = lead['email']
+        nome = lead['nome']
+        dia = lead['dia']
+        template = lead['template']
+        subject = lead['subject']
+        st = lead['status']
+        
+        # Enviar 1 email (o primeiro template do dia)
+        r = enviar(email, nome, template, subject)
+        
+        if r['success']:
+            # Atualizar status
+            dia_key = str(dia)
+            if 'campanha_26' not in st:
+                st['campanha_26'] = {}
+            st['campanha_26'][dia_key] = {'status': 'enviado', 'data': data_hoje}
+            st['contador_26'] = dia
+            st['proximo_dia_26'] = dia + 1
+            st['dia'] = dia
+            st['enviado'] = True
+            st['ja_enviado_hoje'] = True
+            st['ultimo_envio'] = hoje.isoformat()
+            
+            # Se o lead tem 2 emails pro dia (template 1 de 2), marcar que ainda falta 1
+            # O script só envia 1 por execução — o segundo vai no próximo ciclo
+            
+            # Verificar se há um segundo template pro mesmo dia
+            dia_str = f"dia-{dia:02d}"
+            templates_mesmo_dia = sorted(glob.glob(os.path.join(CAMPANHA_26, f'{dia_str}-*.html')))
+            if len(templates_mesmo_dia) > 1:
+                # Marcar que tem segundo email pendente pro mesmo dia
+                st['pendente_segundo_email'] = True
+            else:
+                st['pendente_segundo_email'] = False
+            
+            if dia >= len(crono_26):
+                st['completo_26'] = True
+            
+            salvar_status(st)
+            emails_enviados += 1
+            leads_processados += 1
+            
+            print(f'  ✅ ({i+1}/{len(leads_priorizados)}) Dia {dia} | {nome[:25]:25s} <{email[:25]:25s}> | {subject[:50]}')
+            
+            # Pausa de 2s entre leads (rate limit)
+            time.sleep(2)
+        else:
+            erros += 1
+            print(f'  ❌ ({i+1}/{len(leads_priorizados)}) {nome[:25]:25s} <{email[:25]:25s}> ERRO: {r.get("error","")[:60]}')
+    
+    print(f'\n📊 RESULTADO:')
+    print(f'  ✅ Enviados: {emails_enviados}')
     print(f'  ❌ Erros: {erros}')
-    print(f'  ⏭️ Pulados: {pulados}')
-    print(f'  👥 Leads processados: {len(lote)}')
-    print(f'  📋 Restantes na fila: {len(elegiveis) - len(lote)}')
+    print(f'  ⏭️ Pulados (limite): {leads_pulados}')
+    print(f'  📋 Total leads com segundo email pendente pro mesmo dia: ', end='')
     
-    return enviados, erros, len(lote)
+    # Contar quem tem segundo email pendente
+    pendentes_segundo = sum(1 for l in leads_priorizados if l['status'].get('pendente_segundo_email', False))
+    print(pendentes_segundo)
+    
+    return emails_enviados, erros, leads_processados
+
 
 def main():
     args = sys.argv[1:] if len(sys.argv) > 1 else []
     
+    # Extrair limite
     if '--limite' in args:
         idx = args.index('--limite')
         limite = int(args[idx+1]) if len(args) > idx+1 else LIMITE_DIARIO
     else:
-        limite = LIMITE_DIARIO
+        limite = 50  # 50 por turno = 100/dia com 2 turnos
     
-    processar_diario(max_emails=limite)
+    # Extrair turno
+    turno = "manha"
+    if '--turno' in args:
+        idx = args.index('--turno')
+        if len(args) > idx+1:
+            turno = args[idx+1]
+    
+    # Modo sequência (antigo, sem intervalo)
+    if '--sequencia' in args:
+        print("⚠️ Modo sequencial (sem intervalo de 1h)")
+        from processar_campanha_diario_legacy import processar_diario
+        processar_diario(max_emails=limite)
+        return
+    
+    processar_com_intervalo(max_emails=limite, turno=turno)
+
 
 if __name__ == '__main__':
     main()

@@ -6,72 +6,27 @@ import { TripleCarousel, type CarouselItem } from '@/components/public/TripleCar
 const MARKETING = '/marketing';
 
 const obrasRow1: CarouselItem[] = [
-  {
-    src: `${MARKETING}/obras-reais/obra-16.jpg`,
-    title: 'RDO-2026-01-15',
-  },
-  {
-    src: `${MARKETING}/obras-reais/obra-17.jpg`,
-    title: 'RDO-2026-01-22',
-  },
-  {
-    src: `${MARKETING}/obras-reais/obra-18.jpg`,
-    title: 'RDO-2026-02-05',
-  },
-  {
-    src: `${MARKETING}/obras-reais/obra-19.jpg`,
-    title: 'RDO-2026-02-14',
-  },
-  {
-    src: `${MARKETING}/obras-reais/obra-20.jpg`,
-    title: 'RDO-2026-02-28',
-  },
+  { src: `${MARKETING}/obras-reais/obra-16.webp`, title: 'RDO-2026-01-15' },
+  { src: `${MARKETING}/obras-reais/obra-17.webp`, title: 'RDO-2026-01-22' },
+  { src: `${MARKETING}/obras-reais/obra-18.webp`, title: 'RDO-2026-02-05' },
+  { src: `${MARKETING}/obras-reais/obra-19.webp`, title: 'RDO-2026-02-14' },
+  { src: `${MARKETING}/obras-reais/obra-20.webp`, title: 'RDO-2026-02-28' },
 ];
 
 const obrasRow2: CarouselItem[] = [
-  {
-    src: `${MARKETING}/obras-reais/obra-21.jpg`,
-    title: 'RDO-2026-03-10',
-  },
-  {
-    src: `${MARKETING}/obras-reais/obra-22.jpg`,
-    title: 'RDO-2026-03-22',
-  },
-  {
-    src: `${MARKETING}/obras-reais/obra-23.jpg`,
-    title: 'RDO-2026-04-03',
-  },
-  {
-    src: `${MARKETING}/obras-reais/obra-24.jpg`,
-    title: 'RDO-2026-04-15',
-  },
-  {
-    src: `${MARKETING}/obras-reais/obra-25.jpg`,
-    title: 'RDO-2026-04-28',
-  },
+  { src: `${MARKETING}/obras-reais/obra-21.webp`, title: 'RDO-2026-03-10' },
+  { src: `${MARKETING}/obras-reais/obra-22.webp`, title: 'RDO-2026-03-22' },
+  { src: `${MARKETING}/obras-reais/obra-23.webp`, title: 'RDO-2026-04-03' },
+  { src: `${MARKETING}/obras-reais/obra-24.webp`, title: 'RDO-2026-04-15' },
+  { src: `${MARKETING}/obras-reais/obra-25.webp`, title: 'RDO-2026-04-28' },
 ];
 
 const obrasRow3: CarouselItem[] = [
-  {
-    src: `${MARKETING}/obras-reais/obra-26.jpg`,
-    title: 'RDO-2026-05-06',
-  },
-  {
-    src: `${MARKETING}/obras-reais/obra-01.jpg`,
-    title: 'RDO-2026-05-16',
-  },
-  {
-    src: `${MARKETING}/obras-reais/obra-02.jpg`,
-    title: 'RDO-2026-05-26',
-  },
-  {
-    src: `${MARKETING}/obras-reais/obra-03.jpg`,
-    title: 'RDO-2026-06-05',
-  },
-  {
-    src: `${MARKETING}/obras-reais/obra-04.jpg`,
-    title: 'RDO-2026-06-14',
-  },
+  { src: `${MARKETING}/obras-reais/obra-26.webp`, title: 'RDO-2026-05-06' },
+  { src: `${MARKETING}/obras-reais/obra-01.webp`, title: 'RDO-2026-05-16' },
+  { src: `${MARKETING}/obras-reais/obra-02.webp`, title: 'RDO-2026-05-26' },
+  { src: `${MARKETING}/obras-reais/obra-03.webp`, title: 'RDO-2026-06-05' },
+  { src: `${MARKETING}/obras-reais/obra-04.webp`, title: 'RDO-2026-06-14' },
 ];
 
 export default function ObrasReaisSection() {

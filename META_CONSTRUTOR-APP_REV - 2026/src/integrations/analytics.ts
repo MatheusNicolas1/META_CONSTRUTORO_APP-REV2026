@@ -85,14 +85,21 @@ export const isPublicAnalyticsEvent = (eventName: string) => (
 export const initAnalytics = () => {
     ensureMarketingContext()
 
+    // PostHog já é inicializado no index.html via snippet inline
+    // O posthog-js (import) já detecta a instância existente
     if (POSTHOG_KEY) {
-        posthog.init(POSTHOG_KEY, {
-            api_host: POSTHOG_HOST,
-            debug: IS_DEV,
-            loaded: () => {
-            }
-        })
+        // Se não foi inicializado pelo snippet (ex: bloqueado), inicializa aqui
+        if (!window.posthog?.__loaded) {
+            posthog.init(POSTHOG_KEY, {
+                api_host: POSTHOG_HOST,
+                debug: IS_DEV,
+                loaded: () => {
+                    if (IS_DEV) console.debug('[Analytics] PostHog initialized (fallback)')
+                }
+            })
+        }
     } else if (IS_DEV) {
+        console.debug('[Analytics] PostHog key not configured')
     }
 }
 

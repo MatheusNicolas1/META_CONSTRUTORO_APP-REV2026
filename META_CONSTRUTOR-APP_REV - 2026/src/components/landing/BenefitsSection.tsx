@@ -58,7 +58,7 @@ const BenefitsSection = () => {
 
             <figure className="mt-8 overflow-hidden border border-border bg-muted/30">
               <img
-                src="/marketing/obras-reais/cobertura-metalica-canteiro.jpg"
+                src="/marketing/obras-reais/cobertura-metalica-canteiro.webp"
                 alt="Canteiro com cobertura metalica em execucao, exemplo de obra acompanhada por registros e evidencias"
                 className="h-64 w-full object-cover"
                 loading="lazy"

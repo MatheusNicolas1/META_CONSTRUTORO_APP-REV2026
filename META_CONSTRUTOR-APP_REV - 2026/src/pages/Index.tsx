@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Check, ArrowRight, Zap, BarChart3, ClipboardCheck, Users, FileText, HardHat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import PublicNav from './PublicNav';
+import { getOptimizedImageUrl } from '@/hooks/useOptimizedImage';
 
 // ─── Lazy load abaixo da dobra ─────────────────────────────
 const ObrasReaisSection = lazy(() => import('@/components/ObrasReaisSection'));
@@ -145,6 +146,7 @@ function StatItem({ value, label, delay }: { value: string; label: string; delay
 function FeatureCard({ feature, index }: { feature: typeof features[0]; index: number }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const webpImage = getOptimizedImageUrl(feature.image, { width: 600 });
 
   return (
     <motion.div
@@ -161,7 +163,7 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent z-10" />
         <img
-          src={feature.image}
+          src={webpImage!}
           alt={feature.title}
           className="absolute bottom-0 left-0 right-0 w-full object-cover object-top rounded-b-2xl"
           style={{ maxHeight: '70%' }}

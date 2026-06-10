@@ -1,5 +1,40 @@
 import { supabase } from '@/integrations/supabase/client';
 
+/** Gera uma URL assinada (temporária) para download de arquivo */
+export async function getSignedUrl(path: string, bucket = 'documentos', expiresIn = 60): Promise<string | null> {
+    try {
+        const { data, error } = await supabase.storage
+            .from(bucket)
+            .createSignedUrl(path, expiresIn);
+        if (error) throw error;
+        return data?.signedUrl ?? null;
+    } catch (err) {
+        console.error(`[storageUtils] Erro ao gerar signed URL (${bucket}/${path}):`, err);
+        return null;
+    }
+}
+
+/** Marca um documento como excluído no banco (soft delete) */
+export async function deleteDocumento(documentoId: string): Promise<void> {
+    const { error } = await supabase
+        .from('documentos')
+        .update({ deleted_at: new Date().toISOString() })
+        .eq('id', documentoId);
+    if (error) throw new Error(error.message);
+}
+
+/** Baixa um arquivo do Storage pelo path e retorna o Blob */
+export async function downloadStorageFile(path: string, bucket = 'documentos'): Promise<Blob | null> {
+    try {
+        const { data, error } = await supabase.storage.from(bucket).download(path);
+        if (error) throw error;
+        return data;
+    } catch (err) {
+        console.error(`[storageUtils] Erro ao baixar arquivo (${bucket}/${path}):`, err);
+        return null;
+    }
+}
+
 export function getStoragePath(value: string, bucket = 'documentos'): string {
     if (!value) return value;
 
@@ -28,124 +63,60 @@ export function getStoragePath(value: string, bucket = 'documentos'): string {
 }
 
 /**
- * Gera uma URL temporária assinada (signed URL) para um arquivo no Storage.
- * Usar sempre que o bucket for privado — nunca expor path diretamente.
+ * Gera a URL pública de um arquivo no Storage a partir do path relativo salvo no banco.
+ * Usa o helper getStoragePath para normalizar, aceitando tanto paths relativos quanto URLs completas.
  *
- * @param bucket  Nome do bucket (ex: 'documentos')
- * @param path    Caminho relativo dentro do bucket (ex: '<rdo_id>/arquivo.pdf')
- * @param expiresIn Tempo em segundos (default: 600 = 10 min)
+ * @param bucket Nome do bucket (ex: 'documentos', 'obras-reais')
+ * @param value  Path relativo (ex: 'obra-id/arquivo.pdf') ou URL completa
+ * @returns URL pública completa ou null se value for vazio
  */
-export async function getSignedUrl(
-    bucket: string,
-    path: string,
-    expiresIn = 600
-): Promise<string | null> {
-    const storagePath = getStoragePath(path, bucket);
-    const { data, error } = await supabase.storage
-        .from(bucket)
-        .createSignedUrl(storagePath, expiresIn);
-
-    if (error) {
-        console.error(`[storageUtils] getSignedUrl error (${bucket}/${storagePath}):`, error.message);
-        return null;
-    }
-    return data?.signedUrl ?? null;
+export function getPublicUrl(value: string, bucket = 'documentos'): string | null {
+    if (!value) return null;
+    const path = getStoragePath(value, bucket);
+    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+    return data?.publicUrl ?? null;
 }
 
-export async function downloadStorageFile(
+/**
+ * Faz o download de um arquivo do Storage para o dispositivo do usuário.
+ * Aceita path relativo ou URL completa — normaliza internamente.
+ * Imagens são baixadas como .jpg/.png original; PDFs/documentos mantêm extensão.
+ *
+ * @param bucket   Nome do bucket
+ * @param value    Path relativo ou URL completa
+ * @param filename Nome sugerido para o arquivo baixado (opcional)
+ */
+export async function downloadStorageFileToDevice(
     bucket: string,
-    path: string
-): Promise<Blob | null> {
-    const storagePath = getStoragePath(path, bucket);
-    const { data, error } = await supabase.storage.from(bucket).download(storagePath);
+    value: string,
+    filename?: string
+): Promise<void> {
+    const path = getStoragePath(value, bucket);
+    const { data, error } = await supabase.storage.from(bucket).download(path);
 
     if (error || !data) {
-        console.error(`[storageUtils] downloadStorageFile error (${bucket}/${storagePath}):`, error?.message);
-        return null;
+        console.error(`[storageUtils] download error (${bucket}/${path}):`, error?.message);
+        throw new Error(error?.message || 'Falha ao baixar o arquivo');
     }
 
-    return data;
+    // Cria um URL temporário e dispara o download
+    const blobUrl = URL.createObjectURL(data);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = filename || path.split('/').pop() || 'arquivo';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(blobUrl);
 }
 
 /**
- * Remove um arquivo do Storage.
- *
- * @param bucket Nome do bucket
- * @param path   Caminho relativo
- * @returns true se removido com sucesso
+ * Abre uma imagem em uma nova aba para visualização em tela cheia.
+ * Usa getPublicUrl para garantir URL pública do Supabase Storage.
  */
-export async function deleteStorageFile(bucket: string, path: string): Promise<boolean> {
-    const storagePath = getStoragePath(path, bucket);
-    const { error } = await supabase.storage.from(bucket).remove([storagePath]);
-    if (error) {
-        console.error(`[storageUtils] deleteStorageFile error (${bucket}/${storagePath}):`, error.message);
-        return false;
-    }
-    return true;
-}
-
-/**
- * Exclui um documento: remove do banco + do Storage.
- *
- * @param docId       UUID do registro na tabela `documentos`
- * @param storagePath Path relativo no bucket (campo `url` do banco)
- * @param bucket      Bucket onde o arquivo está (default: 'documentos')
- * @returns true se ambas as operações tiveram sucesso
- */
-export async function deleteDocumento(
-    docId: string,
-    storagePath: string,
-    bucket = 'documentos'
-): Promise<boolean> {
-    // 1. Remover do banco (RLS garante que só dono ou admin podem deletar)
-    const { error: dbError } = await supabase
-        .from('documentos')
-        .delete()
-        .eq('id', docId);
-
-    if (dbError) {
-        console.error('[storageUtils] deleteDocumento DB error:', dbError.message);
-        return false;
-    }
-
-    // 2. Remover do Storage (best-effort: se falhar, loga mas não reverte o banco)
-    const storageOk = await deleteStorageFile(bucket, storagePath);
-    if (!storageOk) {
-        console.warn('[storageUtils] deleteDocumento: arquivo removido do banco mas falhou no Storage.');
-    }
-
-    return true;
-}
-
-/**
- * Converte um arquivo do Storage para base64 (usado para embutir imagens no PDF).
- *
- * @param bucket Nome do bucket
- * @param path   Caminho relativo
- * @returns string base64 (sem prefixo data:...) ou null em caso de erro
- */
-export async function getFileAsBase64(bucket: string, path: string): Promise<string | null> {
-    try {
-        const storagePath = getStoragePath(path, bucket);
-        const { data, error } = await supabase.storage.from(bucket).download(storagePath);
-        if (error || !data) {
-            console.error('[storageUtils] getFileAsBase64 download error:', error?.message);
-            return null;
-        }
-
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const result = reader.result as string;
-                // Remove o prefixo "data:image/...;base64,"
-                const base64 = result.split(',')[1] ?? null;
-                resolve(base64);
-            };
-            reader.onerror = () => resolve(null);
-            reader.readAsDataURL(data);
-        });
-    } catch (err) {
-        console.error('[storageUtils] getFileAsBase64 unexpected error:', err);
-        return null;
+export function openImageInNewTab(value: string, bucket = 'documentos'): void {
+    const url = getPublicUrl(value, bucket);
+    if (url) {
+        window.open(url, '_blank', 'noopener,noreferrer');
     }
 }

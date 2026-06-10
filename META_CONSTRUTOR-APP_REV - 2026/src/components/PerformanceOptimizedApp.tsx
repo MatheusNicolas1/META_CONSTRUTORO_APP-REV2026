@@ -483,6 +483,7 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/atualizacoes" element={<SafeSuspense fallback={null}><Atualizacoes /></SafeSuspense>} />
                       <Route path="/carreiras" element={<SafeSuspense fallback={null}><Carreiras /></SafeSuspense>} />
                       <Route path="/blog" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Blog /></SafeSuspense></>} />
+                      <Route path="/blog/page/:num" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Blog /></SafeSuspense></>} />
                       <Route path="/blog/:slug" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><BlogArticle /></SafeSuspense></>} />
                       <Route path="/legal/privacidade" element={<SafeSuspense fallback={null}><PrivacyPolicy /></SafeSuspense>} />
                       <Route path="/legal/termos" element={<SafeSuspense fallback={null}><TermsOfService /></SafeSuspense>} />

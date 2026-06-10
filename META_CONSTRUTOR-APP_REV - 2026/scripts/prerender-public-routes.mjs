@@ -34,6 +34,36 @@ const routes = [
     priorityType: "Blog",
   },
   {
+    path: "/blog/page/2",
+    title: "Pagina 2 - Blog Meta Construtor | Gestao de obras",
+    description: "Mais artigos sobre gestao de obras, RDO digital e produtividade - pagina 2.",
+    priorityType: "Blog",
+  },
+  {
+    path: "/blog/page/3",
+    title: "Pagina 3 - Blog Meta Construtor | Gestao de obras",
+    description: "Continue lendo sobre gestao de obras, RDO digital e tecnologia - pagina 3.",
+    priorityType: "Blog",
+  },
+  {
+    path: "/blog/page/4",
+    title: "Pagina 4 - Blog Meta Construtor | Gestao de obras",
+    description: "Mais conteudos sobre obras, RDO e constucao civil - pagina 4.",
+    priorityType: "Blog",
+  },
+  {
+    path: "/blog/page/5",
+    title: "Pagina 5 - Blog Meta Construtor | Gestao de obras",
+    description: "Artigos sobre gestao de obras e RDO digital - pagina 5.",
+    priorityType: "Blog",
+  },
+  {
+    path: "/blog/page/6",
+    title: "Pagina 6 - Blog Meta Construtor | Gestao de obras",
+    description: "Ultimos artigos do blog do Meta Construtor - pagina 6.",
+    priorityType: "Blog",
+  },
+  {
     path: "/blog/o-que-e-rdo",
     title: "O que e um RDO? Entenda o relatorio diario de obra",
     description: "Entenda o que e RDO na construcao civil, para que serve e quais campos registrar no relatorio diario de obra.",
@@ -243,6 +273,60 @@ const routes = [
     path: "/blog/cronograma-de-obra-caixa-economica",
     title: "Cronograma de Obra para Caixa Econômica: como elaborar passo a passo",
     description: "Guia completo para elaborar o cronograma físico-financeiro de obra exigido pela Caixa Econômica Federal no financiamento habitacional. Modelos, etapas, prazos e dicas para aprovação.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/orcamento-de-obra-passo-a-passo",
+    title: "Orçamento de Obra: Guia Completo com Exemplos Práticos | Meta Construtor",
+    description: "Aprenda a fazer orçamento de obra do zero com exemplos práticos, planilha gratuita, composição de custos e dicas para evitar estouro. Guia completo para engenheiros e construtores.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/diario-de-obra-app-online",
+    title: "Diário de Obra Online: Como Fazer Digital Gratuito em 2026",
+    description: "Aprenda como fazer diário de obra online grátis em 2026. Guia completo com app digital para RDO, fotos, assinaturas e relatórios automáticos para engenheiros e construtores.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/planejamento-de-obra-passo-a-passo",
+    title: "Planejamento de Obra: Passo a Passo Completo do Início ao Fim | Meta Construtor",
+    description: "Guia completo de planejamento de obra: etapas, cronograma, recursos, custos e riscos. Aprenda o passo a passo para planejar sua construção do zero com eficiência.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/app-gestao-de-obras-gratuito",
+    title: "App de Gestão de Obras Gratuito: Melhores Opções 2026 | Meta Construtor",
+    description: "Descubra os melhores apps gratuitos de gestão de obras para construtoras em 2026. Compare funcionalidades gratuitas de RDO, medição e controle financeiro sem pagar nada.",
+    priorityType: "Article",
+  },
+  {
+    path: "/blog/custo-de-obra-por-m2-2026",
+    title: "Custo de obra por m² em 2026: tabela completa atualizada",
+    description: "Tabela atualizada de custo de obra por m² em 2026 com base no SINAPI, CUB e mercado. Veja quanto custa construir cada tipo de edificação e como controlar gastos na sua obra.",
+    priorityType: "Article",
+    faqs: [
+      {
+        question: "Qual é o custo médio do metro quadrado de construção em 2026?",
+        answer: "O custo médio nacional para construção residencial padrão normal em 2026 é de R$ 2.100 a R$ 2.600/m², variando por região e padrão construtivo.",
+      },
+      {
+        question: "O que está incluso no custo por m² do SINAPI?",
+        answer: "O SINAPI inclui materiais, mão de obra com encargos sociais, equipamentos e despesas administrativas. Não inclui terreno, projetos, taxas de licença e BDI da construtora.",
+      },
+      {
+        question: "Como calcular o BDI no orçamento de obra?",
+        answer: "O BDI (Bonificação e Despesas Indiretas) é calculado sobre o custo direto da obra e varia de 20% a 30%, incluindo lucro, riscos, tributos e despesas indiretas da construtora.",
+      },
+      {
+        question: "Construir casa própria fica mais barato que comprar pronta em 2026?",
+        answer: "Construir costuma ser 15% a 25% mais barato que comprar pronto, desde que o terreno esteja pago e a obra seja gerenciada com controle de custos e planejamento adequados.",
+      },
+    ],
+  },
+  {
+    path: "/blog/checklist-de-obra-modelo-pdf",
+    title: "Checklist de Obra: modelo PDF gratuito para imprimir e usar no canteiro",
+    description: "Baixe grátis um modelo de checklist de obra em PDF para imprimir. Guia completo com tipos de checklist, passo a passo de uso e dicas para não esquecer nenhuma etapa da construção civil.",
     priorityType: "Article",
   },
   {

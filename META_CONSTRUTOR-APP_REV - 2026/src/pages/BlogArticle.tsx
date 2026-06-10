@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, CheckCircle2, Camera } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { NavigationSafety } from '@/utils/navigationSafety';
 import SEO from '@/components/SEO';
 import { getBlogArticle } from '@/content/blogArticles';
@@ -9,6 +9,19 @@ import LandingNavigation from '@/components/landing/LandingNavigation';
 import FooterSection from '@/components/landing/FooterSection';
 import { Button } from '@/components/ui/button';
 
+// Track unique article views in localStorage for popularity sort
+function trackArticleView(slug: string) {
+  try {
+    const key = 'blog_views';
+    const stored = localStorage.getItem(key);
+    const views: Record<string, number> = stored ? JSON.parse(stored) : {};
+    views[slug] = (views[slug] || 0) + 1;
+    localStorage.setItem(key, JSON.stringify(views));
+  } catch {
+    // localStorage may be unavailable
+  }
+}
+
 const BlogArticle = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -16,6 +29,7 @@ const BlogArticle = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    if (slug) trackArticleView(slug);
   }, [slug]);
 
   if (!article) {

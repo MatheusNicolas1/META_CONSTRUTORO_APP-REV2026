@@ -12,5 +12,8 @@
   "proximo_dia_26": 2,
   "enviados_26": [],
   "enviados_onboarding": [],
-  "proximo_envio": null
+  "proximo_envio": "2026-06-10",
+  "dia": 2,
+  "enviado": false,
+  "ja_enviado_hoje": false
 }

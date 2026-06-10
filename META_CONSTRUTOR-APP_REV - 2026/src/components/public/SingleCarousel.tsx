@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { getOptimizedImageUrl } from '@/hooks/useOptimizedImage';
 
 // ─── Tipos ────────────────────────────────────────────────
 
@@ -66,6 +67,7 @@ function injectKeyframes() {
 // ─── Imagem com Mockup de Celular ─────────────────────────
 
 function MobileMockupImage({ src, title }: { src: string; title: string }) {
+  const optimizedSrc = getOptimizedImageUrl(src, { width: 300 }) || src;
   return (
     <div className="relative flex-shrink-0 w-[180px] sm:w-[200px] md:w-[220px] lg:w-[240px] contain-layout">
       <div className="relative mx-auto w-full max-w-[180px] sm:max-w-[200px] md:max-w-[220px] lg:max-w-[240px]">
@@ -76,7 +78,7 @@ function MobileMockupImage({ src, title }: { src: string; title: string }) {
           </div>
           <div className="absolute inset-[3px] sm:inset-[4px] rounded-[1.5rem] sm:rounded-[1.75rem] overflow-hidden bg-white">
             <img
-              src={src}
+              src={optimizedSrc}
               alt={title}
               className="w-full h-full object-cover object-top"
               loading="lazy"
@@ -87,6 +89,31 @@ function MobileMockupImage({ src, title }: { src: string; title: string }) {
         <p className="text-center text-[10px] sm:text-xs text-brand-blue dark:text-blue-300 mt-2 truncate px-1 font-semibold">
           {title}
         </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Imagem Desktop/Tablet ────────────────────────────────
+function DesktopImage({ src, title }: { src: string; title: string }) {
+  const optimizedSrc = getOptimizedImageUrl(src, { width: 600 }) || src;
+  return (
+    <div className="flex-shrink-0 w-[260px] sm:w-[300px] md:w-[340px] lg:w-[380px] contain-layout">
+      <div className="relative overflow-hidden rounded-xl border border-neutral-200/60 bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div className="aspect-[16/10] overflow-hidden">
+          <img
+            src={optimizedSrc}
+            alt={title}
+            className="w-full h-full object-cover object-top"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white/95 via-white/60 to-transparent p-3">
+          <h3 className="text-xs sm:text-sm font-bold text-brand-blue truncate">
+            {title}
+          </h3>
+        </div>
       </div>
     </div>
   );
@@ -113,27 +140,11 @@ function SingleCarouselRow({ items, speed = 35, isMobile }: { items: CarouselIte
       >
         {doubled.map((item, idx) => (
           <div key={idx} className="flex-shrink-0">
+            {/* Desktop/tablet image */}
             {isMobile || item.isMobile ? (
               <MobileMockupImage src={item.src} title={item.title} />
             ) : (
-              <div className="flex-shrink-0 w-[260px] sm:w-[300px] md:w-[340px] lg:w-[380px] contain-layout">
-                <div className="relative overflow-hidden rounded-xl border border-neutral-200/60 bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
-                  <div className="aspect-[16/10] overflow-hidden">
-                    <img
-                      src={item.src}
-                      alt={item.title}
-                      className="w-full h-full object-cover object-top"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white/95 via-white/60 to-transparent p-3">
-                    <h3 className="text-xs sm:text-sm font-bold text-brand-blue truncate">
-                      {item.title}
-                    </h3>
-                  </div>
-                </div>
-              </div>
+              <DesktopImage src={item.src} title={item.title} />
             )}
           </div>
         ))}

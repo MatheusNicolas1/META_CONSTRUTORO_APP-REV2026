@@ -354,6 +354,24 @@ export const seoPages = {
     "Artigos sobre RDO digital, checklists de obra, relatórios automáticos, gestão financeira, LGPD na construção civil e muito mais. Conteúdo feito por quem entende de obra.",
     [webPageJsonLd("Blog Meta Construtor 2", "/blog2", "Conteúdos educativos sobre gestão de obras.", "Blog")]
   ),
+  captura: page(
+    "/captura",
+    "Modelo RDO Grátis em Excel | Meta Construtor",
+    "Baixe gratuitamente o modelo profissional de planilha de Diário de Obra (RDO) em Excel. Simulador interativo, calculadora de economia e cupom de teste incluso.",
+    [
+      softwareJsonLd,
+      faqJsonLd([
+        {
+          question: "O modelo de Diário de Obra em Excel é gratuito?",
+          answer: "Sim, o modelo em formato CSV/Excel otimizado é 100% gratuito e enviado por e-mail imediatamente após o preenchimento do formulário.",
+        },
+        {
+          question: "O que é o cupom RDO-PREMIUM?",
+          answer: "É um cupom de teste gratuito do Meta Construtor, sem cartão de crédito, que acompanha o download da planilha.",
+        },
+      ]),
+    ]
+  ),
 } satisfies Record<string, SeoConfig>;
 
 export const publicIndexablePages = [
@@ -367,6 +385,7 @@ export const publicIndexablePages = [
   seoPages.sobre2,
   seoPages.contato2,
   seoPages.blog2,
+  seoPages.captura,
   seoPages.centralAjuda,
   seoPages.documentacao,
   seoPages.api,

@@ -113,19 +113,26 @@ const ChecklistDetalhes = () => {
     }
   };
 
-  const handleItemStatusChange = async (itemId: string, completed: boolean) => {
+  const handleItemStatusChange = async (itemId: string, newStatus: string) => {
+    const isCompleted = newStatus === "Concluído";
     try {
       await updateChecklistItem.mutateAsync({
         itemId,
         updates: {
-          status: completed ? "Concluído" : "Não iniciado",
-          completedAt: completed ? new Date().toISOString() : null,
-          // completedBy logic handled by backend or trigger preferred, but sending null/reset for now
+          status: newStatus,
+          completedAt: isCompleted ? new Date().toISOString() : null,
         }
       });
+      toastEnhanced.success("Salvo", isCompleted ? "Item concluído." : `Status atualizado para ${newStatus}.`);
     } catch (error) {
       console.error("Failed to update status", error);
+      toastEnhanced.error("Erro", "Não foi possível atualizar o status do item.");
     }
+  };
+
+  const handleItemCheckboxToggle = async (itemId: string, item: { status: string }) => {
+    const newStatus = item.status === "Concluído" ? "Não iniciado" : "Concluído";
+    await handleItemStatusChange(itemId, newStatus);
   };
 
   const handleItemObservationBlur = async (itemId: string, observation: string) => {
@@ -204,17 +211,29 @@ const ChecklistDetalhes = () => {
       return;
     }
 
+    // Validar itens obrigatórios
+    const obrigatoriosNaoAplicaveis = checklist.items.filter(
+      item => item.isObligatory && item.status === "Não aplicável"
+    );
+    if (obrigatoriosNaoAplicaveis.length > 0) {
+      toastEnhanced.error(
+        "Itens obrigatórios pendentes",
+        `${obrigatoriosNaoAplicaveis.length} item(ns) obrigatório(s) estão marcados como "Não aplicável". Corrija antes de finalizar.`
+      );
+      return;
+    }
+
     try {
       const now = new Date().toISOString();
       await updateChecklistStatus.mutateAsync({
         checklistId: checklist.id,
         updates: {
-          status: "Em Andamento",
+          status: "Aguardando Aprovação",
           startedAt: checklist.startedAt || now,
         },
       });
       await refetch();
-      toastEnhanced.success("Checklist finalizado", "Checklist pronto para aprovacao.");
+      toastEnhanced.success("Checklist finalizado", "Checklist enviado para aprovação.");
     } catch (error) {
       console.error("Erro ao finalizar checklist", error);
       toastEnhanced.error("Erro", "Nao foi possivel finalizar o checklist.");
@@ -478,7 +497,7 @@ const ChecklistDetalhes = () => {
                 </div>
               </DialogContent>
             </Dialog>
-            {checklist.progress.percentage === 100 && checklist.status !== "Em Andamento" && checklist.status !== "Concluído" && (
+            {checklist.progress.percentage === 100 && checklist.status !== "Aguardando Aprovação" && checklist.status !== "Concluído" && (
               <Button
                 variant="outline"
                 onClick={handleFinalize}
@@ -488,7 +507,7 @@ const ChecklistDetalhes = () => {
                 Finalizar Checklist
               </Button>
             )}
-            {canApproveChecklist && checklist.status === "Em Andamento" && !checklist.signature && (
+            {canApproveChecklist && checklist.status === "Aguardando Aprovação" && !checklist.signature && (
               <>
                 <DigitalSignatureComponent
                   onSign={handleApprove}
@@ -558,6 +577,8 @@ const ChecklistDetalhes = () => {
               <Badge variant="secondary" className="w-fit">{checklist.category}</Badge>
               {checklist.status === 'Concluído' ? (
                 <Badge className="bg-green-100 text-green-800 w-fit">Concluído</Badge>
+              ) : checklist.status === 'Aguardando Aprovação' ? (
+                <Badge className="bg-yellow-100 text-yellow-800 w-fit">Aguardando Aprovação</Badge>
               ) : checklist.status === 'Em Andamento' ? (
                 <Badge className="bg-blue-100 text-blue-800 w-fit">Em Andamento</Badge>
               ) : (
@@ -606,7 +627,7 @@ const ChecklistDetalhes = () => {
                   <div className="flex items-start gap-3 flex-1">
                     <Checkbox
                       checked={item.status === "Concluído"}
-                      onCheckedChange={(checked) => handleItemStatusChange(item.id, checked === true)}
+                      onCheckedChange={() => handleItemCheckboxToggle(item.id, item)}
                       className="mt-1 print-hidden"
                     />
                     <div className="flex-1">

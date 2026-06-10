@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@ark-ui/react": "^4.0.0",
+    "@google/generative-ai": "^0.24.1",
     "@hello-pangea/dnd": "^17.0.0",
     "@hookform/resolvers": "^3.9.0",
     "@internationalized/date": "^3.11.0",

@@ -141,7 +141,7 @@ const ChecklistPage = () => {
     filters.dateRange.start || filters.dateRange.end;
 
   const activeChecklists = checklists.filter(c =>
-    c.status === "Em Andamento" || c.status === "Rascunho" || c.status === "Pendente"
+    c.status === "Em Andamento" || c.status === "Rascunho" || c.status === "Pendente" || c.status === "Aguardando Aprovação"
   );
   const completedChecklists = checklists.filter(c => c.status === "Concluído");
   const allChecklists = checklists;

@@ -39,42 +39,42 @@ const features = [
     icon: ClipboardCheck,
     title: 'RDO Digital',
     desc: 'Registre diários de obra em segundos. Aprovação, fotos e clima em um só lugar.',
-    image: `${MARKETING}/prd-prints-2026-06-04-15-rdo-visualizacao-desktop.png`,
+    image: `${MARKETING}/prd-prints-2026-06-04-15-rdo-visualizacao-desktop.webp`,
     cta: 'Testar RDO',
   },
   {
     icon: HardHat,
     title: 'Gestão de Obras',
     desc: 'Acompanhe cada obra com cronograma, orçamento, equipes e documentos integrados.',
-    image: `${MARKETING}/prd-prints-2026-06-04-02-obras-lista-desktop.png`,
+    image: `${MARKETING}/prd-prints-2026-06-04-02-obras-lista-desktop.webp`,
     cta: 'Ver obras',
   },
   {
     icon: FileText,
     title: 'Documentos & Checklists',
     desc: 'Checklists inteligentes, upload de documentos e controle de versão para sua equipe.',
-    image: `${MARKETING}/prd-prints-2026-06-04-06-checklist-lista-desktop.png`,
+    image: `${MARKETING}/prd-prints-2026-06-04-06-checklist-lista-desktop.webp`,
     cta: 'Ver checklists',
   },
   {
     icon: BarChart3,
     title: 'Relatórios em Tempo Real',
     desc: 'Dashboards, PDFs e exportações para tomar decisões com dados reais da obra.',
-    image: `${MARKETING}/prd-prints-2026-06-04-12-relatorios-resumo-desktop.png`,
+    image: `${MARKETING}/prd-prints-2026-06-04-12-relatorios-resumo-desktop.webp`,
     cta: 'Ver relatórios',
   },
   {
     icon: Users,
     title: 'Equipes & Colaboradores',
     desc: 'Cadastre equipes, atribua responsáveis e acompanhe a produtividade de cada frente.',
-    image: `${MARKETING}/prd-prints-2026-06-04-28-dashboard-resumo-final-desktop.png`,
+    image: `${MARKETING}/prd-prints-2026-06-04-28-dashboard-resumo-final-desktop.webp`,
     cta: 'Gerir equipes',
   },
   {
     icon: FileText,
     title: 'Documentos da Obra',
     desc: 'Centralize projetos, ART, laudos e todos os documentos em um repositório seguro.',
-    image: `${MARKETING}/prd-prints-2026-06-04-07-documentos-lista-desktop.png`,
+    image: `${MARKETING}/prd-prints-2026-06-04-07-documentos-lista-desktop.webp`,
     cta: 'Ver documentos',
   },
 ];
@@ -348,9 +348,11 @@ export default function Home() {
                     <div className="text-xs text-neutral-400 ml-2">Meta Construtor — Dashboard</div>
                   </div>
                   <img
-                    src={`${MARKETING}/prd-prints-2026-06-04-28-dashboard-resumo-final-desktop.png`}
+                    src={`${MARKETING}/prd-prints-2026-06-04-28-dashboard-resumo-final-desktop.webp`}
                     alt="Dashboard do Meta Construtor"
-                    className="w-full"
+                    width="1440"
+                    height="900"
+                    className="w-full h-auto"
                     loading="eager"
                     fetchPriority="high"
                     decoding="async"
@@ -361,7 +363,7 @@ export default function Home() {
                 <div className="absolute -bottom-6 -right-4 lg:-right-8 w-32 lg:w-40">
                   <div className="rounded-2xl border-2 border-neutral-200 shadow-xl overflow-hidden bg-white">
                     <img
-                      src={`${MARKETING}/prd-prints-2026-06-04-13-integracoes-status-desktop.png`}
+                      src={`${MARKETING}/prd-prints-2026-06-04-13-integracoes-status-desktop.webp`}
                       alt="Meta Construtor mobile"
                       className="w-full"
                       loading="lazy"

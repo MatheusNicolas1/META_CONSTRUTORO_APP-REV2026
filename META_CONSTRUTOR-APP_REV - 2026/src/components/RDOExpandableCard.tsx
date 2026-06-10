@@ -23,17 +23,24 @@ import { Button } from "@/components/ui/button";
 import { useExpandable } from "@/hooks/use-expandable";
 import { RDO } from "@/types/rdo";
 import { SocialShare } from "@/components/SocialShare";
+import { useRDONichos } from "@/hooks/useRDONichos";
+import { RDONichoSelect } from "@/components/rdo/RDONichoSelect";
 
 interface RDOExpandableCardProps {
   rdo: RDO;
   onEdit: (rdo: RDO) => void;
   onDelete: (id: number | string) => void;
   onDownload: (rdo: RDO) => void;
+  editMode?: boolean;
+  onNichoChange?: (nichoId: string) => void;
 }
 
-export function RDOExpandableCard({ rdo, onEdit, onDelete, onDownload }: RDOExpandableCardProps) {
+export function RDOExpandableCard({ rdo, onEdit, onDelete, onDownload, editMode = false, onNichoChange }: RDOExpandableCardProps) {
   const { isExpanded, toggleExpand, animatedHeight } = useExpandable();
   const contentRef = useRef<HTMLDivElement>(null);
+  const { nichosQuery } = useRDONichos();
+  const nichos = nichosQuery.data || [];
+  const nicho = nichos.find((n) => n.id === (rdo as Record<string, unknown>).nicho_id as string);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -98,6 +105,24 @@ export function RDOExpandableCard({ rdo, onEdit, onDelete, onDownload }: RDOExpa
 
           {/* Status Badge */}
           {getStatusBadge(rdo.status)}
+
+          {/* Nicho Badge */}
+          {nicho && !editMode && (
+            <Badge
+              className="text-[10px] px-1.5 py-0 border flex items-center gap-1"
+              style={{
+                backgroundColor: `${nicho.cor}20`,
+                borderColor: nicho.cor,
+                color: nicho.cor,
+              }}
+            >
+              <span
+                className="h-1.5 w-1.5 rounded-full inline-block"
+                style={{ backgroundColor: nicho.cor }}
+              />
+              {nicho.nome}
+            </Badge>
+          )}
 
           {/* Spacer */}
           <div className="flex-1" />
@@ -258,6 +283,19 @@ export function RDOExpandableCard({ rdo, onEdit, onDelete, onDownload }: RDOExpa
                             {eq.nome} · {eq.horasUso}h
                           </Badge>
                         ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Nicho Select - modo edição */}
+                  {editMode && onNichoChange && (
+                    <div>
+                      <h4 className="text-xs font-semibold text-card-foreground mb-1.5">Nicho</h4>
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <RDONichoSelect
+                          value={nicho?.id || ''}
+                          onChange={onNichoChange}
+                        />
                       </div>
                     </div>
                   )}

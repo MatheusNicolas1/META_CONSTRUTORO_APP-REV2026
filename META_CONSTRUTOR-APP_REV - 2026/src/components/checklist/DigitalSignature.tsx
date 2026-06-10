@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { DigitalSignature } from "@/types/checklist";
-import { PenTool, RotateCcw, Check, X } from "lucide-react";
+import { PenTool, RotateCcw, Check, X, Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface DigitalSignatureProps {
@@ -107,7 +107,20 @@ export function DigitalSignatureComponent({
     setHasSignature(false);
   };
 
-  const saveSignature = () => {
+  const [isLoadingIP, setIsLoadingIP] = useState(false);
+
+  // Captura o IP real do usuário via API pública
+  const getRealIP = async (): Promise<string> => {
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      return data.ip;
+    } catch {
+      return "IP não disponível";
+    }
+  };
+
+  const saveSignature = async () => {
     if (!hasSignature) {
       toast({
         title: "Assinatura necessária",
@@ -129,27 +142,43 @@ export function DigitalSignatureComponent({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Convert canvas to base64
-    const signatureBase64 = canvas.toDataURL('image/png');
+    try {
+      setIsLoadingIP(true);
 
-    const signature: DigitalSignature = {
-      id: `sig-${Date.now()}`,
-      signerName: signatureData.name,
-      signerEmail: signatureData.email,
-      signedAt: new Date().toISOString(),
-      signatureData: signatureBase64,
-      ipAddress: "192.168.1.1", // Em produção, pegar o IP real
-      deviceInfo: navigator.userAgent
-    };
+      const realIP = await getRealIP();
 
-    onSign(signature);
-    setIsDialogOpen(false);
-    clearSignature();
+      // Convert canvas to base64
+      const signatureBase64 = canvas.toDataURL('image/png');
 
-    toast({
-      title: "Assinatura salva",
-      description: "O checklist foi assinado digitalmente com sucesso.",
-    });
+      const signature: DigitalSignature = {
+        id: `sig-${Date.now()}`,
+        signerName: signatureData.name,
+        signerEmail: signatureData.email,
+        signedAt: new Date().toISOString(),
+        signatureData: signatureBase64,
+        ipAddress: realIP,
+        deviceInfo: navigator.userAgent
+      };
+
+      setIsLoadingIP(false);
+
+      onSign(signature);
+      setIsDialogOpen(false);
+      clearSignature();
+
+      toast({
+        title: "Assinatura salva",
+        description: "O checklist foi assinado digitalmente com sucesso.",
+      });
+    } catch (error) {
+      console.error("Erro ao obter IP para assinatura:", error);
+      setIsLoadingIP(false);
+      toast({
+        title: "Erro",
+        description: "Não foi possível obter seu IP. Verifique sua conexão e tente novamente.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -259,10 +288,9 @@ export function DigitalSignatureComponent({
             </Button>
             <Button
               onClick={saveSignature}
-              disabled={!hasSignature || !signatureData.name.trim()}
+              disabled={!hasSignature || !signatureData.name.trim() || isLoadingIP}
             >
-              <Check className="h-4 w-4 mr-2" />
-              Confirmar Assinatura
+              {isLoadingIP ? <><Globe className="h-4 w-4 mr-2 animate-spin" />Obtendo IP...</> : <><Check className="h-4 w-4 mr-2" />Confirmar Assinatura</>}
             </Button>
           </div>
         </div>

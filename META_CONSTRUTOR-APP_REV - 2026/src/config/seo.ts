@@ -294,6 +294,66 @@ export const seoPages = {
     [],
     "noindex,nofollow"
   ),
+
+  // ── V2 Pages ──
+
+  home2: page(
+    "/home2",
+    "Meta Construtor 2 | Gestão de Obras Moderna e Inteligente",
+    "Conheça a nova versão do Meta Construtor: gestão de obras com RDO digital, checklists inteligentes, dashboard financeiro e muito mais. Menos papel, mais obra.",
+    [
+      faqJsonLd([
+        {
+          question: "O que é o Meta Construtor 2?",
+          answer: "É a nova versão da plataforma de gestão de obras com design moderno, mais velocidade e novas funcionalidades como galeria de obras, depoimentos em vídeo e hero cinematográfico.",
+        },
+        {
+          question: "Quais são as principais funcionalidades?",
+          answer: "RDO digital completo, checklists inteligentes, relatórios automáticos, dashboard financeiro, gestão de equipes, documentos e contratos, portal do cliente e integrações com ERP.",
+        },
+      ]),
+    ]
+  ),
+  preco2: page(
+    "/preco2",
+    "Planos e Preços 2 | Meta Construtor",
+    "Conheça os planos do Meta Construtor 2: Grátis, Profissional (R$79/mês) e Enterprise (R$299/mês). Economize 20% no plano anual. 7 dias grátis no Profissional.",
+    [
+      softwareJsonLd,
+      faqJsonLd([
+        {
+          question: "Existe plano gratuito no Meta Construtor 2?",
+          answer: "Sim. O plano Grátis inclui 1 obra ativa, até 3 usuários, RDO digital básico e checklists simples. Perfeito para testar a plataforma.",
+        },
+        {
+          question: "Quanto custa o plano Profissional?",
+          answer: "O plano Profissional custa R$79/mês no plano mensal ou R$63/mês no anual (economia de 20%). Inclui obras ilimitadas, usuários ilimitados e todas as funcionalidades.",
+        },
+        {
+          question: "Posso mudar de plano depois?",
+          answer: "Sim! Você pode fazer upgrade ou downgrade a qualquer momento. O valor é proporcional ao período já utilizado.",
+        },
+      ]),
+    ]
+  ),
+  sobre2: page(
+    "/sobre2",
+    "Sobre o Meta Construtor 2 | Quem somos e nossa história",
+    "Conheça a história do Meta Construtor, nossos valores, missão e a equipe que está transformando a gestão de obras no Brasil. Mais de 1.500 obras gerenciadas.",
+    [organizationJsonLd]
+  ),
+  contato2: page(
+    "/contato2",
+    "Contato 2 | Fale com o Meta Construtor",
+    "Entre em contato com a equipe do Meta Construtor 2. Tire dúvidas, peça um orçamento ou agende uma demonstração personalizada. WhatsApp, e-mail e formulário.",
+    [organizationJsonLd, webPageJsonLd("Contato Meta Construtor 2", "/contato2", "Canais oficiais para falar com o Meta Construtor 2.", "ContactPage")]
+  ),
+  blog2: page(
+    "/blog2",
+    "Blog Meta Construtor 2 | Conteúdo para sua obra",
+    "Artigos sobre RDO digital, checklists de obra, relatórios automáticos, gestão financeira, LGPD na construção civil e muito mais. Conteúdo feito por quem entende de obra.",
+    [webPageJsonLd("Blog Meta Construtor 2", "/blog2", "Conteúdos educativos sobre gestão de obras.", "Blog")]
+  ),
 } satisfies Record<string, SeoConfig>;
 
 export const publicIndexablePages = [
@@ -302,6 +362,11 @@ export const publicIndexablePages = [
   seoPages.sobre,
   seoPages.contato,
   seoPages.blog,
+  seoPages.home2,
+  seoPages.preco2,
+  seoPages.sobre2,
+  seoPages.contato2,
+  seoPages.blog2,
   seoPages.centralAjuda,
   seoPages.documentacao,
   seoPages.api,

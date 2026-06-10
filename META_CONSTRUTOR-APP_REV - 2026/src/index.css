@@ -2,6 +2,17 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* Prevent CLS on hero images that use w-full without intrinsic dimensions */
+@layer base {
+  img[loading="lazy"],
+  img[decoding="async"] {
+    aspect-ratio: attr(width) / attr(height);
+  }
+  img:not([width]):not([height]) {
+    aspect-ratio: 16 / 9;
+  }
+}
+
 /* Custom scrollbar styles */
 .scrollbar-thin {
   scrollbar-width: thin;

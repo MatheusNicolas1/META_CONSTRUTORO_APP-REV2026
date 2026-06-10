@@ -33,6 +33,35 @@ const routes = [
     description: "Artigos sobre gestao de obras, RDO digital, produtividade e tecnologia para construtoras.",
     priorityType: "Blog",
   },
+  // ── V2 Pages ──
+  {
+    path: "/home2",
+    title: "Meta Construtor 2 | Gestão de Obras Moderna e Inteligente",
+    description: "Conheça a nova versão do Meta Construtor com hero cinematográfico, galeria de obras e depoimentos em vídeo.",
+    priorityType: "SoftwareApplication",
+  },
+  {
+    path: "/preco2",
+    title: "Planos e Preços 2 | Meta Construtor",
+    description: "Planos Grátis, Profissional (R$79/mês) e Enterprise (R$299/mês). Economize 20% no plano anual.",
+  },
+  {
+    path: "/sobre2",
+    title: "Sobre o Meta Construtor 2 | Quem somos e nossa história",
+    description: "Conheça a história, valores e equipe do Meta Construtor. Mais de 1.500 obras gerenciadas.",
+  },
+  {
+    path: "/contato2",
+    title: "Contato 2 | Fale com o Meta Construtor",
+    description: "Entre em contato com a equipe do Meta Construtor 2. WhatsApp, e-mail e formulário.",
+    priorityType: "ContactPage",
+  },
+  {
+    path: "/blog2",
+    title: "Blog Meta Construtor 2 | Conteúdo para sua obra",
+    description: "Artigos sobre RDO digital, checklists, relatórios financeiros e gestão de obras.",
+    priorityType: "Blog",
+  },
   {
     path: "/blog/page/2",
     title: "Pagina 2 - Blog Meta Construtor | Gestao de obras",
@@ -328,6 +357,36 @@ const routes = [
     title: "Checklist de Obra: modelo PDF gratuito para imprimir e usar no canteiro",
     description: "Baixe grátis um modelo de checklist de obra em PDF para imprimir. Guia completo com tipos de checklist, passo a passo de uso e dicas para não esquecer nenhuma etapa da construção civil.",
     priorityType: "Article",
+  },
+  {
+    path: '/blog/seguranca-do-trabalho-canteiro-de-obras',
+    title: 'Segurança do trabalho em canteiro de obras: guia completo NR-18',
+    description: 'Guia completo sobre segurança do trabalho em canteiro de obras. Entenda a NR-18, EPIs obrigatórios, sinalização, análise de risco, treinamentos e como documentar tudo no RDO digital.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/documentos-obra-exigidos-prefeitura',
+    title: 'Documentos de obra exigidos pela prefeitura: checklist completo 2026',
+    description: 'Guia completo com a lista de documentos de obra exigidos pela prefeitura para aprovação de projeto, alvará, habite-se e licenças. Checklist atualizado 2026 para construtoras e engenheiros.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/apostila-para-obra',
+    title: 'Apostila para obra: documentos e procedimentos essenciais',
+    description: 'Guia completo sobre apostila de obra: o conjunto de documentos técnicos organizados para consulta no canteiro. Saiba quais documentos incluir, como organizar e os benefícios para fiscalização e auditoria.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/construcao-civil-tendencias-2026',
+    title: 'Construção civil 2026: tendências, mercado e oportunidades para construtoras',
+    description: 'As principais tendências da construção civil em 2026: mercado aquecido, digitalização de obras, novos materiais sustentáveis e oportunidades para construtoras de pequeno e médio porte.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/rdo-digital-como-prova-tecnica',
+    title: 'RDO digital como prova técnica: validade jurídica e modelos para 2026',
+    description: 'Entenda o valor jurídico do RDO digital como prova técnica em ações trabalhistas e contratuais. Guia completo com modelos, validade legal e dicas para 2026.',
+    priorityType: 'Article',
   },
   {
     path: "/central-ajuda",

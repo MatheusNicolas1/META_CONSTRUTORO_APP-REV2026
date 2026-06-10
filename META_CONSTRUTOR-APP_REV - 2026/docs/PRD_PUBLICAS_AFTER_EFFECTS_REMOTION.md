@@ -487,8 +487,8 @@ vercel --prod
 - [x] Reconstruir `/home` com a nova estrutura de seções
 - [x] Reconstruir `/preco` com cards limpos + tabela comparativa
 - [x] Reconstruir `/sobre` e `/contato`
-- [ ] Validar responsividade em 320px, 390px, 768px, 1024px, 1440px
-- [ ] Rodar `npx impeccable detect` — mirar zero P0/P1
+- [x] Validar responsividade em 320px, 390px, 768px, 1024px, 1440px
+- [x] Rodar `npx impeccable detect` — mirar zero P0/P1
 
 ### Fase 2 — Animações e Remotion (2-3 dias)
 

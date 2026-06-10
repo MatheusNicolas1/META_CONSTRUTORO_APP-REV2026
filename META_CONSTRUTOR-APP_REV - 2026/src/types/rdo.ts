@@ -151,6 +151,7 @@ export interface CreateRDOData {
   clima: string;
   equipeOciosa: boolean;
   tempoOcioso?: number;
+  nichoId?: string;
   atividadesRealizadas: Omit<AtividadeRDO, 'id'>[];
   atividadesExtras: Omit<AtividadeExtraRDO, 'id'>[];
   equipesPresentes: EquipeRDO[];
@@ -183,4 +184,79 @@ export interface ExportRDOOptions {
   includeImages: boolean;
   includeDocuments: boolean;
   emailTo?: string[];
+}
+
+// ============================================================
+// Tipos para Nichos e Agendas (PRD_NICHOS_RDO.md)
+// ============================================================
+
+export interface RDONicho {
+  id: string;
+  org_id: string;
+  nome: string;
+  slug: string;
+  descricao?: string;
+  cor: string;
+  icone: string;
+  ativo: boolean;
+  ordem: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RDOAgenda {
+  id: string;
+  org_id: string;
+  data: string;
+  titulo?: string;
+  resumo_geral?: string;
+  clima_geral?: string;
+  observacoes_gestor?: string;
+  criado_por_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ResumoNicho {
+  data: string;
+  nicho: string;
+  slug: string;
+  total_rdos: number;
+  total_atividades: number;
+  total_equipes: number;
+  ocorrencias: {
+    tipo: string;
+    descricao: string;
+    gravidade?: string;
+    impacto?: string;
+  }[];
+  materiais_em_falta: {
+    nome: string;
+    prioridade: string;
+  }[];
+  resumo_texto: string;
+  colaboradores_envolvidos: string[];
+  status_geral: 'NORMAL' | 'ATENÇÃO' | 'ALERTA' | 'CRÍTICO';
+}
+
+export interface ResumoGeral {
+  data: string;
+  total_rdos: number;
+  total_nichos: number;
+  nichos: {
+    nicho: string;
+    slug: string;
+    total_rdos: number;
+    ocorrencias_criticas: number;
+    status: string;
+    resumo_curto: string;
+  }[];
+  status_geral: 'NORMAL' | 'ATENÇÃO' | 'ALERTA' | 'CRÍTICO';
+  resumo_geral: string;
+}
+
+export interface RDOAgendaFilter {
+  orgId: string;
+  dataInicio?: string;
+  dataFim?: string;
 }

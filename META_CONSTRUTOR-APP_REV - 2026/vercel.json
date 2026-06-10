@@ -1,6 +1,24 @@
 {
     "headers": [
         {
+            "source": "/assets/(.*)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=31536000, immutable"
+                }
+            ]
+        },
+        {
+            "source": "/marketing/(.*)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=86400, stale-while-revalidate=604800"
+                }
+            ]
+        },
+        {
             "source": "/(.*)",
             "headers": [
                 {
@@ -14,6 +32,11 @@
         { "source": "/home", "destination": "/home/index.html" },
         { "source": "/preco", "destination": "/preco/index.html" },
         { "source": "/sobre", "destination": "/sobre/index.html" },
+        { "source": "/home2", "destination": "/home2/index.html" },
+        { "source": "/preco2", "destination": "/preco2/index.html" },
+        { "source": "/blog2", "destination": "/blog2/index.html" },
+        { "source": "/contato2", "destination": "/contato2/index.html" },
+        { "source": "/sobre2", "destination": "/sobre2/index.html" },
         { "source": "/contato", "destination": "/contato/index.html" },
         { "source": "/blog", "destination": "/blog/index.html" },
         { "source": "/blog/page/:num", "destination": "/blog/page/:num/index.html" },
@@ -57,6 +80,8 @@
         { "source": "/blog/custo-de-obra-por-m2-2026", "destination": "/blog/custo-de-obra-por-m2-2026/index.html" },
         { "source": "/blog/checklist-de-obra-modelo-pdf", "destination": "/blog/checklist-de-obra-modelo-pdf/index.html" },
         { "source": "/blog/seguranca-do-trabalho-canteiro-de-obras", "destination": "/blog/seguranca-do-trabalho-canteiro-de-obras/index.html" },
+        { "source": "/blog/documentos-obra-exigidos-prefeitura", "destination": "/blog/documentos-obra-exigidos-prefeitura/index.html" },
+        { "source": "/blog/apostila-para-obra", "destination": "/blog/apostila-para-obra/index.html" },
         { "source": "/blog/construcao-civil-tendencias-2026", "destination": "/blog/construcao-civil-tendencias-2026/index.html" },
         { "source": "/central-ajuda", "destination": "/central-ajuda/index.html" },
         { "source": "/documentacao", "destination": "/documentacao/index.html" },

@@ -3,10 +3,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import { Form, FormLabel } from "@/components/ui/form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Save } from "lucide-react";
+import { Save, Folder } from "lucide-react";
 import { rdoSchema, RDOFormData } from "@/schemas/rdoSchema";
 import { CreateRDOData } from "@/types/rdo";
 import { RDOFormHeader } from "./RDOFormHeader";
@@ -16,7 +16,8 @@ import { RDOIssuesSection } from "./RDOIssuesSection";
 import { RDOObservationsSection } from "./RDOObservationsSection";
 import { RDOAttachmentsSection } from "./RDOAttachmentsSection";
 import { RDOWorkPeriodSection } from "./RDOWorkPeriodSection";
-import { RDOTeamSection } from "./RDOTeamSection"; // Imported
+import { RDOTeamSection } from "./RDOTeamSection";
+import { RDONichoSelect } from "./RDONichoSelect";
 import { toastEnhanced } from "@/components/ToastEnhanced";
 
 interface RDONewFormProps {
@@ -37,6 +38,7 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false, initi
       clima: '',
       equipeOciosa: false,
       tempoOcioso: 0,
+      nichoId: "",
       atividadesRealizadas: [],
       atividadesExtras: [],
       equipesPresentes: [],
@@ -59,8 +61,9 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false, initi
         clima: initialData.clima,
         equipeOciosa: initialData.equipeOciosa,
         tempoOcioso: initialData.tempoOcioso || 0,
+        nichoId: initialData.nichoId || "",
         atividadesRealizadas: initialData.atividadesRealizadas || [],
-        atividadesExtras: initialData.atividadesExtras || [], // Map if needed
+        atividadesExtras: initialData.atividadesExtras || [],
         equipesPresentes: initialData.equipesPresentes || [],
         equipamentosUtilizados: initialData.equipamentosUtilizados || [],
         equipamentosQuebrados: initialData.equipamentosQuebrados || [],
@@ -68,8 +71,6 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false, initi
         materiaisFalta: initialData.materiaisFalta || [],
         estoqueMateriais: initialData.estoqueMateriais || [],
         observacoes: initialData.observacoes || '',
-        // Files logic is trickier as we can't repopulate File objects from URLs easily
-        // We might need to handle existing files display separately in the form
       });
     } else if (isOpen && !initialData) {
       form.reset({
@@ -79,6 +80,7 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false, initi
         clima: '',
         equipeOciosa: false,
         tempoOcioso: 0,
+        nichoId: "",
         atividadesRealizadas: [],
         atividadesExtras: [],
         equipesPresentes: [],
@@ -94,7 +96,6 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false, initi
 
   const handleSubmit = async (data: RDOFormData) => {
     try {
-      // Convert form data to CreateRDOData format
       const createData: CreateRDOData = {
         data: data.data,
         obraId: data.obraId,
@@ -102,6 +103,7 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false, initi
         clima: data.clima,
         equipeOciosa: data.equipeOciosa,
         tempoOcioso: data.equipeOciosa ? data.tempoOcioso : undefined,
+        nichoId: data.nichoId,
         atividadesRealizadas: data.atividadesRealizadas as any,
         atividadesExtras: data.atividadesExtras as any,
         equipesPresentes: data.equipesPresentes as any,
@@ -114,7 +116,6 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false, initi
         files: data.files,
       };
 
-      // Aguarda o save no banco ANTES de fechar/resetar
       await onSubmit(createData);
 
       toastEnhanced.success("RDO salvo com sucesso!", "O relatório foi criado e está disponível para aprovação.");
@@ -154,6 +155,18 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false, initi
                 <div className="space-y-6 py-4 md:py-6">
                   {/* Cabeçalho */}
                   <RDOFormHeader form={form} />
+
+                  {/* Nicho */}
+                  <div className="space-y-2">
+                    <FormLabel className="text-sm font-medium flex items-center gap-2">
+                      <Folder className="h-4 w-4 text-muted-foreground" />
+                      Nicho do RDO
+                    </FormLabel>
+                    <RDONichoSelect
+                      value={form.watch('nichoId')}
+                      onChange={(value) => form.setValue('nichoId', value, { shouldValidate: true })}
+                    />
+                  </div>
 
                   {/* Períodos de Trabalho */}
                   <RDOWorkPeriodSection form={form} />

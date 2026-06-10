@@ -99,6 +99,18 @@ const RDOVisualizar = lazy(() =>
   }))
 );
 
+const RDOAgendaPage = lazy(() =>
+  import('@/pages/RDOAgendaPage').then(module => ({
+    default: module.default
+  }))
+);
+
+const AdminNichosPage = lazy(() =>
+  import('@/pages/AdminNichosPage').then(module => ({
+    default: module.default
+  }))
+);
+
 const Atividades = lazy(() =>
   import('@/pages/Atividades').then(module => ({
     default: module.default
@@ -309,6 +321,37 @@ const BlogArticle = lazy(() =>
   }))
 );
 
+// ── V2 Pages ──
+const Home2 = lazy(() =>
+  import('@/pages-gemini/Home2').then(module => ({
+    default: module.default
+  }))
+);
+
+const Preco2 = lazy(() =>
+  import('@/pages-gemini/Preco2').then(module => ({
+    default: module.default
+  }))
+);
+
+const Blog2 = lazy(() =>
+  import('@/pages-gemini/Blog2').then(module => ({
+    default: module.default
+  }))
+);
+
+const Contato2 = lazy(() =>
+  import('@/pages-gemini/Contato2').then(module => ({
+    default: module.default
+  }))
+);
+
+const Sobre2 = lazy(() =>
+  import('@/pages-gemini/Sobre2').then(module => ({
+    default: module.default
+  }))
+);
+
 const PrivacyPolicy = lazy(() =>
   import('@/pages/legal/PrivacyPolicy').then(module => ({
     default: module.default
@@ -479,6 +522,12 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/sobre" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Sobre /></SafeSuspense></>} />
                       <Route path="/contato" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Contato /></SafeSuspense></>} />
                       <Route path="/preco" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Preco /></SafeSuspense></>} />
+                      {/* Rotas V2 */}
+                      <Route path="/home2" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Home2 /></SafeSuspense></>} />
+                      <Route path="/preco2" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Preco2 /></SafeSuspense></>} />
+                      <Route path="/blog2" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Blog2 /></SafeSuspense></>} />
+                      <Route path="/contato2" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Contato2 /></SafeSuspense></>} />
+                      <Route path="/sobre2" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Sobre2 /></SafeSuspense></>} />
                       {/* Rotas públicas do rodapé */}
                       <Route path="/atualizacoes" element={<SafeSuspense fallback={null}><Atualizacoes /></SafeSuspense>} />
                       <Route path="/carreiras" element={<SafeSuspense fallback={null}><Carreiras /></SafeSuspense>} />
@@ -541,6 +590,9 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/app/rdo/novo" element={<ProtectedPage><RDONovoPage /></ProtectedPage>} />
                       <Route path="/app/rdo/:id/visualizar" element={<ProtectedPage><RDOVisualizar /></ProtectedPage>} />
                       <Route path="/app/rdo/:id/editar" element={<ProtectedPage><RDONovoPage /></ProtectedPage>} />
+                      <Route path="/app/rdo/agenda" element={<ProtectedPage><RDOAgendaPage /></ProtectedPage>} />
+                      <Route path="/app/rdo/agenda/:data" element={<ProtectedPage><RDOAgendaPage /></ProtectedPage>} />
+                      <Route path="/app/admin/nichos" element={<ProtectedPage roles={["Presidente", "Administrador"]}><AdminNichosPage /></ProtectedPage>} />
                       {/* Atividades */}
                       <Route path="/app/atividades" element={<ProtectedPage><Atividades /></ProtectedPage>} />
                       {/* Checklist */}

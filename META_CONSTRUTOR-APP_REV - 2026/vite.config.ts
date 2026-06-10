@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => ({
     target: "esnext",
     minify: "esbuild",
     cssMinify: true,
-    cssCodeSplit: false,
+    cssCodeSplit: true,
     rollupOptions: {
       output: {
         compact: true,

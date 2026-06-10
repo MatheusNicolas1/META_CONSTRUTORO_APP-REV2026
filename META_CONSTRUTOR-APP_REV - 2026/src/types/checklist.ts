@@ -19,6 +19,7 @@ export type ChecklistItemStatus =
 export type ChecklistStatus = 
   | 'Rascunho'
   | 'Em Andamento' 
+  | 'Aguardando Aprovação'
   | 'Concluído' 
   | 'Pendente'
   | 'Cancelado';

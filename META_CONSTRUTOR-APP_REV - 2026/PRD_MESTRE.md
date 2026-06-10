@@ -28,8 +28,12 @@ Regra de continuidade:
 | `PRD_falso.md` | Auditoria de acoes falsas, mockups, dados ficticios e handlers sem persistencia | Parcialmente concluido com varios P0 convertidos; manter pendencias explicitas |
 | `PRD_ADMIN.md` | Admin de usuarios, marketing, analytics, funil, governanca e auditoria | Parcialmente executado; P0/P1/P2 tecnico inicial validado |
 | `PRD_SEO.md` | SEO, marketing publico, metadados, sitemap, robots e qualidade visual publica | Fundacao tecnica executada; reestrutura visual ampla ainda aberta |
-| `PRD_BLOG.md` | Blog publico, cluster RDO, artigos PAA, FAQ schema, sitemap e prerender | Ciclo 1 implementado e pronto para revisao |
-| `PRD_DASHBOARD.md` | Redesign do dashboard principal inspirado no Canva | Planejado; nao tratar como feito |
+| `docs/PRD_BLOG.md` | Blog publico, cluster RDO, artigos PAA, FAQ schema, sitemap e prerender | Ciclo 1 implementado e pronto para revisao |
+|| `docs/PRD_PUBLICAS_V2_GEMINI.md` | Nova versão páginas públicas (/home2, /preco2, /blog2, /contato2, /sobre2) com imagens reais, animações Framer Motion e paleta brand tokens | IMPLEMENTADO ✅ — 5 páginas criadas em `src/pages-gemini/`, rotas no router, SEO configurado, rewrites Vercel adicionados, build exit 0 com 61 páginas pré-renderizadas, deploy Production m6d8mhw7v, checklists 100% concluídos, API keys sanitizadas, git commit pendente |
+|| `docs/PRD_PUBLICAS_AFTER_EFFECTS_REMOTION.md` | Reestrutura visual páginas públicas com After Effects-style motion, Remotion, benchmark Canva | PARCIAL — Fase 1 concluída (fundação visual + Framer Motion). Fase 2 (Remotion) planejada — 5 compositions não renderizadas |
+||| `PRD_DASHBOARD.md`
+||| `PRD_AGENDAS_RDO.md` | Agrupamento de RDOs por dia e nicho com resumo inteligente | EM ELABORAÇÃO — nichos redefinidos em PRD_NICHOS_RDO.md |
+|| `PRD_NICHOS_RDO.md` | Definição dos 8 nichos baseados nos módulos reais do Meta Construtor (execução de obra, segurança, ordens/serviços, equipes, equipamentos, materiais, financeiro, documentos/cliente) | EM ELABORAÇÃO — baseado na análise do código-fonte |
 | `PRD_LIXEIRA.md` | Lixeira, soft delete, restauracao e expurgo | Planejado; nao tratar como feito |
 | `PRD_AUDIO_ELEVENLABS.md` | Mensagens de audio, resumos por voz, ElevenLabs TTS, Whisper/OpenAI STT, n8n e WhatsApp Business | Planejamento operacional; fonte primaria atual de audio |
 || `PRD_AUDIO_WHISPER_N8N.md` | Historico de planejamento audio/Whisper; refencia para contratos tecnico anteriores | Historico; consultar apenas para contexto ou contratos nao cobertos pelo PRD atual |
@@ -299,6 +303,8 @@ Use este roteamento:
 - Dashboard principal e logo/sidebar inspirada no Canva: consultar `PRD_DASHBOARD.md`.
 - Lixeira, soft delete, restauracao, expurgo: consultar `PRD_LIXEIRA.md`.
 - Audio, voz, resumos falados, ElevenLabs TTS, Whisper/OpenAI STT, n8n, WhatsApp Business: consultar `PRD_AUDIO_ELEVENLABS.md`.
+- **RDOs agrupados por dia, nichos, resumo diario por nicho ou geral: consultar `PRD_AGENDAS_RDO.md`.**
+- **Definição de nichos de RDO baseados nos módulos reais: consultar `PRD_NICHOS_RDO.md`.**
 
 ## 6. Proxima manutencao deste mestre
 

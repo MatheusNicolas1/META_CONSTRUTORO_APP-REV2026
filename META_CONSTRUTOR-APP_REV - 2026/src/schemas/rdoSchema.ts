@@ -9,6 +9,9 @@ export const rdoSchema = z.object({
   equipeOciosa: z.boolean(),
   tempoOcioso: z.number().optional(),
 
+  // Nicho
+  nichoId: z.string().optional(),
+
   // Atividades
   atividadesRealizadas: z.array(z.object({
     id: z.string().optional(),

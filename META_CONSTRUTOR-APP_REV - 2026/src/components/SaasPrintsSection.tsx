@@ -7,25 +7,10 @@ import { SingleCarousel, type CarouselItem } from '@/components/public/SingleCar
 
 const MARKETING = '/marketing';
 
-// ─── Prints MOBILE reais + Mockups verticais com moldura ──
-// Prioridade: prints de tela de celular. Os verticais têm moldura de celular.
+// ─── Todas as imagens em uma única fileira ──────────────────
+// Selecionadas por clareza visual, prints reais do Meta Construtor
 
 const allImages: CarouselItem[] = [
-  // ── Prints MOBILE reais ──
-  {
-    src: `${MARKETING}/prd-prints-2026-06-04-25-rdo-mobile.png`,
-    title: 'RDO no Celular',
-  },
-  {
-    src: `${MARKETING}/prd-prints-2026-06-04-26-obras-mobile.png`,
-    title: 'Obras no Celular',
-  },
-  {
-    src: `${MARKETING}/prd-prints-2026-06-04-27-atividade-mobile.png`,
-    title: 'Atividades',
-  },
-
-  // ── Mockups verticais com moldura de celular ──
   {
     src: `${MARKETING}/dashboard-vertical.jpg`,
     title: 'Dashboard',
@@ -53,6 +38,18 @@ const allImages: CarouselItem[] = [
   {
     src: `${MARKETING}/relatorios-vertical.jpg`,
     title: 'Relatórios',
+  },
+  {
+    src: `${MARKETING}/prd-prints-2026-06-04-25-rdo-mobile.png`,
+    title: 'RDO no Celular',
+  },
+  {
+    src: `${MARKETING}/prd-prints-2026-06-04-26-obras-mobile.png`,
+    title: 'Obras no Celular',
+  },
+  {
+    src: `${MARKETING}/prd-prints-2026-06-04-27-atividade-mobile.png`,
+    title: 'Atividades',
   },
 ];
 

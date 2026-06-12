@@ -119,7 +119,7 @@ function PricingCard({ plan, index }: { plan: typeof PLANS.monthly[0]; index: nu
             <motion.div
               animate={{ opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="bg-[#dc4415] text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1"
+              className="bg-brand-orange text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1"
             >
               <Star className="w-3 h-3" /> Mais Popular
             </motion.div>
@@ -142,7 +142,7 @@ function PricingCard({ plan, index }: { plan: typeof PLANS.monthly[0]; index: nu
 
         <Button className={`w-full mb-5 py-5 rounded-xl font-semibold ${
           plan.popular
-            ? 'bg-[#dc4415] hover:bg-[#c43a10] text-white shadow-lg shadow-[#dc4415]/30'
+            ? 'bg-brand-orange hover:bg-orange-600 text-white shadow-lg shadow-brand-orange/30'
             : 'bg-brand-blue hover:bg-blue-800 text-white'
         }`}>
           {plan.cta} {plan.cta !== 'Comece Grátis' && <ArrowRight className="ml-2 w-4 h-4" />}
@@ -166,10 +166,10 @@ function ToggleSwitch({ isYearly, onChange }: { isYearly: boolean; onChange: () 
     <div className="flex items-center justify-center gap-4 mb-12">
       <span className={`text-sm font-medium ${!isYearly ? 'text-brand-blue' : 'text-neutral-400'}`}>Mensal</span>
       <button onClick={onChange}
-        className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${isYearly ? 'bg-[#dc4415]' : 'bg-neutral-300'}`}
+        className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${isYearly ? 'bg-brand-orange' : 'bg-neutral-300'}`}
       >
         <motion.div animate={{ x: isYearly ? 28 : 2 }}
-          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           className="absolute top-1 w-5 h-5 bg-white rounded-full shadow-md"
         />
       </button>
@@ -202,12 +202,12 @@ export default function Preco2() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(249,115,22,0.15)_0%,_transparent_60%)]" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div {...cinematic}>
-            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/20 text-orange-400 text-sm font-semibold mb-4 border border-brand-orange/30">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/20 text-brand-orange text-sm font-semibold mb-4 border border-brand-orange/30">
               Planos e Preços
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 font-heading">
               Planos que cabem{' '}
-              <span className="text-orange-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-orange-300">
                 na sua obra
               </span>
             </h1>
@@ -260,7 +260,7 @@ export default function Preco2() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...cinematic} className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-brand-blue mb-4 font-heading">
-              Compare os <span className="text-brand-blue">planos</span>
+              Compare os <span className="text-brand-orange">planos</span>
             </h2>
           </motion.div>
           <div className="overflow-x-auto rounded-2xl border border-neutral-200 shadow-sm">
@@ -269,7 +269,7 @@ export default function Preco2() {
                 <tr className="bg-brand-blue text-white">
                   <th className="text-left px-6 py-4 font-semibold">Funcionalidade</th>
                   <th className="text-center px-6 py-4 font-semibold">Grátis</th>
-                  <th className="text-center px-6 py-4 font-semibold bg-[#dc4415]">Profissional</th>
+                  <th className="text-center px-6 py-4 font-semibold bg-brand-orange">Profissional</th>
                   <th className="text-center px-6 py-4 font-semibold">Enterprise</th>
                 </tr>
               </thead>
@@ -284,7 +284,7 @@ export default function Preco2() {
                   >
                     <td className="px-6 py-4 font-medium text-brand-blue">{row.feature}</td>
                     <td className="px-6 py-4 text-center text-neutral-500">{row.free}</td>
-                    <td className="px-6 py-4 text-center text-brand-blue font-medium bg-orange-50/50">{row.pro}</td>
+                    <td className="px-6 py-4 text-center text-brand-orange font-medium bg-orange-50/50">{row.pro}</td>
                     <td className="px-6 py-4 text-center text-neutral-500">{row.enter}</td>
                   </motion.tr>
                 ))}
@@ -298,9 +298,9 @@ export default function Preco2() {
       <section className="py-20 bg-neutral-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...cinematic} className="text-center mb-12">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-blue text-sm font-semibold mb-4">FAQ</span>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-orange text-sm font-semibold mb-4">FAQ</span>
             <h2 className="text-3xl md:text-4xl font-bold text-brand-blue font-heading">
-              Dúvidas sobre <span className="text-brand-blue">planos</span>?
+              Dúvidas sobre <span className="text-brand-orange">planos</span>?
             </h2>
           </motion.div>
           <div className="space-y-3">
@@ -317,16 +317,11 @@ export default function Preco2() {
                 >
                   <span className="font-semibold text-brand-blue">{item.q}</span>
                   <motion.div animate={{ rotate: openFaq === i ? 180 : 0 }} transition={{ duration: 0.2 }}>
-                    <ChevronDown className="w-5 h-5 text-brand-blue flex-shrink-0" />
+                    <ChevronDown className="w-5 h-5 text-brand-orange flex-shrink-0" />
                   </motion.div>
                 </button>
                 {openFaq === i && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.25 }}
-                  >
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} transition={{ duration: 0.3 }} className="overflow-hidden">
                     <p className="px-6 pb-4 text-neutral-500 leading-relaxed">{item.a}</p>
                   </motion.div>
                 )}
@@ -337,14 +332,14 @@ export default function Preco2() {
       </section>
 
       {/* Final CTA */}
-      <section className="relative py-20 bg-gradient-to-br from-[#dc4415] via-brand-blue to-brand-blue text-white overflow-hidden">
+      <section className="relative py-24 bg-gradient-to-br from-brand-orange via-orange-600 to-brand-blue overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2LjUgMzUuNWMtNC4xNDEgMC03LjUtMy4zNTktNy41LTcuNSAwLTQuMTQxIDMuMzU5LTcuNSA3LjUtNy41IDQuMTQxIDAgNy41IDMuMzU5IDcuNSA3LjUgMCA0LjE0MS0zLjM1OSA3LjUtNy41IDcuNXoiLz48L2c+PC9nPjwvc3ZnPg==')]" />
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div {...cinematic}>
             <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 font-heading">Ainda com dúvidas?</h2>
             <p className="text-lg text-orange-100/80 mb-8">Fale com nossa equipe e descubra qual plano é ideal para sua construtora</p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" className="bg-white text-brand-blue hover:bg-orange-50 px-8 py-6 text-lg rounded-xl font-bold shadow-xl">
+              <Button size="lg" className="bg-white text-brand-orange hover:bg-orange-50 px-8 py-6 text-lg rounded-xl font-bold shadow-xl">
                 <Zap className="mr-2 w-5 h-5" /> Falar no WhatsApp
               </Button>
               <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl">

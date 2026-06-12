@@ -93,14 +93,14 @@ function BlogCard({ post, index }: { post: typeof POSTS[0]; index: number }) {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out opacity-85"
           />
           <div className="absolute top-3 left-3">
-            <span className="inline-block px-2.5 py-1 bg-[#dc4415] text-white text-xs font-bold rounded-md">
+            <span className="inline-block px-2.5 py-1 bg-brand-orange text-white text-xs font-bold rounded-md">
               {post.category}
             </span>
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-brand-blue/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
         <div className="p-5 md:p-6">
-          <h3 className="text-lg md:text-xl font-bold text-brand-blue mb-2 font-heading group-hover:text-brand-blue transition-colors duration-200">
+          <h3 className="text-lg md:text-xl font-bold text-brand-blue mb-2 font-heading group-hover:text-brand-orange transition-colors duration-200">
             {post.title}
           </h3>
           <p className="text-sm text-neutral-500 mb-4 line-clamp-2 leading-relaxed">{post.excerpt}</p>
@@ -109,7 +109,7 @@ function BlogCard({ post, index }: { post: typeof POSTS[0]; index: number }) {
               <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{post.date}</span>
               <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{post.readTime}</span>
             </div>
-            <span className="flex items-center gap-1 text-brand-blue font-semibold group-hover:gap-2 transition-all duration-200">
+            <span className="flex items-center gap-1 text-brand-orange font-semibold group-hover:gap-2 transition-all duration-200">
               Ler <ArrowRight className="w-3 h-3" />
             </span>
           </div>
@@ -134,12 +134,12 @@ function FeaturedPost() {
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90"
             />
             <div className="absolute top-4 left-4">
-              <span className="inline-block px-3 py-1.5 bg-[#dc4415] text-white text-xs font-bold rounded-md">Destaque</span>
+              <span className="inline-block px-3 py-1.5 bg-brand-orange text-white text-xs font-bold rounded-md">Destaque</span>
             </div>
           </div>
           <div className="lg:col-span-2 p-8 md:p-10 flex flex-col justify-center">
-            <span className="text-xs text-brand-blue font-bold uppercase tracking-wider mb-2">{post.category}</span>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-brand-blue mb-3 font-heading group-hover:text-brand-blue transition-colors">
+            <span className="text-xs text-brand-orange font-bold uppercase tracking-wider mb-2">{post.category}</span>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-brand-blue mb-3 font-heading group-hover:text-brand-orange transition-colors">
               {post.title}
             </h2>
             <p className="text-neutral-500 mb-6 leading-relaxed">{post.excerpt}</p>
@@ -180,10 +180,14 @@ export default function Blog2() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(249,115,22,0.15)_0%,_transparent_60%)]" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div {...cinematic}>
-            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/20 text-brand-blue text-sm font-semibold mb-4 border border-brand-orange/30">Blog</span>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/20 text-brand-orange text-sm font-semibold mb-4 border border-brand-orange/30">
+              Blog
+            </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 font-heading">
               Conteúdo para{' '}
-              <span className="text-orange-400">sua obra</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-orange-300">
+                sua obra
+              </span>
             </h1>
             <p className="text-lg md:text-xl text-blue-100/70 max-w-2xl mx-auto mb-8">
               Dicas, tutoriais e novidades sobre gestão de obras, RDO digital e muito mais
@@ -211,8 +215,8 @@ export default function Blog2() {
               <button key={cat} onClick={() => setActiveCategory(cat)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${
                   activeCategory === cat
-                    ? 'bg-[#dc4415] text-white border-[#dc4415] shadow-md shadow-[#dc4415]/30'
-                    : 'bg-white text-neutral-600 border-neutral-200 hover:border-brand-blue hover:text-brand-blue'
+                    ? 'bg-brand-orange text-white border-brand-orange shadow-md shadow-orange-200'
+                    : 'bg-white text-neutral-600 border-neutral-200 hover:border-brand-orange hover:text-brand-orange'
                 }`}
               >{cat}</button>
             ))}
@@ -279,7 +283,7 @@ export default function Blog2() {
               <Input type="email" placeholder="Seu melhor e-mail"
                 className="flex-1 bg-white/10 border-white/20 text-white placeholder:text-blue-300 py-6 rounded-xl text-base"
               />
-              <Button className="bg-[#dc4415] hover:bg-[#c43a10] text-white px-8 py-6 rounded-xl font-semibold whitespace-nowrap">
+              <Button className="bg-brand-orange hover:bg-orange-600 text-white px-8 py-6 rounded-xl font-semibold whitespace-nowrap">
                 Inscrever
               </Button>
             </div>

@@ -289,7 +289,5 @@
       "source": "/(.*)",
       "destination": "/"
     }
-  ],
-  "buildCommand": "npm run build",
-  "installCommand": "npm ci --prefer-offline || npm install"
+  ]
 }

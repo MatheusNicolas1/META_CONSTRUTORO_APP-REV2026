@@ -235,7 +235,7 @@ export default function RDOExcelSimulator() {
                         }`}>{eq.status}</span>
                       </td>
                       <td className="px-3 py-3 text-right">
-                        <input type="number" value={eq.hoursWorked || 0} onChange={(ev) => updateEquipmentHrs(eq.id, parseInt(ev.target.value) || 0)}
+                        <input type="number" value={eq.hoursWorked || 0} onChange={(ev) => updateEquipmentHrs(eq.id, parseInt((ev.target as HTMLInputElement).value) || 0)}
                           className="w-12 bg-white border border-slate-250 rounded px-1.5 py-0.5 text-xs text-center outline-none focus:border-brand-orange font-bold text-slate-800" />
                       </td>
                     </tr>

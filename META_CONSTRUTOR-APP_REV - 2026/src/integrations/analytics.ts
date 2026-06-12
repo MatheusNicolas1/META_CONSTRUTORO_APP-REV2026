@@ -97,7 +97,7 @@ export const initAnalytics = () => {
     // O posthog-js (import) já detecta a instância existente
     if (POSTHOG_KEY) {
         // Se não foi inicializado pelo snippet (ex: bloqueado), inicializa aqui
-        if (!window.posthog?.__loaded) {
+        if (!(window as any).posthog?.__loaded) {
             posthog.init(POSTHOG_KEY, {
                 api_host: POSTHOG_HOST,
                 debug: IS_DEV,

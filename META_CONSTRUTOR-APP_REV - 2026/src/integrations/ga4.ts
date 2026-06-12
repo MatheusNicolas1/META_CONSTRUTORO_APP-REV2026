@@ -2,7 +2,7 @@
  * Google Analytics 4 — gtag.js direto
  * Usa o script exato fornecido pelo Google, gerenciado via ambiente.
  */
-const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
+const GA_MEASUREMENT_ID: string | undefined = import.meta.env.VITE_GA_MEASUREMENT_ID;
 const IS_DEV = import.meta.env.DEV;
 
 let initialized = false;

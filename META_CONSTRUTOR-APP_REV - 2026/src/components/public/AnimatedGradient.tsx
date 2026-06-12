@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 interface AnimatedGradientProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   colors?: string[];
   duration?: number;

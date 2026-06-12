@@ -1,4 +1,1 @@
-# Local auxiliary workspaces outside the app/deploy surface
-codex-supabase-deploy-payment/
-MetaConstrutor/
-openai-whisper/
+dist/

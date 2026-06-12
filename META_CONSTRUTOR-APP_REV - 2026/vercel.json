@@ -1,7 +1,4 @@
 {
-  "installCommand": "npm ci || npm install",
-  "buildCommand": "node -e \"process.env.FORCE_COLOR=1\" && npx vite build",
-  "outputDirectory": "dist",
   "headers": [
     {
       "source": "/assets/(.*)",

@@ -29,73 +29,267 @@
     }
   ],
   "rewrites": [
-    { "source": "/home", "destination": "/home/index.html" },
-    { "source": "/preco", "destination": "/preco/index.html" },
-    { "source": "/sobre", "destination": "/sobre/index.html" },
-    { "source": "/home2", "destination": "/home2/index.html" },
-    { "source": "/preco2", "destination": "/preco2/index.html" },
-    { "source": "/blog2", "destination": "/blog2/index.html" },
-    { "source": "/contato2", "destination": "/contato2/index.html" },
-    { "source": "/sobre2", "destination": "/sobre2/index.html" },
-    { "source": "/contato", "destination": "/contato/index.html" },
-    { "source": "/blog", "destination": "/blog/index.html" },
-    { "source": "/blog/page/:num", "destination": "/blog/page/:num/index.html" },
-    { "source": "/blog/como-estruturar-rdo", "destination": "/blog/como-estruturar-rdo/index.html" },
-    { "source": "/blog/documentos-por-obra", "destination": "/blog/documentos-por-obra/index.html" },
-    { "source": "/blog/checklist-qualidade-obra", "destination": "/blog/checklist-qualidade-obra/index.html" },
-    { "source": "/blog/o-que-e-rdo", "destination": "/blog/o-que-e-rdo/index.html" },
-    { "source": "/blog/o-que-e-rdos", "destination": "/blog/o-que-e-rdos/index.html" },
-    { "source": "/blog/rdo-na-policia", "destination": "/blog/rdo-na-policia/index.html" },
-    { "source": "/blog/rdo-de-empresa", "destination": "/blog/rdo-de-empresa/index.html" },
-    { "source": "/blog/diario-de-obra-app-online", "destination": "/blog/diario-de-obra-app-online/index.html" },
-    { "source": "/blog/orcamento-de-obra-passo-a-passo", "destination": "/blog/orcamento-de-obra-passo-a-passo/index.html" },
-    { "source": "/blog/almoxarifado-de-obra-organizacao", "destination": "/blog/almoxarifado-de-obra-organizacao/index.html" },
-    { "source": "/blog/app-gestao-de-obras-2026", "destination": "/blog/app-gestao-de-obras-2026/index.html" },
-    { "source": "/blog/checklist-mais-rdo", "destination": "/blog/checklist-mais-rdo/index.html" },
-    { "source": "/blog/controle-de-obra-planilha-ou-app", "destination": "/blog/controle-de-obra-planilha-ou-app/index.html" },
-    { "source": "/blog/cronograma-de-obra-caixa-economica", "destination": "/blog/cronograma-de-obra-caixa-economica/index.html" },
-    { "source": "/blog/dados-rdo-relatorio-gerencial", "destination": "/blog/dados-rdo-relatorio-gerencial/index.html" },
-    { "source": "/blog/diario-de-obra-digital", "destination": "/blog/diario-de-obra-digital/index.html" },
-    { "source": "/blog/erros-comuns-preenchimento-rdo", "destination": "/blog/erros-comuns-preenchimento-rdo/index.html" },
-    { "source": "/blog/fiscal-de-obra-o-que-faz", "destination": "/blog/fiscal-de-obra-o-que-faz/index.html" },
-    { "source": "/blog/gestao-construtoras-pequeno-porte", "destination": "/blog/gestao-construtoras-pequeno-porte/index.html" },
-    { "source": "/blog/medicao-de-obra-guia-completo", "destination": "/blog/medicao-de-obra-guia-completo/index.html" },
-    { "source": "/blog/medicao-obras-publicas", "destination": "/blog/medicao-obras-publicas/index.html" },
-    { "source": "/blog/rdo-como-prova-tecnica", "destination": "/blog/rdo-como-prova-tecnica/index.html" },
-    { "source": "/blog/rdo-e-fotografia-de-obra", "destination": "/blog/rdo-e-fotografia-de-obra/index.html" },
-    { "source": "/blog/rdo-obras-publicas-vs-privadas", "destination": "/blog/rdo-obras-publicas-vs-privadas/index.html" },
-    { "source": "/blog/rdo-online-faturamento-contratos", "destination": "/blog/rdo-online-faturamento-contratos/index.html" },
-    { "source": "/blog/relatorio-fotografico-de-obra-modelo", "destination": "/blog/relatorio-fotografico-de-obra-modelo/index.html" },
-    { "source": "/blog/seguranca-do-trabalho-obra-civil-nr18", "destination": "/blog/seguranca-do-trabalho-obra-civil-nr18/index.html" },
-    { "source": "/blog/cronograma-de-obras", "destination": "/blog/cronograma-de-obras/index.html" },
-    { "source": "/blog/rdo-online-guia-completo", "destination": "/blog/rdo-online-guia-completo/index.html" },
-    { "source": "/blog/orcamento-de-obra-guia", "destination": "/blog/orcamento-de-obra-guia/index.html" },
-    { "source": "/blog/planejamento-de-obra", "destination": "/blog/planejamento-de-obra/index.html" },
-    { "source": "/blog/custo-obra-m2", "destination": "/blog/custo-obra-m2/index.html" },
-    { "source": "/blog/seguranca-do-trabalho-canteiro", "destination": "/blog/seguranca-do-trabalho-canteiro/index.html" },
-    { "source": "/blog/checklist-de-obra-modelo", "destination": "/blog/checklist-de-obra-modelo/index.html" },
-    { "source": "/blog/construcao-civil-2026", "destination": "/blog/construcao-civil-2026/index.html" },
-    { "source": "/blog/planejamento-de-obra-passo-a-passo", "destination": "/blog/planejamento-de-obra-passo-a-passo/index.html" },
-    { "source": "/blog/app-gestao-de-obras-gratuito", "destination": "/blog/app-gestao-de-obras-gratuito/index.html" },
-    { "source": "/blog/custo-de-obra-por-m2-2026", "destination": "/blog/custo-de-obra-por-m2-2026/index.html" },
-    { "source": "/blog/checklist-de-obra-modelo-pdf", "destination": "/blog/checklist-de-obra-modelo-pdf/index.html" },
-    { "source": "/blog/seguranca-do-trabalho-canteiro-de-obras", "destination": "/blog/seguranca-do-trabalho-canteiro-de-obras/index.html" },
-    { "source": "/blog/documentos-obra-exigidos-prefeitura", "destination": "/blog/documentos-obra-exigidos-prefeitura/index.html" },
-    { "source": "/blog/apostila-para-obra", "destination": "/blog/apostila-para-obra/index.html" },
-    { "source": "/blog/construcao-civil-tendencias-2026", "destination": "/blog/construcao-civil-tendencias-2026/index.html" },
-    { "source": "/central-ajuda", "destination": "/central-ajuda/index.html" },
-    { "source": "/documentacao", "destination": "/documentacao/index.html" },
-    { "source": "/api", "destination": "/api/index.html" },
-    { "source": "/status", "destination": "/status/index.html" },
-    { "source": "/atualizacoes", "destination": "/atualizacoes/index.html" },
-    { "source": "/carreiras", "destination": "/carreiras/index.html" },
-    { "source": "/legal/privacidade", "destination": "/legal/privacidade/index.html" },
-    { "source": "/legal/termos", "destination": "/legal/termos/index.html" },
-    { "source": "/legal/cookies", "destination": "/legal/cookies/index.html" },
-    { "source": "/legal/lgpd", "destination": "/legal/lgpd/index.html" },
+    {
+      "source": "/home",
+      "destination": "/home/index.html"
+    },
+    {
+      "source": "/preco",
+      "destination": "/preco/index.html"
+    },
+    {
+      "source": "/sobre",
+      "destination": "/sobre/index.html"
+    },
+    {
+      "source": "/home2",
+      "destination": "/home2/index.html"
+    },
+    {
+      "source": "/preco2",
+      "destination": "/preco2/index.html"
+    },
+    {
+      "source": "/blog2",
+      "destination": "/blog2/index.html"
+    },
+    {
+      "source": "/contato2",
+      "destination": "/contato2/index.html"
+    },
+    {
+      "source": "/sobre2",
+      "destination": "/sobre2/index.html"
+    },
+    {
+      "source": "/contato",
+      "destination": "/contato/index.html"
+    },
+    {
+      "source": "/blog",
+      "destination": "/blog/index.html"
+    },
+    {
+      "source": "/blog/page/:num",
+      "destination": "/blog/page/:num/index.html"
+    },
+    {
+      "source": "/blog/como-estruturar-rdo",
+      "destination": "/blog/como-estruturar-rdo/index.html"
+    },
+    {
+      "source": "/blog/documentos-por-obra",
+      "destination": "/blog/documentos-por-obra/index.html"
+    },
+    {
+      "source": "/blog/checklist-qualidade-obra",
+      "destination": "/blog/checklist-qualidade-obra/index.html"
+    },
+    {
+      "source": "/blog/o-que-e-rdo",
+      "destination": "/blog/o-que-e-rdo/index.html"
+    },
+    {
+      "source": "/blog/o-que-e-rdos",
+      "destination": "/blog/o-que-e-rdos/index.html"
+    },
+    {
+      "source": "/blog/rdo-na-policia",
+      "destination": "/blog/rdo-na-policia/index.html"
+    },
+    {
+      "source": "/blog/rdo-de-empresa",
+      "destination": "/blog/rdo-de-empresa/index.html"
+    },
+    {
+      "source": "/blog/diario-de-obra-app-online",
+      "destination": "/blog/diario-de-obra-app-online/index.html"
+    },
+    {
+      "source": "/blog/orcamento-de-obra-passo-a-passo",
+      "destination": "/blog/orcamento-de-obra-passo-a-passo/index.html"
+    },
+    {
+      "source": "/blog/almoxarifado-de-obra-organizacao",
+      "destination": "/blog/almoxarifado-de-obra-organizacao/index.html"
+    },
+    {
+      "source": "/blog/app-gestao-de-obras-2026",
+      "destination": "/blog/app-gestao-de-obras-2026/index.html"
+    },
+    {
+      "source": "/blog/checklist-mais-rdo",
+      "destination": "/blog/checklist-mais-rdo/index.html"
+    },
+    {
+      "source": "/blog/controle-de-obra-planilha-ou-app",
+      "destination": "/blog/controle-de-obra-planilha-ou-app/index.html"
+    },
+    {
+      "source": "/blog/cronograma-de-obra-caixa-economica",
+      "destination": "/blog/cronograma-de-obra-caixa-economica/index.html"
+    },
+    {
+      "source": "/blog/dados-rdo-relatorio-gerencial",
+      "destination": "/blog/dados-rdo-relatorio-gerencial/index.html"
+    },
+    {
+      "source": "/blog/diario-de-obra-digital",
+      "destination": "/blog/diario-de-obra-digital/index.html"
+    },
+    {
+      "source": "/blog/erros-comuns-preenchimento-rdo",
+      "destination": "/blog/erros-comuns-preenchimento-rdo/index.html"
+    },
+    {
+      "source": "/blog/fiscal-de-obra-o-que-faz",
+      "destination": "/blog/fiscal-de-obra-o-que-faz/index.html"
+    },
+    {
+      "source": "/blog/gestao-construtoras-pequeno-porte",
+      "destination": "/blog/gestao-construtoras-pequeno-porte/index.html"
+    },
+    {
+      "source": "/blog/medicao-de-obra-guia-completo",
+      "destination": "/blog/medicao-de-obra-guia-completo/index.html"
+    },
+    {
+      "source": "/blog/medicao-obras-publicas",
+      "destination": "/blog/medicao-obras-publicas/index.html"
+    },
+    {
+      "source": "/blog/rdo-como-prova-tecnica",
+      "destination": "/blog/rdo-como-prova-tecnica/index.html"
+    },
+    {
+      "source": "/blog/rdo-e-fotografia-de-obra",
+      "destination": "/blog/rdo-e-fotografia-de-obra/index.html"
+    },
+    {
+      "source": "/blog/rdo-obras-publicas-vs-privadas",
+      "destination": "/blog/rdo-obras-publicas-vs-privadas/index.html"
+    },
+    {
+      "source": "/blog/rdo-online-faturamento-contratos",
+      "destination": "/blog/rdo-online-faturamento-contratos/index.html"
+    },
+    {
+      "source": "/blog/relatorio-fotografico-de-obra-modelo",
+      "destination": "/blog/relatorio-fotografico-de-obra-modelo/index.html"
+    },
+    {
+      "source": "/blog/seguranca-do-trabalho-obra-civil-nr18",
+      "destination": "/blog/seguranca-do-trabalho-obra-civil-nr18/index.html"
+    },
+    {
+      "source": "/blog/cronograma-de-obras",
+      "destination": "/blog/cronograma-de-obras/index.html"
+    },
+    {
+      "source": "/blog/rdo-online-guia-completo",
+      "destination": "/blog/rdo-online-guia-completo/index.html"
+    },
+    {
+      "source": "/blog/orcamento-de-obra-guia",
+      "destination": "/blog/orcamento-de-obra-guia/index.html"
+    },
+    {
+      "source": "/blog/planejamento-de-obra",
+      "destination": "/blog/planejamento-de-obra/index.html"
+    },
+    {
+      "source": "/blog/custo-obra-m2",
+      "destination": "/blog/custo-obra-m2/index.html"
+    },
+    {
+      "source": "/blog/seguranca-do-trabalho-canteiro",
+      "destination": "/blog/seguranca-do-trabalho-canteiro/index.html"
+    },
+    {
+      "source": "/blog/checklist-de-obra-modelo",
+      "destination": "/blog/checklist-de-obra-modelo/index.html"
+    },
+    {
+      "source": "/blog/construcao-civil-2026",
+      "destination": "/blog/construcao-civil-2026/index.html"
+    },
+    {
+      "source": "/blog/planejamento-de-obra-passo-a-passo",
+      "destination": "/blog/planejamento-de-obra-passo-a-passo/index.html"
+    },
+    {
+      "source": "/blog/app-gestao-de-obras-gratuito",
+      "destination": "/blog/app-gestao-de-obras-gratuito/index.html"
+    },
+    {
+      "source": "/blog/custo-de-obra-por-m2-2026",
+      "destination": "/blog/custo-de-obra-por-m2-2026/index.html"
+    },
+    {
+      "source": "/blog/checklist-de-obra-modelo-pdf",
+      "destination": "/blog/checklist-de-obra-modelo-pdf/index.html"
+    },
+    {
+      "source": "/blog/seguranca-do-trabalho-canteiro-de-obras",
+      "destination": "/blog/seguranca-do-trabalho-canteiro-de-obras/index.html"
+    },
+    {
+      "source": "/blog/documentos-obra-exigidos-prefeitura",
+      "destination": "/blog/documentos-obra-exigidos-prefeitura/index.html"
+    },
+    {
+      "source": "/blog/apostila-para-obra",
+      "destination": "/blog/apostila-para-obra/index.html"
+    },
+    {
+      "source": "/blog/construcao-civil-tendencias-2026",
+      "destination": "/blog/construcao-civil-tendencias-2026/index.html"
+    },
+    {
+      "source": "/central-ajuda",
+      "destination": "/central-ajuda/index.html"
+    },
+    {
+      "source": "/documentacao",
+      "destination": "/documentacao/index.html"
+    },
+    {
+      "source": "/api",
+      "destination": "/api/index.html"
+    },
+    {
+      "source": "/status",
+      "destination": "/status/index.html"
+    },
+    {
+      "source": "/atualizacoes",
+      "destination": "/atualizacoes/index.html"
+    },
+    {
+      "source": "/carreiras",
+      "destination": "/carreiras/index.html"
+    },
+    {
+      "source": "/legal/privacidade",
+      "destination": "/legal/privacidade/index.html"
+    },
+    {
+      "source": "/legal/termos",
+      "destination": "/legal/termos/index.html"
+    },
+    {
+      "source": "/legal/cookies",
+      "destination": "/legal/cookies/index.html"
+    },
+    {
+      "source": "/legal/lgpd",
+      "destination": "/legal/lgpd/index.html"
+    },
     {
       "source": "/(.*)",
       "destination": "/"
     }
-  ]
+  ],
+  "buildCommand": "",
+  "installCommand": "echo skipped"
 }

@@ -22,7 +22,6 @@ const TypewriterEffect = lazy(() =>
 const WhatsAppDemoSection = lazy(() => import('@/components/WhatsAppDemoSection'));
 const DashboardPrintsCarousel = lazy(() => import('@/components/DashboardPrintsCarousel'));
 const OperationsPrintsCarousel = lazy(() => import('@/components/OperationsPrintsCarousel'));
-const MobileTabletCarousel = lazy(() => import('@/components/MobileTabletCarousel'));
 
 // ─── Constants ────────────────────────────────────────────────
 const MARKETING = '/marketing';
@@ -417,7 +416,7 @@ export default function Home() {
         <DashboardPrintsCarousel />
       </div>
 
-      {/* ── 4. HOW IT WORKS ───────────────────────────────── */}
+      {/* ── 4. HOW IT WORKS ── (Do papel ao digital em 3 passos) ── */}
       <Section className="bg-neutral-50 content-visibility-auto">
         <motion.div variants={fadeInUp} className="text-center mb-10 md:mb-16">
           <span className="text-brand-orange font-semibold text-xs sm:text-sm tracking-wide uppercase">Como funciona</span>
@@ -451,7 +450,12 @@ export default function Home() {
         </motion.div>
       </Section>
 
-      {/* ── 4. BEFORE / AFTER ─────────────────────────────── */}
+      {/* ── 4B. MOBILE PRINTS — Sua obra na palma da mão ──── */}
+      <div className="content-visibility-auto">
+        <MobilePrintsSectionWrapper />
+      </div>
+
+      {/* ── 5. BEFORE / AFTER ─────────────────────────────── */}
       <Section className="content-visibility-auto">
         <motion.div variants={fadeInUp} className="text-center mb-10 md:mb-16">
           <span className="text-brand-orange font-semibold text-xs sm:text-sm tracking-wide uppercase">Comparativo</span>
@@ -511,17 +515,7 @@ export default function Home() {
         <WhatsAppDemoSection />
       </div>
 
-      {/* ── 8. MOBILE TABLET PRINTS — carrossel responsivo ── */}
-      <div className="content-visibility-auto">
-        <MobileTabletCarousel />
-      </div>
-
-      {/* ── 9. MOBILE PRINTS ──────────────────────────────── */}
-      <div className="content-visibility-auto">
-        <MobilePrintsSectionWrapper />
-      </div>
-
-      {/* ── 10. OBRAS REAIS ────────────────────────────────── */}
+      {/* ── 8. OBRAS REAIS ────────────────────────────────── */}
       <div className="content-visibility-auto">
         <ObrasReaisSection />
       </div>

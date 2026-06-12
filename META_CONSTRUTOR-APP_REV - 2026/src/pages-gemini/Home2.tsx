@@ -147,7 +147,7 @@ function MetricCounter({ value, label }: { value: string; label: string }) {
         initial={{ scale: 0 }}
         whileInView={{ scale: 1 }}
         viewport={{ once: true }}
-        transition={{ type: 'spring', stiffness: 120, damping: 12 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="text-3xl md:text-4xl font-extrabold text-brand-orange mb-1 font-heading"
       >
         {value}
@@ -217,7 +217,7 @@ export default function Home2() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6 }}
             >
-              <Button className="bg-brand-orange hover:bg-orange-600 text-white rounded-xl px-6 shadow-lg shadow-brand-orange/25">
+              <Button className="bg-[#dc4415] hover:bg-[#c43a10] text-white rounded-xl px-6 shadow-lg shadow-[#dc4415]/25">
                 Começar Grátis <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </motion.div>
@@ -230,10 +230,11 @@ export default function Home2() {
         <AnimatePresence>
           {mobileMenu && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-white border-t border-neutral-100 overflow-hidden"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="md:hidden bg-white border-t border-neutral-100"
             >
               <div className="px-4 py-4 space-y-3">
                 {['Funcionalidades','Preços','Blog','Contato'].map((l) => (
@@ -241,7 +242,7 @@ export default function Home2() {
                     className="block py-2 text-brand-blue/70 font-medium"
                   >{l}</a>
                 ))}
-                <Button className="w-full bg-brand-orange hover:bg-orange-600 text-white rounded-xl">Começar Grátis</Button>
+                <Button className="w-full bg-[#dc4415] hover:bg-[#c43a10] text-white rounded-xl">Começar Grátis</Button>
               </div>
             </motion.div>
           )}
@@ -249,7 +250,7 @@ export default function Home2() {
       </motion.nav>
 
       {/* ─── HERO ─── */}
-      <motion.section style={{ opacity: heroOpacity, scale: heroScale }} className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-brand-blue via-[#162d4e] to-brand-blue overflow-hidden">
+      <motion.section style={{ opacity: heroOpacity, scale: heroScale }} className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-brand-blue via-[#162d4e] to-brand-blue">
         <FloatingElements />
         {/* Gradient glow */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-orange/10 rounded-full blur-3xl" />
@@ -263,13 +264,13 @@ export default function Home2() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
-                className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/20 text-brand-orange text-sm font-semibold mb-6 border border-brand-orange/30"
+                className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/20 text-orange-400 text-sm font-semibold mb-6 border border-brand-orange/30"
               >
                 Obra digital, não papelada
               </motion.span>
               <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold text-white mb-6 font-heading leading-tight">
                 Gestão de obras{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-orange-300">
+                <span className="text-orange-400">
                   sem burocracia
                 </span>
               </h1>
@@ -277,7 +278,7 @@ export default function Home2() {
                 RDO, checklists, equipes e relatórios em um só lugar. Use do celular ou desktop.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="bg-brand-orange hover:bg-orange-600 text-white px-8 py-6 text-lg rounded-xl shadow-xl shadow-brand-orange/30 hover:shadow-2xl transition-all duration-300">
+                <Button size="lg" className="bg-[#dc4415] hover:bg-[#c43a10] text-white px-8 py-6 text-lg rounded-xl shadow-xl shadow-[#dc4415]/30 hover:shadow-2xl transition-all duration-300">
                   Começar Grátis <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
                 <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl">
@@ -326,7 +327,7 @@ export default function Home2() {
       <section className="py-20 md:py-28 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...cinematic} className="text-center mb-14">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-orange text-sm font-semibold mb-4">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-blue text-sm font-semibold mb-4">
               O Meta Construtor em ação
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-brand-blue mb-4 font-heading">
@@ -343,8 +344,8 @@ export default function Home2() {
               <button key={f.label} onClick={() => setActiveFeature(i)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                   activeFeature === i
-                    ? 'bg-brand-orange text-white shadow-lg shadow-brand-orange/25'
-                    : 'bg-white text-neutral-500 hover:bg-brand-orange/10 hover:text-brand-orange border border-neutral-200'
+                    ? 'bg-[#dc4415] text-white shadow-lg shadow-[#dc4415]/25'
+                    : 'bg-white text-neutral-500 hover:bg-[#dc4415]/10 hover:text-brand-blue border border-neutral-200'
                 }`}
               >
                 {f.label}
@@ -371,9 +372,9 @@ export default function Home2() {
                   />
                 </div>
                 <div className="lg:col-span-2">
-                  <span className="text-sm uppercase tracking-wider text-brand-orange font-semibold">{FEATURE_PRINTS[activeFeature].label}</span>
+                  <span className="text-sm uppercase tracking-wider text-brand-blue font-semibold">{FEATURE_PRINTS[activeFeature].label}</span>
                   <p className="text-lg text-neutral-600 mt-2">{FEATURE_PRINTS[activeFeature].desc}</p>
-                  <Button className="mt-6 bg-brand-orange hover:bg-orange-600 text-white rounded-xl">
+                  <Button className="mt-6 bg-[#dc4415] hover:bg-[#c43a10] text-white rounded-xl">
                     Explorar {FEATURE_PRINTS[activeFeature].label} <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                 </div>
@@ -387,7 +388,7 @@ export default function Home2() {
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...cinematic} className="text-center mb-14">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-orange text-sm font-semibold mb-4">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-blue text-sm font-semibold mb-4">
               Galeria de Obras
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-brand-blue mb-4 font-heading">
@@ -445,20 +446,20 @@ export default function Home2() {
       </section>
 
       {/* ─── TESTIMONIAL ─── */}
-      <section className="py-20 md:py-28 bg-white overflow-hidden">
+      <section className="py-20 md:py-28 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div {...cinematic}>
             <div className="relative inline-block">
               <div className="absolute inset-0 bg-gradient-to-r from-brand-orange/20 to-brand-blue/20 rounded-3xl blur-3xl" />
               <div className="relative bg-white rounded-3xl p-8 md:p-12 border border-neutral-100 shadow-xl">
-                <Quote className="w-10 h-10 text-brand-orange/30 mx-auto mb-6" />
+                <Quote className="w-10 h-10 text-brand-blue/30 mx-auto mb-6" />
                 <blockquote className="text-xl md:text-2xl font-medium text-brand-blue mb-6 leading-relaxed">
                   &ldquo;O Meta Construtor mudou a forma como gerenciamos nossas obras.
                   O que levava um dia inteiro de planilha, hoje fazemos em 15 minutos.&rdquo;
                 </blockquote>
                 <div className="flex items-center justify-center gap-1 mb-3">
                   {[1,2,3,4,5].map((s) => (
-                    <Star key={s} className="w-5 h-5 fill-brand-orange text-brand-orange" />
+                    <Star key={s} className="w-5 h-5 fill-brand-blue text-brand-blue" />
                   ))}
                 </div>
                 <cite className="not-italic">
@@ -479,7 +480,7 @@ export default function Home2() {
       </section>
 
       {/* ─── FINAL CTA ─── */}
-      <section className="relative py-24 md:py-32 bg-gradient-to-br from-brand-orange via-orange-600 to-brand-blue overflow-hidden">
+      <section className="relative py-24 md:py-32 bg-gradient-to-br from-[#dc4415] via-[#dc4415] to-brand-blue overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2LjUgMzUuNWMtNC4xNDEgMC03LjUtMy4zNTktNy41LTcuNSAwLTQuMTQxIDMuMzU5LTcuNSA3LjUtNy41IDQuMTQxIDAgNy41IDMuMzU5IDcuNSA3LjUgMCA0LjE0MS0zLjM1OSA3LjUtNy41IDcuNXoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40" />
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div {...cinematic}>
@@ -490,7 +491,7 @@ export default function Home2() {
               Junte-se a mais de 300 construtoras que já simplificaram suas obras.
               <br />Comece grátis, sem cartão de crédito.
             </p>
-            <Button size="lg" className="bg-white text-brand-orange hover:bg-orange-50 px-10 py-6 text-lg rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 font-bold">
+            <Button size="lg" className="bg-white text-brand-blue hover:bg-orange-50 px-10 py-6 text-lg rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 font-bold">
               Começar Grátis Agora
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
@@ -511,7 +512,7 @@ export default function Home2() {
               <p className="leading-relaxed">Gestão de obras inteligente para construtoras que querem crescer.</p>
             </div>
             <div>
-              <h4 className="font-semibold text-white mb-3">Produto</h4>
+              <h3 className="font-semibold text-white mb-3">Produto</h3>
               <ul className="space-y-2">
                 <li><a href="/home2" className="hover:text-white transition-colors">Funcionalidades</a></li>
                 <li><a href="/preco2" className="hover:text-white transition-colors">Preços</a></li>
@@ -519,14 +520,14 @@ export default function Home2() {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-white mb-3">Empresa</h4>
+              <h3 className="font-semibold text-white mb-3">Empresa</h3>
               <ul className="space-y-2">
                 <li><a href="/sobre2" className="hover:text-white transition-colors">Sobre</a></li>
                 <li><a href="/contato2" className="hover:text-white transition-colors">Contato</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-white mb-3">Legal</h4>
+              <h3 className="font-semibold text-white mb-3">Legal</h3>
               <ul className="space-y-2">
                 <li><a href="/legal/privacidade" className="hover:text-white transition-colors">Privacidade</a></li>
                 <li><a href="/legal/termos" className="hover:text-white transition-colors">Termos</a></li>

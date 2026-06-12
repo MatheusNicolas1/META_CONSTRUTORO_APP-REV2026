@@ -46,11 +46,11 @@ function FloatingInput({ label, type = 'text', value, onChange }: {
       <Input type={type} value={value} onChange={(e) => onChange(e.target.value)}
         onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
         className={`w-full pt-6 pb-2 px-4 border-2 rounded-xl transition-all duration-200 text-base ${
-          focused ? 'border-brand-orange shadow-lg shadow-orange-100' : 'border-neutral-200'
+          focused ? 'border-brand-blue shadow-lg shadow-blue-100' : 'border-neutral-200'
         }`}
       />
       <motion.label animate={{ y: isFloating ? -22 : 0, x: 12, scale: isFloating ? 0.75 : 1, color: focused ? '#F97316' : '#9ca3af' }}
-        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         className="absolute top-3 left-0 text-neutral-400 pointer-events-none origin-left"
       >{label}</motion.label>
     </div>
@@ -68,11 +68,11 @@ function FloatingTextarea({ label, value, onChange }: {
         onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
         rows={4}
         className={`w-full pt-6 pb-2 px-4 border-2 rounded-xl transition-all duration-200 text-base resize-none ${
-          focused ? 'border-brand-orange shadow-lg shadow-orange-100' : 'border-neutral-200'
+          focused ? 'border-brand-blue shadow-lg shadow-blue-100' : 'border-neutral-200'
         }`}
       />
       <motion.label animate={{ y: isFloating ? -22 : 0, x: 12, scale: isFloating ? 0.75 : 1, color: focused ? '#F97316' : '#9ca3af' }}
-        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         className="absolute top-3 left-0 text-neutral-400 pointer-events-none origin-left"
       >{label}</motion.label>
     </div>
@@ -82,7 +82,7 @@ function FloatingTextarea({ label, value, onChange }: {
 function SuccessMessage() {
   return (
     <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className="text-center py-12"
     >
       <motion.div initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
@@ -122,14 +122,10 @@ export default function Contato2() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(249,115,22,0.12)_0%,_transparent_60%)]" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div {...cinematic}>
-            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/20 text-brand-orange text-sm font-semibold mb-4 border border-brand-orange/30">
-              Fale Conosco
-            </span>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/20 text-brand-blue text-sm font-semibold mb-4 border border-brand-orange/30">Fale Conosco</span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 font-heading">
               Vamos conversar sobre{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-orange-300">
-                sua obra
-              </span>
+              <span className="text-orange-400">sua obra</span>
             </h1>
             <p className="text-lg md:text-xl text-blue-100/70 max-w-2xl mx-auto">
               Tire dúvidas, peça um orçamento ou agende uma demonstração personalizada
@@ -164,7 +160,7 @@ export default function Contato2() {
                       </div>
                       <FloatingTextarea label="Como podemos ajudar?" value={formData.message} onChange={(v) => setFormData((p) => ({ ...p, message: v }))} />
                       <Button type="submit" disabled={sending || sent}
-                        className="w-full bg-brand-orange hover:bg-orange-600 text-white py-6 rounded-xl text-lg font-semibold shadow-lg shadow-brand-orange/25 hover:shadow-brand-orange/40 transition-all duration-300"
+                        className="w-full bg-[#dc4415] hover:bg-[#c43a10] text-white py-6 rounded-xl text-lg font-semibold shadow-lg shadow-[#dc4415]/25 hover:shadow-[#dc4415]/40 transition-all duration-300"
                       >
                         {sending ? (
                           <><Loader2 className="mr-2 w-5 h-5 animate-spin" />Enviando...</>
@@ -185,7 +181,7 @@ export default function Contato2() {
                   className="block bg-white rounded-xl p-5 border border-neutral-200 shadow-sm hover:shadow-md hover:border-brand-orange/30 transition-all duration-300 group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-brand-orange flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-10 h-10 rounded-lg bg-[#dc4415] flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
                       <item.icon className="w-5 h-5" />
                     </div>
                     <div>
@@ -230,7 +226,7 @@ export default function Contato2() {
               <p className="text-lg text-blue-100/80 mb-6">
                 Mais de 1.500 obras já gerenciadas com o Meta Construtor. Comece grátis hoje.
               </p>
-              <Button size="lg" className="bg-brand-orange hover:bg-orange-600 text-white px-8 py-6 text-lg rounded-xl shadow-xl">
+              <Button size="lg" className="bg-[#dc4415] hover:bg-[#c43a10] text-white px-8 py-6 text-lg rounded-xl shadow-xl">
                 Comece Grátis <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </motion.div>

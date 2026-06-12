@@ -28,10 +28,10 @@ const staggerItem = {
 
 // ─── Data ────────────────────────────────────────────────────
 const VALUES = [
-  { icon: Target, title: 'Missão', desc: 'Transformar a gestão de obras no Brasil, tornando construtoras mais produtivas, organizadas e lucrativas através da tecnologia.', color: 'from-brand-orange to-orange-400' },
+  { icon: Target, title: 'Missão', desc: 'Transformar a gestão de obras no Brasil, tornando construtoras mais produtivas, organizadas e lucrativas através da tecnologia.', color: 'from-[#dc4415] to-[#e86035]' },
   { icon: Heart, title: 'Propósito', desc: 'Simplificar o dia a dia de quem constrói o Brasil. Uma obra bem gerenciada transforma vidas.', color: 'from-brand-blue to-blue-500' },
   { icon: Lightbulb, title: 'Inovação', desc: 'Tecnologia que resolve problemas reais. Cada funcionalidade nasce de uma necessidade real de obra.', color: 'from-emerald-500 to-emerald-400' },
-  { icon: Users, title: 'Pessoas', desc: 'Nossa equipe entende de obra porque já viveu obra. Engenheiros e arquitetos que sabem o que fazem.', color: 'from-brand-orange to-orange-400' },
+  { icon: Users, title: 'Pessoas', desc: 'Nossa equipe entende de obra porque já viveu obra. Engenheiros e arquitetos que sabem o que fazem.', color: 'from-[#dc4415] to-[#e86035]' },
   { icon: Shield, title: 'Confiança', desc: 'Mais de 1.500 obras confiam no Meta Construtor. Dados seguros, suporte humano e resultados reais.', color: 'from-brand-blue to-blue-500' },
   { icon: Rocket, title: 'Crescimento', desc: 'Evoluímos junto com nossos clientes. A cada feedback, uma melhoria. A cada obra, uma nova funcionalidade.', color: 'from-emerald-500 to-emerald-400' },
 ];
@@ -74,13 +74,13 @@ function TimelineItem({ item, index }: { item: typeof TIMELINE[0]; index: number
     >
       <div className={`flex-1 ${index % 2 === 1 ? 'md:text-right' : ''}`}>
         <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm hover:shadow-lg transition-all duration-300 group-hover:border-brand-orange/30">
-          <Badge className="bg-brand-orange/10 text-brand-orange border-0 mb-2">{item.year}</Badge>
+          <Badge className="bg-orange-600/10 text-brand-blue border-0 mb-2">{item.year}</Badge>
           <h3 className="text-lg font-bold text-brand-blue mb-1">{item.title}</h3>
           <p className="text-sm text-neutral-500 leading-relaxed">{item.desc}</p>
         </div>
       </div>
       <div className="relative flex flex-col items-center">
-        <div className={`w-4 h-4 rounded-full border-4 border-brand-orange bg-white z-10 shadow-md ${
+        <div className={`w-4 h-4 rounded-full border-4 border-orange-600 bg-white z-10 shadow-md ${
           isInView ? 'scale-100' : 'scale-0'
         } transition-transform duration-300`} />
       </div>
@@ -96,11 +96,11 @@ function TeamCard({ member, index }: { member: typeof TEAM_PHOTOS[0]; index: num
     <motion.div variants={staggerItem}
       className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group text-center"
     >
-      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand-orange to-brand-blue flex items-center justify-center text-white font-bold text-xl mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#dc4415] to-brand-blue flex items-center justify-center text-white font-bold text-xl mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
         {initials}
       </div>
       <h3 className="font-bold text-brand-blue mb-1">{member.name}</h3>
-      <p className="text-sm text-brand-orange font-medium mb-2">{member.role}</p>
+      <p className="text-sm text-brand-blue font-medium mb-2">{member.role}</p>
       <p className="text-sm text-neutral-500 leading-relaxed">{member.desc}</p>
     </motion.div>
   );
@@ -128,14 +128,10 @@ export default function Sobre2() {
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div {...cinematic}>
-            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/20 text-brand-orange text-sm font-semibold mb-6 border border-brand-orange/30">
-              Quem Somos
-            </span>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/20 text-brand-blue text-sm font-semibold mb-6 border border-brand-orange/30">Quem Somos</span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 font-heading leading-tight">
               Nascemos para transformar{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-orange-300">
-                a gestão de obras
-              </span>
+              <span className="text-orange-400">a gestão de obras</span>
             </h1>
             <p className="text-lg md:text-xl text-blue-100/70 max-w-2xl mx-auto leading-relaxed">
               O Meta Construtor foi criado por engenheiros que sentiram na pele a dor de gerenciar obras com papel, planilha e WhatsApp.
@@ -151,7 +147,7 @@ export default function Sobre2() {
           <motion.div variants={staggerContainer} className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {METRICS.map((m) => (
               <motion.div key={m.label} variants={staggerItem} className="text-center">
-                <div className="text-3xl md:text-4xl font-extrabold text-brand-orange mb-1 font-heading">{m.value}</div>
+                <div className="text-3xl md:text-4xl font-extrabold text-brand-blue mb-1 font-heading">{m.value}</div>
                 <div className="text-sm text-neutral-500 font-medium">{m.label}</div>
               </motion.div>
             ))}
@@ -182,11 +178,9 @@ export default function Sobre2() {
       <section className="py-20 md:py-28 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...cinematic} className="text-center mb-14">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-orange text-sm font-semibold mb-4 border border-brand-orange/20">
-              Nossos Valores
-            </span>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-blue text-sm font-semibold mb-4 border border-brand-orange/20">Nossos Valores</span>
             <h2 className="text-3xl md:text-4xl font-bold text-brand-blue mb-4 font-heading">
-              O que nos <span className="text-brand-orange">move</span>
+              O que nos <span className="text-brand-blue">move</span>
             </h2>
           </motion.div>
           <motion.div {...staggerContainer} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -209,16 +203,14 @@ export default function Sobre2() {
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...cinematic} className="text-center mb-14">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-orange text-sm font-semibold mb-4 border border-brand-orange/20">
-              Nossa História
-            </span>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-blue text-sm font-semibold mb-4 border border-brand-orange/20">Nossa História</span>
             <h2 className="text-3xl md:text-4xl font-bold text-brand-blue mb-4 font-heading">
-              Como <span className="text-brand-orange">chegamos aqui</span>
+              Como <span className="text-brand-blue">chegamos aqui</span>
             </h2>
           </motion.div>
           <div className="hidden md:block h-1 bg-neutral-100 rounded-full mb-12 relative overflow-hidden">
             <motion.div style={{ scaleX: progressScale }}
-              className="absolute inset-y-0 left-0 bg-gradient-to-r from-brand-orange to-orange-400 origin-left rounded-full"
+              className="absolute inset-y-0 left-0 bg-gradient-to-r from-[#dc4415] to-[#e86035] origin-left rounded-full"
             />
           </div>
           <div className="space-y-8 md:space-y-12 relative">
@@ -234,11 +226,9 @@ export default function Sobre2() {
       <section className="py-20 md:py-28 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...cinematic} className="text-center mb-14">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-orange text-sm font-semibold mb-4 border border-brand-orange/20">
-              Equipe
-            </span>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-blue text-sm font-semibold mb-4 border border-brand-orange/20">Equipe</span>
             <h2 className="text-3xl md:text-4xl font-bold text-brand-blue mb-4 font-heading">
-              Quem faz o <span className="text-brand-orange">Meta Construtor</span>
+              Quem faz o <span className="text-brand-blue">Meta Construtor</span>
             </h2>
             <p className="text-lg text-neutral-500 max-w-2xl mx-auto">Engenheiros, arquitetos e desenvolvedores que respiram obra.</p>
           </motion.div>
@@ -258,12 +248,12 @@ export default function Sobre2() {
         <div className="absolute inset-0 bg-gradient-to-r from-brand-blue/70 to-transparent" />
         <div className="relative h-full flex items-center px-8 md:px-16">
           <motion.div {...cinematic} className="max-w-lg">
-            <Quote className="w-10 h-10 text-brand-orange/60 mb-4" />
+            <Quote className="w-10 h-10 text-brand-blue/60 mb-4" />
             <blockquote className="text-xl md:text-2xl font-medium text-white leading-relaxed">
               &ldquo;O que levava um dia inteiro de planilha, hoje fazemos em 15 minutos.&rdquo;
             </blockquote>
             <div className="flex items-center gap-1 mt-4">
-              {[1, 2, 3, 4, 5].map((s) => (<Star key={s} className="w-4 h-4 fill-brand-orange text-brand-orange" />))}
+              {[1, 2, 3, 4, 5].map((s) => (<Star key={s} className="w-4 h-4 fill-brand-blue text-brand-blue" />))}
             </div>
             <p className="text-sm text-blue-200 mt-2">Eng. Rafael Torres — Construtora Torres & Associados</p>
           </motion.div>
@@ -278,7 +268,7 @@ export default function Sobre2() {
             <p className="text-lg text-neutral-500 mb-8 max-w-lg mx-auto">
               Junte-se a mais de 300 construtoras que já transformaram sua gestão de obras.
             </p>
-            <Button size="lg" className="bg-brand-orange hover:bg-orange-600 text-white px-10 py-6 text-lg rounded-xl shadow-lg shadow-brand-orange/25 hover:shadow-xl transition-all duration-300">
+            <Button size="lg" className="bg-[#dc4415] hover:bg-[#c43a10] text-white px-10 py-6 text-lg rounded-xl shadow-lg shadow-[#dc4415]/25 hover:shadow-xl transition-all duration-300">
               Comece Grátis Agora <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </motion.div>

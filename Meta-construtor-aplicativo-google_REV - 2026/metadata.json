@@ -1,0 +1,6 @@
+{
+  "name": "META CONSTRUTOR",
+  "description": "Aplicativo moderno e minimalista de criação de RDOs e gestão de obras para engenheiros civis, arquitetos e construtores.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

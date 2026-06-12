@@ -62,3 +62,8 @@ MetaConstrutor/
 openai-whisper/
 
 .env*.local
+
+# App Android
+Meta-construtor-aplicativo-google/
+Meta-construtor-aplicativo-google_REV - 2026/
+Meta-construtor-aplicativo-main.zip

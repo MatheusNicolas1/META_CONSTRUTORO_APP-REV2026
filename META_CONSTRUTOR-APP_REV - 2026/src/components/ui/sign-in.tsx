@@ -3,10 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { AutoScrollTestimonials, type Testimonial as AutoScrollTestimonial } from './auto-scroll-testimonials';
 import { useLeadDetection, type LeadInfo } from '@/hooks/useLeadDetection';
-import { SplineScene } from './splite';
-import { Spotlight } from './spotlight';
+import { AuthHeroSection } from './auth-hero-section';
 
 // --- HELPER COMPONENTS (ICONS) ---
 
@@ -49,45 +47,7 @@ const GlassInputWrapper = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
-// --- SPLINE HERO (PERSONALIZADO) ---
 
-const SplineHeroSection = ({ lead, email }: { lead: LeadInfo; email: string }) => (
-  <section className="hidden md:block flex-1 relative overflow-hidden bg-gradient-to-br from-amber-400 via-orange-500 to-orange-700">
-    <div className="absolute inset-4 rounded-3xl bg-black/[0.96] overflow-hidden shadow-2xl">
-      <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
-      <div className="absolute inset-0 flex">
-        {/* Left: 3D character */}
-        <div className="flex-1 relative">
-          <SplineScene 
-            scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-            className="w-full h-full" 
-          />
-        </div>
-        {/* Right: Welcome message overlay */}
-        <div className="w-1/3 flex items-center justify-center p-8">
-          <div className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-600 to-indigo-800 flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-xl">
-                {lead.nome ? lead.nome.charAt(0).toUpperCase() : 'L'}
-              </span>
-            </div>
-            <h2 className="text-2xl font-bold text-white mb-2">
-              Que bom que<br />você voltou!
-            </h2>
-            <p className="text-white/70 text-sm">
-              {lead.nome || lead.email}
-            </p>
-            {lead.site && (
-              <p className="text-white/50 text-xs mt-1">
-                {lead.site}
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-);
 
 // --- MAIN COMPONENT ---
 
@@ -116,9 +76,8 @@ export const SignInPage: React.FC<SignInPageProps> = ({
     setEmailInput(e.target.value);
   };
 
-  // Se lead encontrado, mostrar hero personalizado com Spline
-  // Caso contrário, mostrar o hero padrão
-  const showSplineHero = leadFound && lead;
+  // Só mostra hero quando lead reconhecido (com split-screen capacete + cartão)
+  const showHero = leadFound && lead ? 'lead' : null;
 
   return (
     <div className="h-[100dvh] flex flex-col md:flex-row font-geist w-[100dvw]">
@@ -231,18 +190,13 @@ export const SignInPage: React.FC<SignInPageProps> = ({
         </div>
       </section>
 
-      {/* Right column: hero image / testimonials / spline */}
-      {showSplineHero ? (
-        <SplineHeroSection lead={lead} email={emailInput} />
-      ) : heroImageSrc ? (
-        <section className="hidden md:block flex-1 relative p-4">
-          <div className="animate-slide-in-right absolute inset-4 rounded-3xl bg-cover bg-center" style={{ backgroundImage: `url(${heroImageSrc})` }}></div>
-          {testimonials.length > 0 && (
-            <div className="absolute inset-4 rounded-3xl overflow-hidden">
-              <AutoScrollTestimonials testimonials={testimonials} duration={100} className="w-full h-full" />
-            </div>
-          )}
-        </section>
+      {/* Right column: hero section */}
+      {showHero ? (
+        <AuthHeroSection 
+          lead={lead}
+          email={emailInput}
+          mode={showHero}
+        />
       ) : null}
     </div>
   );

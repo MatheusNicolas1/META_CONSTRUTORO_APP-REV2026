@@ -23,7 +23,6 @@ import { ServiceWorkerManager } from '@/components/ServiceWorkerManager';
 import { InteractionTracker } from '@/components/InteractionTracker';
 import { SuccessCheck } from '@/components/Feedback/SuccessCheck';
 import PublicMarketingTracker from '@/components/analytics/PublicMarketingTracker';
-import TesteMinimo from '@/pages/TesteMinimo';
 import { checkUrlForAffiliateRef } from '@/utils/affiliateTracker';
 import { AffiliateUrlWatcher } from '@/components/AffiliateUrlWatcher';
 
@@ -515,7 +514,7 @@ export const PerformanceOptimizedApp = memo(() => (
                     <SecurityHeaders />
                     <Routes>
                       {/* Home é a raiz e /home redireciona */}
-                      <Route path="/" element={<TesteMinimo />} />
+                      <Route path="/" element={<><PublicThemeEffect /><Index /></>} />
                       <Route path="/home" element={<Navigate to="/" replace />} />
                       {/* Rotas públicas sem layout */}
                       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />

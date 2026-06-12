@@ -9,6 +9,7 @@ interface ImportMetaEnv {
     readonly VITE_N8N_WEBHOOK_URL: string
     readonly VITE_POSTHOG_KEY: string
     readonly VITE_POSTHOG_HOST: string
+    readonly VITE_GA_MEASUREMENT_ID?: string
     readonly VITE_STRIPE_PUBLISHABLE_KEY: string
     readonly VITE_ENABLE_ACTIVITY_REALTIME?: string
     readonly MODE: string

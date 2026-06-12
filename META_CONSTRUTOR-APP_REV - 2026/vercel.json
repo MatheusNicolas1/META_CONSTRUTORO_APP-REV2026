@@ -1,4 +1,5 @@
 {
+    "buildCommand": "npx vite build",
     "headers": [
         {
             "source": "/assets/(.*)",

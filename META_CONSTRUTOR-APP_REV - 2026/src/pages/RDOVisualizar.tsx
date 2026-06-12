@@ -246,9 +246,9 @@ const RDOVisualizar = () => {
     if (!pendingDeleteDoc) return;
     const doc = pendingDeleteDoc;
     setDeletingId(doc.id);
-    const ok = await deleteDocumento(doc.id, doc.url);
+    const ok = await deleteDocumento(doc.id);
     setDeletingId(null);
-    if (ok) {
+    if (ok !== undefined) {
       toast.success('Arquivo excluído.');
       setPendingDeleteDoc(null);
       queryClient.invalidateQueries({ queryKey: ['rdo', id] });

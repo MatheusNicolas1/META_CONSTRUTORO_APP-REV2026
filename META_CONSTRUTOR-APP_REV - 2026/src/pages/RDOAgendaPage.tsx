@@ -1,7 +1,7 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useRequireOrg } from '@/hooks/requireOrg';
-import { useRDOAgenda, type AgendaComResumo } from '@/hooks/useRDOAgenda';
+import { useRDOAgenda } from '@/hooks/useRDOAgenda';
 import { useRDONichos } from '@/hooks/useRDONichos';
 import { RDOAgendaCard } from '@/components/rdo/RDOAgendaCard';
 import { RDOAgendaNichoTab } from '@/components/rdo/RDOAgendaNichoTab';
@@ -97,22 +97,24 @@ const RDOAgendaPage = () => {
   const [novaData, setNovaData] = useState(hoje);
 
   // Hooks
-  const { agendas, isLoading, isFetching, resumoGeralQuery, updateAgendaResumo, isUpdatingAgenda } = useRDOAgenda({
-    orgId,
-    dataInicio: dateRange.inicio,
-    dataFim: dateRange.fim,
-  });
+  const { agendaQuery, resumoGeralQuery, updateAgendaMutation } = useRDOAgenda();
 
-  const { nichos } = useRDONichos();
+  const { nichosQuery } = useRDONichos();
+
+  const nichos = nichosQuery.data || [];
+
+  // Agenda da data selecionada
+  const agendaQueryResult = agendaQuery(selectedDate);
+  const agendas = (agendaQueryResult.data ? [agendaQueryResult.data] : []) as any[];
+  const isLoading = agendaQueryResult.isLoading;
+  const isFetching = agendaQueryResult.isFetching;
 
   // Resumo da data selecionada
   const { data: resumo, isLoading: loadingResumo } = resumoGeralQuery(selectedDate);
+  const isUpdatingAgenda = updateAgendaMutation.isPending;
 
   // Agenda da data selecionada
-  const agendaSelecionada = useMemo(
-    () => agendas.find((a) => a.data === selectedDate),
-    [agendas, selectedDate]
-  );
+  const agendaSelecionada = agendaQueryResult.data;
 
   // Navegação entre dias
   const navegarDia = useCallback(
@@ -130,11 +132,13 @@ const RDOAgendaPage = () => {
   // Salvar resumo
   const handleSalvarResumo = async () => {
     try {
-      await updateAgendaResumo({
-        data: selectedDate,
-        resumo_geral: resumoEdit,
-        clima_geral: climaEdit,
-        observacoes_gestor: obsGestorEdit,
+      await updateAgendaMutation.mutateAsync({
+        id: agendaQueryResult.data?.id || '',
+        data: {
+          resumo_geral: resumoEdit,
+          clima_geral: climaEdit,
+          observacoes_gestor: obsGestorEdit,
+        },
       });
       setEditandoResumo(false);
     } catch {
@@ -153,9 +157,11 @@ const RDOAgendaPage = () => {
   // Criar agenda manual para uma data
   const handleCriarAgenda = async () => {
     try {
-      await updateAgendaResumo({
-        data: novaData,
-        titulo: `Diário de Bordo - ${format(parseISO(novaData), 'dd/MM/yyyy')}`,
+      await updateAgendaMutation.mutateAsync({
+        id: agendaQueryResult.data?.id || '',
+        data: {
+          titulo: `Diário de Bordo - ${format(parseISO(novaData), 'dd/MM/yyyy')}`,
+        },
       });
       setSelectedDate(novaData);
       setSearchParams({ data: novaData });
@@ -451,6 +457,7 @@ const RDOAgendaPage = () => {
                           {
                             ...nichoItem,
                             data: selectedDate,
+                            status_geral: 'NORMAL' as const,
                             total_atividades: 0,
                             total_equipes: 0,
                             ocorrencias: [],

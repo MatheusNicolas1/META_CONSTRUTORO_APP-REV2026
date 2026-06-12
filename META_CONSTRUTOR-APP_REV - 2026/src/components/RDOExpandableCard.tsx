@@ -40,7 +40,7 @@ export function RDOExpandableCard({ rdo, onEdit, onDelete, onDownload, editMode 
   const contentRef = useRef<HTMLDivElement>(null);
   const { nichosQuery } = useRDONichos();
   const nichos = nichosQuery.data || [];
-  const nicho = nichos.find((n) => n.id === (rdo as Record<string, unknown>).nicho_id as string);
+  const nicho = nichos.find((n) => n.id === (rdo as any).nicho_id as string);
 
   useEffect(() => {
     if (contentRef.current) {

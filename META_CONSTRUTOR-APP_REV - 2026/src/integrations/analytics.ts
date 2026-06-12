@@ -7,6 +7,14 @@ const POSTHOG_KEY = import.meta.env.VITE_POSTHOG_KEY
 const POSTHOG_HOST = import.meta.env.VITE_POSTHOG_HOST || 'https://app.posthog.com'
 const IS_DEV = import.meta.env.DEV
 
+declare global {
+  interface Window {
+    posthog?: {
+      __loaded?: boolean;
+    };
+  }
+}
+
 type MarketingAttribution = {
     anonymous_id?: string
     session_id?: string

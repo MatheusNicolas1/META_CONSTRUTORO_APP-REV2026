@@ -23,8 +23,7 @@ import {
 } from 'lucide-react';
 import { format, isToday, isYesterday, isTomorrow, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import type { AgendaComResumo } from '@/hooks/useRDOAgenda';
-import type { ResumoGeral } from '@/types/rdo';
+import type { ResumoGeral, RDOAgenda } from '@/types/rdo';
 
 // ============================================================
 // Helpers
@@ -89,7 +88,7 @@ const formatDataShort = (dataStr: string): string => {
 // ============================================================
 
 interface RDOAgendaCardProps {
-  agenda: AgendaComResumo;
+  agenda: RDOAgenda;
   resumo?: ResumoGeral;
   onClick?: (data: string) => void;
   isSelected?: boolean;

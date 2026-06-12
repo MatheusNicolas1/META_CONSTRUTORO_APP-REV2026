@@ -104,17 +104,19 @@ const AdminNichosPage = () => {
   const navigate = useNavigate();
   const { role } = useRequireOrg();
   const {
-    nichos,
-    isLoading,
-    isFetching,
+    nichosQuery,
     createNicho,
-    isCreating,
     updateNicho,
-    isUpdating,
     deleteNicho,
-    isDeleting,
-    refetch,
   } = useRDONichos();
+
+  const nichos = nichosQuery.data || [];
+  const isLoading = nichosQuery.isLoading;
+  const isFetching = nichosQuery.isFetching;
+  const isCreating = createNicho.isPending;
+  const isUpdating = updateNicho.isPending;
+  const isDeleting = deleteNicho.isPending;
+  const refetch = nichosQuery.refetch;
 
   // Estado de busca
   const [searchTerm, setSearchTerm] = useState('');
@@ -170,15 +172,17 @@ const AdminNichosPage = () => {
 
     try {
       if (editingNicho) {
-        await updateNicho({
+        await updateNicho.mutateAsync({
           id: editingNicho.id,
-          nome: formNome.trim(),
-          descricao: formDescricao.trim() || undefined,
-          cor: formCor,
-          icone: formIcone,
+          data: {
+            nome: formNome.trim(),
+            descricao: formDescricao.trim() || undefined,
+            cor: formCor,
+            icone: formIcone,
+          },
         });
       } else {
-        await createNicho({
+        await createNicho.mutateAsync({
           nome: formNome.trim(),
           descricao: formDescricao.trim() || undefined,
           cor: formCor,
@@ -194,7 +198,7 @@ const AdminNichosPage = () => {
   const handleConfirmarExclusao = async () => {
     if (!deletingNicho) return;
     try {
-      await deleteNicho(deletingNicho.id);
+      await deleteNicho.mutateAsync(deletingNicho.id);
       setShowDeleteDialog(false);
       setDeletingNicho(null);
     } catch {
@@ -204,7 +208,7 @@ const AdminNichosPage = () => {
 
   const handleToggleAtivo = async (nicho: RDONicho) => {
     try {
-      await updateNicho({ id: nicho.id, ativo: !nicho.ativo });
+      await updateNicho.mutateAsync({ id: nicho.id, data: { ativo: !nicho.ativo } });
     } catch {
       // Toast já tratado
     }

@@ -213,7 +213,7 @@ export default function Captura() {
 
       {/* ========== HERO SECTION ========== */}
       <section className="relative bg-brand-blue overflow-hidden">
-        <AnimatedGradient className="absolute inset-0 opacity-30" />
+        <AnimatedGradient className="absolute inset-0 opacity-30" as="span"> </AnimatedGradient>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-28 sm:pt-28 sm:pb-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left: Hero Text */}

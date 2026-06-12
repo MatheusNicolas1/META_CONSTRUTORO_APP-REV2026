@@ -5,55 +5,28 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { SingleCarousel, type CarouselItem } from '@/components/public/SingleCarousel';
 
-const MARKETING = '/marketing';
-
 // ─── Prints MOBILE reais + Mockups verticais com moldura ──
 // Prioridade: prints de tela de celular. Os verticais têm moldura de celular.
 
-const allImages: CarouselItem[] = [
-  // ── Prints MOBILE reais ──
-  {
-    src: `${MARKETING}/prd-prints-2026-06-04-25-rdo-mobile.png`,
-    title: 'RDO no Celular',
-  },
-  {
-    src: `${MARKETING}/prd-prints-2026-06-04-26-obras-mobile.png`,
-    title: 'Obras no Celular',
-  },
-  {
-    src: `${MARKETING}/prd-prints-2026-06-04-27-atividade-mobile.png`,
-    title: 'Atividades',
-  },
+const supabaseBucket = 'https://bgdvlhttyjeuprrfxgun.supabase.co/storage/v1/object/public/community_media/prints/mockup';
 
-  // ── Mockups verticais com moldura de celular ──
-  {
-    src: `${MARKETING}/dashboard-vertical.jpg`,
-    title: 'Dashboard',
-  },
-  {
-    src: `${MARKETING}/obras-vertical.jpg`,
-    title: 'Obras',
-  },
-  {
-    src: `${MARKETING}/checklist-vertical.jpg`,
-    title: 'Checklist',
-  },
-  {
-    src: `${MARKETING}/despesas-vertical.jpg`,
-    title: 'Despesas',
-  },
-  {
-    src: `${MARKETING}/equipes-vertical.jpg`,
-    title: 'Equipes',
-  },
-  {
-    src: `${MARKETING}/rdo-vertical.jpg`,
-    title: 'RDO',
-  },
-  {
-    src: `${MARKETING}/relatorios-vertical.jpg`,
-    title: 'Relatórios',
-  },
+const allImages: CarouselItem[] = [
+  // ── Layouts reais do app (app mobile) ──
+  { src: `${supabaseBucket}/IMG_4502.png`, title: 'Obras no App' },
+  { src: `${supabaseBucket}/IMG_4503.png`, title: 'Print Layout' },
+  { src: `${supabaseBucket}/IMG_4505.png`, title: 'Tela Inicial' },
+  { src: `${supabaseBucket}/IMG_4506.png`, title: 'Checklist' },
+  { src: `${supabaseBucket}/IMG_4507.png`, title: 'RDO Digital' },
+  { src: `${supabaseBucket}/IMG_4508.png`, title: 'Atividades' },
+  { src: `${supabaseBucket}/IMG_4509.png`, title: 'Equipes' },
+  { src: `${supabaseBucket}/IMG_4510.png`, title: 'Documentos' },
+  { src: `${supabaseBucket}/IMG_4511.png`, title: 'Relatórios' },
+  { src: `${supabaseBucket}/IMG_4512.png`, title: 'Dashboard' },
+  { src: `${supabaseBucket}/IMG_4513.png`, title: 'Financeiro' },
+  { src: `${supabaseBucket}/IMG_4514.png`, title: 'Fornecedores' },
+  { src: `${supabaseBucket}/IMG_4515.png`, title: 'Equipamentos' },
+  { src: `${supabaseBucket}/IMG_4516.png`, title: 'Configurações' },
+  { src: `${supabaseBucket}/IMG_4517.png`, title: 'Notificações' },
 ];
 
 const fadeInUp = {

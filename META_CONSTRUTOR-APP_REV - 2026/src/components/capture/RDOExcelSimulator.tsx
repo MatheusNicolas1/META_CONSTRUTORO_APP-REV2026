@@ -225,17 +225,17 @@ export default function RDOExcelSimulator() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-150">
-                  {equipments.map(e => (
-                    <tr key={e.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="px-3 py-3 font-sans font-semibold text-slate-800">{e.name}</td>
-                      <td className="px-3 py-3 text-center text-slate-755 font-sans">{e.quantity}</td>
+                  {equipments.map(eq => (
+                    <tr key={eq.id} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="px-3 py-3 font-sans font-semibold text-slate-800">{eq.name}</td>
+                      <td className="px-3 py-3 text-center text-slate-755 font-sans">{eq.quantity}</td>
                       <td className="px-3 py-3 text-center">
                         <span className={`px-2 py-0.5 rounded text-[9px] font-sans font-bold uppercase tracking-wider border ${
-                          e.status === 'Operacional' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-amber-100 text-amber-700 border-amber-200'
-                        }`}>{e.status}</span>
+                          eq.status === 'Operacional' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-amber-100 text-amber-700 border-amber-200'
+                        }`}>{eq.status}</span>
                       </td>
                       <td className="px-3 py-3 text-right">
-                        <input type="number" value={e.hoursWorked || 0} onChange={(e) => updateEquipmentHrs(e.id, parseInt(e.target.value) || 0)}
+                        <input type="number" value={eq.hoursWorked || 0} onChange={(ev) => updateEquipmentHrs(eq.id, parseInt(ev.target.value) || 0)}
                           className="w-12 bg-white border border-slate-250 rounded px-1.5 py-0.5 text-xs text-center outline-none focus:border-brand-orange font-bold text-slate-800" />
                       </td>
                     </tr>

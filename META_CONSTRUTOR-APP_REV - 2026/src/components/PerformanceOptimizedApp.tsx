@@ -297,6 +297,12 @@ const Contato = lazy(() =>
   }))
 );
 
+const TesteSpline = lazy(() =>
+  import('@/pages/TesteSpline').then(module => ({
+    default: module.default
+  }))
+);
+
 const Atualizacoes = lazy(() =>
   import('@/pages/Atualizacoes').then(module => ({
     default: module.default
@@ -528,6 +534,8 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/blog2" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Blog2 /></SafeSuspense></>} />
                       <Route path="/contato2" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Contato2 /></SafeSuspense></>} />
                       <Route path="/sobre2" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Sobre2 /></SafeSuspense></>} />
+                      {/* Rota teste Spline */}
+                      <Route path="/teste-spline" element={<SafeSuspense fallback={null}><TesteSpline /></SafeSuspense>} />
                       {/* Rotas públicas do rodapé */}
                       <Route path="/atualizacoes" element={<SafeSuspense fallback={null}><Atualizacoes /></SafeSuspense>} />
                       <Route path="/carreiras" element={<SafeSuspense fallback={null}><Carreiras /></SafeSuspense>} />

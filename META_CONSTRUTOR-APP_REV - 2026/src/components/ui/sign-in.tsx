@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+'use client'
+
+import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AutoScrollTestimonials, type Testimonial as AutoScrollTestimonial } from './auto-scroll-testimonials';
+import { useLeadDetection, type LeadInfo } from '@/hooks/useLeadDetection';
+import { SplineScene } from './splite';
+import { Spotlight } from './spotlight';
 
 // --- HELPER COMPONENTS (ICONS) ---
 
@@ -44,6 +49,46 @@ const GlassInputWrapper = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
+// --- SPLINE HERO (PERSONALIZADO) ---
+
+const SplineHeroSection = ({ lead, email }: { lead: LeadInfo; email: string }) => (
+  <section className="hidden md:block flex-1 relative overflow-hidden bg-gradient-to-br from-amber-400 via-orange-500 to-orange-700">
+    <div className="absolute inset-4 rounded-3xl bg-black/[0.96] overflow-hidden shadow-2xl">
+      <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
+      <div className="absolute inset-0 flex">
+        {/* Left: 3D character */}
+        <div className="flex-1 relative">
+          <SplineScene 
+            scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+            className="w-full h-full" 
+          />
+        </div>
+        {/* Right: Welcome message overlay */}
+        <div className="w-1/3 flex items-center justify-center p-8">
+          <div className="text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-600 to-indigo-800 flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-xl">
+                {lead.nome ? lead.nome.charAt(0).toUpperCase() : 'L'}
+              </span>
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-2">
+              Que bom que<br />você voltou!
+            </h2>
+            <p className="text-white/70 text-sm">
+              {lead.nome || lead.email}
+            </p>
+            {lead.site && (
+              <p className="text-white/50 text-xs mt-1">
+                {lead.site}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
 // --- MAIN COMPONENT ---
 
 export const SignInPage: React.FC<SignInPageProps> = ({
@@ -59,15 +104,64 @@ export const SignInPage: React.FC<SignInPageProps> = ({
   initialEmail = "",
 }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [emailInput, setEmailInput] = useState(initialEmail);
+  const { found: leadFound, lead, loading: leadLoading, error: leadError } = useLeadDetection(emailInput);
+
+  // Atualiza o email quando initialEmail muda
+  useEffect(() => {
+    if (initialEmail) setEmailInput(initialEmail);
+  }, [initialEmail]);
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailInput(e.target.value);
+  };
+
+  // Se lead encontrado, mostrar hero personalizado com Spline
+  // Caso contrário, mostrar o hero padrão
+  const showSplineHero = leadFound && lead;
 
   return (
     <div className="h-[100dvh] flex flex-col md:flex-row font-geist w-[100dvw]">
       {/* Left column: sign-in form */}
       <section className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
+          {leadLoading && (
+            <div className="mb-4 px-4 py-2 bg-orange-50 border border-orange-200 rounded-lg">
+              <p className="text-sm text-orange-700 flex items-center gap-2">
+                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Verificando cadastro...
+              </p>
+            </div>
+          )}
+
+          {leadFound && lead && !leadLoading && (
+            <div className="mb-4 px-4 py-3 bg-green-50 border border-green-200 rounded-xl animate-in slide-in-from-top-2">
+              <p className="text-sm text-green-800 font-medium">
+                ✅ {lead.nome || 'Lead'}, sua conta está pré-cadastrada!
+              </p>
+              <p className="text-xs text-green-600 mt-1">
+                Digite sua senha para continuar
+              </p>
+            </div>
+          )}
+
           <div className="flex flex-col gap-6">
-            <h1 className="animate-element animate-delay-100 text-4xl md:text-5xl font-semibold leading-tight">{title}</h1>
-            <p className="animate-element animate-delay-200 text-muted-foreground">{description}</p>
+            <h1 className="animate-element animate-delay-100 text-4xl md:text-5xl font-semibold leading-tight">
+              {leadFound && lead ? (
+                <span className="text-construction-orange">Que bom que você voltou!</span>
+              ) : (
+                title
+              )}
+            </h1>
+            <p className="animate-element animate-delay-200 text-muted-foreground">
+              {leadFound && lead 
+                ? `Acesse sua conta, ${lead.nome || lead.email.split('@')[0]}`
+                : description
+              }
+            </p>
 
             <form className="space-y-5" onSubmit={onSignIn}>
               <div className="animate-element animate-delay-300">
@@ -77,7 +171,8 @@ export const SignInPage: React.FC<SignInPageProps> = ({
                     name="email"
                     type="text"
                     placeholder="Digite seu e-mail ou celular"
-                    defaultValue={initialEmail}
+                    value={emailInput}
+                    onChange={handleEmailChange}
                     className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none text-foreground placeholder:text-muted-foreground"
                     required
                     disabled={isLoading}
@@ -136,8 +231,10 @@ export const SignInPage: React.FC<SignInPageProps> = ({
         </div>
       </section>
 
-      {/* Right column: hero image + testimonials */}
-      {heroImageSrc && (
+      {/* Right column: hero image / testimonials / spline */}
+      {showSplineHero ? (
+        <SplineHeroSection lead={lead} email={emailInput} />
+      ) : heroImageSrc ? (
         <section className="hidden md:block flex-1 relative p-4">
           <div className="animate-slide-in-right absolute inset-4 rounded-3xl bg-cover bg-center" style={{ backgroundImage: `url(${heroImageSrc})` }}></div>
           {testimonials.length > 0 && (
@@ -146,7 +243,7 @@ export const SignInPage: React.FC<SignInPageProps> = ({
             </div>
           )}
         </section>
-      )}
+      ) : null}
     </div>
   );
 };

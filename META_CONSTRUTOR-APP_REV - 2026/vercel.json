@@ -250,6 +250,46 @@
       "destination": "/blog/construcao-civil-tendencias-2026/index.html"
     },
     {
+      "source": "/blog/fiscalizacao-de-obra-publica",
+      "destination": "/blog/fiscalizacao-de-obra-publica/index.html"
+    },
+    {
+      "source": "/blog/rescisao-contrato-empreitada",
+      "destination": "/blog/rescisao-contrato-empreitada/index.html"
+    },
+    {
+      "source": "/blog/orcamento-de-obra-como-calcular-corretamente",
+      "destination": "/blog/orcamento-de-obra-como-calcular-corretamente/index.html"
+    },
+    {
+      "source": "/blog/seguranca-do-trabalho-canteiro-obras-guia-completo",
+      "destination": "/blog/seguranca-do-trabalho-canteiro-obras-guia-completo/index.html"
+    },
+    {
+      "source": "/blog/curso-gestao-de-obras-online-melhorar-carreira",
+      "destination": "/blog/curso-gestao-de-obras-online-melhorar-carreira/index.html"
+    },
+    {
+      "source": "/blog/convencao-coletiva-construcao-civil-2026-salarios",
+      "destination": "/blog/convencao-coletiva-construcao-civil-2026-salarios/index.html"
+    },
+    {
+      "source": "/blog/medicao-de-obra-para-pagamento-como-fazer-guia",
+      "destination": "/blog/medicao-de-obra-para-pagamento-como-fazer-guia/index.html"
+    },
+    {
+      "source": "/blog/relatorio-diario-de-obra-fotografico-modelo",
+      "destination": "/blog/relatorio-diario-de-obra-fotografico-modelo/index.html"
+    },
+    {
+      "source": "/blog/relatorio-fotografico-de-obra",
+      "destination": "/blog/relatorio-fotografico-de-obra/index.html"
+    },
+    {
+      "source": "/blog/curso-gestao-de-obras-online",
+      "destination": "/blog/curso-gestao-de-obras-online/index.html"
+    },
+    {
       "source": "/central-ajuda",
       "destination": "/central-ajuda/index.html"
     },
@@ -288,6 +328,54 @@
     {
       "source": "/legal/lgpd",
       "destination": "/legal/lgpd/index.html"
+    },
+    {
+      "source": "/blog/planejamento-de-obras-ferramentas-digitais-metodologias-ageis",
+      "destination": "/blog/planejamento-de-obras-ferramentas-digitais-metodologias-ageis/index.html"
+    },
+    {
+      "source": "/blog/app-para-fiscal-de-obras-controle-rotina",
+      "destination": "/blog/app-para-fiscal-de-obras-controle-rotina/index.html"
+    },
+    {
+      "source": "/blog/diario-de-obra-online-gratis-melhores-opcoes-2026",
+      "destination": "/blog/diario-de-obra-online-gratis-melhores-opcoes-2026/index.html"
+    },
+    {
+      "source": "/blog/gestao-de-obras-publicas-lei-licitacoes",
+      "destination": "/blog/gestao-de-obras-publicas-lei-licitacoes/index.html"
+    },
+    {
+      "source": "/blog/dissidio-construcao-civil-2026",
+      "destination": "/blog/dissidio-construcao-civil-2026/index.html"
+    },
+    {
+      "source": "/blog/gestao-de-obras-publicas-licitacoes",
+      "destination": "/blog/gestao-de-obras-publicas-licitacoes/index.html"
+    },
+    {
+      "source": "/blog/orcamento-de-obra-com-ia",
+      "destination": "/blog/orcamento-de-obra-com-ia/index.html"
+    },
+    {
+      "source": "/blog/qualidade-na-construcao-civil",
+      "destination": "/blog/qualidade-na-construcao-civil/index.html"
+    },
+    {
+      "source": "/blog/cronograma-de-obra-como-fazer",
+      "destination": "/blog/cronograma-de-obra-como-fazer/index.html"
+    },
+    {
+      "source": "/blog/controle-financeiro-de-obra",
+      "destination": "/blog/controle-financeiro-de-obra/index.html"
+    },
+    {
+      "source": "/blog/diario-de-obra-app-gratis",
+      "destination": "/blog/diario-de-obra-app-gratis/index.html"
+    },
+    {
+      "source": "/blog/gestao-de-contratos-construcao-civil",
+      "destination": "/blog/gestao-de-contratos-construcao-civil/index.html"
     },
     {
       "source": "/(.*)",

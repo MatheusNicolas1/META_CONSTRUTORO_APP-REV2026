@@ -33,6 +33,13 @@ const routes = [
     description: "Artigos sobre gestao de obras, RDO digital, produtividade e tecnologia para construtoras.",
     priorityType: "Blog",
   },
+  {
+    path: '/blog/planejamento-de-obras-ferramentas-digitais-metodologias-ageis',
+    title: 'Planejamento de Obras: Ferramentas Digitais e Metodologias Ágeis | Meta Construtor',
+    description:
+      'Aprenda como aplicar metodologias ágeis e ferramentas digitais no planejamento de obras. Scrum, Kanban, BIM 4D e softwares de gestão integrada para construtoras modernas.',
+    priorityType: 'Article',
+  },
   // ── V2 Pages ──
   {
     path: "/home2",
@@ -386,6 +393,185 @@ const routes = [
     path: '/blog/rdo-digital-como-prova-tecnica',
     title: 'RDO digital como prova técnica: validade jurídica e modelos para 2026',
     description: 'Entenda o valor jurídico do RDO digital como prova técnica em ações trabalhistas e contratuais. Guia completo com modelos, validade legal e dicas para 2026.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/fiscalizacao-de-obra-publica',
+    title: 'Fiscalização de obra pública: direitos e deveres do fiscal',
+    description: 'Guia completo sobre fiscalização de obra pública no Brasil: direitos e deveres do fiscal, fundamentação legal na Lei 14.133/2021, rotinas de vistoria, elaboração de relatórios e mediação de conflitos em contratos administrativos.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/rescisao-contrato-empreitada',
+    title: 'Rescisão de contrato de empreitada: direitos do construtor e do contratante',
+    description:
+      'Guia completo sobre rescisão de contrato de empreitada na construção civil. Entenda os direitos do construtor e do contratante, prazos, indenizações, verbas rescisórias e como o RDO pode proteger ambas as partes em caso de rompimento contratual.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/seguranca-do-trabalho-canteiro-obras-guia-completo',
+    title: 'Segurança do Trabalho no Canteiro de Obras: Guia Completo NR-18',
+    description:
+      'Guia completo sobre segurança do trabalho em canteiro de obras. Entenda a NR-18, EPIs obrigatórios, sinalização, análise de risco, treinamentos e como documentar tudo no RDO digital.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/orcamento-de-obra-como-calcular-corretamente',
+    title: 'Orçamento de Obra: Como Calcular Corretamente em 2026 | Meta Construtor',
+    description:
+      'Aprenda como calcular orçamento de obra corretamente em 2026: composição de custos, BDI, encargos sociais, planilha SINAPI e dicas para evitar estouro de orçamento na construção civil.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/curso-gestao-de-obras-online-melhorar-carreira',
+    title: 'Curso de Gestão de Obras Online: Como Melhorar Sua Carreira na Construção Civil',
+    description:
+      'Descubra como um curso de gestão de obras online pode impulsionar sua carreira na construção civil em 2026. Guia completo com melhores cursos, certificações, habilidades e oportunidades de crescimento profissional para engenheiros, arquitetos e técnicos.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/convencao-coletiva-construcao-civil-2026-salarios',
+    title: 'Convenção Coletiva da Construção Civil 2026: Dissídio, Pisos e Salários',
+    description:
+      'Guia completo sobre a Convenção Coletiva da Construção Civil 2026: dissídio, pisos salariais por função, benefícios, reajustes e direitos trabalhistas. Tabela comparativa por estado e dicas para construtoras se adequarem à nova convenção.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/medicao-de-obra-para-pagamento-como-fazer-guia',
+    title: 'Medição de Obra para Pagamento: Guia Prático Passo a Passo',
+    description:
+      'Guia completo sobre medição de obra para pagamento: como medir serviços executados, emitir boletim de medição, calcular valores devidos e evitar erros que atrasam o recebimento. Passo a passo prático com planilha e exemplos reais.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/app-para-fiscal-de-obras-controle-rotina',
+    title: 'App para Fiscal de Obras: Controle a Rotina no Canteiro | Meta Construtor',
+    description:
+      'Descubra o melhor app para fiscal de obras. Controle rotina, registre ocorrências, organize fotos e gere relatórios direto do canteiro com o celular. Guia completo 2026.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/diario-de-obra-online-gratis-melhores-opcoes-2026',
+    title: 'Diário de Obra Online Grátis: Melhores Opções em 2026 | Meta Construtor',
+    description:
+      'Comparativo completo dos melhores diários de obra online grátis em 2026. Veja opções gratuitas, recursos, limitações e qual escolher para sua construtora.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/gestao-de-obras-publicas-lei-licitacoes',
+    title: 'Gestão de Obras Públicas: Lei de Licitações e Contratos 2026 | Meta Construtor',
+    description:
+      'Guia completo sobre gestão de obras públicas com a Lei 14.133/2021. Entenda modalidades, valores atualizados para 2026, PNCP, matriz de riscos e como sua construtora pode participar de licitações.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/dissidio-construcao-civil-2026',
+    title: 'Dissídio da Construção Civil 2026: Reajuste Salarial, Convenção Coletiva e Pisos por Função | Meta Construtor',
+    description:
+      'Guia completo sobre o dissídio da construção civil em 2026: reajuste salarial, data-base, pisos por função, cálculo do reajuste retroativo e como a construtora deve se preparar para evitar passivo trabalhista.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/relatorio-diario-de-obra-fotografico-modelo',
+    title: 'Relatório Diário de Obra com Fotos: Modelo e Como Fazer',
+    description:
+      'Aprenda como fazer um relatório diário de obra com fotos profissionais. Modelo pronto, checklist de fotos obrigatórias e dicas para documentar sua obra como um especialista.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/curso-gestao-de-obras-online',
+    title: 'Curso de Gestão de Obras Online: Melhores Opções em 2026 | Meta Construtor',
+    description:
+      'Comparativo completo dos melhores cursos de gestão de obras online para engenheiros em 2026. Veja opções gratuitas e pagas, grade curricular, certificação e como escolher o ideal para impulsionar sua carreira.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/gestao-de-obras-publicas-licitacoes',
+    title: 'Gestão de Obras Públicas: Licitações, Medição e Fiscalização | Meta Construtor',
+    description:
+      'Guia completo sobre gestão de obras públicas no Brasil: licitações pela Lei 14.133/2021, medição de serviços executados, fiscalização de contratos administrativos e documentação obrigatória para construtoras que trabalham com o poder público.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/orcamento-de-obra-com-ia',
+    title: 'Orçamento de Obra com IA: Como a Inteligência Artificial Está Transformando a Construção Civil | Meta Construtor',
+    description:
+      'Descubra como a inteligência artificial está revolucionando o orçamento de obra na construção civil. Veja ferramentas, benefícios, cases reais e como começar a usar IA nos seus orçamentos.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/gestao-de-contratos-construcao-civil',
+    title:
+      'Gestão de Contratos na Construção Civil: Tipos, Cláusulas e Boas Práticas | Meta Construtor',
+    description:
+      'Guia completo sobre gestão de contratos na construção civil: tipos de contrato (empreitada, administração, integrada), cláusulas essenciais, boas práticas de gerenciamento contratual e como o RDO digital fortalece a execução do contrato.',
+    priorityType: 'Article',
+    faqs: [
+      {
+        question: 'Quais são os principais tipos de contrato na construção civil?',
+        answer:
+          'Os principais tipos são: empreitada por preço global (valor fixo para escopo definido), empreitada por preço unitário (preços por serviço medido), administração contratada (custo real + taxa), contrato integrada (projeto + execução com mesma empresa), contrato semi-integrada e parceria público-privada (PPP). Cada modalidade distribui riscos de forma diferente entre contratante e contratado.',
+      },
+      {
+        question: 'O que não pode faltar em um contrato de obra?',
+        answer:
+          'As cláusulas essenciais são: objeto detalhado do contrato, prazo com cronograma e multas, preço e forma de pagamento com critério de reajuste, metodologia de medição dos serviços, garantias técnicas e contratuais, procedimento para aditivos e alterações de escopo, condições de rescisão, e foro ou arbitragem para solução de disputas.',
+      },
+      {
+        question: 'Qual a diferença entre empreitada por preço global e por preço unitário?',
+        answer:
+          'Na empreitada por preço global, o valor é fixo e o risco de quantidade fica com o empreiteiro. Na empreitada por preço unitário, o valor total é calculado pela medição dos serviços efetivamente executados, e o risco de quantidade fica com o contratante. A escolha depende do nível de definição do projeto antes da obra.',
+      },
+      {
+        question: 'Como o RDO digital ajuda na gestão de contratos de obra?',
+        answer:
+          'O RDO digital registra diariamente as atividades executadas, a equipe alocada, os materiais aplicados, as ocorrências e as paralisações — tudo com data, horário, geolocalização e fotos. Esse registro serve como prova técnica para a medição de serviços, comprova o cumprimento do escopo contratual e protege ambas as partes em caso de disputa ou rescisão.',
+      },
+      {
+        question: 'O que acontece se o contrato de obra não tiver cláusula de medição clara?',
+        answer:
+          'Sem uma cláusula clara de medição, cada parte pode interpretar o critério de seu próprio modo — o que gera glosas, atrasos no pagamento e, frequentemente, ações judiciais. A cláusula deve definir: periodicidade da medição, responsável por medir, documentos exigidos (RDO, fotos, planilha), prazo para aprovação e procedimento de glosa.',
+      },
+      {
+        question: 'Contrato de obra pública e contrato privado têm diferenças importantes?',
+        answer:
+          'Sim. Contratos públicos são regidos pela Lei 14.133/2021, exigem licitação, publicação no PNCP, fiscalização dedicada e matriz de riscos para contratos de grande vulto. Contratos privados seguem o Código Civil e têm maior liberdade contratual — mas a falta de rigidez documental pode aumentar o risco de disputas se não houver disciplina por iniciativa das partes.',
+      },
+    ],
+  },
+  {
+    path: '/blog/qualidade-na-construcao-civil',
+    title: 'Gestão da qualidade na construção civil: normas, indicadores e como implementar | Meta Construtor',
+    description:
+      'Guia completo sobre gestão da qualidade na construção civil: normas ABNT NBR ISO 9001 e 15575, indicadores de desempenho (RIG, NPS, taxa de conformidade), como implementar um SGQ na prática com checklist, procedimentos e ferramentas digitais.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/cronograma-de-obra-como-fazer',
+    title: 'Cronograma de obra passo a passo: como planejar prazos e recursos na construção civil',
+    description:
+      'Aprenda como fazer um cronograma de obra completo passo a passo. Guia com etapas, ferramentas, dicas de planejamento de prazos e alocação de recursos na construção civil.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/controle-financeiro-de-obra',
+    title: 'Controle financeiro de obra: como gerenciar custos, fluxo de caixa e lucratividade | Meta Construtor',
+    description:
+      'Guia completo sobre controle financeiro de obra: aprenda a gerenciar custos diretos e indiretos, planejar fluxo de caixa, calcular lucratividade e usar ferramentas digitais para evitar estouro de orçamento na construção civil.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/diario-de-obra-app-gratis',
+    title: 'Diário de Obra App Grátis: Melhores Opções Gratuitas para Registro de Obras | Meta Construtor',
+    description:
+      'Descubra os melhores apps grátis para diário de obra em 2026. Compare funcionalidades gratuitas para RDO digital, fotos, relatórios e gestão no canteiro sem pagar nada.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/relatorio-fotografico-de-obra',
+    title: 'Relatório Fotográfico de Obra: Como Fazer, Modelo e Importância | Meta Construtor',
+    description:
+      'Aprenda como fazer um relatório fotográfico de obra profissional: guia completo com passo a passo, modelo prático, dicas de fotografia no canteiro e a importância do registro visual para a documentação técnica da construção civil.',
     priorityType: 'Article',
   },
   {

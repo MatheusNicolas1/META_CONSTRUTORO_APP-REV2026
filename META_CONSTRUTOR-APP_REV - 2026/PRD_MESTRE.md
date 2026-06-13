@@ -47,7 +47,9 @@ Regra de continuidade:
 || `docs/PRD2.md` | Estabilizacao, anti-duplicacao, schema drift e verificacao antes de criar | Diretriz historica; aplicar regra de verificar antes de alterar |
 | `docs/PRD3.md` | Zero dados ficticios, org_id, query keys e isolamento de cache | Diretriz historica parcialmente executada; validar no PRD_falso e codigo atual |
 | `docs/PRD4.md` | Estabilizacao funcional rigida por modulos | Diretriz historica; usar como disciplina de execucao |
-| `docs/PRD5.md` e `docs/RELATORIO_FINAL_CONFORMIDADE_PRD5.md` | Funcionalidades mockadas, relatorios, integracoes, contato, approvals | Historico parcialmente superado por PRD.md e PRD_falso |
+|| `docs/PRD5.md` e `docs/RELATORIO_FINAL_CONFORMIDADE_PRD5.md` | Funcionalidades mockadas, relatorios, integracoes, contato, approvals | Historico parcialmente superado por PRD.md e PRD_falso |
+||| `PRD_DEPLOY_VERCEL.md` | Diagnóstico de deploys UNKNOWN na Vercel (20+ deploys travados) | EM EXECUÇÃO — 2026-06-13 — aguardando limpeza de cache no Dashboard + deploy fresco |
+||| `docs/PRD_DIAGNOSTICO_DEPLOY_VERCEL.md` | Diagnóstico final da causa raiz: branch master sem package.json no HEAD b349e1b + repositório Android separado | EM DIAGNÓSTICO — 2026-06-13 — aguardando commit corretivo + push |
 
 ## 3. Baselines adotados como corretos
 

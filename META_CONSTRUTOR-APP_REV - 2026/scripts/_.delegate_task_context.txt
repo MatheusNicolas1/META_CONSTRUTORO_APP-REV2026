@@ -1,0 +1,94 @@
+## Tarefa: Criar artigo robusto para o blog do Meta Construtor
+
+### Projeto
+Caminho absoluto: C:\Users\nicol\OneDrive\Documentos\META CONSTRUTOR\META CONSTRUTOR - APP\META_CONSTRUTOR-APP_REV - 2026
+
+### Artigo a criar
+- slug: sustentabilidade-construcao-civil-esg
+- título: Sustentabilidade na Construção Civil: Práticas ESG que Valorizam sua Obra
+- publishedAt: 2026-06-13
+- Categoria sugerida: 'Gestão de obras'
+
+### Interface BlogArticle
+```typescript
+interface BlogArticleImage {
+  src: string;
+  alt: string;
+  caption?: string;
+  credit?: string;
+}
+
+interface BlogArticleSection {
+  title: string;
+  body: string;         // 200-400 caracteres
+  items?: string[];     // 3-6 bullet points
+  image?: BlogArticleImage;
+}
+
+interface BlogArticleFAQ {
+  question: string;
+  answer: string;
+}
+
+interface BlogArticle {
+  slug: string;
+  path: string;
+  title: string;
+  seoTitle: string;
+  description: string;
+  category: string;
+  intent: string;
+  readingTime: string;
+  summary: string;
+  publishedAt: string;
+  updatedAt: string;
+  keywords: string[];       // 6-8 keywords
+  takeaways: string[];      // 4-5 itens
+  sections: BlogArticleSection[];  // 5-7 seções
+  faq: BlogArticleFAQ[];    // 5-6 perguntas
+  cta: { title: string; description: string; label: string; href: string };
+}
+```
+
+### Slugs EXISTENTES (para links internos — usar 3-4 desses):
+- qualidade-na-construcao-civil
+- orcamento-de-obra-com-ia
+- seguranca-do-trabalho-canteiro-obras-guia-completo
+- gestao-contratos-obra-digital
+- cronograma-de-obra-digital-ferramentas
+- curso-gestao-de-obras-online-melhorar-carreira
+- convencao-coletiva-construcao-civil-2026-salarios
+- nr-18-atualizada-2026-portaria-836
+
+### Onde inserir
+No arquivo `src/content/blogArticles.ts`, inserir o novo objeto ANTES da linha `export const getBlogArticle = (slug?: string) =>` (atual linha 7560).
+O arquivo termina com:
+```
+  },
+];
+
+export const getBlogArticle = (slug?: string) =>
+  blogArticles.find((article) => article.slug === slug);
+```
+
+### Regras obrigatórias
+1. Responda em português do Brasil
+2. Artigo ROBUSTO: 1500-2500 palavras
+3. 5-7 seções com subseções
+4. 2-3 imagens Unsplash com ?w=1200&q=80, alt text, caption, credit
+5. 5-6 perguntas FAQ com respostas de 50-120 caracteres
+6. 4-5 takeaways
+7. 6-8 keywords
+8. 3-4 links internos para slugs EXISTENTES (lista acima)
+9. Tabela comparativa ou passo a passo numerado no body
+10. readingTime: '12 min'
+11. CTA com UTM: href: '/preco?utm_source=blog&utm_medium=artigo&utm_campaign=sustentabilidade-construcao-civil-esg&utm_content=cta-final'
+12. slug no path: '/blog/sustentabilidade-construcao-civil-esg'
+13. Verifique se o slug não colide com nenhum existente
+14. Campos body em markdown puro, sem HTML
+15. summary com 2-3 frases fortes
+16. description com 50-65 caracteres
+17. seoTitle com < 60 caracteres
+
+### Saída esperada
+Retorne APENAS o objeto JavaScript/TypeScript completo (do `{` ao `}`) que representa o BlogArticle, sem texto explicativo. Deve ser inserível diretamente no array blogArticles[].

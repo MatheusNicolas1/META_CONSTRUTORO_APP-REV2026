@@ -378,6 +378,46 @@
       "destination": "/blog/gestao-de-contratos-construcao-civil/index.html"
     },
     {
+      "source": "/blog/inteligencia-artificial-orcamento-obra",
+      "destination": "/blog/inteligencia-artificial-orcamento-obra/index.html"
+    },
+    {
+      "source": "/blog/gestao-contratos-obra-digital",
+      "destination": "/blog/gestao-contratos-obra-digital/index.html"
+    },
+    {
+      "source": "/blog/nr-18-atualizada-2026-portaria-836",
+      "destination": "/blog/nr-18-atualizada-2026-portaria-836/index.html"
+    },
+    {
+      "source": "/blog/cronograma-de-obra-digital-ferramentas",
+      "destination": "/blog/cronograma-de-obra-digital-ferramentas/index.html"
+    },
+    {
+      "source": "/blog/sustentabilidade-construcao-civil-esg",
+      "destination": "/blog/sustentabilidade-construcao-civil-esg/index.html"
+    },
+    {
+      "source": "/blog/rdo-digital-faturamento-obras-publicas",
+      "destination": "/blog/rdo-digital-faturamento-obras-publicas/index.html"
+    },
+    {
+      "source": "/blog/medicao-de-obra-integrada-financeiro",
+      "destination": "/blog/medicao-de-obra-integrada-financeiro/index.html"
+    },
+    {
+      "source": "/blog/construcao-modular-industrializada-brasil",
+      "destination": "/blog/construcao-modular-industrializada-brasil/index.html"
+    },
+    {
+      "source": "/blog/bim-na-gestao-de-obras",
+      "destination": "/blog/bim-na-gestao-de-obras/index.html"
+    },
+    {
+      "source": "/blog/checklist-recebimento-obra-entrega-chaves",
+      "destination": "/blog/checklist-recebimento-obra-entrega-chaves/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/"
     }

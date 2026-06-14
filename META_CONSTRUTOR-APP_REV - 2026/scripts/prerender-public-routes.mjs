@@ -575,6 +575,38 @@ const routes = [
     priorityType: 'Article',
   },
   {
+    path: '/blog/inteligencia-artificial-orcamento-obra',
+    title:
+      'Inteligência Artificial no Orçamento de Obras: Como a IA Está Transformando Custos | Meta Construtor',
+    description:
+      'Descubra como a inteligência artificial está revolucionando o orçamento de obras na construção civil. Veja aplicações práticas, ferramentas de IA, machine learning para previsão de custos e como começar a usar IA hoje mesmo para reduzir erros e aumentar a precisão dos seus orçamentos.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/gestao-contratos-obra-digital',
+    title:
+      'Gestão de Contratos de Obra na Era Digital: Aditivos, Reequilíbrio, Rastreabilidade | Meta Construtor',
+    description:
+      'Guia completo sobre gestão de contratos de obra na era digital: tipos de contrato, aditivos contratuais, reequilíbrio econômico-financeiro, rastreabilidade documental e as melhores ferramentas digitais para construtoras.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/nr-18-atualizada-2026-portaria-836',
+    title:
+      'NR-18 Atualizada 2026: Portaria MTE nº 836 | Meta Construtor',
+    description:
+      'A NR-18 foi atualizada pela Portaria MTE nº 836 em 2026. Saiba o que mudou, os novos prazos, as exigências para PCMAT, EPIs digitais e como se adequar à nova norma regulamentadora.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/cronograma-de-obra-digital-ferramentas',
+    title:
+      'Cronograma de Obra Digital: Ferramentas e Métodos para 2026 | Meta Construtor',
+    description:
+      'Saiba como fazer um cronograma de obra digital eficiente em 2026. Conheça ferramentas, métodos como PERT/CPM, Scrum e Kanban, e como integrar o planejamento com RDO digital e medição.',
+    priorityType: 'Article',
+  },
+  {
     path: "/central-ajuda",
     title: "Central de ajuda | Meta Construtor",
     description: "Guias para organizar a primeira obra, entender RDO, documentos, usuarios e suporte no Meta Construtor.",
@@ -625,6 +657,49 @@ const routes = [
     path: "/legal/lgpd",
     title: "LGPD | Meta Construtor",
     description: "Informacoes sobre conformidade com a Lei Geral de Protecao de Dados no Meta Construtor.",
+  },
+  {
+    path: '/blog/sustentabilidade-construcao-civil-esg',
+    title: 'Sustentabilidade na Construção Civil: Práticas ESG que Valorizam sua Obra | Meta Construtor',
+    description:
+      'Saiba como aplicar práticas ESG na construção civil para valorizar sua obra, reduzir custos e atrair investidores em 2026. Guia completo com LEED, EDGE e passo a passo.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/rdo-digital-faturamento-obras-publicas',
+    title: 'RDO Digital para Faturamento de Obras Públicas: Guia Completo | Meta Construtor',
+    description:
+      'Guia completo sobre como usar o RDO digital como base para faturamento de obras públicas. Aprenda a estruturar medições, emitir boletins e acelerar recebimentos com registros diários confiáveis.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/medicao-de-obra-integrada-financeiro',
+    title: 'Medição de Obra Integrada ao Financeiro: Como Eliminar Defasagens | Meta Construtor',
+    description:
+      'Aprenda como integrar a medição de obra ao financeiro para eliminar defasagens entre serviços executados e faturamento. Guia completo com processos, ferramentas e boas práticas.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/construcao-modular-industrializada-brasil',
+    title: 'Construção Modular e Industrializada no Brasil: Vantagens e Aplicações',
+    description:
+      'Saiba como a construção modular e industrializada está transformando o setor no Brasil. Conheça vantagens, tipos de sistemas, aplicações e cases reais de sucesso em 2026.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/bim-na-gestao-de-obras',
+    title: 'BIM na Gestão de Obras: Guia Completo | Meta Construtor',
+    description:
+      'Guia completo sobre BIM (Building Information Modeling) na gestão de obras. Aprenda como implementar BIM da modelagem à execução no canteiro, com integração RDO, cronograma 4D e medição automatizada.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/checklist-recebimento-obra-entrega-chaves',
+    title:
+      'Checklist de Recebimento de Obra: Guia Completo para Entrega de Chaves ao Cliente | Meta Construtor',
+    description:
+      'Guia completo com checklist de recebimento de obra para entrega de chaves ao cliente. Aprenda as etapas da vistoria, documentos necessários, itens de verificação e como evitar retrabalho na entrega de imóveis na construção civil.',
+    priorityType: 'Article',
   },
 ];
 

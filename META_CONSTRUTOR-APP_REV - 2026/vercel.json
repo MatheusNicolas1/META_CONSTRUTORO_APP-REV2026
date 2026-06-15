@@ -418,6 +418,26 @@
       "destination": "/blog/checklist-recebimento-obra-entrega-chaves/index.html"
     },
     {
+      "source": "/blog/custo-materiais-construcao-2026",
+      "destination": "/blog/custo-materiais-construcao-2026/index.html"
+    },
+    {
+      "source": "/blog/obra-industrializada-construcao-seco-brasil",
+      "destination": "/blog/obra-industrializada-construcao-seco-brasil/index.html"
+    },
+    {
+      "source": "/blog/software-gestao-obras-2026",
+      "destination": "/blog/software-gestao-obras-2026/index.html"
+    },
+    {
+      "source": "/blog/rdo-digital-app-celular",
+      "destination": "/blog/rdo-digital-app-celular/index.html"
+    },
+    {
+      "source": "/blog/gestao-financeira-construtora",
+      "destination": "/blog/gestao-financeira-construtora/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/"
     }

@@ -701,6 +701,46 @@ const routes = [
       'Guia completo com checklist de recebimento de obra para entrega de chaves ao cliente. Aprenda as etapas da vistoria, documentos necessários, itens de verificação e como evitar retrabalho na entrega de imóveis na construção civil.',
     priorityType: 'Article',
   },
+  {
+    path: '/blog/custo-materiais-construcao-2026',
+    title:
+      'Custo de Materiais de Construção em 2026: Guia Completo para Reduzir sua Obra | Meta Construtor',
+    description:
+      'O custo de materiais de construção em 2026 continua subindo. Cimento, aço, areia e tubos dispararam. Descubra por que os preços sobem, como se preparar, planejar compras e controlar o orçamento da sua obra com ferramentas digitais.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/obra-industrializada-construcao-seco-brasil',
+    title:
+      'Obra Industrializada: Construção a Seco no Brasil — Steel Frame, Wood Frame e Concreto Pré-Moldado | Meta Construtor',
+    description:
+      'Construção a seco no Brasil: steel frame, wood frame e concreto pré-moldado. Guia completo sobre obra industrializada com vantagens, custos, prazos, normas técnicas e dicas para engenheiros e construtoras em 2026.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/software-gestao-obras-2026',
+    title:
+      'Melhores Softwares para Construtoras em 2026: Guia Completo de Escolha | Meta Construtor',
+    description:
+      'Guia completo com os melhores softwares para construtoras em 2026. Compare ERP, CRM, gestao de obras, RDO digital, BIM e planejamento. Escolha o sistema ideal para sua construtora.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/rdo-digital-app-celular',
+    title:
+      'RDO Digital no Celular: Como Fazer Relatório Diário de Obra pelo App | Meta Construtor',
+    description:
+      'Aprenda como fazer RDO digital diretamente pelo celular. Guia completo com app para relatório diário de obra, fotos, offline, assinatura digital e integração com gestão.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/gestao-financeira-construtora',
+    title:
+      'Gestão Financeira para Construtoras: Fluxo de Caixa, DRE e Controle de Custos | Meta Construtor',
+    description:
+      'Guia completo de gestão financeira para construtoras: fluxo de caixa por obra, DRE gerencial, controle de custos diretos e indiretos, indicadores financeiros e como digitalizar o financeiro da sua construtora.',
+    priorityType: 'Article',
+  },
 ];
 
 const escapeHtml = (value) =>

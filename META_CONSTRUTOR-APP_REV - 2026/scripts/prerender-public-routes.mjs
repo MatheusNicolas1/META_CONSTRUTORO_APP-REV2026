@@ -694,6 +694,13 @@ const routes = [
     priorityType: 'Article',
   },
   {
+    path: '/blog/bim-gestao-de-obras',
+    title: 'BIM na Gestão de Obras: Como a Metodologia Transforma Projetos em 2026 | Meta Construtor',
+    description:
+      'Aprenda como o BIM (Building Information Modeling) está transformando a gestão de obras em 2026. Guia completo sobre implementação, níveis BIM, softwares, integração com RDO digital e cases reais.',
+    priorityType: 'Article',
+  },
+  {
     path: '/blog/checklist-recebimento-obra-entrega-chaves',
     title:
       'Checklist de Recebimento de Obra: Guia Completo para Entrega de Chaves ao Cliente | Meta Construtor',
@@ -739,6 +746,135 @@ const routes = [
       'Gestão Financeira para Construtoras: Fluxo de Caixa, DRE e Controle de Custos | Meta Construtor',
     description:
       'Guia completo de gestão financeira para construtoras: fluxo de caixa por obra, DRE gerencial, controle de custos diretos e indiretos, indicadores financeiros e como digitalizar o financeiro da sua construtora.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/nbr-15575-desempenho-edificacoes',
+    title:
+      'NBR 15575: Norma de Desempenho das Edificações — Guia Completo para Construtoras | Meta Construtor',
+    description:
+      'Guia completo da NBR 15575 (Norma de Desempenho das Edificações): requisitos para construtoras, prazos de garantia, ensaios obrigatórios, sistemas construtivos e como se adequar à norma sem aumentar custos.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/construcao-sustentavel-esg-praticas',
+    title:
+      'Construção Sustentável: Práticas ESG que Reduzem Custos e Agregam Valor ao Imóvel | Meta Construtor',
+    description:
+      'Guia completo de construção sustentável com práticas ESG para construtoras: redução de custos operacionais, certificações verdes, materiais sustentáveis, eficiência energética e como agregar valor ao imóvel com sustentabilidade.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/construcao-sustentavel-2026',
+    title:
+      'Construção Sustentável 2026: Materiais, Certificações e Práticas | Meta Construtor',
+    description:
+      'Guia completo sobre construção sustentável em 2026: materiais ecológicos inovadores, certificações LEED/EDGE, práticas ESG e redução de carbono em obras de todos os portes.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/compliance-trabalhista-construcao-civil',
+    title:
+      'Compliance Trabalhista na Construção Civil: Como Evitar Passivos e Multas | Meta Construtor',
+    description:
+      'Guia completo sobre compliance trabalhista na construção civil: como evitar passivos trabalhistas, multas do MTE, auditoria de documentação de obra e proteção legal da construtora em 2026.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/crm-para-construtoras',
+    title: 'CRM para Construtoras: Guia Completo de Gestão de Leads e Vendas de Imóveis | Meta Construtor',
+    description:
+      'Guia completo sobre CRM para construtoras: como gerenciar leads, acompanhar vendas, organizar o pós-venda de imóveis e integrar CRM com RDO digital e gestão de obras.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/gestao-de-fornecedores-obra',
+    title: 'Gestão de Fornecedores na Obra: Como Comprar Melhor e Reduzir Desperdícios | Meta Construtor',
+    description:
+      'Guia completo de gestão de fornecedores na construção civil: como qualificar, negociar e controlar suprimentos para reduzir custos, evitar atrasos e eliminar desperdícios em 2026.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/nr-18-atualizada-2026',
+    title:
+      'NR-18 Atualizada 2026: O que Mudou na Segurança do Trabalho em Obras | Meta Construtor',
+    description:
+      'Guia completo sobre a NR-18 atualizada em 2026: mudanças na segurança do trabalho em obras, novas exigências de PCMAT, proteção coletiva, treinamentos obrigatórios e como documentar tudo digitalmente.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/aplicativo-rdo-inteligencia-artificial',
+    title:
+      'Aplicativo de RDO com IA: Como a Inteligência Artificial Agiliza o Diário de Obra | Meta Construtor',
+    description:
+      'Descubra como um aplicativo de RDO com inteligência artificial pode transformar o diário de obra da sua construtora. Automatização, reconhecimento de fotos, preenchimento inteligente e integração com gestão de obras em 2026.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/custo-metro-quadrado-construcao-2026',
+    title: 'Custo do Metro Quadrado na Construção Civil em 2026: Tabela Atualizada e Como Calcular | Meta Construtor',
+    description:
+      'Descubra o custo do metro quadrado na construção civil em 2026 com tabela atualizada por padrão construtivo. Aprenda a calcular o m² da sua obra com planilha prática e evite estouro de orçamento.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/construcao-modular-vantagens',
+    title: 'Construção Modular: Vantagens, Custos e Aplicações no Brasil | Meta Construtor',
+    description:
+      'Descubra as vantagens da construção modular no Brasil, os custos envolvidos, prazos de execução e onde esse método já é realidade. Guia completo com tabela comparativa e casos práticos.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/fiscalizacao-de-obras-publicas',
+    title:
+      'Fiscalização de Obras Públicas: Regras, RDO e Documentação | Meta Construtor',
+    description:
+      'Saiba como funciona a fiscalização de obras públicas no Brasil: regras, RDO, documentação obrigatória e como a gestão digital facilita o trabalho do fiscal e da contratada.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/planejamento-de-obra-cronograma',
+    title:
+      'Planejamento de Obra: Como Fazer Cronograma Físico-Financeiro | Meta Construtor',
+    description:
+      'Aprenda como fazer o planejamento de obra com cronograma físico-financeiro completo. Guia passo a passo com planilha, tabela comparativa de métodos e dicas para evitar estouro de prazo e orçamento.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/gestao-de-materiais-almoxarifado',
+    title:
+      'Gestão de Materiais e Almoxarifado em Obras: Reduza Perdas e Aumente Produtividade | Meta Construtor',
+    description:
+      'Aprenda como fazer a gestão de materiais e almoxarifado em obras. Controle de estoque, compras, redução de perdas e ferramentas digitais para aumentar a produtividade no canteiro.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/nr-18-atualizacao-2026',
+    title:
+      'NR-18 Atualizada 2026: Portaria MTE nº 836/2026 na Segurança do Trabalho | Meta Construtor',
+    description:
+      'Guia completo sobre a Portaria MTE nº 836/2026 que atualizou a NR-18: mudanças no PCMAT, proteção coletiva, treinamentos, documentação digital, prazos de adequação e impacto direto no canteiro de obras. Tudo que engenheiros e técnicos precisam saber para evitar multas e embargos.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/bim-na-construcao-civil',
+    title: 'BIM na Construção Civil: Como a Modelagem da Informação Está Transformando Obras no Brasil',
+    description:
+      'Guia completo sobre BIM (Building Information Modeling) na construção civil brasileira. Aprenda como implementar a modelagem da informação, níveis BIM, softwares, impacto em obras públicas e privadas, e como integrar com RDO digital e gestão de obras.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/materiais-sustentaveis-construcao',
+    title: 'Materiais Sustentáveis na Construção Civil: 8 Opções Viáveis para 2026',
+    description:
+      'Descubra 8 materiais sustentáveis para construção civil em 2026: concreto ecológico, tijolo solo-cimento, madeira certificada, telhado verde, blocos de PET, tintas ecológicas, bambu estrutural e isolamento natural. Guia completo com vantagens, custos e aplicações práticas.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/planejamento-de-obra-como-fazer',
+    title: 'Planejamento de Obra Passo a Passo: Do Memorial Descritivo ao Cronograma Físico | Meta Construtor',
+    description:
+      'Guia completo de planejamento de obra: do memorial descritivo ao cronograma físico-financeiro. Aprenda cada etapa, ferramentas, prazos e como integrar o planejamento com o RDO digital.',
     priorityType: 'Article',
   },
 ];

@@ -414,6 +414,10 @@
       "destination": "/blog/bim-na-gestao-de-obras/index.html"
     },
     {
+      "source": "/blog/bim-gestao-de-obras",
+      "destination": "/blog/bim-gestao-de-obras/index.html"
+    },
+    {
       "source": "/blog/checklist-recebimento-obra-entrega-chaves",
       "destination": "/blog/checklist-recebimento-obra-entrega-chaves/index.html"
     },
@@ -436,6 +440,74 @@
     {
       "source": "/blog/gestao-financeira-construtora",
       "destination": "/blog/gestao-financeira-construtora/index.html"
+    },
+    {
+      "source": "/blog/nbr-15575-desempenho-edificacoes",
+      "destination": "/blog/nbr-15575-desempenho-edificacoes/index.html"
+    },
+    {
+      "source": "/blog/construcao-sustentavel-esg-praticas",
+      "destination": "/blog/construcao-sustentavel-esg-praticas/index.html"
+    },
+    {
+      "source": "/blog/construcao-sustentavel-2026",
+      "destination": "/blog/construcao-sustentavel-2026/index.html"
+    },
+    {
+      "source": "/blog/compliance-trabalhista-construcao-civil",
+      "destination": "/blog/compliance-trabalhista-construcao-civil/index.html"
+    },
+    {
+      "source": "/blog/crm-para-construtoras",
+      "destination": "/blog/crm-para-construtoras/index.html"
+    },
+    {
+      "source": "/blog/gestao-de-fornecedores-obra",
+      "destination": "/blog/gestao-de-fornecedores-obra/index.html"
+    },
+    {
+      "source": "/blog/nr-18-atualizada-2026",
+      "destination": "/blog/nr-18-atualizada-2026/index.html"
+    },
+    {
+      "source": "/blog/aplicativo-rdo-inteligencia-artificial",
+      "destination": "/blog/aplicativo-rdo-inteligencia-artificial/index.html"
+    },
+    {
+      "source": "/blog/custo-metro-quadrado-construcao-2026",
+      "destination": "/blog/custo-metro-quadrado-construcao-2026/index.html"
+    },
+    {
+      "source": "/blog/construcao-modular-vantagens",
+      "destination": "/blog/construcao-modular-vantagens/index.html"
+    },
+    {
+      "source": "/blog/fiscalizacao-de-obras-publicas",
+      "destination": "/blog/fiscalizacao-de-obras-publicas/index.html"
+    },
+    {
+      "source": "/blog/planejamento-de-obra-cronograma",
+      "destination": "/blog/planejamento-de-obra-cronograma/index.html"
+    },
+    {
+      "source": "/blog/gestao-de-materiais-almoxarifado",
+      "destination": "/blog/gestao-de-materiais-almoxarifado/index.html"
+    },
+    {
+      "source": "/blog/nr-18-atualizacao-2026",
+      "destination": "/blog/nr-18-atualizacao-2026/index.html"
+    },
+    {
+      "source": "/blog/bim-na-construcao-civil",
+      "destination": "/blog/bim-na-construcao-civil/index.html"
+    },
+    {
+      "source": "/blog/materiais-sustentaveis-construcao",
+      "destination": "/blog/materiais-sustentaveis-construcao/index.html"
+    },
+    {
+      "source": "/blog/planejamento-de-obra-como-fazer",
+      "destination": "/blog/planejamento-de-obra-como-fazer/index.html"
     },
     {
       "source": "/(.*)",

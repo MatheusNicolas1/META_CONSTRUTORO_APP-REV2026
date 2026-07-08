@@ -9,7 +9,13 @@ import { Button } from '@/components/ui/button';
 import { PublicLayout } from '@/components/public/PublicLayout';
 import { AnimatedSection } from '@/components/public/AnimatedSection';
 import { AnimatedGradient } from '@/components/public/AnimatedGradient';
-import { StaggerContainer, StaggerItem } from '@/components/public/StaggerContainer';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from '@/components/ui/carousel';
 import EnterpriseContactModal from '@/components/EnterpriseContactModal';
 import { cn } from '@/lib/utils';
 
@@ -52,7 +58,7 @@ const plans: PlanCard[] = [
   {
     name: 'Básico',
     priceMonthly: 12990,
-    priceYearly: 103920,
+    priceYearly: 124704,
     desc: 'Perfeito para pequenas construtoras.',
     features: [
       'Até 3 usuários',
@@ -72,7 +78,7 @@ const plans: PlanCard[] = [
   {
     name: 'Profissional',
     priceMonthly: 19990,
-    priceYearly: 159920,
+    priceYearly: 191904,
     desc: 'Ideal para construtoras em crescimento.',
     features: [
       'Até 5 usuários',
@@ -87,7 +93,7 @@ const plans: PlanCard[] = [
     to: '/checkout?plan=professional',
     popular: true,
     highlight: true,
-    priceId: 'price_1T1HSsCHfNdO9jxNDtPicSaZ',
+    priceId: 'price_1Spd7HCHfNdO9jxN3PKJJdyv',
     slug: 'professional',
   },
   {
@@ -271,121 +277,142 @@ export default function Preco() {
         </div>
       </section>
 
-      {/* Plans Grid — estilo consistente com PlanCarousel do app */}
+      {/* Plans Carousel — cards maiores com rolagem horizontal sutil */}
       <AnimatedSection>
-        <div className="container max-w-6xl mx-auto">
-          <StaggerContainer staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-4">
-            {plans.map((plan, i) => {
-              const displayPrice = getDisplayPrice(plan);
-              const isFree = plan.priceMonthly === 0 && plan.slug === null && plan.name === 'Grátis';
-              const isEnterprise = plan.name === 'Enterprise';
-              const showYearlyDetails = isYearly && !isFree && !isEnterprise;
-              const Icon = i === 0 ? Zap : i === 1 ? Star : i === 2 ? Crown : i === 3 ? Shield : Building2;
-              const isPopular = plan.popular;
+        <div className="container max-w-6xl mx-auto px-4 sm:px-6">
+          <Carousel
+            opts={{ align: 'start', loop: false }}
+            className="w-full"
+          >
+            <CarouselContent>
+              {plans.map((plan, i) => {
+                const displayPrice = getDisplayPrice(plan);
+                const isFree = plan.priceMonthly === 0 && plan.slug === null && plan.name === 'Grátis';
+                const isEnterprise = plan.name === 'Enterprise';
+                const showYearlyDetails = isYearly && !isFree && !isEnterprise;
+                const Icon = i === 0 ? Zap : i === 1 ? Star : i === 2 ? Crown : i === 3 ? Shield : Building2;
+                const isPopular = plan.popular;
 
-              return (
-                <StaggerItem
-                  key={i}
-                  whileHover={{ y: -6 }}
-                >
-                  <div
-                    className={cn(
-                      "flex flex-col h-full relative border-2 rounded-2xl p-5 md:p-6 transition-all duration-300 bg-white",
-                      isPopular
-                        ? "border-brand-orange shadow-xl shadow-brand-orange/10 lg:scale-[1.02] z-10"
-                        : plan.highlight && !isPopular
-                          ? "border-neutral-200 shadow-md"
-                          : "border-neutral-100 shadow-sm hover:border-brand-orange/50"
-                    )}
+                return (
+                  <CarouselItem
+                    key={i}
+                    className="md:basis-1/2 lg:basis-1/3 pl-4 py-2"
                   >
-                    {isPopular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-orange text-white text-xs font-bold px-4 py-1 rounded-full flex items-center gap-1 whitespace-nowrap z-20 shadow-md">
-                        <Star className="w-3 h-3 fill-current" /> Mais popular
-                      </div>
-                    )}
-
-                    {/* Icon */}
-                    <div className="w-10 h-10 bg-brand-orange-ghost rounded-xl flex items-center justify-center mb-4">
-                      <Icon className="w-5 h-5 text-brand-orange" />
-                    </div>
-
-                    {/* Name + Price — estilo PlanCarousel */}
-                    <div className="text-sm font-semibold text-brand-orange mb-1">{plan.name}</div>
-
-                    {isFree ? (
-                      <div className="flex min-h-[48px] items-center mt-2">
-                        <span className="text-2xl sm:text-3xl font-bold text-neutral-900">Grátis</span>
-                      </div>
-                    ) : isEnterprise ? (
-                      <div className="flex min-h-[48px] items-center mt-2">
-                        <span className="text-2xl sm:text-3xl font-bold text-neutral-900">Sob consulta</span>
-                      </div>
-                    ) : (
-                      <>
-                        <div className="flex items-baseline gap-1 mt-2 flex-wrap">
-                          <span className="text-sm text-neutral-500">R$</span>
-                          <span className="text-3xl sm:text-4xl font-bold text-neutral-900">
-                            {formatPrice(displayPrice!)}
-                          </span>
-                          <span className="text-sm text-neutral-500 font-medium">/mês</span>
-                        </div>
-                        {showYearlyDetails && (
-                          <div className="mt-1 space-y-0.5">
-                            <div className="text-xs text-green-600 font-medium">
-                              Economize 20% com o plano anual
-                            </div>
-                            <div className="text-xs text-neutral-500">
-                              {(plan.priceYearly / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}/ano
-                            </div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                      whileHover={{ y: -6 }}
+                      className="h-full"
+                    >
+                      <div
+                        className={cn(
+                          "flex flex-col h-full relative border-2 rounded-2xl p-6 md:p-7 transition-all duration-300 bg-white",
+                          isPopular
+                            ? "border-brand-orange shadow-xl shadow-brand-orange/10 lg:scale-[1.03] z-10"
+                            : plan.highlight && !isPopular
+                              ? "border-neutral-200 shadow-md"
+                              : "border-neutral-100 shadow-sm hover:border-brand-orange/50"
+                        )}
+                      >
+                        {isPopular && (
+                          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-orange text-white text-xs font-bold px-4 py-1 rounded-full flex items-center gap-1 whitespace-nowrap z-20 shadow-md">
+                            <Star className="w-3 h-3 fill-current" /> Mais popular
                           </div>
                         )}
-                      </>
-                    )}
 
-                    <p className="text-neutral-500 text-xs mb-5 mt-2">{plan.desc}</p>
+                        {/* Icon */}
+                        <div className="w-10 h-10 bg-brand-orange-ghost rounded-xl flex items-center justify-center mb-4">
+                          <Icon className="w-5 h-5 text-brand-orange" />
+                        </div>
 
-                    {/* Features */}
-                    <ul className="space-y-2.5 mb-6 flex-1">
-                      {plan.features.map((f, j) => (
-                        <li key={j} className="flex items-start gap-2 text-sm text-neutral-700">
-                          <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
+                        {/* Name + Price */}
+                        <div className="text-sm font-semibold text-brand-orange mb-1">{plan.name}</div>
 
-                    {/* CTA */}
-                    {isEnterprise ? (
-                      <Button
-                        variant="outline"
-                        className="w-full sm:w-auto border-neutral-200 hover:border-brand-orange hover:text-brand-orange rounded-full"
-                        onClick={() => setEnterpriseModalOpen(true)}
-                      >
-                        {plan.cta} <ArrowRight className="ml-1 w-4 h-4 inline" />
-                      </Button>
-                    ) : (
-                      <Button
-                        variant={isPopular ? 'default' : 'default'}
-                        className={cn(
-                          "w-full sm:w-auto rounded-full",
-                          isPopular
-                            ? 'bg-brand-orange hover:bg-brand-orange-hover shadow-lg shadow-brand-orange/25'
-                            : plan.highlight && !isPopular
-                              ? 'bg-neutral-900 hover:bg-neutral-800 shadow-md text-white'
-                              : 'bg-brand-orange hover:bg-brand-orange-hover shadow-lg shadow-brand-orange/25'
+                        {isFree ? (
+                          <div className="flex min-h-[56px] items-center mt-2">
+                            <span className="text-3xl sm:text-4xl font-bold text-neutral-900">Grátis</span>
+                          </div>
+                        ) : isEnterprise ? (
+                          <div className="flex min-h-[56px] items-center mt-2">
+                            <span className="text-3xl sm:text-4xl font-bold text-neutral-900">Sob consulta</span>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="flex items-baseline gap-1 mt-2 flex-wrap">
+                              <span className="text-sm text-neutral-500">R$</span>
+                              <span className="text-4xl sm:text-5xl font-bold text-neutral-900">
+                                {formatPrice(displayPrice!)}
+                              </span>
+                              <span className="text-sm text-neutral-500 font-medium">/mês</span>
+                            </div>
+                            {showYearlyDetails && (
+                              <div className="mt-1.5 space-y-0.5">
+                                <div className="text-xs text-green-600 font-medium">
+                                  Economize 20% com o plano anual
+                                </div>
+                                <div className="text-xs text-neutral-500">
+                                  {(plan.priceYearly / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}/ano
+                                </div>
+                              </div>
+                            )}
+                          </>
                         )}
-                        asChild
-                      >
-                        <Link to={plan.to}>
-                          {plan.cta} <ArrowRight className="ml-1 w-4 h-4 inline" />
-                        </Link>
-                      </Button>
-                    )}
-                  </div>
-                </StaggerItem>
-              );
-            })}
-          </StaggerContainer>
+
+                        <p className="text-neutral-500 text-sm mb-5 mt-3">{plan.desc}</p>
+
+                        {/* Features */}
+                        <ul className="space-y-3 mb-6 flex-1">
+                          {plan.features.map((f, j) => (
+                            <li key={j} className="flex items-start gap-2 text-sm text-neutral-700">
+                              <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                              {f}
+                            </li>
+                          ))}
+                        </ul>
+
+                        {/* CTA */}
+                        {isEnterprise ? (
+                          <Button
+                            variant="outline"
+                            className="w-full sm:w-auto border-neutral-200 hover:border-brand-orange hover:text-brand-orange rounded-full"
+                            onClick={() => setEnterpriseModalOpen(true)}
+                          >
+                            {plan.cta} <ArrowRight className="ml-1 w-4 h-4 inline" />
+                          </Button>
+                        ) : (
+                          <Button
+                            variant={isPopular ? 'default' : 'default'}
+                            className={cn(
+                              "w-full sm:w-auto rounded-full",
+                              isPopular
+                                ? 'bg-brand-orange hover:bg-brand-orange-hover shadow-lg shadow-brand-orange/25'
+                                : plan.highlight && !isPopular
+                                  ? 'bg-neutral-900 hover:bg-neutral-800 shadow-md text-white'
+                                  : 'bg-brand-orange hover:bg-brand-orange-hover shadow-lg shadow-brand-orange/25'
+                            )}
+                            asChild
+                          >
+                            <Link to={plan.to}>
+                              {plan.cta} <ArrowRight className="ml-1 w-4 h-4 inline" />
+                            </Link>
+                          </Button>
+                        )}
+                      </div>
+                    </motion.div>
+                  </CarouselItem>
+                );
+              })}
+            </CarouselContent>
+
+            {/* Setas abaixo do carrossel */}
+            <div className="flex items-center justify-center gap-3 mt-8">
+              <CarouselPrevious className="static translate-y-0 h-10 w-10 rounded-full border-neutral-300 bg-white hover:bg-neutral-100 hover:border-brand-orange" />
+              <div className="text-xs text-neutral-400 font-medium">Arraste para navegar</div>
+              <CarouselNext className="static translate-y-0 h-10 w-10 rounded-full border-neutral-300 bg-white hover:bg-neutral-100 hover:border-brand-orange" />
+            </div>
+          </Carousel>
         </div>
       </AnimatedSection>
 

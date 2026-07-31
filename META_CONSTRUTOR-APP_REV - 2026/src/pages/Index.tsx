@@ -267,8 +267,8 @@ export default function Home() {
                 <TypewriterEffect
                   texts={[
                     'RDO digital, checklists de qualidade, equipes, documentos, contratos e relatórios — tudo integrado em uma plataforma completa para sua construtora.',
-                    'Mais de 300 construtoras já transformaram a gestão de obras com RDO online e controle de obras em tempo real.',
-                    'Do diário de obra ao relatório final — RDO, ocorrências, fotos, pendencias, medições e assinaturas, tudo digital.',
+                    'Da rotina de campo ao relatório final — RDO, ocorrências, fotos, pendencias, medições e assinaturas, tudo digital na palma da mão.',
+                    'Gestão de obra completa: do diário de obra ao relatório final, com tudo reunido em um só lugar para sua equipe.',
                   ]}
                   speed={35}
                   delayBetween={5000}

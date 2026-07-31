@@ -364,7 +364,7 @@ export default function RDOExcelSimulator() {
             </div>
           </div>
           <div className="text-center font-sans space-y-1">
-            <p className="text-xs text-slate-500">Mais de <strong className="text-slate-800">450 construtoras</strong> já migraram do Excel para o Meta Construtor.</p>
+            <p className="text-xs text-slate-500">Construtoras de todos os portes trocaram o Excel pela gestão digital do Meta Construtor.</p>
           </div>
         </div>
       )}

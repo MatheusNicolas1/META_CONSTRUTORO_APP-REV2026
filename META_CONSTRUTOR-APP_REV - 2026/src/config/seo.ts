@@ -317,17 +317,17 @@ export const seoPages = {
   preco2: page(
     "/preco2",
     "Planos e Preços 2 | Meta Construtor",
-    "Conheça os planos do Meta Construtor 2: Grátis, Profissional (R$79/mês) e Enterprise (R$299/mês). Economize 20% no plano anual. 7 dias grátis no Profissional.",
+    "Conheça os planos do Meta Construtor: Grátis, Básico (R$129,90/mês), Profissional (R$199,90/mês), Master (R$347/mês) e Enterprise (sob consulta). Comece grátis hoje.",
     [
       softwareJsonLd,
       faqJsonLd([
         {
-          question: "Existe plano gratuito no Meta Construtor 2?",
-          answer: "Sim. O plano Grátis inclui 1 obra ativa, até 3 usuários, RDO digital básico e checklists simples. Perfeito para testar a plataforma.",
+          question: "Existe plano gratuito no Meta Construtor?",
+          answer: "Sim. O plano Grátis inclui 1 obra ativa, 1 usuário, até 7 RDOs mensais e checklists de qualidade. Perfeito para testar a plataforma.",
         },
         {
           question: "Quanto custa o plano Profissional?",
-          answer: "O plano Profissional custa R$79/mês no plano mensal ou R$63/mês no anual (economia de 20%). Inclui obras ilimitadas, usuários ilimitados e todas as funcionalidades.",
+          answer: "O plano Profissional custa R$199,90/mês (ou R$1.919,04 no anual) e inclui 5 obras ativas e usuários ilimitados. O plano Básico sai por R$129,90/mês com 3 obras e o Master por R$347/mês com 15 obras.",
         },
         {
           question: "Posso mudar de plano depois?",
@@ -339,7 +339,7 @@ export const seoPages = {
   sobre2: page(
     "/sobre2",
     "Sobre o Meta Construtor 2 | Quem somos e nossa história",
-    "Conheça a história do Meta Construtor, nossos valores, missão e a equipe que está transformando a gestão de obras no Brasil. Mais de 1.500 obras gerenciadas.",
+    "Conheça a história do Meta Construtor, nossos valores, missão e a equipe que está transformando a gestão de obras no Brasil.",
     [organizationJsonLd]
   ),
   contato2: page(

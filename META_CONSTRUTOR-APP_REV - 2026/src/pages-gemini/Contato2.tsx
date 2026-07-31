@@ -224,7 +224,7 @@ export default function Contato2() {
                 Pronto para transformar sua obra?
               </h2>
               <p className="text-lg text-blue-100/80 mb-6">
-                Mais de 1.500 obras já gerenciadas com o Meta Construtor. Comece grátis hoje.
+                Gerencie cada etapa da sua obra com RDOs, equipes e relatórios. Comece grátis hoje.
               </p>
               <Button size="lg" className="bg-[#dc4415] hover:bg-[#c43a10] text-white px-8 py-6 text-lg rounded-xl shadow-xl">
                 Comece Grátis <ArrowRight className="ml-2 w-5 h-5" />

@@ -11,10 +11,10 @@ export const SocialProof = () => {
     <AbsoluteFill style={{ backgroundColor: BG, fontFamily: '"Plus Jakarta Sans", Inter, sans-serif' }}>
       {/* Stats reveal */}
       {[
-        { value: '1.500+', label: 'Obras gerenciadas', delay: 0 },
-        { value: '300+', label: 'Construtoras ativas', delay: 15 },
-        { value: '50k+', label: 'RDOs registrados', delay: 30 },
-        { value: '98%', label: 'Satisfação', delay: 45 },
+        { value: 'RDO digital', label: 'com fotos e assinatura', delay: 0 },
+        { value: 'Grátis', label: 'para começar sem custo', delay: 15 },
+        { value: 'PDF', label: 'automático com identidade visual', delay: 30 },
+        { value: '100%', label: 'dados na nuvem, LGPD', delay: 45 },
       ].map((stat, i) => (
         <Sequence key={i} from={20 + stat.delay} durationInFrames={80}>
           <StatReveal stat={stat} frame={0} fps={fps} index={i} />

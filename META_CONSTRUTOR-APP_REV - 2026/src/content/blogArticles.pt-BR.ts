@@ -1621,7 +1621,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
       {
         question: 'Qual o custo médio de um app de gestão de obras?',
         answer:
-          'O custo varia de R$ 50 a R$ 300 por mês para planos individuais, podendo chegar a R$ 500-1.000 para planos corporativos com múltiplos usuários. O Meta Construtor, por exemplo, oferece planos a partir de R$ 89/mês com todas as funcionalidades de RDO, medição e relatórios. Considerando que uma planilha mal gerenciada pode gerar horas extras de retrabalho e glosas que somam milhares de reais, o custo do app é baixo em comparação.',
+          'O custo varia de R$ 50 a R$ 300 por mês para planos individuais, podendo chegar a R$ 500-1.000 para planos corporativos com múltiplos usuários. O Meta Construtor, por exemplo, oferece planos a partir de R$ 129,90/mês com todas as funcionalidades de RDO, medição e relatórios. Considerando que uma planilha mal gerenciada pode gerar horas extras de retrabalho e glosas que somam milhares de reais, o custo do app é baixo em comparação.',
       },
       {
         question: 'Dá para usar planilha e app ao mesmo tempo?',
@@ -2035,7 +2035,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
       {
         title: 'Ferramentas acessíveis para começar hoje',
         body:
-          'Você não precisa de um ERP corporativo de R$ 10 mil por mês para organizar sua construtora. Existem ferramentas acessíveis que resolvem 80% dos problemas de gestão com investimento baixo. Para RDO digital, o Meta Construtor oferece planos a partir de R$ 89/mês com app para celular — o engenheiro preenche o relatório na obra com fotos e assinatura digital, e o relatório sai pronto automaticamente. Para controle financeiro, uma planilha bem estruturada no Google Sheets com categorias de receita e despesa já resolve — desde que atualizada semanalmente. Para cronograma, ferramentas gratuitas como Trello ou Asana servem para obras pequenas, enquanto o ProjectLibre é uma alternativa livre ao MS Project para cronogramas mais detalhados. O importante é começar: escolha uma ferramenta para cada pilar, teste por 30 dias e ajuste. Não tente implantar tudo de uma vez — comece pelo RDO digital, depois avance para o controle financeiro e, por último, o cronograma formal. O custo total para equipar uma construtora pequena com essas ferramentas dificilmente passa de R$ 200/mês.',
+          'Você não precisa de um ERP corporativo de R$ 10 mil por mês para organizar sua construtora. Existem ferramentas acessíveis que resolvem 80% dos problemas de gestão com investimento baixo. Para RDO digital, o Meta Construtor oferece planos a partir de R$ 129,90/mês com app para celular — o engenheiro preenche o relatório na obra com fotos e assinatura digital, e o relatório sai pronto automaticamente. Para controle financeiro, uma planilha bem estruturada no Google Sheets com categorias de receita e despesa já resolve — desde que atualizada semanalmente. Para cronograma, ferramentas gratuitas como Trello ou Asana servem para obras pequenas, enquanto o ProjectLibre é uma alternativa livre ao MS Project para cronogramas mais detalhados. O importante é começar: escolha uma ferramenta para cada pilar, teste por 30 dias e ajuste. Não tente implantar tudo de uma vez — comece pelo RDO digital, depois avance para o controle financeiro e, por último, o cronograma formal. O custo total para equipar uma construtora pequena com essas ferramentas dificilmente passa de R$ 200/mês.',
       },
       {
         title: 'Como crescer sem perder o controle',
@@ -2048,7 +2048,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
         question:
           'Como organizar uma construtora de pequeno porte sem gastar muito?',
         answer:
-          'O caminho mais eficiente é focar nos três pilares essenciais (RDO, medição, financeiro) usando ferramentas de baixo custo. Para RDO, apps como Meta Construtor têm planos a partir de R$ 89/mês. Para financeiro, Google Sheets gratuito. Para cronograma, Trello ou Asana. O investimento total fica abaixo de R$ 200/mês e já traz ganhos significativos de produtividade e redução de erros.',
+          'O caminho mais eficiente é focar nos três pilares essenciais (RDO, medição, financeiro) usando ferramentas de baixo custo. Para RDO, apps como Meta Construtor têm planos a partir de R$ 129,90/mês. Para financeiro, Google Sheets gratuito. Para cronograma, Trello ou Asana. O investimento total fica abaixo de R$ 200/mês e já traz ganhos significativos de produtividade e redução de erros.',
       },
       {
         question:
@@ -2605,7 +2605,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
         body:
           'Para ajudar na escolha, organizamos uma tabela comparativa com as principais opções gratuitas disponíveis no Brasil em 2026. A comparação considera funcionalidades gratuitas reais (não apenas trial temporário), limites de uso e o modelo de negócio de cada plataforma.',
         items: [
-          'Meta Construtor (freemium): RDO digital ilimitado com fotos, medição básica, 1 obra ativa, relatórios em PDF. Upgrade: a partir de R$ 89/mês.',
+          'Meta Construtor (freemium): RDO digital ilimitado com fotos, medição básica, 1 obra ativa, relatórios em PDF. Upgrade: a partir de R$ 129,90/mês.',
           'Obrafit (gratuito limitado): diário de obra básico, fotos e chat, 3 usuários. Plano gratuito sem suporte técnico.',
           'Sienge Free (gratuito limitado): controle financeiro básico, entrada e saída de caixa, extratos. 1 usuário. Ideal para controle de fluxo de caixa de pequenas construtoras.',
           'Planus (trial estendido): 30 dias grátis completos, depois funcionalidades limitadas de medição e contrato. Foco em obras públicas.',
@@ -2616,7 +2616,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
       {
         title: 'Meta Construtor — o plano gratuito mais completo do mercado',
         body:
-          'O Meta Construtor oferece um dos planos gratuitos mais generosos do mercado brasileiro de gestão de obras. Na versão sem custo, o usuário tem acesso a RDO digital ilimitado — pode preencher quantos relatórios diários precisar, com fotos georreferenciadas, assinatura digital e checklist personalizado. O relatório sai pronto em PDF com a identidade visual da construtora. Além do RDO, o plano gratuito inclui medição básica de serviços com planilha de quantitativos simplificada, controle de ocorrências e relatório fotográfico organizado automaticamente. O limite principal é de 1 obra ativa simultaneamente e armazenamento de até 200 MB de fotos e documentos. Para construtoras que estão digitalizando a primeira obra, esse plano gratuito atende perfeitamente. O upgrade para o plano pago (a partir de R$ 89/mês) remove os limites de obras e armazenamento, adiciona controle financeiro completo, almoxarifado e cronograma físico-financeiro. Muitos usuários começam no gratuito e migram para o pago assim que sentem a necessidade de gerenciar múltiplas obras simultaneamente.',
+          'O Meta Construtor oferece um dos planos gratuitos mais generosos do mercado brasileiro de gestão de obras. Na versão sem custo, o usuário tem acesso a RDO digital (até 7 relatórios mensais) com fotos georreferenciadas, assinatura digital e checklist personalizado. O relatório sai pronto em PDF com a identidade visual da construtora. Além do RDO, o plano gratuito inclui medição básica de serviços e controle de despesas. O limite principal é de 1 obra ativa simultaneamente e 1 usuário. Para construtoras que estão digitalizando a primeira obra, esse plano gratuito atende perfeitamente. O upgrade para o plano pago (a partir de R$ 129,90/mês) remove os limites de RDOs e adiciona mais obras, mais usuários, controle financeiro completo, almoxarifado e cronograma físico-financeiro. Muitos usuários começam no gratuito e migram para o pago assim que sentem a necessidade de gerenciar múltiplas obras simultaneamente.',
         image: {
           src: 'https://images.unsplash.com/photo-1664575198308-395c785550ae?w=1200&q=80',
           alt: 'Aplicativo Meta Construtor sendo usado em smartphone e tablet mostrando funcionalidades',
@@ -4758,7 +4758,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
         items: [
           '**Planilhas colaborativas (Google Sheets / Excel Online):** nível de entrada, gratuito. Permite que múltiplos usuários editem o cronograma simultaneamente. Ideal para microempreendedores e obras de até R$500 mil. Limitação: sem integração com campo, sem indicadores visuais, sem alertas de desvio.',
           '**Softwares de planejamento (MS Project / Primavera / Precedence):** nível intermediário, R$ 200-800/mês. Cronogramas robustos com dependências, caminho crítico e níveis hierárquicos (WBS). Ideal para médias construtoras com 3-10 obras simultâneas. Limitação: curva de aprendizado íngreme e pouca integração com o dia a dia do canteiro.',
-          '**Plataformas integradas de gestão de obras (Meta Construtor):** nível avançado, a partir de R$ 79/mês. Unificam planejamento de curto prazo, RDO digital, medição, financeiro e documentação em um só app. O engenheiro planeja no escritório, a equipe executa no campo com o celular e os indicadores são atualizados em tempo real. Ideal para construtoras que querem eliminar retrabalho e ter visibilidade total da obra.',
+          '**Plataformas integradas de gestão de obras (Meta Construtor):** nível avançado, a partir de R$ 129,90/mês. Unificam planejamento de curto prazo, RDO digital, medição, financeiro e documentação em um só app. O engenheiro planeja no escritório, a equipe executa no campo com o celular e os indicadores são atualizados em tempo real. Ideal para construtoras que querem eliminar retrabalho e ter visibilidade total da obra.',
           '**BIM 4D (Autodesk BIM 360 / Revit + Navisworks / TQS BIM):** nível enterprise, investimento acima de R$ 10 mil/ano. Integra o modelo 3D da obra com a linha do tempo (4D), permitindo simular a sequência construtiva antes de executar. Ideal para obras complexas, estrutura metálica e empreendimentos de grande porte. Limitação: custo alto e necessidade de equipe especializada em BIM.',
         ],
         image: {
@@ -4967,7 +4967,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
       },
       {
         title: 'O Meta Construtor como app para fiscal de obras',
-        body: 'O Meta Construtor foi desenvolvido especificamente para atender fiscais, engenheiros e construtoras brasileiras. Ele reúne todas as funcionalidades essenciais em um único aplicativo: RDO digital com fotos georreferenciadas, checklists inteligentes, registro de não conformidades, assinatura eletrônica, geração automática de relatórios em PDF e dashboard em tempo real para o escritório. Diferente de soluções genéricas, o Meta Construtor foi projetado pensando na realidade do canteiro brasileiro: funciona offline, tem interface intuitiva para uso no celular, oferece suporte em português e custa a partir de R$ 79/mês por obra.',
+        body: 'O Meta Construtor foi desenvolvido especificamente para atender fiscais, engenheiros e construtoras brasileiras. Ele reúne todas as funcionalidades essenciais em um único aplicativo: RDO digital com fotos georreferenciadas, checklists inteligentes, registro de não conformidades, assinatura eletrônica, geração automática de relatórios em PDF e dashboard em tempo real para o escritório. Diferente de soluções genéricas, o Meta Construtor foi projetado pensando na realidade do canteiro brasileiro: funciona offline, tem interface intuitiva para uso no celular, oferece suporte em português e custa a partir de R$ 129,90/mês por obra.',
       },
     ],
     faq: [
@@ -4999,7 +4999,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
       {
         question: 'Quanto custa um app para fiscal de obras?',
         answer:
-          'Apps especializados custam de R$ 49 a R$ 299/mês por usuário. O Meta Construtor parte de R$ 79/mês por obra com todas as funcionalidades essenciais inclusas.',
+          'Apps especializados custam de R$ 49 a R$ 299/mês por usuário. O Meta Construtor parte de R$ 129,90/mês por obra com todas as funcionalidades essenciais inclusas.',
       },
     ],
     cta: {
@@ -6514,7 +6514,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
       },
       {
         title: 'Quando migrar do app grátis para uma plataforma paga?',
-        body: 'Existe um momento claro em que o app gratuito começa a atrapalhar em vez de ajudar. Esse momento chega quando as limitações do plano free começam a gerar retrabalho ou perda de informação. Os sinais típicos são: você tem mais de 3 obras ativas e precisa ficar escolhendo qual mantém no app; sua equipe cresceu e mais de 3 pessoas precisam registrar simultaneamente; você precisa de relatórios mais completos (com curva S, medição integrada, indicadores); ou o volume de fotos e registros já ultrapassou o limite do plano grátis e você está perdendo dados. Quando isso acontece, a migração para uma plataforma paga como o Meta Construtor se paga rapidamente: em vez de gastar horas baixando relatórios de apps diferentes, consolidando dados em planilhas e caçando informações perdidas, tudo fica centralizado em um só lugar — RDO, medição, cronograma e indicadores. E o custo de planos profissionais (a partir de R$ 79/mês) é irrisório comparado ao tempo economizado e ao risco de informação perdida.',
+        body: 'Existe um momento claro em que o app gratuito começa a atrapalhar em vez de ajudar. Esse momento chega quando as limitações do plano free começam a gerar retrabalho ou perda de informação. Os sinais típicos são: você tem mais de 3 obras ativas e precisa ficar escolhendo qual mantém no app; sua equipe cresceu e mais de 3 pessoas precisam registrar simultaneamente; você precisa de relatórios mais completos (com curva S, medição integrada, indicadores); ou o volume de fotos e registros já ultrapassou o limite do plano grátis e você está perdendo dados. Quando isso acontece, a migração para uma plataforma paga como o Meta Construtor se paga rapidamente: em vez de gastar horas baixando relatórios de apps diferentes, consolidando dados em planilhas e caçando informações perdidas, tudo fica centralizado em um só lugar — RDO, medição, cronograma e indicadores. E o custo de planos profissionais (a partir de R$ 199,90/mês) é irrisório comparado ao tempo economizado e ao risco de informação perdida.',
         items: [
           'Mais de 3 obras ativas simultâneas — o plano grátis não comporta',
           'Equipe com mais de 3 pessoas registrando — planos free limitam usuários',
@@ -8937,7 +8937,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
         body:
           'Para ajudar na escolha, organizei um comparativo direto entre as principais categorias de plataformas. A tabela abaixo mostra criterios objetivos que impactam a decisao de compra de uma construtora de pequeno a medio porte.',
         items: [
-          'Meta Construtor - Gestao completa com RDO digital, cronograma, medicao, controle financeiro, contratos e almoxarifado. Plano gratis disponivel. Profissional: R$ 79/mes. Enterprise: R$ 299/mes. Ideal para construtoras de 1 a 50 obras simultaneas.',
+          'Meta Construtor - Gestao completa com RDO digital, cronograma, medicao, controle financeiro, contratos e almoxarifado. Plano gratis disponivel. Basico: R$ 129,90/mes. Profissional: R$ 199,90/mes. Ideal para construtoras de 1 a 15 obras simultaneas.',
           'Prevision - Foco em planejamento de obras, cronograma fisico-financeiro e medicao. A partir de R$ 150/mes. Ideal para obras de medio e grande porte com planejamento estruturado.',
           'Framepro - Gestao de obras com controle de custos, medicao e relatorios. A partir de R$ 299/mes. Foco em construtoras de medio porte com equipes dedicadas de planejamento.',
           'Sienge (ERP) - Solucao corporativa completa com modulos financeiros, contabeis, fiscais e operacionais. A partir de R$ 1.500/mes. Ideal para construtoras de grande porte com departamentos dedicados.',
@@ -8953,10 +8953,10 @@ export const blogArticlesPtBR: BlogArticle[] = [
       {
         title: 'Como escolher o software ideal para sua construtora: passo a passo',
         body:
-          'Escolher um software de gestao de obras nao precisa ser um processo complicado. Seguindo um roteiro estruturado, voce reduz o risco de contratar uma ferramenta que nao atende as necessidades reais da operacao. Aqui esta um passo a passo pratico baseado na experiencia de mais de 500 construtoras que ja passaram por esse processo.',
+          'Escolher um software de gestao de obras nao precisa ser um processo complicado. Seguindo um roteiro estruturado, voce reduz o risco de contratar uma ferramenta que nao atende as necessidades reais da operacao. Aqui esta um passo a passo pratico baseado na experiencia de quem ja passou por esse processo.',
         items: [
           '1. Mapeie suas dores atuais - Faca uma lista dos problemas que sua construtora enfrenta hoje: planilhas desatualizadas? RDOs perdidos? Medicao manual? Falta de controle financeiro? Cada dor aponta para um modulo obrigatorio.',
-          '2. Defina o orcamento mensal - Considere o retorno sobre investimento. Um software de R$ 79/mes que economiza 10 horas de trabalho por semana se paga em dias. Estabeleca um teto realista com base no porte da sua operacao.',
+          '2. Defina o orcamento mensal - Considere o retorno sobre investimento. Um software de R$ 129,90/mes que economiza 10 horas de trabalho por semana se paga em dias. Estabeleca um teto realista com base no porte da sua operacao.',
           '3. Liste funcionalidades essenciais vs. desejaveis - Separe em duas colunas: o que e obrigatorio (ex: RDO digital, cronograma, medicao) e o que seria bom ter (ex: BI, IA, integracao com BIM).',
           '4. Teste pelo menos 3 plataformas - A maioria oferece trial gratis de 7 a 30 dias. Use esse periodo para testar com dados reais da sua obra, nao com dados ficticios. Convide a equipe de campo para avaliar.',
           '5. Verifique integracoes - O software precisa conversar com seu ERP contabil? Com o sistema da Caixa? Com a prefeitura? Integracoes salvam horas de trabalho duplicado.',
@@ -8993,7 +8993,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
           'Suporte e a maior diferenca: softwares pagos oferecem suporte por chat, WhatsApp e telefone em horario comercial. Softwares gratis tem suporte por e-mail ou comunidade, com respostas em dias.',
           'Seguranca de dados: plataformas pagas investem em backup, criptografia e conformidade com a LGPD. Softwares gratuitos podem usar seus dados para treinar modelos de IA ou vender para terceiros.',
           'Integracoes: sistemas pagos oferecem API e integracoes nativas com ERPs, bancos e prefeituras. Softwares gratuitos raramente oferecem integracao - voce fica preso ao ecossistema fechado.',
-          'Para construtoras de pequeno porte, a melhor estrategia e comecar com um plano gratuito ou de entrada (R$ 49-79/mes) e migrar para o plano profissional conforme a operacao cresce. O Meta Construtor, por exemplo, oferece plano gratis com funcionalidades reais e planos profissionais a partir de R$ 79/mes.',
+          'Para construtoras de pequeno porte, a melhor estrategia e comecar com um plano gratuito ou de entrada (R$ 129,90/mes) e migrar para o plano profissional conforme a operacao cresce. O Meta Construtor, por exemplo, oferece plano gratis com funcionalidades reais e planos profissionais a partir de R$ 199,90/mes.',
         ],
       },
       {
@@ -9013,7 +9013,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
       {
         question: 'Qual o melhor software para construtora de pequeno porte?',
         answer:
-          'Para construtoras com ate 10 obras simultaneas, plataformas modulares como Meta Construtor (a partir de R$ 79/mes) oferecem o melhor custo-beneficio com RDO digital, cronograma e financeiro integrados.',
+          'Para construtoras com ate 10 obras simultaneas, plataformas modulares como Meta Construtor (a partir de R$ 129,90/mes) oferecem o melhor custo-beneficio com RDO digital, cronograma e financeiro integrados.',
       },
       {
         question: 'Software de gestao de obras substitui um ERP contabil?',

@@ -32,16 +32,16 @@ const VALUES = [
   { icon: Heart, title: 'Propósito', desc: 'Simplificar o dia a dia de quem constrói o Brasil. Uma obra bem gerenciada transforma vidas.', color: 'from-brand-blue to-blue-500' },
   { icon: Lightbulb, title: 'Inovação', desc: 'Tecnologia que resolve problemas reais. Cada funcionalidade nasce de uma necessidade real de obra.', color: 'from-emerald-500 to-emerald-400' },
   { icon: Users, title: 'Pessoas', desc: 'Nossa equipe entende de obra porque já viveu obra. Engenheiros e arquitetos que sabem o que fazem.', color: 'from-[#dc4415] to-[#e86035]' },
-  { icon: Shield, title: 'Confiança', desc: 'Mais de 1.500 obras confiam no Meta Construtor. Dados seguros, suporte humano e resultados reais.', color: 'from-brand-blue to-blue-500' },
+  { icon: Shield, title: 'Confiança', desc: 'Dados seguros, suporte humano e resultados reais. Cada obra importa.', color: 'from-brand-blue to-blue-500' },
   { icon: Rocket, title: 'Crescimento', desc: 'Evoluímos junto com nossos clientes. A cada feedback, uma melhoria. A cada obra, uma nova funcionalidade.', color: 'from-emerald-500 to-emerald-400' },
 ];
 
 const TIMELINE = [
   { year: '2024', title: 'Nasce o Meta Construtor', desc: 'Fundado por engenheiros civis que cansaram da burocracia. O primeiro RDO digital é criado em uma madrugada de sexta-feira.' },
-  { year: '2024', title: 'Primeiros 100 clientes', desc: 'O boca a boca entre engenheiros leva o Meta Construtor para as primeiras 100 construtoras em apenas 3 meses.' },
+  { year: '2024', title: 'Crescimento pelo boca a boca', desc: 'Engenheiros adotam a plataforma e levam o Meta Construtor para as próprias construtoras em poucos meses.' },
   { year: '2025', title: 'Lançamento do App Mobile', desc: 'RDO direto do celular com fotos, assinatura digital e geolocalização.' },
-  { year: '2025', title: 'Checklists e Relatórios', desc: 'Checklists inteligentes e relatórios automáticos. Produtividade das equipes aumenta 40%.' },
-  { year: '2026', title: '1.500 obras gerenciadas', desc: 'Presente em todos os estados brasileiros. O ecossistema completo de gestão de obras está pronto.' },
+  { year: '2025', title: 'Checklists e Relatórios', desc: 'Checklists inteligentes e relatórios automáticos que aceleram a rotina da equipe.' },
+  { year: '2026', title: 'Ecossistema completo', desc: 'O ecossistema de gestão de obras está pronto e evolui a cada feedback.' },
   { year: '2026', title: 'Portal do Cliente + Integrações', desc: 'Portal do Cliente e integrações com ERPs. Obras conectadas do início ao fim.' },
 ];
 
@@ -52,14 +52,7 @@ const TEAM_PHOTOS = [
   { name: 'Marina Costa', role: 'Customer Success', desc: 'Engenheira civil que ama ajudar construtoras a extrair o máximo do sistema.' },
 ];
 
-const METRICS = [
-  { value: '1.500+', label: 'Obras Gerenciadas' },
-  { value: '300+', label: 'Construtoras Ativas' },
-  { value: '98%', label: 'Satisfação' },
-  { value: '50k+', label: 'RDOs Digitais' },
-];
-
-// ─── Timeline ────────────────────────────────────────────────
+/// ─── Timeline ────────────────────────────────────────────────
 function TimelineItem({ item, index }: { item: typeof TIMELINE[0]; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
@@ -137,20 +130,6 @@ export default function Sobre2() {
               O Meta Construtor foi criado por engenheiros que sentiram na pele a dor de gerenciar obras com papel, planilha e WhatsApp.
               Cansamos disso. E resolvemos criar algo melhor.
             </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Metrics */}
-      <section className="py-16 bg-white border-b border-neutral-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div variants={staggerContainer} className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {METRICS.map((m) => (
-              <motion.div key={m.label} variants={staggerItem} className="text-center">
-                <div className="text-3xl md:text-4xl font-extrabold text-brand-blue mb-1 font-heading">{m.value}</div>
-                <div className="text-sm text-neutral-500 font-medium">{m.label}</div>
-              </motion.div>
-            ))}
           </motion.div>
         </div>
       </section>
@@ -266,7 +245,7 @@ export default function Sobre2() {
           <motion.div {...cinematic}>
             <h2 className="text-3xl md:text-4xl font-bold text-brand-blue mb-4 font-heading">Vamos construir juntos?</h2>
             <p className="text-lg text-neutral-500 mb-8 max-w-lg mx-auto">
-              Junte-se a mais de 300 construtoras que já transformaram sua gestão de obras.
+              Gestão de obras mais simples para construtoras que querem crescer.
             </p>
             <Button size="lg" className="bg-[#dc4415] hover:bg-[#c43a10] text-white px-10 py-6 text-lg rounded-xl shadow-lg shadow-[#dc4415]/25 hover:shadow-xl transition-all duration-300">
               Comece Grátis Agora <ArrowRight className="ml-2 w-5 h-5" />

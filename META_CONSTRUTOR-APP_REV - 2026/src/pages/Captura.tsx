@@ -253,16 +253,12 @@ export default function Captura() {
               {/* Social Proof */}
               <AnimatedSection className="flex flex-wrap gap-6 pt-2">
                 <div className="flex items-center gap-2 text-slate-400 text-xs font-sans">
-                  <Users className="w-4 h-4 text-brand-orange" />
-                  <span><strong className="text-white">450+</strong> construtoras</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-400 text-xs font-sans">
-                  <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                  <span><strong className="text-white">4.9</strong> de avaliação</span>
-                </div>
-                <div className="flex items-center gap-2 text-slate-400 text-xs font-sans">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                   <span><strong className="text-white">100%</strong> gratuito</span>
+                </div>
+                <div className="flex items-center gap-2 text-slate-400 text-xs font-sans">
+                  <Shield className="w-4 h-4 text-brand-orange" />
+                  <span><strong className="text-white">Sem cartão</strong> de crédito</span>
                 </div>
               </AnimatedSection>
             </div>
@@ -369,7 +365,7 @@ export default function Captura() {
             ))}
           </div>
           <div className="text-center text-xs text-slate-400 font-sans font-medium">
-            ★ Nota Média: <strong className="text-amber-400">4.9 / 5.0</strong> — mais de 1.250 avaliações de construtores brasileiros.
+            Engenheiros e gestores de obra usam o Meta Construtor para manter a rotina de campo organizada e documentada.
           </div>
         </div>
       </section>

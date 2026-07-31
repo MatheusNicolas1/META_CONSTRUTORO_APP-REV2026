@@ -131,32 +131,6 @@ function ParallaxImage({ src, alt, className = '' }: { src: string; alt: string;
   );
 }
 
-// ─── Floating Metric Counter ────────────────────────────
-function MetricCounter({ value, label }: { value: string; label: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-60px' });
-
-  return (
-    <motion.div ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="text-center"
-    >
-      <motion.div
-        initial={{ scale: 0 }}
-        whileInView={{ scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="text-3xl md:text-4xl font-extrabold text-brand-orange mb-1 font-heading"
-      >
-        {value}
-      </motion.div>
-      <div className="text-sm text-blue-200 font-medium">{label}</div>
-    </motion.div>
-  );
-}
-
 // ─── Glass Card ─────────────────────────────────────────
 function GlassCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
@@ -285,12 +259,6 @@ export default function Home2() {
                   <Play className="mr-2 w-5 h-5" /> Ver Demo
                 </Button>
               </div>
-              {/* Trust badges */}
-              <div className="flex items-center gap-4 mt-8 text-blue-200/60 text-sm">
-                <span className="flex items-center gap-1"><Check className="w-4 h-4 text-brand-orange" /> 1.500+ obras</span>
-                <span className="flex items-center gap-1"><Check className="w-4 h-4 text-brand-orange" /> 300+ construtoras</span>
-                <span className="flex items-center gap-1"><Star className="w-4 h-4 text-brand-orange" /> 98% satisfação</span>
-              </div>
             </motion.div>
 
             {/* Right: Hero mockup carousel */}
@@ -310,18 +278,6 @@ export default function Home2() {
           </div>
         </div>
       </motion.section>
-
-      {/* ─── METRICS STRIP ─── */}
-      <section className="py-8 md:py-12 bg-brand-blue border-y border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <MetricCounter value="1.500+" label="Obras Gerenciadas" />
-            <MetricCounter value="300+" label="Construtoras Ativas" />
-            <MetricCounter value="98%" label="Satisfação" />
-            <MetricCounter value="50k+" label="RDOs Digitais" />
-          </div>
-        </div>
-      </section>
 
       {/* ─── FEATURES WITH PRINTS ─── */}
       <section className="py-20 md:py-28 bg-neutral-50">
@@ -488,8 +444,7 @@ export default function Home2() {
               Pronto para transformar sua gestão de obras?
             </h2>
             <p className="text-lg md:text-xl text-white/80 mb-10 max-w-lg mx-auto">
-              Junte-se a mais de 300 construtoras que já simplificaram suas obras.
-              <br />Comece grátis, sem cartão de crédito.
+              Comece grátis, sem cartão de crédito.
             </p>
             <Button size="lg" className="bg-white text-brand-blue hover:bg-orange-50 px-10 py-6 text-lg rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 font-bold">
               Começar Grátis Agora

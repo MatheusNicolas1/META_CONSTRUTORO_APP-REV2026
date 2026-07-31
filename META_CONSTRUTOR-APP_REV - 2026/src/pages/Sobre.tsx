@@ -22,13 +22,6 @@ const differentials = [
   { icon: Zap, title: 'Rápido e online', desc: 'Acesse de qualquer dispositivo, sem instalar nada. Atualizações em tempo real.' },
 ];
 
-const metrics = [
-  { value: '2023', label: 'Fundação' },
-  { value: '300+', label: 'Construtoras' },
-  { value: '1.500+', label: 'Obras ativas' },
-  { value: '50k+', label: 'RDOs gerados' },
-];
-
 const fadeInUp = {
   hidden: { opacity: 0, y: 40, filter: 'blur(4px)' },
   visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
@@ -60,20 +53,6 @@ export default function Sobre() {
           </motion.div>
         </div>
       </section>
-
-      {/* Metrics */}
-      <AnimatedSection className="py-16 border-y border-neutral-100 bg-neutral-50" distance={20}>
-        <div className="container max-w-4xl mx-auto px-4 sm:px-6">
-          <StaggerContainer staggerDelay={0.08} className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-            {metrics.map((m, i) => (
-              <StaggerItem key={i} className="text-center">
-                <div className="text-3xl md:text-4xl font-extrabold text-brand-orange mb-1">{m.value}</div>
-                <div className="text-sm text-neutral-500">{m.label}</div>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
-        </div>
-      </AnimatedSection>
 
       {/* Mission, Vision, Values */}
       <AnimatedSection>

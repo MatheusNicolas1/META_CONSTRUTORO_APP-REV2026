@@ -28,13 +28,6 @@ const OperationsPrintsCarousel = lazy(() => import('@/components/OperationsPrint
 // ─── Constants ────────────────────────────────────────────────
 const MARKETING = '/marketing';
 
-const stats = [
-  { value: '1.500+', label: 'Obras gerenciadas' },
-  { value: '300+', label: 'Construtoras ativas' },
-  { value: '50k+', label: 'RDOs registrados' },
-  { value: '98%', label: 'Satisfação' },
-];
-
 const features = [
   {
     icon: ClipboardCheck,
@@ -123,24 +116,6 @@ function Section({ children, className = '', dark = false }: { children: React.R
         {children}
       </div>
     </motion.section>
-  );
-}
-
-function StatItem({ value, label, delay }: { value: string; label: string; delay: number }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay }}
-      className="text-center"
-    >
-      <div className="text-2xl md:text-4xl font-extrabold text-brand-orange mb-1">{value}</div>
-      <div className="text-xs md:text-sm text-neutral-500">{label}</div>
-    </motion.div>
   );
 }
 
@@ -519,22 +494,7 @@ export default function Home() {
         <ObrasReaisSection />
       </div>
 
-      {/* ── 11. TRUST BAR ──────────────────────────────────── */}
-      <Section className="py-10 border-y border-neutral-100 bg-neutral-50">
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
-        >
-          {stats.map((stat, i) => (
-            <StatItem key={i} {...stat} delay={i * 0.08} />
-          ))}
-        </motion.div>
-      </Section>
-
-      {/* ── 12. FAQ ────────────────────────────────────────── */}
+      {/* ── 11. FAQ ────────────────────────────────────────── */}
       <Section className="content-visibility-auto">
         <motion.div variants={fadeInUp} className="text-center mb-8 sm:mb-16">
           <span className="text-brand-orange font-semibold text-xs sm:text-sm tracking-wide uppercase">Dúvidas</span>

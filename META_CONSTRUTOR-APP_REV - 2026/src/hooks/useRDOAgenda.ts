@@ -31,7 +31,7 @@ export const useRDOAgenda = () => {
   const { orgId, isLoading: orgLoading } = useRequireOrg();
 
   // ── Agenda diária com RDOs agrupados por nicho ──────────────────
-  const agendaQuery = (data: string) =>
+  const useAgendaQuery = (data: string) =>
     useQuery({
       queryKey: ['rdos', 'agenda', orgId, data],
       queryFn: async (): Promise<AgendaComRDOs | null> => {
@@ -81,7 +81,7 @@ export const useRDOAgenda = () => {
     });
 
   // ── Resumo por nicho (Edge Function) ──────────────────────────
-  const resumoNichoQuery = (data: string, slug: string) =>
+  const useResumoNichoQuery = (data: string, slug: string) =>
     useQuery({
       queryKey: ['rdos', 'agenda', 'nicho', orgId, data, slug],
       queryFn: async (): Promise<ResumoNicho> => {
@@ -105,7 +105,7 @@ export const useRDOAgenda = () => {
     });
 
   // ── Resumo geral (Edge Function) ──────────────────────────────
-  const resumoGeralQuery = (data: string) =>
+  const useResumoGeralQuery = (data: string) =>
     useQuery({
       queryKey: ['rdos', 'agenda', 'geral', orgId, data],
       queryFn: async (): Promise<ResumoGeral> => {
@@ -165,9 +165,9 @@ export const useRDOAgenda = () => {
   });
 
   return {
-    agendaQuery,
-    resumoNichoQuery,
-    resumoGeralQuery,
+    useAgendaQuery,
+    useResumoNichoQuery,
+    useResumoGeralQuery,
     updateAgendaMutation,
   };
 };

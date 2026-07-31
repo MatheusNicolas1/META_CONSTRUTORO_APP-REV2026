@@ -18,6 +18,8 @@ import { EquipamentoExpandableCard } from "@/components/EquipamentoExpandableCar
 import { useEquipamentosSupabase } from "@/hooks/useEquipamentosSupabase";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Wrench, Search, Plus, Loader2 } from "lucide-react";
+import { AnimatedPage } from "@/components/AnimatedPage";
+import { EmptyState } from "@/components/EmptyState";
 
 const emptyFormData = { nome: "", categoria: "", status: "Operacional", observacoes: "" };
 
@@ -99,27 +101,26 @@ const Equipamentos = () => {
   };
 
   return (
-    <div className="responsive-spacing">
+    <AnimatedPage>
+      <div className="responsive-spacing">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col space-y-4 sm:flex-row sm:items-start sm:justify-between sm:space-y-0 sm:gap-4">
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground truncate">Gestão de Equipamentos</h1>
-            <p className="text-muted-foreground text-sm md:text-base">Controle e monitore todos os equipamentos das obras</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground truncate">Equipamentos</h1>
+            <p className="text-muted-foreground text-sm">Gerencie o inventário de equipamentos</p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button className="gradient-construction border-0 hover:opacity-90 w-full sm:w-auto sm:flex-shrink-0">
                 <Plus className="mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Novo Equipamento</span>
+                <span className="hidden sm:inline">Novo</span>
                 <span className="sm:hidden">Adicionar</span>
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px] bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-card-foreground">Cadastrar Novo Equipamento</DialogTitle>
-                <DialogDescription>
-                  Adicione um novo equipamento ao inventário
-                </DialogDescription>
+                <DialogTitle>Novo Equipamento</DialogTitle>
+                <DialogDescription>Adicione um novo equipamento ao inventário</DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="space-y-2">
@@ -131,7 +132,7 @@ const Equipamentos = () => {
                     onChange={(e) => setFormData(prev => ({ ...prev, nome: e.target.value }))}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="categoria">Categoria *</Label>
                     <Select 
@@ -250,13 +251,11 @@ const Equipamentos = () => {
         )}
 
         {!isLoading && filteredEquipamentos.length === 0 && (
-          <div className="text-center py-12">
-            <Wrench className="mx-auto h-12 w-12 text-muted-foreground" />
-            <h3 className="mt-4 text-lg font-medium text-card-foreground">Nenhum equipamento encontrado</h3>
-            <p className="mt-2 text-muted-foreground">
-              {searchTerm ? "Tente ajustar os termos de busca" : "Comece cadastrando seu primeiro equipamento"}
-            </p>
-          </div>
+          <EmptyState
+            icon={Wrench}
+            title="Nenhum equipamento encontrado"
+            description={searchTerm ? "Nenhum resultado para esta busca" : "Cadastre seu primeiro equipamento"}
+          />
         )}
       </div>
 
@@ -264,7 +263,7 @@ const Equipamentos = () => {
       <Dialog open={isEditDialogOpen} onOpenChange={(open) => { setIsEditDialogOpen(open); if (!open) { setEditingId(null); setEditFormData(emptyFormData); } }}>
         <DialogContent className="sm:max-w-[500px] bg-card border-border">
           <DialogHeader>
-            <DialogTitle className="text-card-foreground">Editar Equipamento</DialogTitle>
+            <DialogTitle>Editar Equipamento</DialogTitle>
             <DialogDescription>Atualize os dados do equipamento</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -272,7 +271,7 @@ const Equipamentos = () => {
               <Label htmlFor="edit-nome">Nome do Equipamento *</Label>
               <Input id="edit-nome" value={editFormData.nome} onChange={(e) => setEditFormData(prev => ({ ...prev, nome: e.target.value }))} />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-categoria">Categoria *</Label>
                 <Select value={editFormData.categoria} onValueChange={(value) => setEditFormData(prev => ({ ...prev, categoria: value }))}>
@@ -318,7 +317,7 @@ const Equipamentos = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Excluir equipamento?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta acao vai excluir {pendingDelete?.nome || "este equipamento"} do cadastro. A operacao usa a exclusao real do Supabase e nao sera confirmada se a requisicao falhar.
+              Tem certeza que deseja excluir {pendingDelete?.nome || "este equipamento"}? Esta acao nao pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -334,6 +333,7 @@ const Equipamentos = () => {
         </AlertDialogContent>
       </AlertDialog>
     </div>
+    </AnimatedPage>
   );
 };
 

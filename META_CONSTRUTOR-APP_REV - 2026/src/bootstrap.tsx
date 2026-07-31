@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { inject } from '@vercel/analytics';
 import App from './App.tsx';
 import './index.css';
 import './lib/i18n';
@@ -9,6 +10,7 @@ import { initSentry } from './integrations/sentry';
 import { initOpenTelemetry } from './integrations/opentelemetry';
 
 initAnalytics();
+inject();
 initSentry();
 initOpenTelemetry();
 

@@ -140,7 +140,11 @@ export const CreditsDisplay = () => {
       {credits.credits_balance < 3 && (
         <div className="mt-3 p-3 rounded-lg bg-warning/10 border border-warning/20">
           <p className="text-xs text-warning-foreground">
-            ⚠️ <strong>Atenção!</strong> Seus créditos estão acabando! Entre em contato para conhecer os planos ilimitados.
+            ⚠️ <strong>Atenção!</strong> Seus créditos estão acabando!{' '}
+            <a href="/preco" className="font-bold underline underline-offset-2 hover:text-warning-foreground/80">
+              Faça upgrade
+            </a>{' '}
+            para obter RDOs ilimitados.
           </p>
         </div>
       )}
@@ -148,7 +152,11 @@ export const CreditsDisplay = () => {
       {credits.credits_balance === 0 && (
         <div className="mt-3 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
           <p className="text-xs text-destructive font-medium">
-            ⚠️ Créditos esgotados. Você atingiu o limite de RDOs gratuitos. Entre em contato para saber sobre os planos ilimitados.
+            ⚠️ Créditos esgotados. Você atingiu o limite de RDOs gratuitos.{' '}
+            <a href="/preco" className="font-bold underline underline-offset-2 hover:text-destructive/80">
+              Faça upgrade
+            </a>{' '}
+            para continuar usando.
           </p>
         </div>
       )}

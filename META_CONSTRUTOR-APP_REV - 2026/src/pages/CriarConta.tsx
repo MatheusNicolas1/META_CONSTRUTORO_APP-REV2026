@@ -8,9 +8,7 @@ import { useSignUp } from "@/hooks/useSignUp";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getGoogleOAuthRedirectUrl } from "@/utils/authRedirect";
-
-
-
+import { track } from "@/integrations/analytics";
 
 const CriarConta = () => {
   const navigate = useNavigate();
@@ -20,6 +18,7 @@ const CriarConta = () => {
     const success = await signUp(data);
 
     if (success) {
+      track('auth.signup_completed', { method: 'email_password' });
       // Redirecionar para dashboard após sucesso
       navigate("/app/dashboard");
     }
@@ -27,6 +26,7 @@ const CriarConta = () => {
 
   const handleGoogleSignIn = async () => {
     try {
+      track('auth.signup_initiated', { method: 'google' });
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {

@@ -25,40 +25,40 @@ const plansPayload = [
         slug: 'basic',
         name: 'BÁSICO',
         monthly_price_cents: 12990,
-        yearly_price_cents: 10392,
+        yearly_price_cents: 124704,
         description: 'Perfeito para pequenas construtoras',
         features: ["Até 3 usuários", "Armazenamento ilimitado", "RDO digital completo", "Relatórios básicos", "Suporte por email", "Backup automático"],
         is_active: true,
         is_popular: false,
         display_order: 2,
-        stripe_price_id_monthly: 'price_1T1HSsCHfNdO9jxNJyBqYUW1',
-        stripe_price_id_yearly: 'price_1T1HSsCHfNdO9jxN0oT7lsgq'
+        stripe_price_id_monthly: 'price_1Spd6ICHfNdO9jxNRYj10lkA',
+        stripe_price_id_yearly: 'price_1SpdABCHfNdO9jxNzVu49NDP'
     },
     {
         slug: 'professional',
         name: 'PROFISSIONAL',
         monthly_price_cents: 19990,
-        yearly_price_cents: 15992,
+        yearly_price_cents: 191904,
         description: 'Ideal para construtoras em crescimento',
         features: ["Até 5 usuários", "Obras ilimitadas", "Relatórios avançados", "Integrações WhatsApp", "Suporte via chat 24h", "Dashboard avançado", "Controle de estoque"],
         is_active: true,
         is_popular: true,
         display_order: 3,
-        stripe_price_id_monthly: 'price_1T1HSsCHfNdO9jxNDtPicSaZ',
-        stripe_price_id_yearly: 'price_1T1HStCHfNdO9jxN2BtTrfpS'
+        stripe_price_id_monthly: 'price_1Spd7HCHfNdO9jxN3PKJJdyv',
+        stripe_price_id_yearly: 'price_1Spd9UCHfNdO9jxNMXy1MQs4'
     },
     {
         slug: 'master',
         name: 'MASTER',
-        monthly_price_cents: 49990,
-        yearly_price_cents: 39992,
+        monthly_price_cents: 34700,
+        yearly_price_cents: 333120,
         description: 'Para construtoras estabelecidas',
         features: ["Até 15 usuários", "Obras ilimitadas", "Todas as funcionalidades do Profissional", "API personalizada", "Integração com ERP", "Suporte prioritário (SLA 8h)", "Treinamento dedicado"],
         is_active: true,
         is_popular: false,
         display_order: 4,
-        stripe_price_id_monthly: 'price_1T1HStCHfNdO9jxNsjxKYfjw',
-        stripe_price_id_yearly: 'price_1T1HStCHfNdO9jxNpT8KUqLV'
+        stripe_price_id_monthly: 'price_1TfSRPCHfNdO9jxNA6dpVV7D',
+        stripe_price_id_yearly: 'price_1TfSRPCHfNdO9jxNqPNb6MOX'
     },
     {
         slug: 'premium',

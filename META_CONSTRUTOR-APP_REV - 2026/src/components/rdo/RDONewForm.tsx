@@ -141,7 +141,7 @@ export function RDONewForm({ isOpen, onClose, onSubmit, isEditing = false, initi
               {isEditing ? "Editar RDO" : "Novo Relatório Diário de Obra"}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground mt-1">
-              Preencha as informações do relatório diário de forma rápida e prática
+              Registre o relatório diário da obra
             </DialogDescription>
           </div>
         </DialogHeader>

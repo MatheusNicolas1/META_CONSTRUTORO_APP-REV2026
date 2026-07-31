@@ -31,7 +31,7 @@ const PLANS = {
     {
       name: 'Grátis', price: 'R$ 0',
       desc: 'Perfeito para testar o app e gerenciar sua primeira obra.',
-      features: ['1 obra ativa', 'Até 3 usuários', 'RDO digital básico', 'Checklists simples', 'Suporte por e-mail'],
+      features: ['1 obra ativa', '1 usuário', '7 RDOs/mês', 'Checklists simples', 'Suporte por e-mail'],
       cta: 'Comece Grátis', popular: false,
       image: '/marketing/prd-prints-2026-06-04-05-rdo-lista-desktop.webp',
     },
@@ -54,7 +54,7 @@ const PLANS = {
     {
       name: 'Grátis', price: 'R$ 0',
       desc: 'Perfeito para testar o app e gerenciar sua primeira obra.',
-      features: ['1 obra ativa', 'Até 3 usuários', 'RDO digital básico', 'Checklists simples', 'Suporte por e-mail'],
+      features: ['1 obra ativa', '1 usuário', '7 RDOs/mês', 'Checklists simples', 'Suporte por e-mail'],
       cta: 'Comece Grátis', popular: false,
       image: '/marketing/prd-prints-2026-06-04-05-rdo-lista-desktop.webp',
     },
@@ -77,7 +77,7 @@ const PLANS = {
 
 const COMPARISON_ROWS = [
   { feature: 'Obras Ativas', free: '1', pro: 'Ilimitadas', enter: 'Ilimitadas' },
-  { feature: 'Usuários', free: '3', pro: 'Ilimitados', enter: 'Ilimitados' },
+  { feature: 'Usuários', free: '1', pro: 'Ilimitados', enter: 'Ilimitados' },
   { feature: 'RDO Digital', free: 'Básico', pro: 'Completo', enter: 'Completo' },
   { feature: 'Checklists', free: 'Simples', pro: 'Inteligentes', enter: 'Inteligentes' },
   { feature: 'Relatórios', free: '—', pro: 'Automáticos', enter: 'Automáticos' },

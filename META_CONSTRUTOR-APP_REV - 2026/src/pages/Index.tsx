@@ -3,10 +3,12 @@ import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import SEO from "@/components/SEO";
 import { seoPages } from '@/config/seo';
 import { Link } from 'react-router-dom';
+import PublicThemeEffect from '@/components/public/PublicThemeEffect';
 import { Check, ArrowRight, Zap, BarChart3, ClipboardCheck, Users, FileText, HardHat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import PublicNav from './PublicNav';
 import { getOptimizedImageUrl } from '@/hooks/useOptimizedImage';
+import { DownloadButton } from '@/components/public/DownloadButton';
 
 // ─── Lazy load abaixo da dobra ─────────────────────────────
 const ObrasReaisSection = lazy(() => import('@/components/ObrasReaisSection'));
@@ -225,6 +227,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white font-sans antialiased">
+      <PublicThemeEffect />
       <SEO {...seoPages.home} />
 
       <PublicNav />
@@ -305,15 +308,11 @@ export default function Home() {
                 className="flex flex-col sm:flex-row gap-3 sm:gap-4"
               >
                 <Button className="bg-brand-orange hover:bg-brand-orange-hover text-white text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 rounded-full shadow-lg shadow-brand-orange/25 hover:shadow-brand-orange/40 transition-all w-full sm:w-auto" asChild>
-                  <Link to="/criar-conta">
+                  <Link to="/criar-conta" data-analytics-label="hero-cta">
                     Comece grátis <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                   </Link>
                 </Button>
-                <Button variant="outline" className="text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 rounded-full border-2 border-neutral-200 hover:border-brand-orange hover:text-brand-orange transition-all w-full sm:w-auto" asChild>
-                  <Link to="/preco">
-                    Ver planos
-                  </Link>
-                </Button>
+                <DownloadButton />
               </motion.div>
 
               <motion.div
@@ -561,7 +560,7 @@ export default function Home() {
             Comece grátis hoje. Sem cartão de crédito. Sem instalação. Suporte em português.
           </p>
           <Button className="bg-brand-orange hover:bg-brand-orange-hover text-white text-sm sm:text-base px-8 sm:px-12 py-5 sm:py-6 rounded-full shadow-lg shadow-brand-orange/25 hover:shadow-brand-orange/40 transition-all" asChild>
-            <Link to="/criar-conta">
+            <Link to="/criar-conta" data-analytics-label="final-cta">
               Comece grátis agora <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
             </Link>
           </Button>

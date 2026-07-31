@@ -18,7 +18,6 @@ import type { UserRole } from '@/types/user';
 import { AuditProvider } from '@/components/security/AuditLogger';
 import { OrgProvider } from '@/contexts/OrgContext';
 import SecurityHeaders from '@/components/security/SecurityHeaders';
-import PublicThemeEffect from '@/components/public/PublicThemeEffect';
 import { ServiceWorkerManager } from '@/components/ServiceWorkerManager';
 import { InteractionTracker } from '@/components/InteractionTracker';
 import { SuccessCheck } from '@/components/Feedback/SuccessCheck';
@@ -107,6 +106,12 @@ const RDOAgendaPage = lazy(() =>
 
 const AdminNichosPage = lazy(() =>
   import('@/pages/AdminNichosPage').then(module => ({
+    default: module.default
+  }))
+);
+
+const AdminAudioPage = lazy(() =>
+  import('@/pages/AdminAudioPage').then(module => ({
     default: module.default
   }))
 );
@@ -412,6 +417,12 @@ const AdminDashboard = lazy(() =>
   }))
 );
 
+const AdminCouponsPage = lazy(() =>
+  import('@/components/admin/AdminCoupons').then(module => ({
+    default: module.default
+  }))
+);
+
 const Despesas = lazy(() =>
   import('@/pages/Despesas').then(module => ({
     default: module.default
@@ -514,7 +525,7 @@ export const PerformanceOptimizedApp = memo(() => (
                     <SecurityHeaders />
                     <Routes>
                       {/* Home é a raiz e /home redireciona */}
-                      <Route path="/" element={<><PublicThemeEffect /><Index /></>} />
+                      <Route path="/" element={<Index />} />
                       <Route path="/home" element={<Navigate to="/" replace />} />
                       {/* Rotas públicas sem layout */}
                       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
@@ -525,23 +536,23 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/auth/callback" element={<SafeSuspense><AuthCallback /></SafeSuspense>} />
                       <Route path="/mfa" element={<PublicRoute><MFA /></PublicRoute>} />
                       <Route path="/renovar-sessao" element={<RenovarSessao />} />
-                      <Route path="/sobre" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Sobre /></SafeSuspense></>} />
-                      <Route path="/contato" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Contato /></SafeSuspense></>} />
-                      <Route path="/preco" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Preco /></SafeSuspense></>} />
+                      <Route path="/sobre" element={<SafeSuspense fallback={null}><Sobre /></SafeSuspense>} />
+                      <Route path="/contato" element={<SafeSuspense fallback={null}><Contato /></SafeSuspense>} />
+                      <Route path="/preco" element={<SafeSuspense fallback={null}><Preco /></SafeSuspense>} />
                       {/* Rotas V2 */}
-                      <Route path="/home2" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Home2 /></SafeSuspense></>} />
-                      <Route path="/preco2" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Preco2 /></SafeSuspense></>} />
-                      <Route path="/blog2" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Blog2 /></SafeSuspense></>} />
-                      <Route path="/contato2" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Contato2 /></SafeSuspense></>} />
-                      <Route path="/sobre2" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Sobre2 /></SafeSuspense></>} />
+                      <Route path="/home2" element={<SafeSuspense fallback={null}><Home2 /></SafeSuspense>} />
+                      <Route path="/preco2" element={<SafeSuspense fallback={null}><Preco2 /></SafeSuspense>} />
+                      <Route path="/blog2" element={<SafeSuspense fallback={null}><Blog2 /></SafeSuspense>} />
+                      <Route path="/contato2" element={<SafeSuspense fallback={null}><Contato2 /></SafeSuspense>} />
+                      <Route path="/sobre2" element={<SafeSuspense fallback={null}><Sobre2 /></SafeSuspense>} />
                       {/* Rota teste Spline */}
                       <Route path="/teste-spline" element={<SafeSuspense fallback={null}><TesteSpline /></SafeSuspense>} />
                       {/* Rotas públicas do rodapé */}
                       <Route path="/atualizacoes" element={<SafeSuspense fallback={null}><Atualizacoes /></SafeSuspense>} />
                       <Route path="/carreiras" element={<SafeSuspense fallback={null}><Carreiras /></SafeSuspense>} />
-                      <Route path="/blog" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Blog /></SafeSuspense></>} />
-                      <Route path="/blog/page/:num" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><Blog /></SafeSuspense></>} />
-                      <Route path="/blog/:slug" element={<><PublicThemeEffect /><SafeSuspense fallback={null}><BlogArticle /></SafeSuspense></>} />
+                      <Route path="/blog" element={<SafeSuspense fallback={null}><Blog /></SafeSuspense>} />
+                      <Route path="/blog/page/:num" element={<SafeSuspense fallback={null}><Blog /></SafeSuspense>} />
+                      <Route path="/blog/:slug" element={<SafeSuspense fallback={null}><BlogArticle /></SafeSuspense>} />
                       <Route path="/legal/privacidade" element={<SafeSuspense fallback={null}><PrivacyPolicy /></SafeSuspense>} />
                       <Route path="/legal/termos" element={<SafeSuspense fallback={null}><TermsOfService /></SafeSuspense>} />
                       <Route path="/legal/cookies" element={<SafeSuspense fallback={null}><CookiePolicy /></SafeSuspense>} />
@@ -656,7 +667,9 @@ export const PerformanceOptimizedApp = memo(() => (
                       {/* Integração ERP */}
                       <Route path="/app/integracoes/erp" element={<ProtectedPage roles={["Presidente", "Administrador"]}><IntegracaoERPPage /></ProtectedPage>} />
                       {/* Painel Administrativo */}
-                      <Route path="/app/admin/dashboard" element={<ProtectedPage><AdminDashboard /></ProtectedPage>} />
+                      <Route path="/app/admin/dashboard" element={<ProtectedPage roles={["Presidente"]}><AdminDashboard /></ProtectedPage>} />
+                      <Route path="/app/admin/cupons" element={<ProtectedPage roles={["Presidente"]}><AdminCouponsPage /></ProtectedPage>} />
+                      <Route path="/app/admin/audio" element={<ProtectedPage roles={["Presidente", "Administrador"]}><AdminAudioPage /></ProtectedPage>} />
                       {/* Perfil Público e Configurações */}
                       <Route path="/perfil/:slug" element={<PerfilPublico />} />
                       <Route path="/app/configurar-perfil" element={<ProtectedPage><ConfigurarPerfil /></ProtectedPage>} />

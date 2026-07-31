@@ -38,7 +38,7 @@ BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies WHERE tablename = 'email_click_log' AND policyname = 'Anyone can insert email clicks'
   ) THEN
-    CREATE POLICY \"Anyone can insert email clicks\"
+    CREATE POLICY "Anyone can insert email clicks"
       ON public.email_click_log FOR INSERT TO anon, authenticated WITH CHECK (true);
   END IF;
 END $$;
@@ -48,7 +48,7 @@ BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies WHERE tablename = 'email_click_log' AND policyname = 'Admins can view email clicks'
   ) THEN
-    CREATE POLICY \"Admins can view email clicks\"
+    CREATE POLICY "Admins can view email clicks"
       ON public.email_click_log FOR SELECT TO authenticated
       USING (auth.jwt() ->> 'role' IN ('Presidente', 'Administrador'));
   END IF;

@@ -37,7 +37,7 @@ export function ChecklistForm({
   onSubmit,
   initialData,
   isLoading = false,
-  dialogTitle = "Criar Novo Checklist",
+  dialogTitle = "Novo Checklist",
   dialogDescription = "Configure um novo checklist para controle de qualidade e segurança",
   submitLabel = "Criar Checklist"
 }: ChecklistFormProps) {

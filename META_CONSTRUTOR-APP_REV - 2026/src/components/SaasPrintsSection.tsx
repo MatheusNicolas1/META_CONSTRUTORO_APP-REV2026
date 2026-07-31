@@ -5,28 +5,26 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { SingleCarousel, type CarouselItem } from '@/components/public/SingleCarousel';
 
-// ─── Prints MOBILE reais + Mockups verticais com moldura ──
-// Prioridade: prints de tela de celular. Os verticais têm moldura de celular.
+// ─── Prints MOBILE reais — capturas direto do app ──
+// Prioridade: prints de tela de celular, substituindo placeholders anteriores.
 
 const supabaseBucket = 'https://bgdvlhttyjeuprrfxgun.supabase.co/storage/v1/object/public/community_media/prints/mockup';
 
 const allImages: CarouselItem[] = [
-  // ── Layouts reais do app (app mobile) ──
-  { src: `${supabaseBucket}/IMG_4502.png`, title: 'Obras no App' },
-  { src: `${supabaseBucket}/IMG_4503.png`, title: 'Print Layout' },
-  { src: `${supabaseBucket}/IMG_4505.png`, title: 'Tela Inicial' },
-  { src: `${supabaseBucket}/IMG_4506.png`, title: 'Checklist' },
-  { src: `${supabaseBucket}/IMG_4507.png`, title: 'RDO Digital' },
-  { src: `${supabaseBucket}/IMG_4508.png`, title: 'Atividades' },
-  { src: `${supabaseBucket}/IMG_4509.png`, title: 'Equipes' },
-  { src: `${supabaseBucket}/IMG_4510.png`, title: 'Documentos' },
-  { src: `${supabaseBucket}/IMG_4511.png`, title: 'Relatórios' },
-  { src: `${supabaseBucket}/IMG_4512.png`, title: 'Dashboard' },
-  { src: `${supabaseBucket}/IMG_4513.png`, title: 'Financeiro' },
-  { src: `${supabaseBucket}/IMG_4514.png`, title: 'Fornecedores' },
-  { src: `${supabaseBucket}/IMG_4515.png`, title: 'Equipamentos' },
-  { src: `${supabaseBucket}/IMG_4516.png`, title: 'Configurações' },
-  { src: `${supabaseBucket}/IMG_4517.png`, title: 'Notificações' },
+  // ── Layouts reais do app (prints mobile) ──
+  { src: `${supabaseBucket}/dashboard-home.webp`, title: 'Dashboard' },
+  { src: `${supabaseBucket}/dashboard-rdo-feed.webp`, title: 'RDO Feed' },
+  { src: `${supabaseBucket}/dashboard-calendario.webp`, title: 'Calendário' },
+  { src: `${supabaseBucket}/rdo-lista.webp`, title: 'RDO Lista' },
+  { src: `${supabaseBucket}/obras-lista.webp`, title: 'Obras Lista' },
+  { src: `${supabaseBucket}/mais-opcoes.webp`, title: 'Opções' },
+  { src: `${supabaseBucket}/rdo-lista-acoes.webp`, title: 'RDO Ações' },
+  { src: `${supabaseBucket}/rdo-novo-info.webp`, title: 'Novo RDO' },
+  { src: `${supabaseBucket}/rdo-novo-periodo.webp`, title: 'Período' },
+  { src: `${supabaseBucket}/rdo-novo-equipes.webp`, title: 'Equipes' },
+  { src: `${supabaseBucket}/rdo-novo-atividades.webp`, title: 'Atividades' },
+  { src: `${supabaseBucket}/rdo-novo-equipamentos.webp`, title: 'Equipamentos' },
+  { src: `${supabaseBucket}/rdo-novo-obs.webp`, title: 'Observações' },
 ];
 
 const fadeInUp = {

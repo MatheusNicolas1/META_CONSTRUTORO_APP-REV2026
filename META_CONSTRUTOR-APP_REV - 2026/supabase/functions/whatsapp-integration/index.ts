@@ -3,14 +3,27 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { getCorsHeaders } from "../_shared/cors.ts";
 
 interface WhatsAppRequest {
-  action: 'test' | 'send-message' | 'send-template' | 'verify-webhook';
+  action: 'test' | 'send-message' | 'send-template' | 'send-audio' | 'send-media' | 'verify-webhook';
   to?: string;
   message?: string;
   templateName?: string;
   templateParams?: string[];
   mediaUrl?: string;
   mediaType?: 'image' | 'document' | 'video' | 'audio';
+  caption?: string;
+  filename?: string;
   webhookVerifyToken?: string;
+}
+
+interface MediaPayload {
+  messaging_product: 'whatsapp';
+  recipient_type: 'individual';
+  to: string;
+  type: 'audio' | 'image' | 'document' | 'video';
+  audio?: { id?: string; link?: string };
+  image?: { id?: string; link?: string; caption?: string };
+  document?: { id?: string; link?: string; caption?: string; filename?: string };
+  video?: { id?: string; link?: string; caption?: string };
 }
 
 serve(async (req) => {
@@ -46,7 +59,7 @@ serve(async (req) => {
     }
 
     const requestData: WhatsAppRequest = await req.json();
-    const { action, to, message, templateName, templateParams, mediaUrl, mediaType } = requestData;
+    const { action, to, message, templateName, templateParams, mediaUrl, mediaType, caption, filename } = requestData;
 
     // Get WhatsApp Business API credentials from secrets
     const accessToken = Deno.env.get('WHATSAPP_ACCESS_TOKEN');
@@ -243,6 +256,167 @@ serve(async (req) => {
           console.error('WhatsApp template error:', error);
           return new Response(
             JSON.stringify({ success: false, error: 'Failed to send template message' }),
+            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+      }
+
+      case 'send-audio': {
+        if (!to || !mediaUrl) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required fields: to, mediaUrl' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        const formattedPhone = to.replace(/\D/g, '');
+
+        // Determine if mediaUrl is a media_id (alphanumeric without protocol) or an external URL
+        const isMediaId = /^[a-zA-Z0-9_\-]+$/.test(mediaUrl) && !mediaUrl.includes('://');
+
+        const audioPayload: MediaPayload = {
+          messaging_product: 'whatsapp',
+          recipient_type: 'individual',
+          to: formattedPhone,
+          type: 'audio',
+          audio: isMediaId ? { id: mediaUrl } : { link: mediaUrl }
+        };
+
+        try {
+          const response = await fetch(whatsappApiUrl, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(audioPayload)
+          });
+
+          const data = await response.json();
+
+          if (data.error) {
+            console.error('WhatsApp send-audio error:', data.error);
+            return new Response(
+              JSON.stringify({ 
+                success: false, 
+                error: data.error.message,
+                errorCode: data.error.code
+              }),
+              { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            );
+          }
+
+          console.info('WhatsApp audio sent:', { to: formattedPhone, mediaUrl, messageId: data.messages?.[0]?.id, userId: user.id });
+
+          return new Response(
+            JSON.stringify({ 
+              success: true, 
+              messageId: data.messages?.[0]?.id,
+              mediaType: 'audio',
+              status: 'sent'
+            }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        } catch (error) {
+          console.error('WhatsApp send-audio error:', error);
+          return new Response(
+            JSON.stringify({ success: false, error: 'Failed to send audio message' }),
+            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+      }
+
+      case 'send-media': {
+        if (!to || !mediaUrl || !mediaType) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required fields: to, mediaUrl, mediaType' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        // Validate mediaType is one of the supported types
+        const validMediaTypes = ['image', 'document', 'video', 'audio'];
+        if (!validMediaTypes.includes(mediaType)) {
+          return new Response(
+            JSON.stringify({ error: `Invalid mediaType. Must be one of: ${validMediaTypes.join(', ')}` }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        const formattedPhone = to.replace(/\D/g, '');
+
+        // Determine if mediaUrl is a media_id (alphanumeric without protocol) or an external URL
+        const isMediaId = /^[a-zA-Z0-9_\-]+$/.test(mediaUrl) && !mediaUrl.includes('://');
+
+        // Build the media payload based on type
+        const mediaPayload: MediaPayload = {
+          messaging_product: 'whatsapp',
+          recipient_type: 'individual',
+          to: formattedPhone,
+          type: mediaType as 'audio' | 'image' | 'document' | 'video',
+        };
+
+        // Set the media-specific property (audio, image, document, video) with link or id
+        const mediaRef = isMediaId ? { id: mediaUrl } : { link: mediaUrl };
+
+        switch (mediaType) {
+          case 'audio':
+            mediaPayload.audio = mediaRef;
+            break;
+          case 'image':
+            mediaPayload.image = { ...mediaRef };
+            if (caption) mediaPayload.image.caption = caption;
+            break;
+          case 'document':
+            mediaPayload.document = { ...mediaRef };
+            if (caption) mediaPayload.document.caption = caption;
+            if (filename) mediaPayload.document.filename = filename;
+            break;
+          case 'video':
+            mediaPayload.video = { ...mediaRef };
+            if (caption) mediaPayload.video.caption = caption;
+            break;
+        }
+
+        try {
+          const response = await fetch(whatsappApiUrl, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(mediaPayload)
+          });
+
+          const data = await response.json();
+
+          if (data.error) {
+            console.error('WhatsApp send-media error:', data.error);
+            return new Response(
+              JSON.stringify({ 
+                success: false, 
+                error: data.error.message,
+                errorCode: data.error.code
+              }),
+              { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            );
+          }
+
+          console.info('WhatsApp media sent:', { to: formattedPhone, mediaType, mediaUrl, caption, filename, messageId: data.messages?.[0]?.id, userId: user.id });
+
+          return new Response(
+            JSON.stringify({ 
+              success: true, 
+              messageId: data.messages?.[0]?.id,
+              mediaType,
+              status: 'sent'
+            }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        } catch (error) {
+          console.error('WhatsApp send-media error:', error);
+          return new Response(
+            JSON.stringify({ success: false, error: 'Failed to send media message' }),
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }

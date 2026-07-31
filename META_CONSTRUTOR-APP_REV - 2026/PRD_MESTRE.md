@@ -25,18 +25,20 @@ Regra de continuidade:
 | `PRD.md` | Release publica, Supabase, Vercel, RDO, Stripe, LGPD, seguranca, testes e operacao | Concluido para itens automatizaveis; pendencias manuais preservadas |
 | `docs/PRD_LAYOUT.md` | Layout, responsividade, PWA, RDO, relatorios/PDFs e inventario amplo de rotas | Concluido para cobertura automatizavel; dependencias externas preservadas |
 | `PRD_USUARIO.md` | Homologacao completa de fluxos do usuario em PC/tablet/mobile | Parcial em execucao; usar apenas itens marcados como evidenciados |
-| `PRD_falso.md` | Auditoria de acoes falsas, mockups, dados ficticios e handlers sem persistencia | Parcialmente concluido com varios P0 convertidos; manter pendencias explicitas |
+| `PRD_falso.md` | Auditoria de acoes falsas, mockups, dados ficticios e handlers sem persistencia | 54 itens processados + 1 aberto (FALSO-055) | 97% | Concluido em 06/06/2026 (37 Validado real, 10 Removido, 4 Bloqueado, 1 Classificado, 1 Legado, 1 Removido deploy). Reaberto 12/07/2026: pages-gemini/ com metricas hardcoded (FALSO-055, P1). Build/lint/test limpos. |
 | `PRD_ADMIN.md` | Admin de usuarios, marketing, analytics, funil, governanca e auditoria | Parcialmente executado; P0/P1/P2 tecnico inicial validado |
 | `PRD_SEO.md` | SEO, marketing publico, metadados, sitemap, robots e qualidade visual publica | Fundacao tecnica executada; reestrutura visual ampla ainda aberta |
 | `docs/PRD_BLOG.md` | Blog publico, cluster RDO, artigos PAA, FAQ schema, sitemap e prerender | Ciclo 1 implementado e pronto para revisao |
 || `docs/PRD_PUBLICAS_V2_GEMINI.md` | Nova versão páginas públicas (/home2, /preco2, /blog2, /contato2, /sobre2) com imagens reais, animações Framer Motion e paleta brand tokens | IMPLEMENTADO ✅ — 5 páginas criadas em `src/pages-gemini/`, rotas no router, SEO configurado, rewrites Vercel adicionados, build exit 0 com 61 páginas pré-renderizadas, deploy Production m6d8mhw7v, checklists 100% concluídos, API keys sanitizadas, git commit pendente |
-|| `docs/PRD_PUBLICAS_AFTER_EFFECTS_REMOTION.md` | Reestrutura visual páginas públicas com After Effects-style motion, Remotion, benchmark Canva | PARCIAL — Fase 1 concluída (fundação visual + Framer Motion). Fase 2 (Remotion) planejada — 5 compositions não renderizadas |
+||| `docs/PRD_PUBLICAS_AFTER_EFFECTS_REMOTION.md` | Reestrutura visual páginas públicas com After Effects-style motion, Remotion, benchmark Canva | PARCIAL — Fase 1 concluída (fundação visual + Framer Motion). Fase 2 (Remotion) planejada — 5 compositions não renderizadas |
+||| `PRD_CUPOM.md` | Sistema de cupons e descontos com integração Stripe — Admin CRUD, validação em checkout, sincronização Stripe | DIAGNÓSTICO CONCLUÍDO — implementação parcial com gaps P0/P1/P2 identificados |
 ||| `PRD_DASHBOARD.md`
 ||| `PRD_AGENDAS_RDO.md` | Agrupamento de RDOs por dia e nicho com resumo inteligente | EM ELABORAÇÃO — nichos redefinidos em PRD_NICHOS_RDO.md |
 || `PRD_NICHOS_RDO.md` | Definição dos 8 nichos baseados nos módulos reais do Meta Construtor (execução de obra, segurança, ordens/serviços, equipes, equipamentos, materiais, financeiro, documentos/cliente) | EM ELABORAÇÃO — baseado na análise do código-fonte |
 | `PRD_LIXEIRA.md` | Lixeira, soft delete, restauracao e expurgo | Planejado; nao tratar como feito |
 | `PRD_AUDIO_ELEVENLABS.md` | Mensagens de audio, resumos por voz, ElevenLabs TTS, Whisper/OpenAI STT, n8n e WhatsApp Business | Planejamento operacional; fonte primaria atual de audio |
 || `PRD_AUDIO_WHISPER_N8N.md` | Historico de planejamento audio/Whisper; refencia para contratos tecnico anteriores | Historico; consultar apenas para contexto ou contratos nao cobertos pelo PRD atual |
+||| `PRD_INTEGRACAO_VPS_N8N_WHATSAPP.md` | Integração completa: VPS + n8n + WhatsApp API + Site — consolida PRD_AUDIO_ELEVENLABS + PRD_AUDIO_WHISPER_N8N | EM EXECUÇÃO — Etapas 1-3 concluídas (Backend + EFs + Frontend). Etapas 4-5 aguardam VPS e chaves WhatsApp |
 || `PRD_PRINTS.md` | Contas demonstrativas, massa visual e screenshots seguros para campanha publicitaria | Ciclo 7 validado; 28 prints finais copiados para `prints_layout/`, pacote seguro mantido e dashboard final salvo |
 || `docs/PRD_GESTAO_CONTRATOS_MEDICOES_2026-05-31.md` | Gestão de contratos e medições de obras | Implementado: página `Contratos.tsx`, hook `useContratosMedicoes.ts`, rota `/app/contratos`, EFs `calcular-medicao` e `medicao-approve-flow` |
 || `docs/PRD_ORDEM_SERVICO_2026-05-31.md` | Ordem de Serviço (OS) com aprovação multicamadas | Implementado: página `OrdensServico.tsx`, hook `useOrdensServico.ts`, rota `/app/ordens-servico`, EF `ordem-servico-approve` |
@@ -305,6 +307,8 @@ Use este roteamento:
 - Dashboard principal e logo/sidebar inspirada no Canva: consultar `PRD_DASHBOARD.md`.
 - Lixeira, soft delete, restauracao, expurgo: consultar `PRD_LIXEIRA.md`.
 - Audio, voz, resumos falados, ElevenLabs TTS, Whisper/OpenAI STT, n8n, WhatsApp Business: consultar `PRD_AUDIO_ELEVENLABS.md`.
+- **Integração completa VPS + n8n + WhatsApp + Site: consultar `PRD_INTEGRACAO_VPS_N8N_WHATSAPP.md`.**
+- **Cupons, descontos, promoções, integração Stripe coupon, AdminCoupons, create-enterprise-checkout: consultar `PRD_CUPOM.md`.**
 - **RDOs agrupados por dia, nichos, resumo diario por nicho ou geral: consultar `PRD_AGENDAS_RDO.md`.**
 - **Definição de nichos de RDO baseados nos módulos reais: consultar `PRD_NICHOS_RDO.md`.**
 

@@ -52,7 +52,8 @@ export function CheckoutForm({ defaultValues, onSubmit, loading, showPasswordFie
             cpf_cnpj: defaultValues.cpf_cnpj || "",
             phone: defaultValues.phone || "",
             password: "",
-            confirmPassword: ""
+            confirmPassword: "",
+            coupon_code: defaultValues.coupon_code || ""
         });
     }, [defaultValues, form]);
 

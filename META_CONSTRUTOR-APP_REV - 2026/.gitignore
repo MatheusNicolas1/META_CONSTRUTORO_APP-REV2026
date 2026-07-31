@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Python bytecode
+__pycache__/
+*.py[cod]
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -27,6 +31,10 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+
+# Vercel env files (contêm tokens/credenciais) — não commitar
+.env.vercel
+.env.vercel.prod
 
 docs/STRIPE_CREDENTIALS.md
 

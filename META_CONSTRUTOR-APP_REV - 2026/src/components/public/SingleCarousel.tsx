@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react';
-import { getOptimizedImageUrl } from '@/hooks/useOptimizedImage';
 
 // ─── Tipos ────────────────────────────────────────────────
 
@@ -67,7 +66,10 @@ function injectKeyframes() {
 // ─── Imagem com Mockup de Celular ─────────────────────────
 
 function MobileMockupImage({ src, title }: { src: string; title: string }) {
-  const optimizedSrc = getOptimizedImageUrl(src, { width: 300 }) || src;
+  const [imgError, setImgError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  // Usa src original — Supabase render/image retorna 403 sem imgix configurado
+  const optimizedSrc = src;
   return (
     <div className="relative flex-shrink-0 w-[180px] sm:w-[200px] md:w-[220px] lg:w-[240px] contain-layout">
       <div className="relative mx-auto w-full max-w-[180px] sm:max-w-[200px] md:max-w-[220px] lg:max-w-[240px]">
@@ -77,13 +79,31 @@ function MobileMockupImage({ src, title }: { src: string; title: string }) {
             <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-neutral-700" />
           </div>
           <div className="absolute inset-[3px] sm:inset-[4px] rounded-[1.5rem] sm:rounded-[1.75rem] overflow-hidden bg-white">
-            <img
-              src={optimizedSrc}
-              alt={title}
-              className="w-full h-full object-cover object-top"
-              loading="lazy"
-              decoding="async"
-            />
+            {isLoading && (
+              <div className="w-full h-full flex items-center justify-center bg-neutral-100">
+                <div className="w-6 h-6 border-2 border-brand-orange border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
+            {imgError ? (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand-orange/5 to-brand-blue/5 p-4">
+                <div className="text-center">
+                  <div className="w-8 h-8 text-neutral-300 mx-auto mb-2 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><line x1="12" x2="12" y1="18" y2="18"/></svg>
+                  </div>
+                  <p className="text-[10px] text-neutral-400 font-medium">{title}</p>
+                </div>
+              </div>
+            ) : (
+              <img
+                src={optimizedSrc}
+                alt={title}
+                className={`w-full h-full object-cover object-top transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                loading="lazy"
+                decoding="async"
+                onLoad={() => setIsLoading(false)}
+                onError={() => { setIsLoading(false); setImgError(true); }}
+              />
+            )}
           </div>
         </div>
         <p className="text-center text-[10px] sm:text-xs text-brand-blue dark:text-blue-300 mt-2 truncate px-1 font-semibold">
@@ -96,18 +116,38 @@ function MobileMockupImage({ src, title }: { src: string; title: string }) {
 
 // ─── Imagem Desktop/Tablet ────────────────────────────────
 function DesktopImage({ src, title }: { src: string; title: string }) {
-  const optimizedSrc = getOptimizedImageUrl(src, { width: 600 }) || src;
+  const [imgError, setImgError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const optimizedSrc = src;
   return (
     <div className="flex-shrink-0 w-[260px] sm:w-[300px] md:w-[340px] lg:w-[380px] contain-layout">
       <div className="relative overflow-hidden rounded-xl border border-neutral-200/60 bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
         <div className="aspect-[16/10] overflow-hidden">
-          <img
-            src={optimizedSrc}
-            alt={title}
-            className="w-full h-full object-cover object-top"
-            loading="lazy"
-            decoding="async"
-          />
+          {isLoading && (
+            <div className="w-full h-full flex items-center justify-center bg-neutral-50">
+              <div className="w-6 h-6 border-2 border-brand-orange border-t-transparent rounded-full animate-spin" />
+            </div>
+          )}
+          {imgError ? (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand-orange/5 to-brand-blue/5 p-4">
+              <div className="text-center">
+                <div className="w-8 h-8 text-neutral-300 mx-auto mb-2 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="12" x="3" y="4" rx="2" ry="2"/><line x1="8" x2="16" y1="20" y2="20"/></svg>
+                </div>
+                <p className="text-[10px] text-neutral-400 font-medium">{title}</p>
+              </div>
+            </div>
+          ) : (
+            <img
+              src={optimizedSrc}
+              alt={title}
+              className={`w-full h-full object-cover object-top transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+              loading="lazy"
+              decoding="async"
+              onLoad={() => setIsLoading(false)}
+              onError={() => { setIsLoading(false); setImgError(true); }}
+            />
+          )}
         </div>
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white/95 via-white/60 to-transparent p-3">
           <h3 className="text-xs sm:text-sm font-bold text-brand-blue truncate">

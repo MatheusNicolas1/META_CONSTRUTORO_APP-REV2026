@@ -22,13 +22,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { useRecentObras } from "@/hooks/useRecentObras";
 import { useRecentRDOs } from "@/hooks/useRecentRDOs";
+import MetricCard, { type MetricTone } from "@/components/MetricCard";
 
 type StatConfig = {
   title: string;
   value: string;
   description: string;
   icon: LucideIcon;
-  tone: string;
+  tone: MetricTone;
 };
 
 type QuickActionConfig = {
@@ -53,24 +54,9 @@ const ActivityCalendarModern = React.lazy(() =>
   import("@/components/ActivityCalendarModern").then((module) => ({ default: module.ActivityCalendarModern }))
 );
 
-const StatPill = memo(({ stat }: { stat: StatConfig }) => (
-  <div className="flex min-h-[96px] items-center gap-3 rounded-2xl border border-border/70 bg-card px-4 py-3 shadow-sm transition-colors hover:bg-muted/35">
-    <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${stat.tone}`}>
-      <stat.icon className="h-5 w-5" />
-    </div>
-    <div className="min-w-0">
-      <p className="truncate text-xs font-medium text-muted-foreground">{stat.title}</p>
-      <div className="mt-1 text-2xl font-bold leading-none text-foreground">{stat.value}</div>
-      <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{stat.description}</p>
-    </div>
-  </div>
-));
-
-StatPill.displayName = "StatPill";
-
 const QuickAction = memo(({ action }: { action: QuickActionConfig }) => (
   <OptimizedLink to={action.to} className="group min-w-[112px] flex-1">
-    <div className="flex h-full flex-col items-center gap-2 rounded-2xl border border-transparent px-3 py-3 text-center transition-all hover:border-border hover:bg-card hover:shadow-sm">
+    <div className="flex h-full flex-col items-center gap-2 rounded-2xl border border-transparent px-3 py-3 text-center transition-all duration-200 hover:-translate-y-1 hover:border-border hover:bg-card hover:shadow-md">
       <div className={`flex h-14 w-14 items-center justify-center rounded-full ${action.tone} transition-transform group-hover:-translate-y-0.5`}>
         <action.icon className="h-6 w-6" />
       </div>
@@ -86,7 +72,7 @@ QuickAction.displayName = "QuickAction";
 
 const RecentVisualCard = memo(({ item }: { item: RecentItem }) => (
   <OptimizedLink to={item.to} className="group block">
-    <article className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+    <article className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
       <div className={`flex aspect-[4/3] items-center justify-center ${item.tone}`}>
         <item.icon className="h-12 w-12" />
       </div>
@@ -145,28 +131,28 @@ const OptimizedDashboard = memo(() => {
       value: stats?.obrasAtivas?.toString() || "0",
       description: stats?.obrasAtivasDescricao || "Nenhuma obra cadastrada",
       icon: Building2,
-      tone: "bg-primary/10 text-primary",
+      tone: "primary",
     },
     {
       title: "Equipes trabalhando",
       value: stats?.equipesTrabalhando?.toString() || "0",
       description: stats?.equipesDescricao || "Cadastre equipes nas obras",
       icon: Users,
-      tone: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+      tone: "emerald",
     },
     {
       title: "Equipamentos ativos",
       value: stats?.equipamentosAtivos?.toString() || "0",
       description: stats?.equipamentosDescricao || "Nenhum equipamento cadastrado",
       icon: Wrench,
-      tone: "bg-sky-500/10 text-sky-700 dark:text-sky-300",
+      tone: "sky",
     },
     {
       title: "Atividades pendentes",
       value: stats?.atividadesPendentes?.toString() || "0",
       description: stats?.atividadesDescricao || "Nenhuma atividade pendente",
       icon: ClipboardList,
-      tone: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
+      tone: "amber",
     },
   ];
 
@@ -254,7 +240,7 @@ const OptimizedDashboard = memo(() => {
               </div>
             ))
           ) : (
-            statsConfig.map((stat) => <StatPill key={stat.title} stat={stat} />)
+            statsConfig.map((stat) => <MetricCard key={stat.title} {...stat} />)
           )}
         </section>
 

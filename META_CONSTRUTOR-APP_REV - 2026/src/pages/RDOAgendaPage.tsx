@@ -97,20 +97,20 @@ const RDOAgendaPage = () => {
   const [novaData, setNovaData] = useState(hoje);
 
   // Hooks
-  const { agendaQuery, resumoGeralQuery, updateAgendaMutation } = useRDOAgenda();
+  const { useAgendaQuery, useResumoGeralQuery, updateAgendaMutation } = useRDOAgenda();
 
   const { nichosQuery } = useRDONichos();
 
   const nichos = nichosQuery.data || [];
 
   // Agenda da data selecionada
-  const agendaQueryResult = agendaQuery(selectedDate);
+  const agendaQueryResult = useAgendaQuery(selectedDate);
   const agendas = (agendaQueryResult.data ? [agendaQueryResult.data] : []) as any[];
   const isLoading = agendaQueryResult.isLoading;
   const isFetching = agendaQueryResult.isFetching;
 
   // Resumo da data selecionada
-  const { data: resumo, isLoading: loadingResumo } = resumoGeralQuery(selectedDate);
+  const { data: resumo, isLoading: loadingResumo } = useResumoGeralQuery(selectedDate);
   const isUpdatingAgenda = updateAgendaMutation.isPending;
 
   // Agenda da data selecionada

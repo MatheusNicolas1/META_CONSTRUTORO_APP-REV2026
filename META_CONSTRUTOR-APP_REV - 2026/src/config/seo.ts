@@ -1,4 +1,4 @@
-import { blogArticles } from "@/content/blogArticles";
+import { blogArticlesPtBR } from "@/content/blogArticles.pt-BR";
 
 export type JsonLd = Record<string, unknown>;
 
@@ -118,7 +118,7 @@ const page = (
   };
 };
 
-const articlePage = (article: (typeof blogArticles)[number]): SeoConfig => ({
+const articlePage = (article: (typeof blogArticlesPtBR)[number]): SeoConfig => ({
   title: article.seoTitle,
   description: article.description,
   path: article.path,
@@ -160,7 +160,7 @@ const articlePage = (article: (typeof blogArticles)[number]): SeoConfig => ({
 });
 
 export const seoBlogArticles = Object.fromEntries(
-  blogArticles.map((article) => [article.slug, articlePage(article)])
+  blogArticlesPtBR.map((article) => [article.slug, articlePage(article)])
 ) as Record<string, SeoConfig>;
 
 export const seoPages = {

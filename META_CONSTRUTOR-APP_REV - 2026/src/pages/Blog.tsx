@@ -1,14 +1,16 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, Search, ChevronLeft, ChevronRight, TrendingUp, Sparkles as SparklesIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { ArrowRight, Search, ChevronLeft, ChevronRight, TrendingUp } from 'lucide-react';
 import SEO from '@/components/SEO';
 import { seoPages } from '@/config/seo';
-import { blogArticles } from '@/content/blogArticles';
+import { loadBlogArticles, normalizeBlogLang } from '@/content/blogArticles';
 import LandingNavigation from '@/components/landing/LandingNavigation';
 import FooterSection from '@/components/landing/FooterSection';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ARTICLES_PER_PAGE, getPageFromSlug, getPaginationRange } from '@/utils/blogUtils';
+import type { BlogArticle } from '@/content/blogArticles';
 
 // Popularidade simulada — substituir por dados reais do GA4/Supabase futuramente
 function getPopularSlugs(): string[] {
@@ -35,34 +37,38 @@ function getArticlePopularity(slug: string): number {
   }
 }
 
-// Artigos ordenados: primeiro os mais populares, depois por data
-function getSortedArticles() {
-  const popular = getPopularSlugs();
-  const popularSet = new Set(popular);
-
-  const sorted = [...blogArticles].sort((a, b) => {
-    const viewsA = getArticlePopularity(a.slug);
-    const viewsB = getArticlePopularity(b.slug);
-
-    // Ambos têm views: ordena por popularidade
-    if (viewsA > 0 || viewsB > 0) return viewsB - viewsA;
-
-    // Ambos sem views: ordena por data (mais recente primeiro)
-    return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
-  });
-
-  // Move os populares sem views extras pra cima por data
-  return sorted;
-}
-
 const Blog = () => {
   const { num } = useParams();
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
   const currentPage = getPageFromSlug(num);
+  const currentLang = useMemo(() => normalizeBlogLang(i18n.language), [i18n.language]);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [allArticles, setAllArticles] = useState<BlogArticle[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const allArticles = useMemo(() => getSortedArticles(), []);
+  // Carrega artigos conforme o idioma
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      const lang = normalizeBlogLang(i18n.language || 'pt-BR');
+      const { [lang]: articles } = await loadBlogArticles(lang);
+      
+      // Ordena: populares primeiro, depois por data
+      const popular = getPopularSlugs();
+      const sorted = [...articles].sort((a, b) => {
+        const viewsA = getArticlePopularity(a.slug);
+        const viewsB = getArticlePopularity(b.slug);
+        if (viewsA > 0 || viewsB > 0) return viewsB - viewsA;
+        return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+      });
+      
+      setAllArticles(sorted);
+      setLoading(false);
+    }
+    load();
+  }, [i18n.language]);
 
   const filtered = useMemo(() => {
     if (!searchQuery.trim()) return allArticles;
@@ -84,7 +90,7 @@ const Blog = () => {
     [filtered, safePage]
   );
 
-  const totalArticles = blogArticles.length;
+  const totalArticles = allArticles.length;
 
   const goToPage = useCallback(
     (page: number) => {
@@ -103,7 +109,7 @@ const Blog = () => {
   const top3Popular = popularSlugs.slice(0, 3);
 
   // Se a página atual excede o total, redireciona
-  if (currentPage !== safePage && num) {
+  if (!loading && currentPage !== safePage && num) {
     navigate(safePage === 1 ? '/blog' : `/blog/page/${safePage}`, { replace: true });
   }
 
@@ -149,13 +155,23 @@ const Blog = () => {
         {/* Lista de artigos */}
         <section className="px-4 py-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-5xl">
-            {searchQuery && (
+            {loading ? (
+              <div className="space-y-4">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="border border-border bg-background p-5">
+                    <div className="mb-2 h-4 w-24 animate-pulse rounded bg-muted" />
+                    <div className="mb-2 h-6 w-3/4 animate-pulse rounded bg-muted" />
+                    <div className="h-4 w-full animate-pulse rounded bg-muted" />
+                  </div>
+                ))}
+              </div>
+            ) : searchQuery && (
               <p className="mb-6 text-sm text-muted-foreground">
-                {filtered.length} resultado{filtered.length !== 1 ? 's' : ''} para "{searchQuery}"
+                {filtered.length} resultado{filtered.length !== 1 ? 's' : ''} &quot;{searchQuery}&quot;
               </p>
             )}
 
-            {paginatedArticles.length === 0 ? (
+            {!loading && paginatedArticles.length === 0 ? (
               <div className="flex flex-col items-center py-16 text-center">
                 <Search className="mb-4 h-12 w-12 text-muted-foreground/40" />
                 <h2 className="text-xl font-semibold text-foreground">Nenhum artigo encontrado</h2>
@@ -173,7 +189,7 @@ const Blog = () => {
             ) : (
               <>
                 <div className="space-y-4">
-                  {paginatedArticles.map((article, index) => {
+                  {paginatedArticles.map((article) => {
                     const views = getArticlePopularity(article.slug);
                     const isPopular = top3Popular.includes(article.slug);
 

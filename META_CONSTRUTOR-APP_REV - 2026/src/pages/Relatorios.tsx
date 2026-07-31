@@ -31,6 +31,7 @@ import { useReportPdfDownload } from "@/hooks/useReportPdfDownload";
 import { Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { AnimatedPage } from "@/components/AnimatedPage";
 
 type FinanceiroConsolidadoRow = {
   org_id: string | null;
@@ -797,8 +798,9 @@ const Relatorios = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <AnimatedPage>
+      <div className="space-y-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-3xl font-bold text-foreground">Central de Relatórios</h1>
           <p className="text-muted-foreground">Análises e insights das suas obras e operações</p>
@@ -1107,7 +1109,8 @@ const Relatorios = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </AnimatedPage>
   );
 };
 

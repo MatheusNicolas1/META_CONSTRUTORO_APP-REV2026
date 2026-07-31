@@ -40,7 +40,7 @@ const Feedback = () => {
     const fetchFeedbacks = async () => {
       const { data } = await supabase
         .from('feedbacks')
-        .select('*')
+        .select('*, profiles!feedbacks_user_id_fkey(name)')
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
       setUserFeedbacks(data || []);
@@ -53,7 +53,7 @@ const Feedback = () => {
     const fetchAll = async () => {
       const { data } = await supabase
         .from('feedbacks')
-        .select('*')
+        .select('*, profiles!feedbacks_user_id_fkey(name)')
         .order('created_at', { ascending: false });
       setAllFeedbacks(data || []);
     };
@@ -83,7 +83,7 @@ const Feedback = () => {
       // Refresh feedbacks
       const { data } = await supabase
         .from('feedbacks')
-        .select('*')
+        .select('*, profiles!feedbacks_user_id_fkey(name)')
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
       setUserFeedbacks(data || []);
@@ -342,7 +342,7 @@ const Feedback = () => {
                               </div>
                               {feedback.user_id && (
                                 <p className="text-sm text-muted-foreground mb-1">
-                                  Usuário: {feedback.user_id}
+                                  Usuário: {feedback.profiles?.name || feedback.user_id}
                                 </p>
                               )}
                               <p className="text-sm text-muted-foreground mb-2">
@@ -381,7 +381,7 @@ const Feedback = () => {
                                   triggerSuccessFeedback("Status atualizado");
                                   toast({ title: "Sucesso", description: "Status atualizado!" });
                                   // Update local state if needed or force re-fetch
-                                  const { data } = await supabase.from('feedbacks').select('*').order('created_at', { ascending: false });
+                                  const { data } = await supabase.from('feedbacks').select('*, profiles!feedbacks_user_id_fkey(name)').order('created_at', { ascending: false });
                                   setAllFeedbacks(data || []);
                                 }
                               }}

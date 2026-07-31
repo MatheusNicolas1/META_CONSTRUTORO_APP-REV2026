@@ -20,7 +20,7 @@ const Perfil = () => {
   const [showTour, setShowTour] = useState(false);
   const { user, roles } = useAuth();
   const userRole = roles?.[0];
-  const canAccessMetrics = userRole === "Presidente" || userRole === "Administrador";
+  const canAccessMetrics = userRole === "Presidente";
 
   const [userData, setUserData] = useState({
     name: "",

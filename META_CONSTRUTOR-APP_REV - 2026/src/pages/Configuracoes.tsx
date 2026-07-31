@@ -211,10 +211,10 @@ const Configuracoes = () => {
       if (updateError) throw updateError;
 
       setCompanyData((prev) => ({ ...prev, logo_url: urlData.publicUrl }));
-      toast.success("✅ Logo atualizado com sucesso!");
+      toast.success("Logo atualizado com sucesso.");
     } catch (error: any) {
       console.error("Erro ao fazer upload:", error);
-      toast.error(`❌ Erro ao fazer upload: ${error.message}`);
+      toast.error(`Erro ao fazer upload: ${error.message}`);
     } finally {
       setUploading(false);
     }
@@ -223,7 +223,7 @@ const Configuracoes = () => {
   const handleLanguageChange = async (newLanguage: string) => {
     setSettings((prev) => ({ ...prev, language: newLanguage }));
     await i18n.changeLanguage(newLanguage);
-    toast.success(`✅ Idioma alterado para ${supportedLanguages.find(l => l.code === newLanguage)?.name}`);
+    toast.success(`Idioma alterado para ${supportedLanguages.find(l => l.code === newLanguage)?.name}`);
   };
 
   const handleThemeChange = async (newTheme: string) => {
@@ -236,7 +236,7 @@ const Configuracoes = () => {
 
     try {
       await persistUserThemePreference(user.id, theme);
-      toast.success("Tema salvo com sucesso!");
+      toast.success("Tema salvo com sucesso.");
     } catch (error: any) {
       console.error("Erro ao salvar tema:", error);
       toast.error(`Erro ao salvar tema: ${error.message}`);
@@ -245,7 +245,7 @@ const Configuracoes = () => {
 
   const handleSaveAll = async () => {
     if (!user) {
-      toast.error("❌ Erro: Usuário não autenticado");
+      toast.error("Erro: Usuário não autenticado");
       return;
     }
 
@@ -300,10 +300,10 @@ const Configuracoes = () => {
       // Aplicar tema imediatamente e manter o recarregamento consistente.
       setTheme(themeToSave);
 
-      toast.success("✅ Configurações salvas com sucesso!");
+      toast.success("Configurações salvas com sucesso.");
     } catch (error: any) {
       console.error("Erro ao salvar:", error);
-      toast.error(`❌ Erro ao salvar configurações: ${error.message}`);
+      toast.error(`Erro ao salvar configurações: ${error.message}`);
     } finally {
       setLoading(false);
     }

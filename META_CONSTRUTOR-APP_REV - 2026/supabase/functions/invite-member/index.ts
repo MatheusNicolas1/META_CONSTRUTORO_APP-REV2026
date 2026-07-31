@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { requirePlanLimit } from "../_shared/guards.ts";
 
 type InviteMemberRequest = {
   org_id?: string;
@@ -213,8 +214,14 @@ serve(async (req) => {
       );
     }
 
+    // Check plan limit: for existing users the membership becomes active immediately
+    const existingMember = email ? await findUserByEmail(admin, email) : null;
+    if (existingMember) {
+      await requirePlanLimit(admin, orgId, "max_users");
+    }
+
     const appUrl = Deno.env.get("APP_URL") ?? req.headers.get("origin") ?? "https://www.metaconstrutor.app.br";
-    let invitedUser = await findUserByEmail(admin, email);
+    let invitedUser = existingMember;
     let authInviteSent = false;
     let existingUser = Boolean(invitedUser);
 

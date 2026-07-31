@@ -2,7 +2,7 @@
 
 **Data de criação:** 2026-06-10
 **Produto:** Meta Construtor Web
-**Status:** EM ELABORAÇÃO
+**Status:** EM IMPLEMENTAÇÃO (Módulo 01 — Backend concluído)
 **Objetivo:** Implementar um sistema de agrupamento e sumarização de RDOs que organize os registros por **data** e **nicho** (baseado nos módulos reais do Meta Construtor), permitindo que o usuário solicite um resumo do dia filtrado por nicho específico ou um resumo geral consolidado.
 
 🔄 **ATUALIZAÇÃO 2026-06-10:** Os nichos foram redefinidos com base na análise do código-fonte do sistema. Consulte `PRD_NICHOS_RDO.md` para a definição completa e detalhada dos 8 nichos baseados nos módulos reais. Este documento mantém a arquitetura geral do sistema de agendamento, mas os slugs e regras de nicho agora são governados pelo `PRD_NICHOS_RDO.md`.
@@ -448,10 +448,10 @@ Usuário admin acessa /app/admin/nichos
 
 | Item | Status | Evidência |
 |------|--------|-----------|
-| Migration `rdo_nichos` | Pendente | — |
-| Migration `rdo_agendas` | Pendente | — |
-| Trigger `auto_assign_agenda` | Pendente | — |
-| Seed de nichos default | Pendente | — |
+| Migration `rdo_nichos` | ✅ IMPLEMENTADO | `supabase/migrations/20260610000000_rdo_nichos_agendas.sql` + `supabase/migrations/20260610150000_rdo_nichos_complement.sql` |
+| Migration `rdo_agendas` | ✅ IMPLEMENTADO | `supabase/migrations/20260610000000_rdo_nichos_agendas.sql` |
+| Trigger `auto_assign_agenda` | ✅ IMPLEMENTADO | `supabase/migrations/20260610000000_rdo_nichos_agendas.sql` |
+| Seed de nichos default | ✅ IMPLEMENTADO | `supabase/migrations/20260610000000_rdo_nichos_agendas.sql` + complemento com `is_default` |
 | EF `resumo-diario-nicho` | Pendente | — |
 | EF `resumo-diario-geral` | Pendente | — |
 | Hook `useRDOAgenda` | Pendente | — |
@@ -474,12 +474,12 @@ Usuário admin acessa /app/admin/nichos
 *Esta seção será preenchida após a implementação.*
 
 ### 7.1 Schema e Migrations
-- [ ] Migration aplicada no Supabase remoto
-- [ ] `rdo_nichos` criada com RLS
-- [ ] `rdo_agendas` criada com RLS
-- [ ] Colunas `nicho_id` e `agenda_id` adicionadas em `rdos`
-- [ ] Trigger `auto_assign_agenda` funcionando
-- [ ] Seed de nichos default criado para nova organização
+- [x] Migration aplicada no Supabase remoto
+- [x] `rdo_nichos` criada com RLS
+- [x] `rdo_agendas` criada com RLS
+- [x] Colunas `nicho_id` e `agenda_id` adicionadas em `rdos`
+- [x] Trigger `auto_assign_agenda` funcionando
+- [x] Seed de nichos default criado para nova organização
 
 ### 7.2 Edge Functions
 - [ ] `resumo-diario-nicho` deployada e respondendo

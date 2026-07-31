@@ -346,6 +346,23 @@ serve(async (req) => {
                     const session = event.data.object as Stripe.Checkout.Session
                     const userId = session.client_reference_id || session.metadata?.user_id
                     const orgId = session.metadata?.org_id
+                    // Cupom: incrementa uso se coupon_id estiver na metadata
+                    const couponId = session.metadata?.coupon_id
+                    if (couponId) {
+                        const { error: couponError } = await supabaseAdmin.rpc("increment_coupon_usage", { coupon_id: couponId })
+                        if (couponError) {
+                            logger.error(`Error incrementing coupon usage: ${couponError.message}`, {
+                                request_id: requestId,
+                                function_name: 'stripe-webhook'
+                            }, { coupon_id: couponId, session_id: session.id })
+                        } else {
+                            logger.info(`✓ Coupon usage incremented for coupon ${couponId}`, {
+                                request_id: requestId,
+                                function_name: 'stripe-webhook',
+                                coupon_id: couponId
+                            })
+                        }
+                    }
 
                     if (!userId || !orgId) {
                         logger.error('Missing user_id or org_id in checkout session metadata', {

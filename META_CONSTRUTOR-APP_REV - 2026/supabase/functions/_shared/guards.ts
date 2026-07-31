@@ -77,7 +77,7 @@ export const requireOrgRole = async (supabase: SupabaseClient, orgId: string, al
 export const requirePlanLimit = async (
     supabase: SupabaseClient,
     orgId: string,
-    limitType: 'max_users' | 'max_obras'
+    limitType: 'max_users' | 'max_obras' | 'max_rdo'
 ) => {
     // Get org's current subscription and plan limits
     const { data: subscription, error: subError } = await supabase
@@ -85,7 +85,7 @@ export const requirePlanLimit = async (
         .select(`
             plan_id,
             status,
-            plans!inner(slug, max_users, max_obras)
+            plans!inner(slug, max_users, max_obras, max_rdo)
         `)
         .eq('org_id', orgId)
         .in('status', ['active', 'trialing'])
@@ -95,7 +95,7 @@ export const requirePlanLimit = async (
         // No active subscription = free plan limits
         const { data: freePlan } = await supabase
             .from('plans')
-            .select('slug, max_users, max_obras')
+            .select('slug, max_users, max_obras, max_rdo')
             .eq('slug', 'free')
             .single()
 
@@ -113,8 +113,8 @@ export const requirePlanLimit = async (
 async function checkLimit(
     supabase: SupabaseClient,
     orgId: string,
-    limitType: 'max_users' | 'max_obras',
-    plan: { slug: string; max_users: number | null; max_obras: number | null }
+    limitType: 'max_users' | 'max_obras' | 'max_rdo',
+    plan: { slug: string; max_users: number | null; max_obras: number | null; max_rdo: number | null }
 ) {
     const limit = plan[limitType]
 
@@ -150,6 +150,22 @@ async function checkLimit(
 
         if ((count || 0) >= limit) {
             throw new Error(`Plan limit reached: maximum ${limit} obras (plan: ${plan.slug})`)
+        }
+    } else if (limitType === 'max_rdo') {
+        const now = new Date()
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+        const { count, error } = await supabase
+            .from('rdos')
+            .select('*', { count: 'exact', head: true })
+            .eq('org_id', orgId)
+            .gte('created_at', firstDay)
+
+        if (error) {
+            throw new Error('Error checking RDO count')
+        }
+
+        if ((count || 0) >= limit) {
+            throw new Error(`Plan limit reached: maximum ${limit} RDOs per month (plan: ${plan.slug})`)
         }
     }
 

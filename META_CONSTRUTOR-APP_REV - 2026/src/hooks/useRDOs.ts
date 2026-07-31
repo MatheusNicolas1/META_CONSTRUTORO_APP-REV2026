@@ -122,7 +122,9 @@ export const useRDOs = () => {
           documentos (*),
           rdo_atividades (*),
           rdo_equipes (*, equipes(*)),
-          rdo_equipamentos (*, equipamentos(*))
+          rdo_equipamentos (*, equipamentos(*)),
+          criador:criado_por_id (name),
+          aprovador:approved_by (name)
         `)
         .is('deleted_at' as any, null)
         .order('data', { ascending: false })

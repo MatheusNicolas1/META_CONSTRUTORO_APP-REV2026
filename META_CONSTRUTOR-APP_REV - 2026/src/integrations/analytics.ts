@@ -86,6 +86,7 @@ let lastAssociatedUserId: string | undefined
 export const isPublicAnalyticsEvent = (eventName: string) => (
     eventName === 'app.public_page_viewed' ||
     eventName.startsWith('marketing.') ||
+    eventName.startsWith('blog.') ||
     eventName.startsWith('auth.') ||
     eventName.startsWith('billing.')
 )

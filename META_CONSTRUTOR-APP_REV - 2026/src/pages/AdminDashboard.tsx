@@ -13,6 +13,7 @@ import AdminRetentionMetrics from "@/components/admin/AdminRetentionMetrics";
 import AdminRevenueMetrics from "@/components/admin/AdminRevenueMetrics";
 import AdminUsers from "@/components/admin/AdminUsers";
 import AdminCoupons from "@/components/admin/AdminCoupons";
+import AdminCampaignsTable from "@/components/admin/AdminCampaignsTable";
 import AdminManagers from "@/components/admin/AdminManagers";
 import AdminHeatmap from "@/components/admin/AdminHeatmap";
 import AdminHealthMetrics from "@/components/admin/AdminHealthMetrics";
@@ -85,6 +86,7 @@ const AdminDashboard = () => {
                 <TabsTrigger value="organizations" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Organizacoes</TabsTrigger>
                 <TabsTrigger value="routes" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Rotas</TabsTrigger>
                 <TabsTrigger value="campaigns" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Campanhas</TabsTrigger>
+                <TabsTrigger value="coupons" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Cupons</TabsTrigger>
                 <TabsTrigger value="referrals" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Indicações</TabsTrigger>
                 <TabsTrigger value="health" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Saude</TabsTrigger>
                 <TabsTrigger value="audit" className="whitespace-nowrap px-3 py-1.5 text-xs sm:text-sm sm:px-4">Auditoria</TabsTrigger>
@@ -130,6 +132,10 @@ const AdminDashboard = () => {
           </TabsContent>
 
           <TabsContent value="campaigns" className="space-y-6">
+            <AdminCampaignsTable />
+          </TabsContent>
+
+          <TabsContent value="coupons" className="space-y-6">
             <AdminCoupons />
           </TabsContent>
 

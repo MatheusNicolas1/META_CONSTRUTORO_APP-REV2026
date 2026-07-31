@@ -96,10 +96,10 @@ export function RDOExpandableCard({ rdo, onEdit, onDelete, onDownload, editMode 
       {/* ── HEADER COMPACTO ── */}
       <div className="p-3 sm:p-4">
         {/* Linha 1: Título + Status + Ações */}
-        <div className="flex items-center gap-2 min-w-0">
+        <div className="flex flex-wrap items-center gap-2 min-w-0">
           {/* Ícone + Título */}
           <FileText className="h-4 w-4 text-construction-orange flex-shrink-0" />
-          <span className="text-sm font-semibold text-card-foreground truncate">
+          <span className="text-sm font-semibold text-card-foreground truncate max-w-[180px]">
             RDO #{rdoLabel}
           </span>
 
@@ -109,7 +109,7 @@ export function RDOExpandableCard({ rdo, onEdit, onDelete, onDownload, editMode 
           {/* Nicho Badge */}
           {nicho && !editMode && (
             <Badge
-              className="text-[10px] px-1.5 py-0 border flex items-center gap-1"
+              className="text-[10px] px-1.5 py-0 border flex items-center gap-1 max-w-full"
               style={{
                 backgroundColor: `${nicho.cor}20`,
                 borderColor: nicho.cor,
@@ -117,10 +117,10 @@ export function RDOExpandableCard({ rdo, onEdit, onDelete, onDownload, editMode 
               }}
             >
               <span
-                className="h-1.5 w-1.5 rounded-full inline-block"
+                className="h-1.5 w-1.5 rounded-full inline-block flex-shrink-0"
                 style={{ backgroundColor: nicho.cor }}
               />
-              {nicho.nome}
+              <span className="truncate max-w-[120px]">{nicho.nome}</span>
             </Badge>
           )}
 

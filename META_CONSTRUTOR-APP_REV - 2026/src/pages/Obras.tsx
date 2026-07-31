@@ -4,12 +4,15 @@ import { Input } from "@/components/ui/input";
 import { Building2, Search, Plus, AlertCircle } from "lucide-react";
 import { ObraExpandableCard } from "@/components/ui/expandable-card";
 import { NovaObraForm } from "@/components/NovaObraForm";
-import { CreditsDisplay } from "@/components/CreditsDisplay";
 import { PlanLimitCard } from "@/components/PlanLimitCard";
 import { useObras } from "@/hooks/useObras";
 import { usePermissions } from "@/hooks/usePermissions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { AnimatedPage } from "@/components/AnimatedPage";
+import { EmptyState } from "@/components/EmptyState";
+import { SkeletonCard } from "@/components/SkeletonCard";
+import { motion } from "framer-motion";
 
 const Obras = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -49,8 +52,10 @@ const Obras = () => {
 
   if (isLoading || isPermsLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <LoadingSpinner />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {[1, 2, 3].map((i) => (
+          <SkeletonCard key={i} lines={3} hasImage />
+        ))}
       </div>
     );
   }
@@ -73,12 +78,13 @@ const Obras = () => {
   }
 
   return (
-    <div className="responsive-spacing">
+    <AnimatedPage>
+      <div className="responsive-spacing">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col space-y-4 sm:flex-row sm:items-start sm:justify-between sm:space-y-0 sm:gap-4">
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground truncate">Gestão de Obras</h1>
-            <p className="text-muted-foreground text-sm md:text-base">Gerencie todas as suas obras e projetos</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground truncate">Obras</h1>
+            <p className="text-muted-foreground text-sm">Gerencie seus projetos</p>
           </div>
           <Button
             className="gradient-construction border-0 hover:opacity-90 w-full sm:w-auto sm:flex-shrink-0"
@@ -100,9 +106,6 @@ const Obras = () => {
             limit={obraPerms.maxObras}
           />
         )}
-
-        {/* Sistema de Créditos */}
-        <CreditsDisplay />
 
         {/* Search Bar */}
         <div className="w-full">
@@ -140,13 +143,12 @@ const Obras = () => {
         </div>
 
         {filteredObras.length === 0 && (
-          <div className="text-center py-12">
-            <Building2 className="mx-auto h-12 w-12 text-muted-foreground" />
-            <h3 className="mt-4 text-lg font-medium text-card-foreground">Nenhuma obra encontrada</h3>
-            <p className="mt-2 text-muted-foreground">
-              {searchTerm ? "Tente ajustar os termos de busca" : "Comece cadastrando sua primeira obra"}
-            </p>
-          </div>
+          <EmptyState
+            icon={Building2}
+            title="Nenhuma obra encontrada"
+            description={searchTerm ? "Nenhum resultado para esta busca" : "Comece cadastrando sua primeira obra"}
+            action={!searchTerm ? { label: "Nova Obra", onClick: () => setIsDialogOpen(true) } : undefined}
+          />
         )}
 
         <NovaObraForm
@@ -155,6 +157,7 @@ const Obras = () => {
         />
       </div>
     </div>
+    </AnimatedPage>
   );
 };
 

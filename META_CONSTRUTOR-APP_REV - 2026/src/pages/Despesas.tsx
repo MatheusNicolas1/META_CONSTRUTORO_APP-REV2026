@@ -18,6 +18,9 @@ import { toast } from 'sonner';
 import { useReportPdfDownload } from '@/hooks/useReportPdfDownload';
 import { Loader2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import MetricCard from '@/components/MetricCard';
+import { AnimatedPage } from '@/components/AnimatedPage';
+import { SkeletonTable } from '@/components/SkeletonCard';
 
 export default function Despesas() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -133,16 +136,16 @@ export default function Despesas() {
   };
 
   return (
-    <>
+    <AnimatedPage>
       <SEO
         title="Gestão de Despesas"
-        description="Gerencie e aprove despesas das obras"
+        description="Gerencie e aprove despesas"
       />
 
       <div className="container mx-auto p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Gestão de Despesas</h1>
+            <h1 className="text-3xl font-bold">Despesas</h1>
             <p className="text-muted-foreground">
               Controle financeiro e aprovação de despesas
             </p>
@@ -153,46 +156,33 @@ export default function Despesas() {
           </Button>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Aprovado</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {new Intl.NumberFormat('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL',
-                }).format(totalApproved)}
-              </div>
-            </CardContent>
-          </Card>
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <MetricCard
+            title="Total Aprovado"
+            value={new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+            }).format(totalApproved)}
+            icon={DollarSign}
+            tone="emerald"
+          />
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pendente Aprovação</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {new Intl.NumberFormat('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL',
-                }).format(totalPending)}
-              </div>
-            </CardContent>
-          </Card>
+          <MetricCard
+            title="Pendente Aprovação"
+            value={new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+            }).format(totalPending)}
+            icon={Clock}
+            tone="amber"
+          />
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Despesas</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{expenses?.length || 0}</div>
-            </CardContent>
-          </Card>
+          <MetricCard
+            title="Total Despesas"
+            value={expenses?.length?.toString() || '0'}
+            icon={TrendingUp}
+            tone="primary"
+          />
         </div>
 
         <Card>
@@ -265,53 +255,55 @@ export default function Despesas() {
           </CardHeader>
           <CardContent>
             {isLoading ? (
-              <p className="text-center text-muted-foreground py-8">Carregando...</p>
+              <SkeletonTable rows={5} />
             ) : !filteredExpenses?.length ? (
               <p className="text-center text-muted-foreground py-8">
                 Nenhuma despesa encontrada
               </p>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Data</TableHead>
-                    <TableHead>NF</TableHead>
-                    <TableHead>Fornecedor</TableHead>
-                    <TableHead>Categoria</TableHead>
-                    <TableHead className="text-right">Valor</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Ação</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredExpenses.map((expense) => (
-                    <TableRow key={expense.id} className="cursor-pointer hover:bg-muted/50">
-                      <TableCell>
-                        {new Date(expense.date_of_expense).toLocaleDateString('pt-BR')}
-                      </TableCell>
-                      <TableCell className="font-medium">{expense.invoice_number}</TableCell>
-                      <TableCell>{expense.supplier_name}</TableCell>
-                      <TableCell>{expense.cost_category}</TableCell>
-                      <TableCell className="text-right font-medium">
-                        {new Intl.NumberFormat('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        }).format(expense.amount)}
-                      </TableCell>
-                      <TableCell>{getStatusBadge(expense.approval_status)}</TableCell>
-                      <TableCell>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setSelectedExpense(expense)}
-                        >
-                          Detalhes
-                        </Button>
-                      </TableCell>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Data</TableHead>
+                      <TableHead>NF</TableHead>
+                      <TableHead>Fornecedor</TableHead>
+                      <TableHead>Categoria</TableHead>
+                      <TableHead className="text-right">Valor</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Ação</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredExpenses.map((expense) => (
+                      <TableRow key={expense.id} className="cursor-pointer hover:bg-muted/50">
+                        <TableCell>
+                          {new Date(expense.date_of_expense).toLocaleDateString('pt-BR')}
+                        </TableCell>
+                        <TableCell className="font-medium">{expense.invoice_number}</TableCell>
+                        <TableCell>{expense.supplier_name}</TableCell>
+                        <TableCell>{expense.cost_category}</TableCell>
+                        <TableCell className="text-right font-medium">
+                          {new Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          }).format(expense.amount)}
+                        </TableCell>
+                        <TableCell>{getStatusBadge(expense.approval_status)}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setSelectedExpense(expense)}
+                          >
+                            Detalhes
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             )}
           </CardContent>
         </Card>
@@ -328,6 +320,6 @@ export default function Despesas() {
         open={!!selectedExpense}
         onOpenChange={(open) => !open && setSelectedExpense(null)}
       />
-    </>
+    </AnimatedPage>
   );
 }

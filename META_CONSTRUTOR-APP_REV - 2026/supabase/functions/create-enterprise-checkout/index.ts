@@ -8,6 +8,76 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
   httpClient: Stripe.createFetchHttpClient(),
 });
 
+// --- Funções de validação e aplicação de cupom ---
+
+/**
+ * Valida um cupom na tabela `coupons` e retorna os dados de desconto.
+ * Lança erro se o cupom for inválido/expirado.
+ */
+async function validateCoupon(supabaseAdmin: any, code: string) {
+  const { data: coupon, error } = await supabaseAdmin
+    .from("coupons")
+    .select("id, code, discount_type, discount_value, discount_percentage, valid_until, usage_limit, times_used, is_active")
+    .eq("code", code.toUpperCase().trim())
+    .maybeSingle();
+
+  if (error) throw new Error(`Erro ao buscar cupom: ${error.message}`);
+  if (!coupon) throw new Error("Cupom inválido ou não encontrado.");
+  if (!coupon.is_active) throw new Error("Este cupom não está mais ativo.");
+  if (coupon.valid_until && new Date(coupon.valid_until) < new Date()) throw new Error("Este cupom expirou.");
+  if (coupon.usage_limit && coupon.times_used >= coupon.usage_limit) throw new Error("Este cupom já atingiu o limite de usos.");
+
+  return coupon;
+}
+
+/**
+ * Cria um Stripe Coupon a partir dos dados do cupom do banco.
+ * Retorna o ID do Stripe Coupon.
+ */
+async function ensureStripeCoupon(stripe: any, coupon: any) {
+  if (coupon.discount_type === "percent") {
+    const percent = coupon.discount_value || coupon.discount_percentage || 0;
+    const stripeCoupon = await stripe.coupons.create({
+      name: `Cupom ${coupon.code} (${percent}% OFF)`,
+      percent_off: percent,
+      duration: "once",
+      max_redemptions: 1,
+      metadata: {
+        coupon_id: coupon.id,
+        coupon_code: coupon.code,
+      },
+    });
+    return stripeCoupon.id;
+  } else if (coupon.discount_type === "fixed") {
+    const amountOff = Math.round(Number(coupon.discount_value) * 100);
+    const stripeCoupon = await stripe.coupons.create({
+      name: `Cupom ${coupon.code} (R$ ${coupon.discount_value} OFF)`,
+      amount_off: amountOff,
+      currency: "brl",
+      duration: "once",
+      max_redemptions: 1,
+      metadata: {
+        coupon_id: coupon.id,
+        coupon_code: coupon.code,
+      },
+    });
+    return stripeCoupon.id;
+  }
+  throw new Error("Tipo de desconto inválido");
+}
+
+/**
+ * Incrementa o contador de uso do cupom no banco.
+ */
+async function incrementCouponUsage(supabaseAdmin: any, couponId: string) {
+  const { error } = await supabaseAdmin.rpc("increment_coupon_usage", {
+    coupon_id: couponId,
+  });
+  if (error) {
+    console.error("Erro ao incrementar uso do cupom:", error);
+  }
+}
+
 interface EnterpriseCheckoutRequest {
   /** ID do plano enterprise_custom_plans (se já existir) */
   plan_id?: string;
@@ -27,6 +97,8 @@ interface EnterpriseCheckoutRequest {
   /** success_url e cancel_url opcionais */
   success_url?: string;
   cancel_url?: string;
+  /** Locale opcional para o Stripe Checkout */
+  locale?: string;
 }
 
 serve(async (req: Request) => {
@@ -218,7 +290,17 @@ serve(async (req: Request) => {
       },
     });
 
-    // 8. Criar Stripe Checkout Session
+    // 8. Aplicar cupom (se fornecido)
+    let appliedCoupon = null;
+    let stripeCouponId = null;
+
+    if (body.coupon_code && body.coupon_code.trim()) {
+      appliedCoupon = await validateCoupon(supabaseAdmin, body.coupon_code);
+      stripeCouponId = await ensureStripeCoupon(stripe, appliedCoupon);
+      await incrementCouponUsage(supabaseAdmin, appliedCoupon.id);
+    }
+
+    // 9. Criar Stripe Checkout Session
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [
       {
         price: stripePriceMonthly.id,
@@ -226,9 +308,10 @@ serve(async (req: Request) => {
       },
     ];
 
-    const session = await stripe.checkout.sessions.create({
+    const sessionConfig: any = {
       mode: "subscription",
       line_items: lineItems,
+      locale: body.locale || 'auto',
       success_url: body.success_url || "https://www.metaconstrutor.app.br/checkout/sucesso?session_id={CHECKOUT_SESSION_ID}&plan=enterprise",
       cancel_url: body.cancel_url || "https://www.metaconstrutor.app.br/preco",
       metadata: {
@@ -237,10 +320,21 @@ serve(async (req: Request) => {
         plan_name: planName,
         org_name: body.org_name || '',
         max_users: String(body.max_users || ''),
+        coupon_code: body.coupon_code || '',
+        coupon_id: appliedCoupon?.id || '',
       },
-    });
+      allow_promotion_codes: true,
+    };
 
-    // 9. Registrar no log de auditoria
+    // Se um cupom foi aplicado, adiciona o discount na sessão
+    if (stripeCouponId) {
+      sessionConfig.discounts = [{ coupon: stripeCouponId }];
+      sessionConfig.allow_promotion_codes = false;
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
+
+    // 10. Registrar no log de auditoria
     await supabaseAdmin.from("enterprise_plan_audit_log").insert({
       plan_id: dbPlanId,
       action: 'checkout_created',
@@ -266,6 +360,11 @@ serve(async (req: Request) => {
         plan_slug: planSlug,
         monthly_price: body.monthly_price_cents / 100,
         yearly_price: body.yearly_price_cents ? body.yearly_price_cents / 100 : null,
+        appliedCoupon: appliedCoupon ? {
+          code: appliedCoupon.code,
+          discount_type: appliedCoupon.discount_type,
+          discount_value: appliedCoupon.discount_value,
+        } : null,
       }),
       { status: 200, headers: { ...headers, "Content-Type": "application/json" } },
     );

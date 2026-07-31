@@ -34,7 +34,6 @@ import { NotificationPanel } from "./NotificationPanel";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { UserProfile } from "./UserProfile";
 import Logo from "./Logo";
-import { useRecentRDOs } from "@/hooks/useRecentRDOs";
 
 type NavigationItem = {
   title: string;
@@ -48,7 +47,6 @@ export function AppSidebar() {
   const { state, isMobile, setOpenMobile } = useSidebar();
   const location = useLocation();
   const { roles } = useAuth();
-  const { data: recentRdos = [], isLoading: isLoadingRdos } = useRecentRDOs();
   const collapsed = state === "collapsed";
 
   const t = (key: string) => i18n.t(key);
@@ -94,18 +92,18 @@ export function AppSidebar() {
 
   const railLinkClass = (active: boolean) =>
     [
-      "flex h-[4.4rem] w-[4.5rem] flex-col items-center justify-center gap-1 rounded-2xl text-xs font-semibold transition-colors",
+      "flex h-[4.4rem] w-[4.5rem] flex-col items-center justify-center gap-1 rounded-2xl text-xs font-semibold transition-all duration-150 ease-out",
       active
-        ? "bg-primary/10 text-primary ring-1 ring-primary/15"
-        : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+        ? "bg-primary/10 text-primary ring-1 ring-primary/15 scale-[1.02]"
+        : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:scale-[1.02]",
     ].join(" ");
 
   const detailLinkClass = (active: boolean) =>
     [
-      "flex h-11 min-w-0 items-center gap-3 rounded-2xl px-3 text-sm font-semibold transition-colors",
+      "flex h-11 min-w-0 items-center gap-3 rounded-2xl px-3 text-sm font-semibold transition-all duration-150 ease-out",
       active
-        ? "bg-primary/10 text-primary ring-1 ring-primary/15"
-        : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+        ? "bg-primary/10 text-primary ring-1 ring-primary/15 scale-[1.02]"
+        : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:scale-[1.02]",
     ].join(" ");
 
   const renderRailLink = (item: NavigationItem) => (
@@ -136,13 +134,6 @@ export function AppSidebar() {
     </NavLink>
   );
 
-  const formatRdoDate = (value?: string | null) => {
-    if (!value) return "Sem data";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "Sem data";
-    return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
-  };
-
   return (
     <Sidebar
       className={`border-r border-sidebar-border/70 bg-sidebar transition-[width] duration-300 ease-out ${collapsed ? "w-[5.5rem]" : "w-[25.5rem]"}`}
@@ -153,13 +144,13 @@ export function AppSidebar() {
         <div className="flex h-full min-h-0">
           <aside className="flex h-full w-[5.5rem] shrink-0 flex-col items-center border-r border-sidebar-border/70 bg-sidebar">
             <div className="flex h-16 w-full shrink-0 items-center justify-center border-b border-sidebar-border/70">
-              <SidebarTrigger className="h-11 w-11 rounded-2xl text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" />
+              <SidebarTrigger className="h-11 w-11 rounded-2xl text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:scale-[1.05] transition-all duration-150" />
             </div>
 
             <div className="flex w-full shrink-0 justify-center border-b border-sidebar-border/70 py-3">
               <Link
                 to="/app/rdo/novo"
-                className="flex h-[4.4rem] w-[4.5rem] flex-col items-center justify-center gap-1 rounded-2xl bg-primary text-primary-foreground shadow-sm shadow-primary/20 transition-colors hover:bg-primary/90"
+                className="flex h-[4.4rem] w-[4.5rem] flex-col items-center justify-center gap-1 rounded-2xl bg-primary text-primary-foreground shadow-sm shadow-primary/20 transition-all duration-150 ease-out hover:bg-primary/90 hover:scale-[1.05] active:scale-[0.98]"
                 title="Criar novo RDO"
               >
                 <Plus className="h-6 w-6" />
@@ -199,6 +190,7 @@ export function AppSidebar() {
               <div className="flex h-10 w-10 items-center justify-center [&_button]:h-10 [&_button]:w-10 [&_button]:rounded-2xl [&_button]:px-0">
                 <NotificationPanel />
               </div>
+
               <div className="flex h-10 w-10 items-center justify-center [&_button]:h-10 [&_button]:w-10 [&_button]:rounded-2xl [&_button]:px-0">
                 <ThemeToggle />
               </div>
@@ -213,56 +205,6 @@ export function AppSidebar() {
               </div>
 
               <div className="min-h-0 flex-1 overflow-hidden px-4 py-4">
-                <div className="mb-4 px-2">
-                  <p className="text-xs font-bold uppercase tracking-normal text-sidebar-foreground/55">
-                    Ultimos RDOs
-                  </p>
-                  <p className="mt-1 text-xs text-sidebar-foreground/55">
-                    Atalhos dos registros mais recentes.
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  {isLoadingRdos ? (
-                    [1, 2, 3].map((item) => (
-                      <div key={item} className="h-16 rounded-2xl border border-sidebar-border/70 bg-sidebar-accent/35" />
-                    ))
-                  ) : recentRdos.length > 0 ? (
-                    recentRdos.slice(0, 3).map((rdo: any) => (
-                      <NavLink
-                        key={rdo.id}
-                        to={`/app/rdo/${rdo.id}/visualizar`}
-                        className="group block rounded-2xl border border-sidebar-border/70 bg-sidebar-accent/35 p-2.5 transition-colors hover:bg-sidebar-accent"
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                            <FileText className="h-4 w-4" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center justify-between gap-2">
-                              <p className="truncate text-sm font-bold leading-tight text-sidebar-foreground">
-                                RDO {formatRdoDate(rdo.created_at || rdo.data)}
-                              </p>
-                              <span className="shrink-0 rounded-full bg-background/70 px-1.5 py-0.5 text-[9px] font-semibold uppercase text-sidebar-foreground/65">
-                                {rdo.status || "RDO"}
-                              </span>
-                            </div>
-                            <p className="mt-0.5 truncate text-xs leading-tight text-sidebar-foreground/65">
-                              {rdo.obras?.nome || "Obra nao vinculada"}
-                            </p>
-                          </div>
-                        </div>
-                      </NavLink>
-                    ))
-                  ) : (
-                    <div className="rounded-2xl border border-dashed border-sidebar-border/80 p-4 text-sm text-sidebar-foreground/65">
-                      Nenhum RDO recente ainda.
-                      <Link to="/app/rdo/novo" className="mt-3 block font-semibold text-primary">
-                        Criar novo RDO
-                      </Link>
-                    </div>
-                  )}
-                </div>
 
                 <div className="mt-5 px-2 text-xs font-bold uppercase tracking-normal text-sidebar-foreground/55">
                   Ferramentas

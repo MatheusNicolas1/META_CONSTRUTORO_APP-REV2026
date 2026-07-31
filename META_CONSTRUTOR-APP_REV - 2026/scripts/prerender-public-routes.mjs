@@ -877,6 +877,27 @@ const routes = [
       'Guia completo de planejamento de obra: do memorial descritivo ao cronograma físico-financeiro. Aprenda cada etapa, ferramentas, prazos e como integrar o planejamento com o RDO digital.',
     priorityType: 'Article',
   },
+  {
+    path: '/blog/indicadores-desempenho-obra',
+    title: 'Indicadores de Desempenho na Obra: KPIs Essenciais para Gestão de Construção | Meta Construtor',
+    description:
+      'Guia completo de KPIs para construção civil: produtividade, prazo, custo, qualidade e segurança. Aprenda quais indicadores de desempenho monitorar na sua obra, como calculá-los e interpretá-los para tomar decisões mais assertivas no canteiro.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/construcao-seco-steel-frame',
+    title: 'Construção a Seco: Steel Frame vs Wood Frame — Qual Escolher em 2026? | Meta Construtor',
+    description:
+      'Steel frame ou wood frame? Compare custo, durabilidade, isolamento, prazo de obra e sustentabilidade dos dois sistemas construtivos a seco mais usados no Brasil em 2026.',
+    priorityType: 'Article',
+  },
+  {
+    path: '/blog/obra-digital-transformacao',
+    title: 'Obra Digital: Como a Transformação Tecnológica Está Revolucionando os Canteiros | Meta Construtor',
+    description:
+      'Descubra como a obra digital está revolucionando os canteiros: sensores IoT, BIM 4D, drones, RDO digital, inteligência artificial e softwares de gestão integrada. Guia completo para construtoras.',
+    priorityType: 'Article',
+  },
 ];
 
 const escapeHtml = (value) =>

@@ -510,6 +510,18 @@
       "destination": "/blog/planejamento-de-obra-como-fazer/index.html"
     },
     {
+      "source": "/blog/indicadores-desempenho-obra",
+      "destination": "/blog/indicadores-desempenho-obra/index.html"
+    },
+    {
+      "source": "/blog/construcao-seco-steel-frame",
+      "destination": "/blog/construcao-seco-steel-frame/index.html"
+    },
+    {
+      "source": "/blog/obra-digital-transformacao",
+      "destination": "/blog/obra-digital-transformacao/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/"
     }

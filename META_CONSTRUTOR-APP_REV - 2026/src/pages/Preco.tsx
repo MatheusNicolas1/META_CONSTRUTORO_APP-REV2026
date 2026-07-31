@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { PublicLayout } from '@/components/public/PublicLayout';
 import { AnimatedSection } from '@/components/public/AnimatedSection';
 import { AnimatedGradient } from '@/components/public/AnimatedGradient';
+import { StaggerContainer, StaggerItem } from '@/components/public/StaggerContainer';
 import {
   Carousel,
   CarouselContent,
@@ -43,9 +44,9 @@ const plans: PlanCard[] = [
     desc: 'Ideal para começar e testar a plataforma.',
     features: [
       '1 obra ativa',
-      'RDOs ilimitados',
+      '7 RDOs/mês',
       'Checklists básicos',
-      '5 membros na equipe',
+      '1 usuário',
       'Suporte por email',
     ],
     cta: 'Comece grátis',
@@ -141,10 +142,10 @@ const plans: PlanCard[] = [
 ];
 
 const comparisons = [
-  { feature: 'Obras ativas', free: '1', basico: '3', profissional: 'Ilimitadas', master: 'Ilimitadas', enterprise: 'Ilimitadas' },
-  { feature: 'Usuários', free: '5', basico: 'Até 3', profissional: 'Até 5', master: 'Até 15', enterprise: 'Ilimitados' },
+  { feature: 'Obras ativas', free: '1', basico: '2', profissional: 'Ilimitadas', master: 'Ilimitadas', enterprise: 'Ilimitadas' },
+  { feature: 'Usuários', free: '1', basico: 'Até 3', profissional: 'Até 5', master: 'Até 15', enterprise: 'Ilimitados' },
   { feature: 'Armazenamento', free: 'Limitado', basico: 'Ilimitado', profissional: 'Ilimitado', master: 'Ilimitado', enterprise: 'Ilimitado' },
-  { feature: 'RDOs', free: 'Ilimitados', basico: '✓', profissional: '✓', master: '✓', enterprise: '✓' },
+  { feature: 'RDOs', free: '7/mês', basico: '✓', profissional: '✓', master: '✓', enterprise: '✓' },
   { feature: 'Relatórios', free: '—', basico: 'Básicos', profissional: 'Avançados', master: 'Avançados', enterprise: 'Customizados' },
   { feature: 'WhatsApp', free: '—', basico: '—', profissional: '✓', master: '✓', enterprise: '✓' },
   { feature: 'API + Webhooks', free: '—', basico: '—', profissional: '—', master: '✓', enterprise: '✓' },
@@ -160,6 +161,7 @@ const faqItems = [
   { q: 'Tem desconto no plano anual?', a: 'Sim! No plano anual você economiza 20% em relação ao valor mensal. Por exemplo, o plano Master sai de R$ 347,00/mês para R$ 277,60/mês — uma economia de R$ 832,80 por ano.' },
   { q: 'Qual a diferença entre Profissional e Master?', a: 'O Master inclui tudo do Profissional, mais API personalizada, integração com ERP, suporte prioritário (SLA 8h) e treinamento dedicado.' },
   { q: 'O que acontece se eu atingir o limite de obras?', a: 'Você recebe um aviso e pode fazer upgrade para o plano superior a qualquer momento, sem perder dados.' },
+  { q: 'O plano Grátis tem limite de RDOs?', a: 'Sim. O plano Grátis oferece 7 RDOs por mês. Ao atingir o limite, você pode fazer upgrade para um plano pago e continuar usando sem interrupção. Os créditos são resetados mensalmente.' },
   { q: 'Vocês emitem nota fiscal?', a: 'Sim. Emitimos nota fiscal para todos os planos pagos.' },
 ];
 

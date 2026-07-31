@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
+import { EmptyState } from "@/components/EmptyState";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { FornecedorExpandableCard } from "@/components/FornecedorExpandableCard";
@@ -155,13 +156,13 @@ const Fornecedores = () => {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[600px] bg-card border-border">
             <DialogHeader>
-              <DialogTitle className="text-card-foreground">Cadastrar Novo Fornecedor</DialogTitle>
+              <DialogTitle className="text-card-foreground">Novo Fornecedor</DialogTitle>
               <DialogDescription>
-                Adicione um novo fornecedor ao seu cadastro
+                Cadastre os dados do fornecedor
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="nome">Nome da Empresa *</Label>
                   <Input 
@@ -190,7 +191,7 @@ const Fornecedores = () => {
                   </Select>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="cnpj">CNPJ</Label>
                   <Input 
@@ -210,7 +211,7 @@ const Fornecedores = () => {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="telefone">Telefone</Label>
                   <Input 
@@ -374,15 +375,13 @@ const Fornecedores = () => {
       )}
 
       {!isLoading && filteredFornecedores.length === 0 && (
-        <div className="text-center py-12">
-          <Truck className="mx-auto h-12 w-12 text-muted-foreground" />
-          <h3 className="mt-4 text-lg font-medium text-card-foreground">Nenhum fornecedor encontrado</h3>
-          <p className="mt-2 text-muted-foreground">
-            {searchTerm || selectedCategoria !== "all" || selectedStatus !== "all"
-              ? "Tente ajustar os filtros de busca" 
-              : "Comece cadastrando seu primeiro fornecedor"}
-          </p>
-        </div>
+        <EmptyState
+          icon={Truck}
+          title="Nenhum fornecedor encontrado"
+          description={searchTerm || selectedCategoria !== "all" || selectedStatus !== "all"
+            ? "Nenhum resultado para esta busca"
+            : "Cadastre seu primeiro fornecedor"}
+        />
       )}
 
       {/* Modal de Edição */}
@@ -395,7 +394,7 @@ const Fornecedores = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-nome">Nome da Empresa *</Label>
                 <Input id="edit-nome" value={editFormData.nome} onChange={(e) => setEditFormData(prev => ({ ...prev, nome: e.target.value }))} />
@@ -408,7 +407,7 @@ const Fornecedores = () => {
                 </Select>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-cnpj">CNPJ</Label>
                 <Input id="edit-cnpj" value={editFormData.cnpj} onChange={(e) => setEditFormData(prev => ({ ...prev, cnpj: e.target.value }))} />
@@ -418,7 +417,7 @@ const Fornecedores = () => {
                 <Input id="edit-contato" value={editFormData.contato} onChange={(e) => setEditFormData(prev => ({ ...prev, contato: e.target.value }))} />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-telefone">Telefone</Label>
                 <Input id="edit-telefone" value={editFormData.telefone} onChange={(e) => setEditFormData(prev => ({ ...prev, telefone: e.target.value }))} />

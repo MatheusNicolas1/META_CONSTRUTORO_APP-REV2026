@@ -16,6 +16,9 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/components/auth/AuthContext';
 import { getCheckoutErrorFeedback } from '@/utils/checkoutErrors';
 import { NavigationSafety } from '@/utils/navigationSafety';
+import { useTranslation } from 'react-i18next';
+import { getStripeLocale } from '@/lib/stripeLocaleMap';
+import { track } from '@/integrations/analytics';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -23,12 +26,14 @@ const Checkout = () => {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
+  const { i18n } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [defaultFormValues, setDefaultFormValues] = useState<Partial<CheckoutFormData>>({});
 
   const planKey = searchParams.get('plan') || 'basic';
   const billingParam = searchParams.get('billing');
   const billingCycle: 'monthly' | 'yearly' = billingParam === 'yearly' ? 'yearly' : 'monthly';
+  const couponFromUrl = searchParams.get('coupon') || '';
   const planManagementPath = `/app/planos?plan=${encodeURIComponent(planKey)}&billing=${billingCycle}`;
 
   const { data: plans, isLoading: isPlansLoading } = usePlans({ staticOnly: !isAuthenticated });
@@ -50,13 +55,16 @@ const Checkout = () => {
 
   useEffect(() => {
     if (!user) {
-      setDefaultFormValues({});
+      setDefaultFormValues({
+        coupon_code: couponFromUrl
+      });
       return;
     }
 
     setDefaultFormValues({
       name: user.name || '',
       email: user.email || '',
+      coupon_code: couponFromUrl,
     });
 
     let isMounted = true;
@@ -73,6 +81,7 @@ const Checkout = () => {
           company: data.company || '',
           cpf_cnpj: data.cpf_cnpj || '',
           phone: data.phone || '',
+          coupon_code: couponFromUrl,
         });
       });
 
@@ -82,10 +91,12 @@ const Checkout = () => {
   }, [user]);
 
   const createHostedCheckoutSession = async (cycle: 'monthly' | 'yearly', formData?: CheckoutFormData) => {
+    const locale = getStripeLocale(i18n.language);
     const { data, error } = await supabase.functions.invoke('create-checkout-session', {
       body: {
         plan: planKey,
         billing: cycle,
+        locale,
         coupon_code: formData?.coupon_code || null,
         profile: formData ? {
           name: formData.name,
@@ -107,6 +118,7 @@ const Checkout = () => {
 
   const handleDetailsSubmit = async (data: CheckoutFormData) => {
     setIsLoading(true);
+    track('billing.checkout_submitted', { plan: planKey, billing: billingCycle, is_authenticated: isAuthenticated });
     try {
       if (isAuthenticated && user) {
         await supabase.from('profiles').update({
@@ -118,6 +130,7 @@ const Checkout = () => {
 
         if (planKey === 'free') {
           toast({ title: "Sucesso!", description: "Plano gratuito ativado." });
+          track('billing.checkout_success', { plan: planKey, billing: 'monthly', is_free: true });
           navigate('/app/dashboard');
           return;
         }
@@ -152,6 +165,7 @@ const Checkout = () => {
         }
 
         const checkoutUrl = await createHostedCheckoutSession(billingCycle, data);
+        track('billing.checkout_redirect', { plan: planKey, billing: billingCycle, is_authenticated: true });
         window.location.assign(checkoutUrl);
         return;
       }
@@ -199,9 +213,11 @@ const Checkout = () => {
 
       // 3. Paid Plan -> Stripe-hosted Checkout
       const checkoutUrl = await createHostedCheckoutSession(billingCycle, data);
+      track('billing.checkout_redirect', { plan: planKey, billing: billingCycle, is_authenticated: false });
       window.location.assign(checkoutUrl);
     } catch (error: any) {
       const feedback = getCheckoutErrorFeedback(error);
+      track('billing.checkout_error', { plan: planKey, billing: billingCycle, error: error?.message, feedback_type: feedback.title });
       toast({
         title: feedback.title,
         description: feedback.description,

@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { PDFDocument, StandardFonts, rgb } from "https://esm.sh/pdf-lib@1.17.1?target=deno";
-import { rdoTemplateHtml } from "./template.ts";
+import rdoTemplateHtml, { applyPrimaryColor, DEFAULT_PRIMARY_COLOR, getPrimaryHex } from "./template.ts";
 import { buildGenericReportHtml, makeReportFilename } from "./report-template.ts";
 
 const corsHeaders = {
@@ -43,16 +43,33 @@ serve(async (req: Request) => {
       return new Response(JSON.stringify({ error: 'Não autenticado', details: authError?.message }), { status: 401, headers: corsHeaders });
     }
 
+    // Buscar primary_color do user_settings do usuário autenticado
+    let primaryColorName: string | null = null;
+    try {
+      const { data: settings } = await supabase
+        .from('user_settings')
+        .select('primary_color')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (settings?.primary_color) {
+        primaryColorName = settings.primary_color;
+      }
+    } catch (_e) {
+      // Fallback silencioso — usa cor padrão
+    }
+
     if (!rdoId) {
       const reportPayload = report || requestBody;
       const generatedAt = reportPayload.generatedAt || new Date().toLocaleString('pt-BR');
-      const templateHtml = buildGenericReportHtml({
+      let templateHtml = buildGenericReportHtml({
         ...reportPayload,
         reportType: reportPayload.reportType || reportType,
         generatedAt,
       });
+      // Aplicar primary_color ao relatório genérico
+      templateHtml = applyPrimaryColor(templateHtml, primaryColorName);
       const filename = makeReportFilename(reportPayload.reportType || reportType, generatedAt);
-      return await convertHtmlToPdf(templateHtml, filename, generatedAt);
+      return await convertHtmlToPdf(templateHtml, filename, generatedAt, primaryColorName);
     }
 
     // 1. Fetch RDO with all relationships (incluindo rdo_notas)
@@ -403,7 +420,10 @@ serve(async (req: Request) => {
     const dataGeracao = new Date().toLocaleString('pt-BR');
     templateHtml = templateHtml.replace(/\{\{rdo\.data_geracao\}\}/g, dataGeracao);
 
-    return await convertHtmlToPdf(templateHtml, `RDO-${numStr}.PDF`, dataGeracao);
+    // Aplicar primary_color do usuário ao template RDO
+    templateHtml = applyPrimaryColor(templateHtml, primaryColorName);
+
+    return await convertHtmlToPdf(templateHtml, `RDO-${numStr}.PDF`, dataGeracao, primaryColorName);
 
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
@@ -419,12 +439,12 @@ serve(async (req: Request) => {
   }
 });
 
-async function convertHtmlToPdf(templateHtml: string, filename: string, generatedAt: string): Promise<Response> {
+async function convertHtmlToPdf(templateHtml: string, filename: string, generatedAt: string, primaryColorName?: string | null): Promise<Response> {
   console.info('[generate-rdo-pdf] Converting HTML to PDF...');
 
   const formData = new FormData();
   const htmlFile = new File([templateHtml], "index.html", { type: "text/html" });
-  const footerHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="font-family:Roboto,Helvetica,Arial,sans-serif;margin:0;padding:0;"><div style="width:100%;font-size:7pt;color:#777;text-align:right;padding-right:15mm;">P&Aacute;GINA <span class="pageNumber"></span> DE <span class="totalPages"></span> | GERADO EM ${generatedAt}</div></body></html>`;
+  const footerHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Roboto,Helvetica,Arial,sans-serif;margin:0;padding:0;} .footer-text{width:100%;font-size:7pt;color:#666;text-align:right;padding-right:15mm;} .accent{color:${getPrimaryHex(primaryColorName)};}</style></head><body><div class="footer-text">P&Aacute;GINA <span class="pageNumber"></span> DE <span class="totalPages"></span> | GERADO EM ${generatedAt}</div></body></html>`;
   const footerFile = new File([footerHtml], "footer.html", { type: "text/html" });
   formData.append('files', htmlFile);
   formData.append('files', footerFile);

@@ -1,7 +1,10 @@
 project_id = "bgdvlhttyjeuprrfxgun"
 
 [db]
-major_version = 17
+major_version = 15
+
+[functions.generate-rdo-pdf]
+verify_jwt = true
 
 [functions.create-checkout-session]
 verify_jwt = true

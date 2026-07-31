@@ -14,6 +14,10 @@ export interface ObraSupabase {
     nome: string;
 }
 
+export interface ProfileSupabase {
+    name: string;
+}
+
 export interface RDOSupabase {
     id: string;
     data: string;
@@ -38,4 +42,6 @@ export interface RDOSupabase {
     // Joined fields
     obras?: ObraSupabase; // Could be null if join fails or optional? Usually object or null.
     documentos?: DocumentoSupabase[];
+    criador?: ProfileSupabase;
+    aprovador?: ProfileSupabase;
 }

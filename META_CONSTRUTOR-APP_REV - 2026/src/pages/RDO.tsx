@@ -17,7 +17,6 @@ import {
 import { RDONewForm } from "@/components/rdo/RDONewForm";
 import { DatePicker } from "@/components/DatePicker";
 import { RDOExpandableCard } from "@/components/RDOExpandableCard";
-import { CreditsDisplay } from "@/components/CreditsDisplay";
 import { useRDOs } from "@/hooks/useRDOs";
 import { useObras } from "@/hooks/useObras";
 import { RDO } from "@/types/rdo";
@@ -34,6 +33,7 @@ import {
 import { useRDODownload } from "@/hooks/useRDODownload";
 import { useReportPdfDownload } from "@/hooks/useReportPdfDownload";
 import { toast } from "sonner";
+import { AnimatedPage } from "@/components/AnimatedPage";
 
 const RDOPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -215,9 +215,9 @@ const RDOPage = () => {
     obraNome: rdo.obras?.nome || 'Obra não encontrada',
     status: rdo.status,
     criadoPorId: rdo.criado_por_id,
-    criadoPorNome: 'Usuário',
+    criadoPorNome: rdo.criador?.name || 'Usuário',
     aprovadoPorId: rdo.approved_by || rdo.aprovado_por_id,
-    aprovadoPorNome: (rdo.approved_by || rdo.aprovado_por_id) ? 'Aprovador' : undefined,
+    aprovadoPorNome: rdo.aprovador?.name || ((rdo.approved_by || rdo.aprovado_por_id) ? 'Aprovador' : undefined),
     dataAprovacao: rdo.approved_at || rdo.data_aprovacao,
     motivoRejeicao: rdo.rejection_reason || rdo.motivo_rejeicao,
     atividadesRealizadas: mapAtividades(rdo.rdo_atividades, false),
@@ -240,7 +240,8 @@ const RDOPage = () => {
   });
 
   return (
-    <div className="responsive-spacing">
+    <AnimatedPage>
+      <div className="responsive-spacing">
       <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
         <div className="min-w-0 flex-1">
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">Relatórios Diários de Obra (RDO)</h1>
@@ -257,7 +258,7 @@ const RDOPage = () => {
             Exportar PDF
           </Button>
           <Button
-            className="gradient-construction border-0 hover:opacity-90 w-full sm:w-auto"
+            className="gradient-construction border-0 active:scale-[0.97] hover:opacity-90 w-full sm:w-auto"
             onClick={() => navigate('/app/rdo/novo')}
           >
             <Plus className="mr-2 h-4 w-4" />
@@ -266,9 +267,7 @@ const RDOPage = () => {
         </div>
       </div>
 
-      <CreditsDisplay />
-
-      <Card className="bg-card border-border">
+      <Card className="bg-card border-border transition-all duration-200 hover:shadow-md">
         <CardHeader>
           <CardTitle className="text-lg text-card-foreground flex items-center">
             <Filter className="mr-2 h-5 w-5" />
@@ -276,7 +275,7 @@ const RDOPage = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-card-foreground">Buscar</label>
               <div className="relative">
@@ -292,13 +291,13 @@ const RDOPage = () => {
             <div className="space-y-2">
               <label className="text-sm font-medium text-card-foreground">Obra</label>
               <Select value={selectedObra} onValueChange={setSelectedObra}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full truncate">
                   <SelectValue placeholder="Todas as obras" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todas as obras</SelectItem>
                   {(obras as any[]).map((obra: any) => (
-                    <SelectItem key={obra.id} value={obra.id}>
+                    <SelectItem key={obra.id} value={obra.id} className="truncate">
                       {obra.nome}
                     </SelectItem>
                   ))}
@@ -368,7 +367,7 @@ const RDOPage = () => {
             </p>
             <div className="mt-6">
               <Button
-                className="gradient-construction border-0 hover:opacity-90"
+                className="gradient-construction border-0 active:scale-[0.97] hover:opacity-90"
                 onClick={() => navigate('/app/rdo/novo')}
               >
                 <Plus className="mr-2 h-4 w-4" />
@@ -413,6 +412,7 @@ const RDOPage = () => {
         </AlertDialogContent>
       </AlertDialog>
     </div >
+    </AnimatedPage>
   );
 };
 

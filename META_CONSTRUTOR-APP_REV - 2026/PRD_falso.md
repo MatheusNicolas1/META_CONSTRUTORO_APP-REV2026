@@ -286,6 +286,8 @@ Este PRD pode ser considerado concluido quando:
 
 **PRD CONCLUIDO em 2026-06-06**: 54 itens processados — 37 Validado real, 10 Removido do app, 4 Bloqueado, 1 Classificado sem exclusao, 1 Legado documentado, 1 Removido do deploy.
 
+**Reaberto em 2026-07-12**: 1 novo achado (FALSO-055, Aberto, P1) em pages-gemini/ — rotas /home2 e /sobre2 com metricas hardcoded.
+
 ## 9. Registro de execucao
 
 - 2026-05-26: Arquivo `PRD_falso.md` criado para guiar a auditoria e conversao de acoes/mockups ficticios em funcionalidades reais.
@@ -396,7 +398,8 @@ Este PRD pode ser considerado concluido quando:
 - 2026-06-06: `FALSO-051` classificado/corrigido: auditoria de workspaces auxiliares na raiz confirmou que `codex-supabase-deploy-payment`, `MetaConstrutor` e `openai-whisper` nao sao chamados por scripts/configs do app e foram bloqueados em `.gitignore` e `.vercelignore` para evitar commit/deploy acidental de ferramenta externa. `prints_layout` foi preservado como material publicitario, sem exclusao e sem ignore, conforme decisao do usuario. Busca focada nao encontrou claims antigos nos textos/manifests auditados; `git check-ignore` confirmou o bloqueio dos tres workspaces tecnicos e que `prints_layout` nao esta ignorado; `npm.cmd run lint` e `npx.cmd tsc -b --clean; npm.cmd run build` passaram.
 - 2026-06-06: `FALSO-052` classificado sem exclusao: auditoria visual de `prints_layout` preservou todos os 28 PNGs publicitarios e gerou contact sheet em `docs/evidence/prd-falso-prints-layout-contact-sheet-2026-06-06.jpg`. O pacote nao exibe claims antigos de `100% Operacional`, `500 construtoras` ou `RDO Automatico` na visao geral, mas o print 13 de integracoes ainda mostra o rotulo antigo `Fluxos suportados`, e os prints de perfil/configuracoes exibem e-mail `.test`, telefone/CNPJ zerados e endereco demonstrativo. `prints_layout/README.md` passou a exigir preservacao dos PNGs e resolucao por recaptura/corte/mascaramento/ajuste de copy antes de veiculacao, sem excluir material publicitario.
 - 2026-06-06: `FALSO-054` classificado como legado documentado: auditoria dos subagentes confirmou que `social_shares` (tabela com 0 registros), `add_credit_for_share` (RPC nunca chamada) e `onShareSuccess` (dead prop) formam um circuito quebrado de creditos sociais. `onShareSuccess` foi removido das interfaces `SocialShareButtonProps` e `SocialShareProps` (codigo morto); `social_shares` e `add_credit_for_share` permanecem no banco como schema historico. `npm.cmd run lint` passou com 31 warnings e 0 erros; `npx.cmd tsc -b --clean; npm.cmd run build` passou com prerender de 22 rotas publicas.
-- 2026-06-06: PRD_falso concluido: 54 itens inventariados e processados desde 2026-05-26.
+|- 2026-06-06: PRD_falso concluido: 54 itens inventariados e processados desde 2026-05-26.
+|- 2026-07-12: Reaberto para nova varredura apos 36 dias. Varredura em `src/` confirmou que o codigo principal permanece limpo. Rotas `pages-gemini` (`/home2`, `/sobre2`) encontradas com numeros hardcoded de marketing (1.500+ obras, 300+ construtoras, 98% satisfacao, 50k+ RDOs) — mesmo padrao do FALSO-036 original. Registrado como FALSO-055 (Aberto, P1). Build, lint e tests continuam passando sem erros.
 
 ## 10. Proxima atividade recomendada
 
@@ -465,4 +468,6 @@ Iniciar pela Etapa 1:
  - [x] Auditar visualmente/manifests do material publicitario preservado em `prints_layout` sem excluir arquivos, confirmando riscos editoriais antes de qualquer publicacao.
  - [x] Auditar referencias de marca/compartilhamento social que ainda prometem "melhor plataforma", conquistas ou progresso percentual sem evidencia contextual, priorizando `ReferralManager`, `AchievementsBadges`, `SocialShareButton` e `expandable-card`.
  - [x] Auditar contrato legado de creditos sociais (`social_shares`, `add_credit_for_share`, `onShareSuccess`) para separar schema/RPC historicos de fluxo ativo real.
-- [x] PRD_falso concluido: 54 itens inventariados (FALSO-001 a FALSO-054), todos processados.
+|- [x] PRD_falso concluido: 54 itens inventariados (FALSO-001 a FALSO-054), todos processados.
+|
+|| FALSO-055 | Marketing - metricas hardcoded em pages-gemini | `src/pages-gemini/Home2.tsx`, `src/pages-gemini/Sobre2.tsx` | Rotas `/home2` e `/sobre2` ativas via lazy loading exibem numeros hardcoded de marketing sem fonte auditavel: "1.500+ obras", "300+ construtoras", "98% satisfacao" (em ambas) e "50k+ RDOs" (apenas em Sobre2/Metrics). Mesmo padrao do FALSO-036 original, ja corrigido nas paginas principais (`/home`, `/sobre`), mas que sobreviveu nas versoes gemini. | P1 - alto, por replicar promessa comercial ficticia em superficies publicas ativas. | Pendente: substituir numeros hardcoded por estimativas viaveis ou remover o trust/metrics strip enquanto nao houver fonte auditavel; ou aplicar mesma correcao do FALSO-036 (remocao de numeros sem origem). Paginas /home2 e /sobre2 estao ativas no roteamento via lazy loading. | Aberto |

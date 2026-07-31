@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChecklistForm } from "@/components/checklist/ChecklistForm";
+import { AnimatedPage } from "@/components/AnimatedPage";
 import { DigitalSignatureComponent } from "@/components/checklist/DigitalSignature";
 import { Checklist as ChecklistType, ChecklistFormData, ChecklistFilters, ChecklistCategory, ChecklistStatus, DigitalSignature } from "@/types/checklist";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -155,11 +156,12 @@ const ChecklistPage = () => {
   }
 
   return (
-    <div className="responsive-spacing">
+    <AnimatedPage>
+      <div className="responsive-spacing">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col space-y-4 sm:flex-row sm:items-start sm:justify-between sm:space-y-0 sm:gap-4">
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground truncate">Gestão de Checklists</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Checklists</h1>
             <p className="text-muted-foreground text-sm md:text-base">
               Gerencie listas de verificação para controle de qualidade e segurança
             </p>
@@ -290,7 +292,7 @@ const ChecklistPage = () => {
 
               <div className="space-y-2">
                 <Label>Período do prazo</Label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <Input
                     type="date"
                     aria-label="Filtro prazo inicial"
@@ -376,7 +378,7 @@ const ChecklistPage = () => {
 
         {/* Checklists Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3">
             <TabsTrigger value="active" className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
               Ativos ({activeChecklists.length})
@@ -478,11 +480,12 @@ const ChecklistPage = () => {
           } : undefined}
           isLoading={createChecklist.isPending || updateChecklist.isPending}
           dialogTitle={editingChecklist ? "Editar Checklist" : "Criar Novo Checklist"}
-          dialogDescription={editingChecklist ? "Atualize dados, responsavel, prazo e itens do checklist" : undefined}
+          dialogDescription={editingChecklist ? "Atualize os dados do checklist" : "Configure o checklist"}
           submitLabel={editingChecklist ? "Salvar Alteracoes" : "Criar Checklist"}
         />
       </div>
     </div>
+    </AnimatedPage>
   );
 };
 
@@ -581,12 +584,12 @@ function ChecklistCard({ checklist, onSign, onDelete, onEdit, canApprove }: Chec
         <Separator />
 
         {/* Actions */}
-        <div className="flex gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             onClick={() => navigate(`/checklist/${checklist.id}`)}
             variant="outline"
             size="sm"
-            className="flex-1"
+            className="flex-1 sm:flex-none"
           >
             Visualizar
           </Button>

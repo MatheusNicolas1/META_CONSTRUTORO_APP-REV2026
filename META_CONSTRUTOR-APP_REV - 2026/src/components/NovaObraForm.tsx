@@ -162,7 +162,7 @@ export const NovaObraForm = ({ isOpen, onClose, obra }: NovaObraFormProps) => {
             {isEditing ? "Editar Obra" : "Cadastrar Nova Obra"}
           </DialogTitle>
           <DialogDescription className="text-xs sm:text-sm text-muted-foreground mt-1">
-            Preencha as informações da nova obra
+            Cadastre os dados da obra
           </DialogDescription>
         </DialogHeader>
 

@@ -51,5 +51,14 @@ export function getOptimizedImageUrl(
   src: string | null | undefined,
   options?: { width?: number; quality?: number }
 ): string | null {
-  return useOptimizedImage(src, options);
+  // Versão direta sem hook — apenas processa a URL
+  if (!src) return null;
+  const width = options?.width || 400;
+  const quality = options?.quality || 80;
+  // Se já é URL do Supabase Storage, adiciona transformações
+  if (src.includes('supabase.co/storage')) {
+    const separator = src.includes('?') ? '&' : '?';
+    return `${src}${separator}width=${width}&quality=${quality}`;
+  }
+  return src;
 }

@@ -6,6 +6,10 @@ import { MemoryRouter } from 'react-router-dom';
 import Login from '@/pages/Login';
 import CriarConta from '@/pages/CriarConta';
 
+vi.mock('@/integrations/analytics', () => ({
+  track: vi.fn(),
+}));
+
 const mocks = vi.hoisted(() => ({
   navigate: vi.fn(),
   signIn: vi.fn(),

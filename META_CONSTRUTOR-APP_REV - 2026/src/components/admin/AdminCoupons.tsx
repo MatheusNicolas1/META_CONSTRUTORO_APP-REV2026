@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Calendar, DollarSign, Percent, Plus, Trash2, TrendingUp, Users } from "lucide-react";
+import { Calendar, DollarSign, Percent, Plus, Trash2, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { Badge } from "@/components/ui/badge";
@@ -17,14 +17,6 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -36,10 +28,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import {
-  matchesAdminTextFilter,
-  useAdminFilters,
-} from "./AdminFilters";
+import { useAdminFilters } from "./AdminFilters";
 import AdminFunnel from "./AdminFunnel";
 
 type CouponForm = {
@@ -91,64 +80,35 @@ const AdminCoupons = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [newCoupon, setNewCoupon] = useState<CouponForm>(emptyCoupon);
   const queryClient = useQueryClient();
-  const { filters, sinceDate } = useAdminFilters();
+  useAdminFilters();
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["admin-campaigns-coupons", sinceDate],
+  const { data: coupons, isLoading, error } = useQuery({
+    queryKey: ["admin-coupons-only"],
     queryFn: async () => {
-      const funnelQuery = supabase
+      const { data: funnelData, error: funnelError } = await supabase
         .from("admin_funnel_daily_view")
         .select("event_date, route_views, interactions, signups, checkout_events, coupon_events, subscription_events, active_users")
         .order("event_date", { ascending: false });
 
-      if (sinceDate) {
-        funnelQuery.gte("event_date", sinceDate.slice(0, 10));
-      }
+      if (funnelError) throw funnelError;
 
-      const [couponsRes, campaignsRes, funnelRes] = await Promise.all([
-        supabase
-          .from("coupons")
-          .select("id, code, discount_type, discount_value, discount_percentage, valid_until, usage_limit, times_used, is_active, created_at, updated_at")
-          .order("created_at", { ascending: false }),
-        supabase
-          .from("admin_campaign_performance_view")
-          .select("utm_source, utm_medium, utm_campaign, ref, total_events, page_views, anonymous_visitors, identified_users, auth_events, billing_events, first_seen_at, last_seen_at"),
-        funnelQuery,
-      ]);
+      const { data: couponsData, error: couponsError } = await supabase
+        .from("coupons")
+        .select("id, code, discount_type, discount_value, discount_percentage, valid_until, usage_limit, times_used, is_active, created_at, updated_at")
+        .order("created_at", { ascending: false });
 
-      if (couponsRes.error) throw couponsRes.error;
-      if (campaignsRes.error) throw campaignsRes.error;
-      if (funnelRes.error) throw funnelRes.error;
+      if (couponsError) throw couponsError;
 
-      return {
-        coupons: couponsRes.data || [],
-        campaigns: campaignsRes.data || [],
-        funnel: funnelRes.data || [],
-      };
+      return { coupons: couponsData || [], funnel: funnelData || [] };
     },
   });
 
-  const coupons = useMemo(() => data?.coupons || [], [data?.coupons]);
-  const filteredCoupons = useMemo(
-    () => coupons.filter((coupon: any) => matchesAdminTextFilter(coupon.code, filters.campaign)),
-    [coupons, filters.campaign],
-  );
+  const couponList = useMemo(() => coupons?.coupons || [], [coupons?.coupons]);
 
-  const campaigns = useMemo(() => {
-    return (data?.campaigns || [])
-      .filter((campaign: any) => {
-        const campaignName = campaign.utm_campaign || campaign.ref || "";
-        return (
-          matchesAdminTextFilter(campaignName, filters.campaign) &&
-          matchesAdminTextFilter(campaign.utm_source, filters.source)
-        );
-      })
-      .sort((a: any, b: any) => Number(b.total_events || 0) - Number(a.total_events || 0));
-  }, [data?.campaigns, filters.campaign, filters.source]);
+  const funnel = useMemo(() => coupons?.funnel || [], [coupons?.funnel]);
 
-  const metrics = useMemo(() => {
-    const funnel = data?.funnel || [];
-    const totals = funnel.reduce(
+  const totals = useMemo(() => {
+    return funnel.reduce(
       (acc: any, row: any) => ({
         routeViews: acc.routeViews + Number(row.route_views || 0),
         signups: acc.signups + Number(row.signups || 0),
@@ -158,28 +118,28 @@ const AdminCoupons = () => {
       }),
       { routeViews: 0, signups: 0, checkoutEvents: 0, couponEvents: 0, subscriptionEvents: 0 },
     );
+  }, [funnel]);
 
-    const couponUses = coupons.reduce((sum: number, coupon: any) => sum + Number(coupon.times_used || 0), 0);
-    const activeCoupons = coupons.filter((coupon: any) => coupon.is_active).length;
-    const campaignEvents = campaigns.reduce((sum: number, campaign: any) => sum + Number(campaign.total_events || 0), 0);
+  const couponUses = useMemo(
+    () => couponList.reduce((sum: number, coupon: any) => sum + Number(coupon.times_used || 0), 0),
+    [couponList],
+  );
 
-    return {
-      ...totals,
-      couponUses,
-      activeCoupons,
-      campaignEvents,
-      checkoutConversion: totals.checkoutEvents ? totals.subscriptionEvents / totals.checkoutEvents : 0,
-      couponShare: totals.checkoutEvents ? totals.couponEvents / totals.checkoutEvents : 0,
-    };
-  }, [campaigns, coupons, data?.funnel]);
+  const activeCoupons = useMemo(
+    () => couponList.filter((coupon: any) => coupon.is_active).length,
+    [couponList],
+  );
+
+  const checkoutConversion = totals.checkoutEvents ? totals.subscriptionEvents / totals.checkoutEvents : 0;
+  const couponShare = totals.checkoutEvents ? totals.couponEvents / totals.checkoutEvents : 0;
 
   const commercialFunnelSteps = useMemo(() => [
-    { label: "Rotas vistas", value: metrics.routeViews, source: "admin_funnel_daily_view.route_views" },
-    { label: "Cadastros", value: metrics.signups, source: "admin_funnel_daily_view.signups" },
-    { label: "Checkout", value: metrics.checkoutEvents, source: "admin_funnel_daily_view.checkout_events" },
-    { label: "Eventos de cupom", value: metrics.couponEvents, source: "admin_funnel_daily_view.coupon_events" },
-    { label: "Assinaturas", value: metrics.subscriptionEvents, source: "admin_funnel_daily_view.subscription_events" },
-  ], [metrics.checkoutEvents, metrics.couponEvents, metrics.routeViews, metrics.signups, metrics.subscriptionEvents]);
+    { label: "Rotas vistas", value: totals.routeViews, source: "admin_funnel_daily_view.route_views" },
+    { label: "Cadastros", value: totals.signups, source: "admin_funnel_daily_view.signups" },
+    { label: "Checkout", value: totals.checkoutEvents, source: "admin_funnel_daily_view.checkout_events" },
+    { label: "Eventos de cupom", value: totals.couponEvents, source: "admin_funnel_daily_view.coupon_events" },
+    { label: "Assinaturas", value: totals.subscriptionEvents, source: "admin_funnel_daily_view.subscription_events" },
+  ], [totals]);
 
   const auditCouponAction = async (action: string, details: Record<string, unknown>) => {
     const { data: authData } = await supabase.auth.getUser();
@@ -219,7 +179,7 @@ const AdminCoupons = () => {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-campaigns-coupons"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-coupons-only"] });
       setIsCreating(false);
       setNewCoupon(emptyCoupon);
       toast.success("Cupom criado com sucesso");
@@ -246,7 +206,7 @@ const AdminCoupons = () => {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-campaigns-coupons"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-coupons-only"] });
       toast.success("Status do cupom atualizado");
     },
     onError: (mutationError) => {
@@ -270,7 +230,7 @@ const AdminCoupons = () => {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-campaigns-coupons"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-coupons-only"] });
       toast.success("Cupom removido com sucesso");
     },
     onError: (mutationError) => {
@@ -291,7 +251,7 @@ const AdminCoupons = () => {
     return (
       <Card>
         <CardContent className="py-12 text-center text-sm text-destructive">
-          Nao foi possivel carregar campanhas e cupons.
+          Nao foi possivel carregar os cupons.
         </CardContent>
       </Card>
     );
@@ -306,8 +266,8 @@ const AdminCoupons = () => {
             <Percent className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">{formatNumber(metrics.activeCoupons)}</p>
-            <p className="text-xs text-muted-foreground">{formatNumber(metrics.couponUses)} usos registrados</p>
+            <p className="text-2xl font-bold">{formatNumber(activeCoupons)}</p>
+            <p className="text-xs text-muted-foreground">{formatNumber(couponUses)} usos registrados</p>
           </CardContent>
         </Card>
         <Card>
@@ -316,8 +276,8 @@ const AdminCoupons = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">{formatNumber(metrics.couponEvents)}</p>
-            <p className="text-xs text-muted-foreground">{formatPercent(metrics.couponShare)} dos checkouts</p>
+            <p className="text-2xl font-bold">{formatNumber(totals.couponEvents)}</p>
+            <p className="text-xs text-muted-foreground">{formatPercent(couponShare)} dos checkouts</p>
           </CardContent>
         </Card>
         <Card>
@@ -326,18 +286,8 @@ const AdminCoupons = () => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">{formatPercent(metrics.checkoutConversion)}</p>
-            <p className="text-xs text-muted-foreground">{formatNumber(metrics.subscriptionEvents)} assinaturas</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Eventos por campanha</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{formatNumber(metrics.campaignEvents)}</p>
-            <p className="text-xs text-muted-foreground">{formatNumber(campaigns.length)} campanhas/ref sources</p>
+            <p className="text-2xl font-bold">{formatPercent(checkoutConversion)}</p>
+            <p className="text-xs text-muted-foreground">{formatNumber(totals.subscriptionEvents)} assinaturas</p>
           </CardContent>
         </Card>
       </div>
@@ -449,53 +399,8 @@ const AdminCoupons = () => {
         </Card>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Campanhas no funil</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {campaigns.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Nenhuma campanha encontrada para os filtros atuais.</p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Campanha</TableHead>
-                  <TableHead>Origem</TableHead>
-                  <TableHead>Eventos</TableHead>
-                  <TableHead>Page views</TableHead>
-                  <TableHead>Usuarios</TableHead>
-                  <TableHead>Billing</TableHead>
-                  <TableHead>Ultimo evento</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {campaigns.slice(0, 12).map((campaign: any) => (
-                  <TableRow key={`${campaign.utm_source}-${campaign.utm_medium}-${campaign.utm_campaign}-${campaign.ref}`}>
-                    <TableCell>
-                      <div>
-                        <p className="font-medium">{campaign.utm_campaign || campaign.ref || "Sem campanha"}</p>
-                        <p className="text-xs text-muted-foreground">{campaign.ref || "sem ref"}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell>{campaign.utm_source || "Direto"} / {campaign.utm_medium || "sem medium"}</TableCell>
-                    <TableCell>{formatNumber(Number(campaign.total_events || 0))}</TableCell>
-                    <TableCell>{formatNumber(Number(campaign.page_views || 0))}</TableCell>
-                    <TableCell>
-                      {formatNumber(Number(campaign.identified_users || 0))} id. / {formatNumber(Number(campaign.anonymous_visitors || 0))} anon.
-                    </TableCell>
-                    <TableCell>{formatNumber(Number(campaign.billing_events || 0))}</TableCell>
-                    <TableCell>{formatDate(campaign.last_seen_at)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
-
       <div className="grid gap-4">
-        {filteredCoupons.map((coupon: any) => (
+        {couponList.map((coupon: any) => (
           <Card key={coupon.id}>
             <CardHeader>
               <div className="flex items-start justify-between gap-4">
@@ -577,7 +482,7 @@ const AdminCoupons = () => {
         ))}
       </div>
 
-      {filteredCoupons.length === 0 && !isCreating && (
+      {couponList.length === 0 && !isCreating && (
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground">Nenhum cupom encontrado para os filtros atuais.</p>

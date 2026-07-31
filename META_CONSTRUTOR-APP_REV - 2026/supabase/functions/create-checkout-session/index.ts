@@ -80,7 +80,7 @@ serve(async (req)=>{
     if (!user1) {
       throw new Error("User not found");
     }
-    const { priceId, plan: plan1, billing: billing1 = "monthly", successUrl, cancelUrl, profile: checkoutProfile = {}, coupon_code } = await req.json();
+    const { priceId, plan: plan1, billing: billing1 = "monthly", successUrl, cancelUrl, profile: checkoutProfile = {}, coupon_code, locale } = await req.json();
     if (!priceId && !plan1) {
       throw new Error("Plan or Price ID is required");
     }
@@ -180,6 +180,7 @@ serve(async (req)=>{
       mode: "subscription",
       success_url: successUrl || `${req.headers.get("origin")}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `${req.headers.get("origin")}/checkout/cancel`,
+      locale: locale || 'auto',
       metadata: {
         user_id: user1.id,
         org_id: orgMember.org_id,
@@ -188,7 +189,7 @@ serve(async (req)=>{
         coupon_code: coupon_code || "",
         coupon_id: appliedCoupon?.id || ""
       },
-      allow_promotion_codes: true
+      allow_promotion_codes: !stripeCouponId
     };
     // Se um cupom foi aplicado, adiciona o discount na sessão
     if (stripeCouponId) {
@@ -197,9 +198,8 @@ serve(async (req)=>{
           coupon: stripeCouponId
         }
       ];
-      // Quando usamos coupon do Stripe, podemos desabilitar allow_promotion_codes
-      // para evitar conflito (usuário tentar 2 códigos)
-      sessionConfig.allow_promotion_codes = false;
+      // Remove allow_promotion_codes quando usamos discounts, pois o Stripe não aceita ambos
+      delete sessionConfig.allow_promotion_codes;
     }
     const session = await stripe.checkout.sessions.create(sessionConfig);
     console.log("Checkout session created successfully:", {
@@ -229,14 +229,7 @@ serve(async (req)=>{
       status: 200
     });
   } catch (error) {
-    console.error("Checkout session creation failed:", {
-      error: error.message,
-      plan,
-      billing,
-      resolvedPriceId,
-      customerId,
-      userId: user?.id
-    });
+    console.error("Checkout session creation failed:", error.message);
     return new Response(JSON.stringify({
       error: error.message
     }), {

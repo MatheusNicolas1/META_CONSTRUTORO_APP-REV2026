@@ -68,6 +68,7 @@ export const ROUTE_PERMISSIONS: RoutePermission[] = [
   // Área de segurança (restrita)
   { path: "/app/seguranca", allowedRoles: ["Administrador", "Gerente"], description: "Dashboard de segurança" },
   { path: "/app/admin/dashboard", allowedRoles: ["Presidente", "Administrador"], allowedEmails: [PLATFORM_PRESIDENT_EMAIL], description: "Painel administrativo" },
+  { path: "/app/admin/audio", allowedRoles: ["Presidente", "Administrador"], allowedEmails: [PLATFORM_PRESIDENT_EMAIL], description: "Gerenciar áudio e resumos" },
 ];
 
 // Permissões específicas de ações

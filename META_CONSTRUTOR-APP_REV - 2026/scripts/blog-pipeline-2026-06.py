@@ -4,6 +4,11 @@ Pipeline contínuo de artigos do blog — suporta renovação automática de tem
 Cada execução verifica qual é o próximo artigo pendente.
 Quando os temas iniciais acabam, retorna sinal para buscar novas tendências.
 
+🧠 Dica: O Hermes carrega a skill headroom-integration-context-compression
+   para comprimir tool outputs de pesquisa (SERP, concorrentes, tendências)
+   antes de montar o prompt do artigo via scripts/headroom_compress.py.
+   Economia típica: 65-72% de tokens no contexto de pesquisa.
+
 Uso:
   python blog-pipeline-2026-06.py status        — mostra fila completa
   python blog-pipeline-2026-06.py progress      — "3/180"

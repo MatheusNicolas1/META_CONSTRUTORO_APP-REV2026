@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
+import { AnimatedPage } from "@/components/AnimatedPage";
 import { AutocompleteInput } from "@/components/ui/autocomplete-input";
 import { EquipeExpandableCard } from "@/components/EquipeExpandableCard";
 import { useEquipesSupabase } from "@/hooks/useEquipesSupabase";
@@ -111,11 +112,12 @@ const Colaboradores = () => {
   };
 
   return (
-    <div className="responsive-spacing">
+    <AnimatedPage>
+      <div className="responsive-spacing">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col space-y-4 sm:flex-row sm:items-start sm:justify-between sm:space-y-0 sm:gap-4">
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground truncate">Gestão de Colaboradores</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground truncate">Colaboradores</h1>
             <p className="text-muted-foreground text-sm md:text-base">Gerencie os colaboradores cadastrados no sistema</p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -132,9 +134,9 @@ const Colaboradores = () => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px] bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-card-foreground">Cadastrar Novo Colaborador</DialogTitle>
+                <DialogTitle className="text-card-foreground">Novo Colaborador</DialogTitle>
                 <DialogDescription>
-                  Adicione um novo colaborador ao sistema
+                  Cadastre os dados do colaborador
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -157,7 +159,7 @@ const Colaboradores = () => {
                     onAddNewOption={() => { }}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="telefone">Telefone</Label>
                     <Input
@@ -285,7 +287,7 @@ const Colaboradores = () => {
               <Label htmlFor="edit-funcao">Função *</Label>
               <AutocompleteInput value={editFormData.funcao} onValueChange={(value) => setEditFormData(prev => ({ ...prev, funcao: value }))} placeholder="Digite ou selecione uma função" options={funcoesDisponiveis} onAddNewOption={() => { }} />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-telefone">Telefone</Label>
                 <Input id="edit-telefone" value={editFormData.telefone} onChange={(e) => setEditFormData(prev => ({ ...prev, telefone: e.target.value }))} />
@@ -326,6 +328,7 @@ const Colaboradores = () => {
         </AlertDialogContent>
       </AlertDialog>
     </div>
+    </AnimatedPage>
   );
 };
 

@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import NumberFlow from "@number-flow/react";
 import { useNavigate } from "react-router-dom";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
+import { track } from "@/integrations/analytics";
 
 interface PricingPlan {
   name: string;
@@ -124,6 +125,7 @@ export function Pricing({
 
   const handleToggle = (checked: boolean) => {
     setIsMonthly(!checked);
+    track('marketing.billing_toggle', { is_yearly: checked, is_monthly: !checked });
   };
 
   return (

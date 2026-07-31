@@ -1,13 +1,16 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, CheckCircle2, Camera } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavigationSafety } from '@/utils/navigationSafety';
 import SEO from '@/components/SEO';
-import { getBlogArticle } from '@/content/blogArticles';
-import { seoBlogArticles, seoPages } from '@/config/seo';
+import { loadBlogArticles } from '@/content/blogArticles';
+import { seoPages } from '@/config/seo';
 import LandingNavigation from '@/components/landing/LandingNavigation';
 import FooterSection from '@/components/landing/FooterSection';
 import { Button } from '@/components/ui/button';
+import { track } from '@/integrations/analytics';
+import type { BlogArticle } from '@/content/blogArticles';
 
 // Track unique article views in localStorage for popularity sort
 function trackArticleView(slug: string) {
@@ -25,12 +28,52 @@ function trackArticleView(slug: string) {
 const BlogArticle = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const article = getBlogArticle(slug);
+  const { i18n } = useTranslation();
+  const [article, setArticle] = useState<BlogArticle | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (slug) trackArticleView(slug);
-  }, [slug]);
+    
+    async function loadArticle() {
+      setLoading(true);
+      const lang = i18n.language || 'pt-BR';
+      const { [lang]: articles } = await loadBlogArticles(lang);
+      const found = articles?.find((a) => a.slug === slug);
+      setArticle(found);
+      setLoading(false);
+      
+      if (slug && found) {
+        trackArticleView(slug);
+        track('blog.article_viewed', {
+          slug: found.slug,
+          title: found.title,
+          category: found.category,
+          reading_time: found.readingTime,
+          keywords: found.keywords.slice(0, 4).join(', '),
+          language: lang,
+        });
+      }
+    }
+    
+    loadArticle();
+  }, [slug, i18n.language]);
+
+  if (loading) {
+    return (
+      <div className="force-light-blog">
+        <LandingNavigation />
+        <main className="min-h-screen bg-background px-4 pb-20 pt-32 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl">
+            <div className="h-8 w-48 animate-pulse rounded bg-muted" />
+            <div className="mt-8 h-12 w-3/4 animate-pulse rounded bg-muted" />
+            <div className="mt-4 h-6 w-full animate-pulse rounded bg-muted" />
+          </div>
+        </main>
+        <FooterSection />
+      </div>
+    );
+  }
 
   if (!article) {
     return (
@@ -44,10 +87,10 @@ const BlogArticle = () => {
               Voltar ao blog
             </button>
             <h1 className="mt-8 text-4xl font-semibold tracking-tight text-foreground">
-              Artigo nao encontrado
+              Artigo n\u00e3o encontrado
             </h1>
             <p className="mt-4 text-muted-foreground">
-              O conteudo solicitado nao esta disponivel.
+              O conte\u00fado solicitado n\u00e3o est\u00e1 dispon\u00edvel neste idioma.
             </p>
           </div>
         </main>
@@ -56,7 +99,25 @@ const BlogArticle = () => {
     );
   }
 
-  const seo = seoBlogArticles[article.slug] ?? seoPages.blog;
+  // SEO dinâmico com base no artigo traduzido
+  const seo = {
+    title: `${article.seoTitle} | Meta Construtor`,
+    description: article.description,
+    path: article.path,
+    image: '/assets/social/blog-2026.png',
+    robots: 'index,follow' as const,
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: article.title,
+        description: article.description,
+        datePublished: article.publishedAt,
+        dateModified: article.updatedAt,
+        author: { '@type': 'Organization', name: 'Meta Construtor' },
+      },
+    ],
+  };
 
   return (
     <div className="force-light-blog">

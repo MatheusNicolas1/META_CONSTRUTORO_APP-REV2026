@@ -1,5 +1,44 @@
-export const rdoTemplateHtml = 
-`<!DOCTYPE html>
+/**
+ * Color map: translates primary_color name to CSS HSL values.
+ * Keys match the options in user_settings.primary_color.
+ */
+export const PRIMARY_COLOR_MAP: Record<string, { hsl: string; hex: string; light: string }> = {
+  orange: { hsl: '14, 80%, 42%', hex: '#C2410C', light: '#FED7AA' },
+  blue:   { hsl: '217, 91%, 60%', hex: '#3B82F6', light: '#DBEAFE' },
+  green:  { hsl: '142, 71%, 45%', hex: '#16A34A', light: '#BBF7D0' },
+  red:    { hsl: '0, 72%, 51%', hex: '#DC2626', light: '#FECACA' },
+};
+
+export const DEFAULT_PRIMARY_COLOR = 'orange';
+
+/**
+ * Returns the hex color for a given primary_color name, or the default.
+ */
+export function getPrimaryHex(colorName?: string | null): string {
+  if (!colorName) return PRIMARY_COLOR_MAP[DEFAULT_PRIMARY_COLOR].hex;
+  return PRIMARY_COLOR_MAP[colorName]?.hex || PRIMARY_COLOR_MAP[DEFAULT_PRIMARY_COLOR].hex;
+}
+
+/**
+ * Returns the HSL string for a given primary_color name, or the default.
+ */
+export function getPrimaryHsl(colorName?: string | null): string {
+  if (!colorName) return PRIMARY_COLOR_MAP[DEFAULT_PRIMARY_COLOR].hsl;
+  return PRIMARY_COLOR_MAP[colorName]?.hsl || PRIMARY_COLOR_MAP[DEFAULT_PRIMARY_COLOR].hsl;
+}
+
+/**
+ * Applies the primary color to a template string by replacing {{primary_color}} and {{primary_color_light}} placeholders.
+ */
+export function applyPrimaryColor(template: string, colorName?: string | null): string {
+  const color = PRIMARY_COLOR_MAP[colorName || DEFAULT_PRIMARY_COLOR] || PRIMARY_COLOR_MAP[DEFAULT_PRIMARY_COLOR];
+  return template
+    .replace(/\{\{primary_color\}\}/g, color.hex)
+    .replace(/\{\{primary_color_light\}\}/g, color.light)
+    .replace(/\{\{primary_color_hsl\}\}/g, color.hsl);
+}
+
+const rdoTemplateHtml = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -14,31 +53,25 @@ export const rdoTemplateHtml =
 
         @page {
             size: A4;
-            margin: 15mm; /* Margens ajustadas para 1.5cm */
-            @bottom-right {
-                content: "P\\00C1GINA " counter(page) " DE " counter(pages) " | GERADO EM {{rdo.data_geracao}}";
-                font-size: 7pt;
-                color: #777;
-            }
+            margin: 15mm 15mm 22mm 15mm;
         }
 
         body {
             font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
             background-color: #f5f5f5;
             color: #333;
-            line-height: 1.3; /* Linha de altura reduzida */
-            font-size: 8.5pt; /* Tamanho de fonte base reduzido */
+            line-height: 1.3;
+            font-size: 8.5pt;
         }
 
         .container {
             background-color: white;
-            /* page-break-after: always; REMOVIDO para permitir fluxo contínuo */
-            padding: 0; /* Removido padding do container, as margens @page cuidam disso */
+            padding: 0;
         }
 
         /* Cabeçalho */
         .header {
-            border-bottom: 2px solid #0066cc;
+            border-bottom: 2px solid {{primary_color}};
             padding: 10px 0 8px 0;
             margin-bottom: 15px;
             display: flex;
@@ -51,22 +84,22 @@ export const rdoTemplateHtml =
         }
 
         .logo {
-            font-size: 16px; /* Fonte do logo reduzida */
+            font-size: 16px;
             font-weight: 700;
-            color: #0066cc;
+            color: {{primary_color}};
             margin-bottom: 3px;
         }
 
         .header-title {
-            font-size: 15pt; /* Fonte do título reduzida */
+            font-size: 15pt;
             font-weight: 700;
-            color: #0066cc;
+            color: {{primary_color}};
             margin-bottom: 5px;
         }
 
         .header-right {
             text-align: right;
-            font-size: 7.5pt; /* Fonte reduzida */
+            font-size: 7.5pt;
         }
 
         .header-info {
@@ -79,30 +112,18 @@ export const rdoTemplateHtml =
             color: #333;
         }
 
-        /* Cabeçalho para páginas subsequentes */
-        .header-on-subsequent-pages {
-            display: none; /* Escondido por padrão */
-            text-align: right;
-            font-size: 9pt;
-            color: #666;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #eee;
-        }
-
         /* Seções */
         .section {
-            margin-bottom: 15px; /* Margem reduzida */
-            /* page-break-inside: avoid; Evita quebra de página dentro da seção */
+            margin-bottom: 15px;
         }
 
         .section-title {
-            font-size: 10.5pt; /* Fonte do título da seção reduzida */
+            font-size: 10.5pt;
             font-weight: 700;
             color: white;
-            background-color: #0066cc;
-            padding: 6px 10px; /* Padding reduzido */
-            margin-bottom: 10px; /* Margem reduzida */
+            background-color: {{primary_color}};
+            padding: 6px 10px;
+            margin-bottom: 10px;
             border-radius: 3px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -112,8 +133,8 @@ export const rdoTemplateHtml =
         .info-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px; /* Espaçamento reduzido */
-            margin-bottom: 8px; /* Margem reduzida */
+            gap: 8px;
+            margin-bottom: 8px;
         }
 
         .info-grid.full {
@@ -122,23 +143,23 @@ export const rdoTemplateHtml =
 
         .info-item {
             border: 1px solid #ddd;
-            padding: 7px; /* Padding reduzido */
+            padding: 7px;
             background-color: #f9f9f9;
             border-radius: 3px;
         }
 
         .info-label {
             font-weight: 600;
-            color: #0066cc;
-            font-size: 7.5pt; /* Fonte reduzida */
+            color: {{primary_color}};
+            font-size: 7.5pt;
             text-transform: uppercase;
-            margin-bottom: 3px; /* Margem reduzida */
+            margin-bottom: 3px;
             display: block;
         }
 
         .info-value {
             color: #333;
-            font-size: 9pt; /* Fonte reduzida */
+            font-size: 9pt;
             word-break: break-word;
         }
 
@@ -157,30 +178,30 @@ export const rdoTemplateHtml =
         }
 
         .climate-icon {
-            font-size: 14px; /* Ícone reduzido */
+            font-size: 14px;
         }
 
         /* Tabelas */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px; /* Margem reduzida */
-            font-size: 8pt; /* Fonte reduzida */
+            margin-bottom: 10px;
+            font-size: 8pt;
         }
 
         table th {
             background-color: #e8e8e8;
             color: #333;
-            padding: 6px; /* Padding reduzido */
+            padding: 6px;
             text-align: left;
             font-weight: 600;
             border: 1px solid #ccc;
             text-transform: uppercase;
-            font-size: 7pt; /* Fonte reduzida */
+            font-size: 7pt;
         }
 
         table td {
-            padding: 6px; /* Padding reduzido */
+            padding: 6px;
             border: 1px solid #ddd;
             color: #333;
         }
@@ -191,10 +212,10 @@ export const rdoTemplateHtml =
 
         .status-badge {
             display: inline-block;
-            padding: 2px 5px; /* Padding reduzido */
+            padding: 2px 5px;
             border-radius: 3px;
             font-weight: 600;
-            font-size: 6.5pt; /* Fonte reduzida */
+            font-size: 6.5pt;
         }
 
         .status-concluida {
@@ -230,9 +251,9 @@ export const rdoTemplateHtml =
         /* Mensagens Vazias */
         .empty-message {
             background-color: #f0f0f0;
-            border-left: 3px solid #0066cc;
-            padding: 8px; /* Padding reduzido */
-            margin-bottom: 10px; /* Margem reduzida */
+            border-left: 3px solid {{primary_color}};
+            padding: 8px;
+            margin-bottom: 10px;
             color: #666;
             font-style: italic;
             border-radius: 3px;
@@ -243,9 +264,9 @@ export const rdoTemplateHtml =
         .observations-box {
             background-color: #f9f9f9;
             border: 1px solid #ddd;
-            padding: 8px; /* Padding reduzido */
+            padding: 8px;
             border-radius: 3px;
-            min-height: 30px; /* Altura mínima reduzida */
+            min-height: 30px;
             white-space: pre-wrap;
             word-wrap: break-word;
             font-size: 9pt;
@@ -262,16 +283,16 @@ export const rdoTemplateHtml =
         .attachment-item {
             display: flex;
             align-items: center;
-            gap: 6px; /* Espaçamento reduzido */
-            padding: 6px; /* Padding reduzido */
+            gap: 6px;
+            padding: 6px;
             border: 1px solid #ddd;
-            margin-bottom: 6px; /* Margem reduzida */
+            margin-bottom: 6px;
             border-radius: 3px;
             background-color: #f9f9f9;
         }
 
         .attachment-icon {
-            font-size: 16px; /* Ícone reduzido */
+            font-size: 16px;
             min-width: 20px;
             text-align: center;
         }
@@ -283,19 +304,19 @@ export const rdoTemplateHtml =
         .attachment-name {
             font-weight: 600;
             color: #333;
-            font-size: 8.5pt; /* Fonte reduzida */
+            font-size: 8.5pt;
         }
 
         .attachment-meta {
-            font-size: 6.5pt; /* Fonte reduzida */
+            font-size: 6.5pt;
             color: #999;
             margin-top: 2px;
         }
 
         .gallery {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* Mais colunas para galeria */
-            gap: 8px; /* Espaçamento reduzido */
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
             margin-bottom: 15px;
         }
 
@@ -305,14 +326,14 @@ export const rdoTemplateHtml =
 
         .gallery-image {
             max-width: 100%;
-            max-height: 70px; /* Altura máxima reduzida */
+            max-height: 70px;
             border: 1px solid #ddd;
             border-radius: 3px;
             margin-bottom: 5px;
         }
 
         .gallery-caption {
-            font-size: 6.5pt; /* Fonte reduzida */
+            font-size: 6.5pt;
             color: #666;
             word-break: break-word;
         }
@@ -330,12 +351,12 @@ export const rdoTemplateHtml =
         }
 
         .identification-field strong {
-            color: #0066cc;
+            color: {{primary_color}};
         }
 
         /* Rodapé */
         .footer {
-            border-top: 2px solid #0066cc;
+            border-top: 2px solid {{primary_color}};
             padding-top: 15px;
             margin-top: 20px;
             display: grid;
@@ -350,7 +371,7 @@ export const rdoTemplateHtml =
         .signature-line {
             border-bottom: 1px solid #333;
             margin-bottom: 8px;
-            height: 30px; /* Altura reduzida */
+            height: 30px;
         }
 
         .signature-label {
@@ -360,67 +381,15 @@ export const rdoTemplateHtml =
             text-transform: uppercase;
         }
 
-        .page-info {
-            position: fixed;
-            bottom: 8mm;
-            right: 15mm;
-            font-size: 7pt;
-            color: #999;
-        }
-
-        /* Impressão */
-        @media print {
-            body {
-                background-color: white;
-            }
-
-            .container {
-                box-shadow: none;
-            }
-
-            .section {
-                page-break-inside: avoid;
-            }
-
-            table {
-                page-break-inside: avoid;
-            }
-
-            /* Controla o cabeçalho para a primeira e demais páginas */
-            .header {
-                display: flex; /* Garante que o cabeçalho completo apareça na primeira página */
-            }
-
-            .header-on-subsequent-pages {
-                display: none; /* Esconde o cabeçalho simplificado na primeira página */
-            }
-
-            @page:first {
-                /* Margens já definidas no @page geral */
-            }
-
-            @page:not(:first) {
-                /* Margens já definidas no @page geral */
-            }
-
-            /* Regra para exibir o cabeçalho simplificado nas páginas subsequentes */
-            .container:not(:first-child) .header-on-subsequent-pages {
-                display: block;
-            }
-
-            .container:not(:first-child) .header {
-                display: none; /* Esconde o cabeçalho completo nas páginas subsequentes */
-            }
-        }
-
+        /* Quebra de página manual */
         .break-page {
             page-break-before: always;
         }
-    </style>
+
 </head>
 <body>
     <div class="container">
-        <!-- Cabeçalho Completo (apenas na primeira página) -->
+        <!-- Cabeçalho -->
         <div class="header">
             <div class="header-left">
                 <div class="logo">MetaConstrutor</div>
@@ -476,8 +445,6 @@ export const rdoTemplateHtml =
                     {{rdo.periodos}}
                 </tbody>
             </table>
-            <!-- Exemplo de seção vazia -->
-            <!-- <div class="empty-message">Nenhum registro nesta seção.</div> -->
         </div>
 
         <!-- SEÇÃO 3: EQUIPES PRESENTES -->
@@ -496,15 +463,13 @@ export const rdoTemplateHtml =
                     {{rdo.equipes}}
                 </tbody>
             </table>
-            <!-- Exemplo de seção vazia -->
-            <!-- <div class="empty-message">Nenhum registro nesta seção.</div> -->
         </div>
 
         <!-- SEÇÃO 4: ATIVIDADES REALIZADAS -->
         <div class="section">
             <div class="section-title">4. Atividades Realizadas</div>
             
-            <h4 style="font-size: 9.5pt; font-weight: 600; color: #0066cc; margin-bottom: 8px;">Atividades Planejadas</h4>
+            <h4 style="font-size: 9.5pt; font-weight: 600; color: {{primary_color}}; margin-bottom: 8px;">Atividades Planejadas</h4>
             <table>
                 <thead>
                     <tr>
@@ -520,7 +485,7 @@ export const rdoTemplateHtml =
                 </tbody>
             </table>
 
-            <h4 style="font-size: 9.5pt; font-weight: 600; color: #0066cc; margin-bottom: 8px; margin-top: 10px;">Atividades Extras</h4>
+            <h4 style="font-size: 9.5pt; font-weight: 600; color: {{primary_color}}; margin-bottom: 8px; margin-top: 10px;">Atividades Extras</h4>
             <table>
                 <thead>
                     <tr>
@@ -534,7 +499,6 @@ export const rdoTemplateHtml =
                     {{rdo.atividades_extras}}
                 </tbody>
             </table>
-            <!-- <div class="empty-message">Nenhum registro nesta seção.</div> -->
         </div>
 
         <!-- SEÇÃO 5: EQUIPAMENTOS UTILIZADOS -->
@@ -554,8 +518,8 @@ export const rdoTemplateHtml =
                     {{rdo.equipamentos}}
                 </tbody>
             </table>
-            <!-- <div class="empty-message">Nenhum registro nesta seção.</div> -->
         </div>
+
         <!-- SEÇÃO 6: PROBLEMAS E OCORRÊNCIAS -->
         <div class="section">
             <div class="section-title">6. Problemas e Ocorrências</div>
@@ -574,7 +538,6 @@ export const rdoTemplateHtml =
                     {{rdo.ocorrencias}}
                 </tbody>
             </table>
-            <!-- <div class="empty-message">Nenhum registro nesta seção.</div> -->
         </div>
 
         <!-- SEÇÃO 7: OBSERVAÇÕES GERAIS -->
@@ -593,28 +556,19 @@ export const rdoTemplateHtml =
             <div class="section-title">8. Anexos</div>
             <p class="attachment-counter">📎 Total de {{anexos.total}} arquivos anexados</p>
             
-            <h4 style="font-size: 9.5pt; font-weight: 600; color: #0066cc; margin-bottom: 8px;">Imagens</h4>
+            <h4 style="font-size: 9.5pt; font-weight: 600; color: {{primary_color}}; margin-bottom: 8px;">Imagens</h4>
             <div class="gallery">
                 {{anexos.imagens}}
             </div>
 
-            <h4 style="font-size: 9.5pt; font-weight: 600; color: #0066cc; margin-bottom: 8px; margin-top: 10px;">Outros Documentos</h4>
+            <h4 style="font-size: 9.5pt; font-weight: 600; color: {{primary_color}}; margin-bottom: 8px; margin-top: 10px;">Outros Documentos</h4>
             {{anexos.documentos}}
-            <!-- <div class="empty-message">Nenhum registro nesta seção.</div> -->
         </div>
 
         <!-- CAMPO APROVADO POR -->
         {{status_aprovacao}}
-        <!-- Exemplo de Aguardando Aprovação -->
-        <!-- <div class="identification-field" style="background-color: #fff8e6; border-color: #ffcc66;">
-            <strong>Status:</strong> Aguardando aprovação
-        </div> -->
-        <!-- Exemplo de Rejeitado -->
-        <!-- <div class="identification-field" style="background-color: #ffe6e6; border-color: #ff9999;">
-            <strong>Status:</strong> Rejeitado - <span style="font-weight: normal;">Documentação incompleta</span>
-        </div> -->
 
-        <!-- Rodapé -->
+        <!-- Assinaturas -->
         <div class="footer">
             <div class="signature-block">
                 <div class="signature-line"></div>
@@ -628,10 +582,9 @@ export const rdoTemplateHtml =
             </div>
         </div>
 
-        <div style="display: none; text-align: center; margin-top: 20px; font-size: 7pt; color: #999; border-top: 1px solid #ddd; padding-top: 10px;">
-            <p>P&Aacute;GINA <span class="page-number"></span> DE <span class="total-pages"></span> | GERADO EM {{rdo.data_geracao}}</p>
-        </div>
     </div>
+
 </body>
-</html>`
-;
+</html>`;
+
+export default rdoTemplateHtml;

@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { requirePlanLimit } from "../_shared/guards.ts";
 
 const jsonResponse = (body: unknown, corsHeaders: Record<string, string>, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -46,6 +47,22 @@ serve(async (req) => {
 
     const admin = createAdminClient();
     const now = new Date().toISOString();
+
+    // First, find the pending invitation to get org_id
+    const { data: pending, error: pendingError } = await admin
+      .from("org_members")
+      .select("org_id")
+      .eq("user_id", user.id)
+      .eq("status", "invited")
+      .maybeSingle();
+
+    if (pendingError || !pending) {
+      return jsonResponse({ error: { code: "NO_INVITE", message: "Nenhum convite pendente encontrado" } }, corsHeaders, 404);
+    }
+
+    // Check plan limit before activating
+    await requirePlanLimit(admin, pending.org_id, "max_users");
+
     const { data, error } = await admin
       .from("org_members")
       .update({

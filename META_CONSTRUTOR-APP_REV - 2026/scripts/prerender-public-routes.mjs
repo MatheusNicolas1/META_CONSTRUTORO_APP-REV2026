@@ -50,12 +50,12 @@ const routes = [
   {
     path: "/preco2",
     title: "Planos e Preços 2 | Meta Construtor",
-    description: "Planos Grátis, Profissional (R$79/mês) e Enterprise (R$299/mês). Economize 20% no plano anual.",
+    description: "Planos Grátis, Básico (R$129,90/mês), Profissional (R$199,90/mês), Master (R$347/mês) e Enterprise sob consulta. Comece grátis hoje.",
   },
   {
     path: "/sobre2",
     title: "Sobre o Meta Construtor 2 | Quem somos e nossa história",
-    description: "Conheça a história, valores e equipe do Meta Construtor. Mais de 1.500 obras gerenciadas.",
+    description: "Conheça a história, valores e equipe do Meta Construtor, plataforma brasileira de gestão de obras.",
   },
   {
     path: "/contato2",

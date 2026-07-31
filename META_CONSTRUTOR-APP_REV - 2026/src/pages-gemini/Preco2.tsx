@@ -26,74 +26,103 @@ const staggerItem = {
 };
 
 // ─── Dados ──────────────────────────────────────────────
+// Fonte de verdade: pricing real em src/pages/Preco.tsx + planLimits.ts (2026-07)
 const PLANS = {
   monthly: [
     {
       name: 'Grátis', price: 'R$ 0',
-      desc: 'Perfeito para testar o app e gerenciar sua primeira obra.',
-      features: ['1 obra ativa', '1 usuário', '7 RDOs/mês', 'Checklists simples', 'Suporte por e-mail'],
-      cta: 'Comece Grátis', popular: false,
+      desc: 'Ideal para começar e testar a plataforma.',
+      features: ['1 obra ativa', '7 RDOs/mês', 'Checklists básicos', '1 usuário', 'Suporte por email'],
+      cta: 'Comece Grátis', popular: false, to: '/criar-conta',
       image: '/marketing/prd-prints-2026-06-04-05-rdo-lista-desktop.webp',
     },
     {
-      name: 'Profissional', price: 'R$ 79',
-      desc: 'Para construtoras que precisam de gestão completa.',
-      features: ['Obras ilimitadas', 'Usuários ilimitados', 'RDO digital completo', 'Checklists inteligentes', 'Relatórios automáticos', 'Dashboard financeiro', 'Suporte prioritário'],
-      cta: 'Assinar Agora', popular: true,
+      name: 'Básico', price: 'R$ 129,90',
+      desc: 'Perfeito para pequenas construtoras.',
+      features: ['Até 3 usuários', 'Armazenamento ilimitado', 'RDO digital completo', 'Relatórios básicos', 'Suporte por email', 'Backup automático'],
+      cta: 'Assinar Básico', popular: false, to: '/checkout?plan=basic',
+      image: '/marketing/prd-prints-2026-06-04-05-rdo-lista-desktop.webp',
+    },
+    {
+      name: 'Profissional', price: 'R$ 199,90',
+      desc: 'Ideal para construtoras em crescimento.',
+      features: ['Até 5 usuários', 'Obras ilimitadas', 'Relatórios avançados', 'Integrações WhatsApp', 'Suporte via chat 24h', 'Dashboard avançado', 'Controle de estoque'],
+      cta: 'Assinar Profissional', popular: true, to: '/checkout?plan=professional',
       image: '/marketing/prd-prints-2026-06-04-28-dashboard-resumo-final-desktop.webp',
     },
     {
-      name: 'Enterprise', price: 'R$ 299',
-      desc: 'Para empresas com necessidades específicas e alto volume.',
-      features: ['Tudo do Profissional', 'Integrações ERP', 'Portal do Cliente', 'API dedicada', 'SLA 99.9%', 'Gerente de contas', 'Treinamento da equipe', 'Customizações'],
-      cta: 'Falar com Vendas', popular: false,
+      name: 'Master', price: 'R$ 347,00',
+      desc: 'Para construtoras estabelecidas.',
+      features: ['Até 15 usuários', 'Obras ilimitadas', 'Tudo do Profissional', 'API personalizada', 'Integração ERP', 'Suporte prioritário (SLA 8h)', 'Treinamento dedicado'],
+      cta: 'Assinar Master', popular: false, to: '/checkout?plan=master',
+      image: '/marketing/prd-prints-2026-06-04-13-integracoes-status-desktop.webp',
+    },
+    {
+      name: 'Enterprise', price: 'Sob consulta',
+      desc: 'Para grandes operações com necessidades específicas.',
+      features: ['Tudo do Master', 'White label (sua marca)', 'Single Sign-On (SSO)', 'SLA garantido 99.9%', 'Treinamento dedicado da equipe', 'On-premise disponível', 'Contrato personalizado'],
+      cta: 'Falar com Vendas', popular: false, to: '/contato',
       image: '/marketing/prd-prints-2026-06-04-13-integracoes-status-desktop.webp',
     },
   ],
   yearly: [
     {
       name: 'Grátis', price: 'R$ 0',
-      desc: 'Perfeito para testar o app e gerenciar sua primeira obra.',
-      features: ['1 obra ativa', '1 usuário', '7 RDOs/mês', 'Checklists simples', 'Suporte por e-mail'],
-      cta: 'Comece Grátis', popular: false,
+      desc: 'Ideal para começar e testar a plataforma.',
+      features: ['1 obra ativa', '7 RDOs/mês', 'Checklists básicos', '1 usuário', 'Suporte por email'],
+      cta: 'Comece Grátis', popular: false, to: '/criar-conta',
       image: '/marketing/prd-prints-2026-06-04-05-rdo-lista-desktop.webp',
     },
     {
-      name: 'Profissional', price: 'R$ 63',
-      desc: 'Para construtoras que precisam de gestão completa.',
-      features: ['Obras ilimitadas', 'Usuários ilimitados', 'RDO digital completo', 'Checklists inteligentes', 'Relatórios automáticos', 'Dashboard financeiro', 'Suporte prioritário'],
-      cta: 'Assinar Agora', popular: true,
+      name: 'Básico', price: 'R$ 103,92',
+      desc: 'Perfeito para pequenas construtoras. Economize 20% no plano anual.',
+      features: ['Até 3 usuários', 'Armazenamento ilimitado', 'RDO digital completo', 'Relatórios básicos', 'Suporte por email', 'Backup automático'],
+      cta: 'Assinar Básico', popular: false, to: '/checkout?plan=basic&billing=yearly',
+      image: '/marketing/prd-prints-2026-06-04-05-rdo-lista-desktop.webp',
+    },
+    {
+      name: 'Profissional', price: 'R$ 159,92',
+      desc: 'Ideal para construtoras em crescimento. Economize 20% no plano anual.',
+      features: ['Até 5 usuários', 'Obras ilimitadas', 'Relatórios avançados', 'Integrações WhatsApp', 'Suporte via chat 24h', 'Dashboard avançado', 'Controle de estoque'],
+      cta: 'Assinar Profissional', popular: true, to: '/checkout?plan=professional&billing=yearly',
       image: '/marketing/prd-prints-2026-06-04-28-dashboard-resumo-final-desktop.webp',
     },
     {
-      name: 'Enterprise', price: 'R$ 239',
-      desc: 'Para empresas com necessidades específicas e alto volume.',
-      features: ['Tudo do Profissional', 'Integrações ERP', 'Portal do Cliente', 'API dedicada', 'SLA 99.9%', 'Gerente de contas', 'Treinamento da equipe', 'Customizações'],
-      cta: 'Falar com Vendas', popular: false,
+      name: 'Master', price: 'R$ 277,60',
+      desc: 'Para construtoras estabelecidas. Economize 20% no plano anual.',
+      features: ['Até 15 usuários', 'Obras ilimitadas', 'Tudo do Profissional', 'API personalizada', 'Integração ERP', 'Suporte prioritário (SLA 8h)', 'Treinamento dedicado'],
+      cta: 'Assinar Master', popular: false, to: '/checkout?plan=master&billing=yearly',
+      image: '/marketing/prd-prints-2026-06-04-13-integracoes-status-desktop.webp',
+    },
+    {
+      name: 'Enterprise', price: 'Sob consulta',
+      desc: 'Para grandes operações com necessidades específicas.',
+      features: ['Tudo do Master', 'White label (sua marca)', 'Single Sign-On (SSO)', 'SLA garantido 99.9%', 'Treinamento dedicado da equipe', 'On-premise disponível', 'Contrato personalizado'],
+      cta: 'Falar com Vendas', popular: false, to: '/contato',
       image: '/marketing/prd-prints-2026-06-04-13-integracoes-status-desktop.webp',
     },
   ],
 };
 
 const COMPARISON_ROWS = [
-  { feature: 'Obras Ativas', free: '1', pro: 'Ilimitadas', enter: 'Ilimitadas' },
-  { feature: 'Usuários', free: '1', pro: 'Ilimitados', enter: 'Ilimitados' },
-  { feature: 'RDO Digital', free: 'Básico', pro: 'Completo', enter: 'Completo' },
-  { feature: 'Checklists', free: 'Simples', pro: 'Inteligentes', enter: 'Inteligentes' },
-  { feature: 'Relatórios', free: '—', pro: 'Automáticos', enter: 'Automáticos' },
-  { feature: 'Dashboard Financeiro', free: '—', pro: '✓', enter: '✓' },
-  { feature: 'Portal do Cliente', free: '—', pro: '—', enter: '✓' },
-  { feature: 'Integrações ERP', free: '—', pro: '—', enter: '✓' },
-  { feature: 'API Dedicada', free: '—', pro: '—', enter: '✓' },
-  { feature: 'Suporte', free: 'E-mail', pro: 'Prioritário', enter: 'Gerente Dedicado' },
-  { feature: 'SLA', free: '—', pro: '99.5%', enter: '99.9%' },
+  { feature: 'Obras ativas', free: '1', basico: '2', profissional: 'Ilimitadas', master: 'Ilimitadas', enterprise: 'Ilimitadas' },
+  { feature: 'Usuários', free: '1', basico: 'Até 3', profissional: 'Até 5', master: 'Até 15', enterprise: 'Ilimitados' },
+  { feature: 'Armazenamento', free: 'Limitado', basico: 'Ilimitado', profissional: 'Ilimitado', master: 'Ilimitado', enterprise: 'Ilimitado' },
+  { feature: 'RDOs', free: '7/mês', basico: '✓', profissional: '✓', master: '✓', enterprise: '✓' },
+  { feature: 'Relatórios', free: '—', basico: 'Básicos', profissional: 'Avançados', master: 'Avançados', enterprise: 'Customizados' },
+  { feature: 'WhatsApp', free: '—', basico: '—', profissional: '✓', master: '✓', enterprise: '✓' },
+  { feature: 'API + Webhooks', free: '—', basico: '—', profissional: '—', master: '✓', enterprise: '✓' },
+  { feature: 'ERP / SAP', free: '—', basico: '—', profissional: '—', master: '✓', enterprise: '✓' },
+  { feature: 'Controle de estoque', free: '—', basico: '—', profissional: '✓', master: '✓', enterprise: '✓' },
+  { feature: 'Suporte', free: 'Email', basico: 'Email', profissional: 'Chat 24h', master: 'Prioritário (SLA 8h)', enterprise: 'Concierge' },
 ];
 
 const FAQ_ITEMS = [
   { q: 'Posso mudar de plano depois?', a: 'Sim! Você pode fazer upgrade ou downgrade a qualquer momento. O valor é proporcional ao período já utilizado.' },
-  { q: 'Como funciona o cancelamento?', a: 'Cancele quando quiser, sem multa. Seu acesso continua até o fim do período já pago.' },
-  { q: 'Quais formas de pagamento?', a: 'Aceitamos cartão de crédito (Visa, Mastercard, Elo), boleto bancário e PIX.' },
-  { q: 'Tem período de teste no plano Profissional?', a: 'Sim! São 7 dias grátis no plano Profissional. Sem compromisso.' },
+  { q: 'Como funciona o cancelamento?', a: 'Cancele quando quiser, sem multa. Seus dados ficam disponíveis para exportação por 30 dias.' },
+  { q: 'Quais formas de pagamento?', a: 'Aceitamos cartão de crédito (Visa, Mastercard, Elo), boleto bancário e PIX. Também emitimos nota fiscal para todos os planos pagos.' },
+  { q: 'O plano Grátis tem limite de RDOs?', a: 'Sim. O plano Grátis oferece 7 RDOs por mês, com reset mensal. Ao atingir o limite, você pode fazer upgrade para um plano pago e continuar sem interrupção.' },
+  { q: 'Como funcionam os preços anuais?', a: 'No plano anual você economiza 20% em relação ao valor mensal. Por exemplo, o Master sai de R$ 347,00 para R$ 277,60 por mês.' },
 ];
 
 // ─── Pricing Card ───────────────────────────────────────
@@ -137,15 +166,19 @@ function PricingCard({ plan, index }: { plan: typeof PLANS.monthly[0]; index: nu
           <span className={`text-4xl font-extrabold font-heading ${plan.popular ? 'text-white' : 'text-brand-blue'}`}>
             {plan.price}
           </span>
-          <span className={`text-sm ml-1 ${plan.popular ? 'text-blue-200' : 'text-neutral-400'}`}>/mês</span>
+          {plan.price !== 'Sob consulta' && (
+            <span className={`text-sm ml-1 ${plan.popular ? 'text-blue-200' : 'text-neutral-400'}`}>/mês</span>
+          )}
         </div>
 
-        <Button className={`w-full mb-5 py-5 rounded-xl font-semibold ${
+        <Button asChild className={`w-full mb-5 py-5 rounded-xl font-semibold ${
           plan.popular
             ? 'bg-[#dc4415] hover:bg-[#c43a10] text-white shadow-lg shadow-[#dc4415]/30'
             : 'bg-brand-blue hover:bg-blue-800 text-white'
         }`}>
-          {plan.cta} {plan.cta !== 'Comece Grátis' && <ArrowRight className="ml-2 w-4 h-4" />}
+          <a href={plan.to}>
+            {plan.cta} {plan.cta !== 'Comece Grátis' && <ArrowRight className="ml-2 w-4 h-4" />}
+          </a>
         </Button>
 
         <ul className="space-y-2.5">
@@ -222,7 +255,7 @@ export default function Preco2() {
       <section className="pb-20 -mt-10 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ToggleSwitch isYearly={isYearly} onChange={() => setIsYearly(!isYearly)} />
-          <motion.div {...staggerContainer} className="grid md:grid-cols-3 gap-6 lg:gap-8 items-start max-w-5xl mx-auto">
+          <motion.div {...staggerContainer} className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 lg:gap-5 items-start max-w-7xl mx-auto">
             {plans.map((plan, i) => (
               <PricingCard key={`${plan.name}-${isYearly}`} plan={plan} index={i} />
             ))}
@@ -268,9 +301,11 @@ export default function Preco2() {
               <thead>
                 <tr className="bg-brand-blue text-white">
                   <th className="text-left px-6 py-4 font-semibold">Funcionalidade</th>
-                  <th className="text-center px-6 py-4 font-semibold">Grátis</th>
-                  <th className="text-center px-6 py-4 font-semibold bg-[#dc4415]">Profissional</th>
-                  <th className="text-center px-6 py-4 font-semibold">Enterprise</th>
+                  <th className="text-center px-4 py-4 font-semibold">Grátis</th>
+                  <th className="text-center px-4 py-4 font-semibold bg-brand-blue/80">Básico</th>
+                  <th className="text-center px-4 py-4 font-semibold bg-[#dc4415]">Profissional</th>
+                  <th className="text-center px-4 py-4 font-semibold bg-brand-blue/80">Master</th>
+                  <th className="text-center px-4 py-4 font-semibold">Enterprise</th>
                 </tr>
               </thead>
               <tbody>
@@ -280,12 +315,14 @@ export default function Preco2() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.04 }}
-                    className={`border-t border-neutral-100 ${i % 2 === 0 ? 'bg-white' : 'bg-neutral-50/50'}`}
+                    className="border-t border-neutral-100"
                   >
                     <td className="px-6 py-4 font-medium text-brand-blue">{row.feature}</td>
-                    <td className="px-6 py-4 text-center text-neutral-500">{row.free}</td>
-                    <td className="px-6 py-4 text-center text-brand-blue font-medium bg-orange-50/50">{row.pro}</td>
-                    <td className="px-6 py-4 text-center text-neutral-500">{row.enter}</td>
+                    <td className="px-4 py-4 text-center text-neutral-500">{row.free}</td>
+                    <td className="px-4 py-4 text-center text-brand-blue font-medium bg-brand-blue/5">{row.basico}</td>
+                    <td className="px-4 py-4 text-center text-brand-blue font-medium bg-orange-50/50">{row.profissional}</td>
+                    <td className="px-4 py-4 text-center text-brand-blue font-medium bg-purple-50/30">{row.master}</td>
+                    <td className="px-4 py-4 text-center text-neutral-500">{row.enterprise}</td>
                   </motion.tr>
                 ))}
               </tbody>

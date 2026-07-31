@@ -20,7 +20,7 @@ No entanto, a auditoria revelou **gaps críticos**:
 | --- | --- |
 | `create-enterprise-checkout` ignora `coupon_code` — cupom nunca chega ao Stripe em planos Enterprise | 🔴 P0 |
 | RPC `increment_coupon_usage` não está nas migrations — pode não existir no banco remoto | 🔴 P0 |
-| `create-subscription` e `change-subscription` não aceitam `discounts` — upgrades/renewals perdem desconto | 🟡 P1 |
+| ~~`create-subscription` e `change-subscription` não aceitam `discounts`~~ — **✅ CORRIGIDO 2026-07-31**: ambas EFs aceitam `coupon_code`, validam cupom e aplicam `discounts` | 🟡 P1 ✅ |
 | Webhook Stripe não processa eventos de coupon/discount | 🟡 P1 |
 | Falta tracking de analytics para `coupon_applied` no frontend | 🟢 P2 |
 | `discount_percentage` é coluna legada — a lógica moderna usa `discount_type` + `discount_value` | 🟢 P3 |
@@ -151,12 +151,16 @@ A interface aceita `coupon_code`, porém:
 
 **🔴 P0 — Qualquer cupom aplicado em plano Enterprise é IGNORADO.**
 
-### 4.5 `create-subscription` e `change-subscription` — sem cupom
+### 4.5 `create-subscription` e `change-subscription` — cupom ✅ (CORRIGIDO 2026-07-31)
 
-- `create-subscription`: suporta `trial_period_days` mas não aceita `discounts` no `stripe.subscriptions.create()`
-- `change-subscription`: altera plano com proration, mas não passa `discounts`
+**Antes** (diagnóstico): nenhuma aceitava `coupon_code` / não passava `discounts`.
 
-**🟡 P1 — Upgrade, downgrade e subscriptions diretas perdem o desconto.**
+**Depois** (correção): ambas as EFs foram alinhadas ao padrão de `create-checkout-session`/`create-enterprise-checkout`:
+
+- `create-subscription`: aceita `coupon_code` opcional → valida contra tabela `coupons` (`validateCoupon`) → cria Stripe Coupon (`ensureStripeCoupon`) → incrementa uso (`incrementCouponUsage`) → aplica **`discounts` no `stripe.subscriptions.create()`**; metadata registra `coupon_code`/`coupon_id`
+- `change-subscription`: mesmo padrão, aplicando **`discounts` no `stripe.subscriptions.update()`** (altera plano preservando desconto)
+
+**✅ Deployado 2026-07-31** no projeto `bgdvlhttyjeuprrfxgun` via `supabase functions deploy --use-api` (server-side bundling, sem Docker local).
 
 ### 4.6 `stripe-webhook` — sem eventos de cupom
 
@@ -291,17 +295,19 @@ $$;
 
 ### 🟡 P1 — Prioridade alta
 
-#### P1.1 — Adicionar cupom a `create-subscription` e `change-subscription`
+#### P1.1 — Adicionar cupom a `create-subscription` e `change-subscription` ✅ (CONCLUÍDO 2026-07-31)
 
 **Problema**: Subscriptions criadas ou alteradas via Edge Functions não aceitam `discounts`.
 
-**Ação**:
-- `create-subscription`: adicionar parâmetro `coupon_code` opcional e lógica de validação + `discounts` no `stripe.subscriptions.create()`
-- `change-subscription`: adicionar parâmetro `coupon_code` opcional e `discounts` no `stripe.subscriptions.update()`
+**Ação** (✅ EXECUTADA e DEPLOYADA):
+- `create-subscription`: parâmetro `coupon_code` opcional adicionado + validação + `discounts` no `stripe.subscriptions.create()` ✅
+- `change-subscription`: parâmetro `coupon_code` opcional adicionado + validação + `discounts` no `stripe.subscriptions.update()` ✅
 
-**Arquivos**:
+**Arquivos modificados**:
 - `supabase/functions/create-subscription/index.ts`
 - `supabase/functions/change-subscription/index.ts`
+
+**Deploy**: ambas via `supabase functions deploy --use-api --project-ref bgdvlhttyjeuprrfxgun` ✅
 
 ---
 
@@ -369,8 +375,8 @@ Adicionar handlers para:
 
 ## 7. Quando retomar esta tarefa
 
-- **P0 imediato**: criar RPC `increment_coupon_usage` e corrigir `create-enterprise-checkout`
-- **P1 seguinte**: adicionar cupom em `create-subscription`, `change-subscription` e webhook
+- **P0 imediato**: criar RPC `increment_coupon_usage` e corrigir `create-enterprise-checkout` *(nota: EF `create-enterprise-checkout` já deployada com cupom; confirmar RPC no banco)*
+- **P1 seguinte**: ~~adicionar cupom em `create-subscription`, `change-subscription`~~ ✅ **FINALIZADO 2026-07-31** — resta apenas **P1.2** (eventos de cupom no webhook `stripe-webhook`)
 - **P2 posterior**: analytics e feedback visual
 - **P3 contínuo**: otimizações e coluna legada
 

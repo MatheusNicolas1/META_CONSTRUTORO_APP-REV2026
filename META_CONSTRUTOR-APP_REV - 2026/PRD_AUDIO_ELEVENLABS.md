@@ -355,6 +355,7 @@ Outros valores a confirmar:
 ### P1 - Banco, storage e contratos
 
 - [ ] Verificar schema remoto Supabase antes de migrations.
+- [ ] RESOLVER DIVERGENCIA DE SCHEMA audio_* (ver secao 17) — registrar aqui quando fechada.
 - [ ] Criar migrations das tabelas `audio_*` (incluindo `audio_costs`).
 - [ ] Criar policies RLS por `org_id`.
 - [ ] Criar bucket privado `audio-files`.
@@ -463,3 +464,56 @@ Atualizar este arquivo quando:
 - Uma decisao sobre provedor TTS for alterada.
 - Uma regressao comprovada ou evidencia nova alterar algum baseline.
 - Um novo template de voz ElevenLabs for aprovado/testado.
+
+## 17. Divergencia de schema audio_* — REGISTRADA 2026-07-31 (pendente de execucao)
+
+### Contexto do registro
+
+Durante a revisao de interface + correcao de erros TS pre-existentes (commit `83b0f73`), foi
+detectada uma **divergencia de schema** nas tabelas `audio_*` do modulo ElevenLabs. O build estava
+passando porque o client Supabase e `SupabaseClient<any>` **nao tipado** e o esbuild **nao faz
+typecheck** — os erros so aparecem em `tsc`. O hook `useAudio.ts` importava tipos de um caminho
+inexistente (`@/types/supabase`), mascarando o problema real: o schema consumido pelo runtime
+diverge do que as migrations versionadas definem.
+
+### Os 3 schemas divergentes
+
+| Fonte | Colunas de voz | Frequencia / agendamento | Opt-in | Resposta ao tocar / formato |
+| --- | --- | --- | --- | --- |
+| **migration** `20260620000000_prd_audio_elevenlabs.sql` | `provider_voice_id` | `schedule_config` (jsonb) | `opt_in_status` | `response_format` |
+| **codigo runtime** (`AdminAudioPage.tsx` + `useAudio.ts`) | `elevenlabs_voice_id` | `cron_schedule` | `is_active` | `language` |
+| **seed** `seed-voice-profiles.sql` | `voice_id`, `gender`, `model_id` | — | — | `settings` (jsonb) |
+
+### O que foi decidido agora (nao fecha a pendencia)
+
+- `useAudio.ts` foi corrigido com **tipos locais alinhados ao schema real consumido pela
+  `AdminAudioPage`** (`cron_schedule`, `elevenlabs_voice_id`, `language`, `is_active`) — isso
+  apenas reflete o que o runtime usa e destrava o `tsc`. **Nao** foi tomado como verdade de banco.
+- **NAO** foi regenerado o `src/integrations/supabase/types.ts` (efeitos colaterais grandes) nem
+  criada nova migration — seria inventar schema sem inspecionar o banco remoto real.
+
+### Impacto aberto
+
+- O schema **real do banco Supabase remoto** ainda nao foi inspecionado. Se o banco segue a
+  migration (`schedule_config`, `provider_voice_id`, `opt_in_status`), o frontend da
+  `AdminAudioPage` **vai tentar ler/gravar colunas que nao existem** e pode falhar em runtime
+  (erro de "column does not exist" ou dados retornando `undefined`).
+- Seed de vozes pode inserir colunas que nem a migration nem o codigo esperam.
+
+### Execucao posterior necessaria (bloqueia P1/P2 do modulo de audio)
+
+1. **Inspecionar schema real** no Supabase (`\d audio_summary_topics`, `\d audio_voice_profiles`,
+   `\d audio_delivery_subscriptions`, e demais `audio_*`) e comparar com a migration
+   `20260620000000`.
+2. **Decidir a fonte de verdade**: alinhar o banco (migration corretiva) OU alinhar o codigo
+   (`AdminAudioPage`/`useAudio`) ao banco — a escolha segue a regra "evidencia mais recente e
+   validada em ambiente real".
+3. **Regenerar `src/integrations/supabase/types.ts`** com `supabase gen types` para que a tabela
+   `audio_*` exista nos tipos; remover poste-riormente os tipos locais do `useAudio.ts` se
+   conveniente.
+4. **Atualizar/seedar `seed-voice-profiles.sql`** para bater com o schema definido.
+5. **Rodar `tsc --noEmit -p tsconfig.app.json`** + smoke autenticado da `AdminAudioPage`
+   (cadastrar assunto, selecionar voz, preview) para validar ponta a ponta.
+6. **Registrar o fechamento** marcando o checkbox da secao P1 acima.
+
+Referencias tecnicas: secoes 7.1 (proposta) e 3 deste PRD para o schema planejado.

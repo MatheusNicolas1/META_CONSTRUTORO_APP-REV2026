@@ -346,22 +346,32 @@ serve(async (req) => {
                     const session = event.data.object as Stripe.Checkout.Session
                     const userId = session.client_reference_id || session.metadata?.user_id
                     const orgId = session.metadata?.org_id
-                    // Cupom: incrementa uso se coupon_id estiver na metadata
+                    // Cupom: o incremento de times_used já acontece em create-checkout-session,
+                    // NA CRIAÇÃO da sessão (linha ~169). Incrementar também aqui no completed
+                    // geraria DUPLA CONTAGEM (cada compra contaria +2). Por isso apenas
+                    // registramos o analytics + log confirmando o uso no pagamento concluído.
+                    // O checkout.session.expired reverte o incremento da criação.
                     const couponId = session.metadata?.coupon_id
                     if (couponId) {
-                        const { error: couponError } = await supabaseAdmin.rpc("increment_coupon_usage", { coupon_id: couponId })
-                        if (couponError) {
-                            logger.error(`Error incrementing coupon usage: ${couponError.message}`, {
-                                request_id: requestId,
-                                function_name: 'stripe-webhook'
-                            }, { coupon_id: couponId, session_id: session.id })
-                        } else {
-                            logger.info(`✓ Coupon usage incremented for coupon ${couponId}`, {
-                                request_id: requestId,
-                                function_name: 'stripe-webhook',
-                                coupon_id: couponId
-                            })
-                        }
+                        await trackServerEvent(supabaseAdmin, {
+                            request_id: requestId,
+                            source: 'backend',
+                            org_id: orgId,
+                            user_id: userId,
+                        }, {
+                            event: 'billing.checkout_completed_with_coupon',
+                            properties: {
+                                coupon_id: couponId,
+                                coupon_code: session.metadata?.coupon_code || null,
+                                session_id: session.id,
+                            },
+                        })
+                        logger.info(`✓ Coupon ${couponId} confirmed on completed checkout (no duplicate increment)`, {
+                            request_id: requestId,
+                            function_name: 'stripe-webhook',
+                            coupon_id: couponId,
+                            session_id: session.id,
+                        })
                     }
 
                     if (!userId || !orgId) {
@@ -579,6 +589,124 @@ serve(async (req) => {
                         request_id: requestId,
                         function_name: 'stripe-webhook'
                     }, { invoice_id: invoice.id })
+                    break
+                }
+
+                case 'checkout.session.expired': {
+                    // Reverte o incremento de times_used do cupom feita no create-checkout-session
+                    // quando a sessão de checkout expira SEM pagamento. Assim times_used reflete o
+                    // nº de sessões realmente pagas/concluídas, sem inflar (double count).
+                    const expSession = event.data.object as Stripe.Checkout.Session
+                    const expCouponId = expSession.metadata?.coupon_id
+                    if (expCouponId) {
+                        const { data: expCoupon, error: expFetchErr } = await supabaseAdmin
+                            .from('coupons')
+                            .select('id, times_used')
+                            .eq('id', expCouponId)
+                            .maybeSingle()
+
+                        if (expFetchErr) {
+                            logger.error(`Expired checkout: error fetching coupon: ${expFetchErr.message}`, {
+                                request_id: requestId,
+                                function_name: 'stripe-webhook',
+                                coupon_id: expCouponId,
+                            })
+                        } else if (expCoupon) {
+                            const newCount = Math.max(0, ((expCoupon.times_used ?? 0) - 1))
+                            const { error: expUpdateErr } = await supabaseAdmin
+                                .from('coupons')
+                                .update({ times_used: newCount })
+                                .eq('id', expCouponId)
+
+                            if (expUpdateErr) {
+                                logger.error(`Expired checkout: error decrementing coupon usage: ${expUpdateErr.message}`, {
+                                    request_id: requestId,
+                                    function_name: 'stripe-webhook',
+                                    coupon_id: expCouponId,
+                                })
+                            } else {
+                                logger.info(`✓ Checkout expired → coupon ${expCouponId} times_used reverteu (0→${newCount})`, {
+                                    request_id: requestId,
+                                    function_name: 'stripe-webhook',
+                                    coupon_id: expCouponId,
+                                    times_used: newCount,
+                                    session_id: expSession.id,
+                                })
+                                await trackServerEvent(supabaseAdmin, {
+                                    request_id: requestId,
+                                    source: 'backend',
+                                    org_id: expSession.metadata?.org_id,
+                                    user_id: expSession.client_reference_id || expSession.metadata?.user_id,
+                                }, {
+                                    event: 'billing.checkout_expired_released_coupon',
+                                    properties: {
+                                        coupon_id: expCouponId,
+                                        coupon_code: expSession.metadata?.coupon_code || null,
+                                        session_id: expSession.id,
+                                    },
+                                })
+                            }
+                        } else {
+                            logger.warn(`Expired checkout: coupon ${expCouponId} not found — nothing to decrement`, {
+                                request_id: requestId,
+                                function_name: 'stripe-webhook',
+                                coupon_id: expCouponId,
+                            })
+                        }
+                    }
+                    break
+                }
+
+                case 'customer.discount.created': {
+                    const discountCr = event.data.object as Stripe.Discount
+                    const custCr = discountCr.customer
+                    await trackServerEvent(supabaseAdmin, {
+                        request_id: requestId,
+                        source: 'backend',
+                        org_id: null,
+                        user_id: Array.isArray(custCr) ? null : (custCr?.id ?? null),
+                    }, {
+                        event: 'billing.customer_discount_created',
+                        properties: {
+                            customer_id: Array.isArray(custCr) ? null : (custCr?.id ?? null),
+                            promotion_code: discountCr.promotion_code?.toString() || null,
+                            coupon_id: discountCr.coupon?.id || null,
+                            percent_off: discountCr.coupon?.percent_off ?? null,
+                            id: discountCr.id,
+                        },
+                    })
+                    logger.info(`customer.discount.created: coupon ${discountCr.coupon?.id || '?'}`, {
+                        request_id: requestId,
+                        function_name: 'stripe-webhook',
+                        customer_id: Array.isArray(custCr) ? null : (custCr?.id ?? null),
+                        coupon_id: discountCr.coupon?.id || null,
+                    })
+                    break
+                }
+
+                case 'customer.discount.deleted': {
+                    const discountDel = event.data.object as Stripe.Discount
+                    const custDel = discountDel.customer
+                    await trackServerEvent(supabaseAdmin, {
+                        request_id: requestId,
+                        source: 'backend',
+                        org_id: null,
+                        user_id: Array.isArray(custDel) ? null : (custDel?.id ?? null),
+                    }, {
+                        event: 'billing.customer_discount_deleted',
+                        properties: {
+                            customer_id: Array.isArray(custDel) ? null : (custDel?.id ?? null),
+                            promotion_code: discountDel.promotion_code?.toString() || null,
+                            coupon_id: discountDel.coupon?.id || null,
+                            id: discountDel.id,
+                        },
+                    })
+                    logger.info(`customer.discount.deleted: coupon ${discountDel.coupon?.id || '?'}`, {
+                        request_id: requestId,
+                        function_name: 'stripe-webhook',
+                        customer_id: Array.isArray(custDel) ? null : (custDel?.id ?? null),
+                        coupon_id: discountDel.coupon?.id || null,
+                    })
                     break
                 }
 

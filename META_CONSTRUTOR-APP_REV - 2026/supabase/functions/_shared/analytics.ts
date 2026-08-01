@@ -8,6 +8,7 @@ interface AnalyticsContext {
     user_id?: string | null;
     role?: string | null;
     request_id: string; // Required for traceability
+    source?: string;    // Ex: 'backend' — já usado nas calls do stripe-webhook
 }
 
 interface AnalyticsEvent {

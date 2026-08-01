@@ -172,12 +172,12 @@ Eventos processados atualmente:
 - `invoice.payment_failed` ✅
 
 Eventos NÃO processados:
-- `customer.discount.created` ❌
-- `customer.discount.updated` ❌
-- `customer.discount.deleted` ❌
-- `checkout.session.expired` ❌ (reverter times_used)
+- `customer.discount.created` ✅ (2026-07-31) — analytics `billing.customer_discount_created`
+- `customer.discount.updated` ⚪ (não exigido no P1.2 — não afeta `times_used` local)
+- `customer.discount.deleted` ✅ (2026-07-31) — analytics `billing.customer_discount_deleted`
+- `checkout.session.expired` ✅ (2026-07-31) — reverte `times_used` do cupom
 
-**🟡 P1 — O webhook não reage a mudanças de desconto, podendo dessincronizar `times_used`.**
+**🟡 P1 — O webhook não reage a mudanças de desconto, podendo dessincronizar `times_used`.** → **CORRIGIDO 2026-07-31** (ver P1.2)
 
 ### 4.7 RPC `increment_coupon_usage` — ausente das migrations
 
@@ -311,17 +311,25 @@ $$;
 
 ---
 
-#### P1.2 — Adicionar eventos de cupom no webhook Stripe
+#### P1.2 — Adicionar eventos de cupom no webhook Stripe ✅ (CONCLUÍDO 2026-08-01)
 
 **Problema**: Webhook não processa eventos de discount, podendo dessincronizar estado.
 
 **Ação**:
 Adicionar handlers para:
-- `checkout.session.expired` → reverter `times_used` do cupom (decrementar)
-- `customer.discount.created` → registrar em analytics
-- `customer.discount.deleted` → registrar em analytics
+- `checkout.session.expired` → reverter `times_used` do cupom (decrementar) ✅
+- `customer.discount.created` → registrar em analytics ✅
+- `customer.discount.deleted` → registrar em analytics ✅
 
 **Arquivo**: `supabase/functions/stripe-webhook/index.ts`
+
+**Nota de design (causa raiz)**: ao analisar o fluxo descobriu-se que `times_used` era **incrementado 2× por compra** — uma vez no `create-checkout-session` (na criação da sessão) e outra no `checkout.session.completed`. Isso inflava `times_used` (super-contagem → cupom podia esgotar cedo). Correção:
+- **`checkout.session.completed`** deixou de incrementar (removido o `increment_coupon_usage` duplicado); passou a só registrar analytics `billing.checkout_completed_with_coupon`. O incremento real fica no `create-checkout-session`.
+- **`checkout.session.expired`** passa a **decrementar** `times_used` (reverte o incremento da criação quando a sessão expira sem pagamento). Implementado via **PostgREST read-modify-write** (`select` → `update` com `Math.max(0, times_used - 1)`) sobre a tabela `coupons` — **sem depender de RPC** `decrement_coupon_usage` (a RPC não pôde ser aplicada no remoto por falta de senha/PAT; segue como migration local `20260801000000_decrement_coupon_usage.sql` para aplicação futura via SQL Editor, e o código não a exige).
+- **`customer.discount.created/deleted`** registram analytics `billing.customer_discount_created/deleted`.
+- `AnalyticsContext` ganhou `source?: string` (já usado nas calls existentes, faltava no type).
+
+**Verificação**: deploy `stripe-webhook` via `supabase functions deploy --use-api` (2026-08-01).
 
 ---
 

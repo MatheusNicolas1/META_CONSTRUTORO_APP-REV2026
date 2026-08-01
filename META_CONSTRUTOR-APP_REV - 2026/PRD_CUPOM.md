@@ -375,7 +375,7 @@ Adicionar handlers para:
 
 ## 7. Quando retomar esta tarefa
 
-- **P0 imediato**: criar RPC `increment_coupon_usage` e corrigir `create-enterprise-checkout` *(nota: EF `create-enterprise-checkout` já deployada com cupom; confirmar RPC no banco)*
+- **P0 imediato**: criar RPC `increment_coupon_usage` e corrigir `create-enterprise-checkout` *(nota: **CONFIRMADO 2026-07-31** no remoto `bgdvlhttyjeuprrfxgun`: RPC `increment_coupon_usage` invocada via postgREST → 200/204 (existe); EF `create-enterprise-checkout` deployada com cupom; tabela `coupons` íntegra com 12 colunas)*
 - **P1 seguinte**: ~~adicionar cupom em `create-subscription`, `change-subscription`~~ ✅ **FINALIZADO 2026-07-31** — resta apenas **P1.2** (eventos de cupom no webhook `stripe-webhook`)
 - **P2 posterior**: analytics e feedback visual
 - **P3 contínuo**: otimizações e coluna legada

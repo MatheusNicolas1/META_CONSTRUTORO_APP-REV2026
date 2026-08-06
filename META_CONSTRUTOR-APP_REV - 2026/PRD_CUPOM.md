@@ -335,13 +335,15 @@ Adicionar handlers para:
 
 ### 🟢 P2 — Prioridade média
 
-#### P2.1 — Tracking de analytics para cupom
+#### P2.1 — Tracking de analytics para cupom ✅ (CONCLUÍDO 2026-08-01)
 
 **Problema**: Nenhum evento de analytics é disparado quando cupom é aplicado.
 
 **Ação**:
-- Adicionar `analytics_events.insert({ event: 'marketing.coupon_applied', properties: { coupon_code, discount_type, discount_value, plan } })` na EF após validação bem-sucedida
-- Adicionar `marketing.coupon_rejected` quando cupom é rejeitado (com motivo)
+- Adicionar `analytics_events.insert({ event: 'marketing.coupon_applied', properties: { coupon_code, discount_type, discount_value, plan } })` na EF após validação bem-sucedida ✅ — `create-checkout-session` registra `marketing.coupon_applied` via `trackServerEvent` após validar/aplicar o cupom
+- Adicionar `marketing.coupon_rejected` quando cupom é rejeitado (com motivo) ✅ — `create-checkout-session` registra `marketing.coupon_rejected` (success=false, reason=msg de validação: inválido/inativo/expirado/esgotado) e relança o erro p/ resposta 400
+
+**Verificação**: deploy `create-checkout-session` via `supabase functions deploy --use-api` (2026-08-01).
 
 ---
 

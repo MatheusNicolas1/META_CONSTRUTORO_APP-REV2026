@@ -3,6 +3,7 @@ import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { createAdminClient, createScopedClient } from "../_shared/supabase-client.ts";
 import { cleanText, ensureBillingUserFoundation, saveStripeCustomerId } from "../_shared/billing-user-foundation.ts";
+import { trackServerEvent } from "../_shared/analytics.ts";
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
   apiVersion: "2023-10-16",
   httpClient: Stripe.createFetchHttpClient()
@@ -74,6 +75,7 @@ serve(async (req)=>{
     });
   }
   try {
+    const requestId = (req.headers.get("x-request-id") || crypto.randomUUID()).slice(0, 36);
     const supabaseClient = createScopedClient(req);
     const supabaseAdmin = createAdminClient();
     const { data: { user: user1 } } = await supabaseClient.auth.getUser();
@@ -162,11 +164,37 @@ serve(async (req)=>{
     let stripeCouponId = null;
     let appliedCoupon = null;
     if (coupon_code && coupon_code.trim()) {
-      appliedCoupon = await validateCoupon(supabaseAdmin, coupon_code);
-      // Cria um Stripe Coupon com base no cupom do banco de dados
-      stripeCouponId = await ensureStripeCoupon(stripe, appliedCoupon, resolvedPriceId1);
-      // Incrementa o contador de uso do cupom
-      await incrementCouponUsage(supabaseAdmin, appliedCoupon.id);
+      try {
+        appliedCoupon = await validateCoupon(supabaseAdmin, coupon_code);
+        // Cria um Stripe Coupon com base no cupom do banco de dados
+        stripeCouponId = await ensureStripeCoupon(stripe, appliedCoupon, resolvedPriceId1);
+        // Incrementa o contador de uso do cupom
+        await incrementCouponUsage(supabaseAdmin, appliedCoupon.id);
+        // P2.1 — Analytics: cupom aplicado com sucesso
+        await trackServerEvent(supabaseAdmin, { request_id: requestId, source: 'backend', org_id: orgMember.org_id, user_id: user1.id }, {
+          event: 'marketing.coupon_applied',
+          properties: {
+            coupon_code: appliedCoupon.code,
+            discount_type: appliedCoupon.discount_type,
+            discount_value: appliedCoupon.discount_value,
+            plan: plan1
+          }
+        });
+      } catch (couponError) {
+        // P2.1 — Analytics: cupom rejeitado (com motivo específico da validação)
+        await trackServerEvent(supabaseAdmin, { request_id: requestId, source: 'backend', org_id: orgMember.org_id, user_id: user1.id }, {
+          event: 'marketing.coupon_rejected',
+          success: false,
+          error: couponError.message,
+          properties: {
+            coupon_code: coupon_code.trim(),
+            plan: plan1,
+            reason: couponError.message
+          }
+        });
+        // Relança para o catch global responder 400 com a mensagem de erro
+        throw couponError;
+      }
     }
     // Criar a sessão de checkout com ou sem cupom
     const sessionConfig = {

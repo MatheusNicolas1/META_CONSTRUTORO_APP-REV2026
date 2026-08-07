@@ -347,14 +347,14 @@ Adicionar handlers para:
 
 ---
 
-#### P2.2 — Feedback visual de erro no frontend
+#### P2.2 — Feedback visual de erro no frontend ✅ (CONCLUÍDO 2026-08-01)
 
 **Problema**: Erro de cupom inválido só aparece após submit, sem feedback visual inline.
 
 **Ação**:
-- Adicionar estado de loading/enquanto valida
-- Exibir toast ou mensagem inline para: cupom inválido, expirado, esgotado
-- Validar formato antes de enviar à EF (regex: alfanumérico, 3-20 chars)
+- ✅ Adicionar estado de loading/enquanto valida (coberto pelo spinner do submit, que inclui a validação do cupom na EF; sem endpoint separado de validação)
+- ✅ Exibir toast ou mensagem inline para: cupom inválido, expirado, esgotado (mapeamentos específicos em `getCheckoutErrorFeedback` p/ as msgs reais da EF)
+- ✅ Validar formato antes de enviar à EF (regex: alfanumérico, 3-20 chars) (`FormMessage` inline no campo)
 
 ---
 

@@ -32,4 +32,33 @@ describe("getCheckoutErrorFeedback", () => {
       variant: "destructive",
     });
   });
+
+  it("maps an invalid coupon to a specific message", () => {
+    expect(getCheckoutErrorFeedback(new Error("Cupom inválido ou não encontrado."))).toEqual({
+      title: "Cupom invalido",
+      description: "O cupom informado nao foi reconhecido. Confira o codigo ou remova-o e continue sem desconto.",
+      variant: "destructive",
+    });
+  });
+
+  it("maps an expired coupon to a specific message", () => {
+    expect(getCheckoutErrorFeedback(new Error("Este cupom expirou."))).toMatchObject({
+      title: "Cupom expirado",
+      variant: "destructive",
+    });
+  });
+
+  it("maps a maxed-out coupon to a specific message", () => {
+    expect(getCheckoutErrorFeedback(new Error("Este cupom já atingiu o limite de usos."))).toMatchObject({
+      title: "Cupom esgotado",
+      variant: "destructive",
+    });
+  });
+
+  it("maps a deactivated coupon to a specific message", () => {
+    expect(getCheckoutErrorFeedback(new Error("Este cupom não está mais ativo."))).toMatchObject({
+      title: "Cupom inativo",
+      variant: "destructive",
+    });
+  });
 });

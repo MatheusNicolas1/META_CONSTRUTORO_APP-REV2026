@@ -17,7 +17,11 @@ const formSchema = z.object({
     phone: z.string().min(10, "Telefone inválido").optional().or(z.literal("")),
     password: z.string().min(8, "Senha deve ter pelo menos 8 caracteres").optional().or(z.literal("")),
     confirmPassword: z.string().optional().or(z.literal("")),
-    coupon_code: z.string().optional().or(z.literal("")),
+    coupon_code: z
+        .string()
+        .trim()
+        .transform(v => (v === "" ? "" : v))
+        .refine(v => v === "" || /^[A-Za-z0-9]{3,20}$/.test(v), "Cupom deve ter 3-20 caracteres alfanumericos"),
 });
 
 export type CheckoutFormData = z.infer<typeof formSchema>;

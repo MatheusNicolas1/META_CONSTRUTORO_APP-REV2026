@@ -83,6 +83,35 @@ export const getCheckoutErrorFeedback = (error: unknown): CheckoutErrorFeedback 
     };
   }
 
+  if (message.includes("cupom") || message.includes("coupon")) {
+    if (message.includes("expir")) {
+      return {
+        title: "Cupom expirado",
+        description: "Este cupom nao e mais valido. Verifique a data ou remova e continue sem cupom.",
+        variant: "destructive",
+      };
+    }
+    if (message.includes("limite de usos") || message.includes("usage limit") || message.includes("max redemptions")) {
+      return {
+        title: "Cupom esgotado",
+        description: "Este cupom ja atingiu o limite de usos e nao pode ser aplicado.",
+        variant: "destructive",
+      };
+    }
+    if (message.includes("ativo") || message.includes("inativo")) {
+      return {
+        title: "Cupom inativo",
+        description: "Este cupom esta desativado. Remova-o ou use outro codigo para continuar.",
+        variant: "destructive",
+      };
+    }
+    return {
+      title: "Cupom invalido",
+      description: "O cupom informado nao foi reconhecido. Confira o codigo ou remova-o e continue sem desconto.",
+      variant: "destructive",
+    };
+  }
+
   return {
     title: "Nao foi possivel continuar",
     description: "Revise os dados informados e tente novamente. Se o problema persistir, fale com o suporte.",

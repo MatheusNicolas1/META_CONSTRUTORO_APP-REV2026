@@ -95,19 +95,16 @@ export const useRDOAgenda = () => {
     useQuery({
       queryKey: ['rdos', 'agenda', 'nicho', orgId, data, slug],
       queryFn: async (): Promise<ResumoNicho> => {
-        const { data: result, error } = await supabase.functions.invoke(
-          'resumo-diario-nicho',
+        const { data: result, error } = await supabase.rpc(
+          'resumo_diario_nicho',
           {
-            body: {
-              org_id: orgId,
-              data,
-              nicho_slug: slug,
-            },
+            p_org_id: orgId,
+            p_data: data,
+            p_nicho_slug: slug,
           },
         );
 
         if (error) throw error;
-        if (result?.error) throw new Error(result.error.message || 'Erro ao gerar resumo do nicho');
 
         return result as ResumoNicho;
       },
@@ -119,18 +116,15 @@ export const useRDOAgenda = () => {
     useQuery({
       queryKey: ['rdos', 'agenda', 'geral', orgId, data],
       queryFn: async (): Promise<ResumoGeral> => {
-        const { data: result, error } = await supabase.functions.invoke(
-          'resumo-diario-geral',
+        const { data: result, error } = await supabase.rpc(
+          'resumo_diario_geral',
           {
-            body: {
-              org_id: orgId,
-              data,
-            },
+            p_org_id: orgId,
+            p_data: data,
           },
         );
 
         if (error) throw error;
-        if (result?.error) throw new Error(result.error.message || 'Erro ao gerar resumo geral');
 
         return result as ResumoGeral;
       },

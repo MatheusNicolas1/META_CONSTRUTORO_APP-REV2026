@@ -21,6 +21,7 @@ import {
   School,
   ChevronUp,
   ChevronDown,
+  Trash2,
 } from "lucide-react";
 import {
   Card,
@@ -55,6 +56,8 @@ interface ObraCardProps {
   atividades: number;
   equipes?: Array<{ name: string; image?: string }>;
   tarefasRecentes?: Array<{ title: string; completed: boolean }>;
+  onDelete?: () => void;
+  isDeleting?: boolean;
 }
 
 export function ObraExpandableCard({
@@ -71,6 +74,8 @@ export function ObraExpandableCard({
   atividades,
   equipes = [],
   tarefasRecentes = [],
+  onDelete,
+  isDeleting = false,
 }: ObraCardProps) {
   const { isExpanded, toggleExpand, animatedHeight } = useExpandable();
   const contentRef = useRef<HTMLDivElement>(null);
@@ -293,6 +298,22 @@ export function ObraExpandableCard({
               />
             </div>
           </div>
+
+          {onDelete && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full h-8 text-xs font-medium text-destructive hover:text-destructive hover:bg-destructive/10"
+              disabled={isDeleting}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+            >
+              <Trash2 className="h-3 w-3 mr-1.5" />
+              {isDeleting ? "Movendo..." : "Mover para Lixeira"}
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

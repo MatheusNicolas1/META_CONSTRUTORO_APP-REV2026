@@ -12,12 +12,23 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { AnimatedPage } from "@/components/AnimatedPage";
 import { EmptyState } from "@/components/EmptyState";
 import { SkeletonCard } from "@/components/SkeletonCard";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { motion } from "framer-motion";
 
 const Obras = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { obras, isLoading, error, refetch } = useObras();
+  const [obraToDelete, setObraToDelete] = useState<{ id: string; nome: string } | null>(null);
+  const { obras, isLoading, error, refetch, deleteObra } = useObras();
   const { obra: obraPerms, isLoading: isPermsLoading, obrasCount } = usePermissions();
 
   const filteredObras = obras.filter(obra =>
@@ -48,6 +59,13 @@ const Obras = () => {
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-BR');
+  };
+
+  const handleConfirmDelete = () => {
+    if (!obraToDelete) return;
+    deleteObra.mutate(obraToDelete.id, {
+      onSettled: () => setObraToDelete(null),
+    });
   };
 
   if (isLoading || isPermsLoading) {
@@ -138,6 +156,8 @@ const Obras = () => {
               atividades={obra.atividades?.[0]?.count || 0}
               equipes={[]} // Atualmente as equipes são relacionadas, não incluídas direto na obra
               tarefasRecentes={[]} // Tarefas seriam buscadas separadamente
+              onDelete={() => setObraToDelete({ id: obra.id, nome: obra.nome || "Obra sem nome" })}
+              isDeleting={deleteObra.isPending && deleteObra.variables === obra.id}
             />
           ))}
         </div>
@@ -155,6 +175,27 @@ const Obras = () => {
           isOpen={isDialogOpen}
           onClose={() => setIsDialogOpen(false)}
         />
+
+        <AlertDialog open={!!obraToDelete} onOpenChange={(open) => !open && setObraToDelete(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Mover obra para a Lixeira?</AlertDialogTitle>
+              <AlertDialogDescription>
+                A obra <span className="font-medium">{obraToDelete?.nome}</span> sera movida para a Lixeira.
+                Voce podera restaurar por ate 30 dias antes da exclusao definitiva.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleConfirmDelete}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Mover para Lixeira
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
     </AnimatedPage>

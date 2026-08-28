@@ -32,7 +32,7 @@ async function validateCoupon(supabaseAdmin: any, code: string) {
  */
 async function ensureStripeCoupon(stripe: any, coupon: any) {
   if (coupon.discount_type === "percent") {
-    const percent = coupon.discount_value || coupon.discount_percentage || 0;
+    const percent = Math.min(100, Math.max(0, Math.floor((Number(coupon.discount_value || coupon.discount_percentage || 0)) * 100) / 100));
     const stripeCoupon = await stripe.coupons.create({
       name: `Cupom ${coupon.code} (${percent}% OFF)`,
       percent_off: percent,

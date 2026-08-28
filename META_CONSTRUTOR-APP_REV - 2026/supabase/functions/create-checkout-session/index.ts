@@ -27,7 +27,11 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
   // Se for percentual, usamos o sistema nativo de promoção com allow_promotion_codes
   // Se for fixo, criamos um Stripe Coupon que será aplicado como discount no line_item
   if (coupon.discount_type === "percent") {
-    const percent = coupon.discount_value || coupon.discount_percentage || 0;
+    // Stripe percent_off aceita no MAXI 2 casas decimais e 0..100.
+    // Garantir que o valor esteja bem-formado antes de criar o coupon
+    // (ex: 99.999999 no banco quebrava a Stripe session com
+    //  "Invalid decimal: 99.999999; must contain at maximum two decimal places").
+    const percent = Math.min(100, Math.max(0, Math.floor((Number(coupon.discount_value || coupon.discount_percentage || 0)) * 100) / 100));
     // Usar Stripe Coupon para aplicar % diretamente
     const stripeCoupon = await stripe.coupons.create({
       name: `Cupom ${coupon.code} (${percent}% OFF)`,

@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
+import { NumberTicker } from '@/components/ui/number-ticker';
 import {
   Dialog,
   DialogContent,
@@ -293,8 +294,18 @@ const RDOAgendaPage = () => {
               <p className="text-sm font-semibold capitalize text-foreground">
                 {formatDateFull(selectedDate)}
               </p>
-              <p className="text-xs text-muted-foreground">
-                {resumo ? `${resumo.total_rdos} RDO${resumo.total_rdos !== 1 ? 's' : ''} · ${resumo.total_nichos} nicho${resumo.total_nichos !== 1 ? 's' : ''}` : 'Carregando...'}
+              <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                {resumo ? (
+                  <>
+                    <NumberTicker value={resumo.total_rdos} className="font-semibold text-foreground" />
+                    <span>{resumo.total_rdos !== 1 ? 'RDOs' : 'RDO'}</span>
+                    <span>·</span>
+                    <NumberTicker value={resumo.total_nichos} className="font-semibold text-foreground" />
+                    <span>{resumo.total_nichos !== 1 ? 'nichos' : 'nicho'}</span>
+                  </>
+                ) : (
+                  'Carregando...'
+                )}
               </p>
             </div>
 

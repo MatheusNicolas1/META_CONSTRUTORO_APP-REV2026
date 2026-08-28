@@ -1,0 +1,60 @@
+name: Prevenção FALSO (claims sem fonte)
+
+# PREVENÇÃO do padrão FALSO-036 → FALSO-055 → FALSO-056 (PRD_falso.md):
+# claims numéricas / social-proof hardcoded sem fonte auditável.
+#
+# - Job "lint": sinalização (npm run lint — a regra é WARNING, nunca error).
+# - Job "no-unsourced-claims": BLOQUEIO (node scripts/check-unsourced-claims.mjs),
+#   falha o CI quando uma claim numérica/social-proof sem fonte reaparece em src/.
+
+on:
+  push:
+    paths:
+      - "META_CONSTRUTOR-APP_REV - 2026/src/**"
+      - "META_CONSTRUTOR-APP_REV - 2026/scripts/**"
+      - "META_CONSTRUTOR-APP_REV - 2026/eslint.config.js"
+      - "META_CONSTRUTOR-APP_REV - 2026/package.json"
+      - "META_CONSTRUTOR-APP_REV - 2026/package-lock.json"
+      - ".github/workflows/falso-prevention.yml"
+  pull_request:
+    paths:
+      - "META_CONSTRUTOR-APP_REV - 2026/src/**"
+      - "META_CONSTRUTOR-APP_REV - 2026/scripts/**"
+      - "META_CONSTRUTOR-APP_REV - 2026/eslint.config.js"
+      - "META_CONSTRUTOR-APP_REV - 2026/package.json"
+      - "META_CONSTRUTOR-APP_REV - 2026/package-lock.json"
+      - ".github/workflows/falso-prevention.yml"
+
+jobs:
+  lint:
+    name: Lint (sinalização — regra como WARNING)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "META_CONSTRUTOR-APP_REV - 2026"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: "META_CONSTRUTOR-APP_REV - 2026/package-lock.json"
+      - run: npm ci
+      - run: npm run lint
+
+  no-unsourced-claims:
+    name: Bloqueio de claims numéricas/social-proof sem fonte
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "META_CONSTRUTOR-APP_REV - 2026"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: "META_CONSTRUTOR-APP_REV - 2026/package-lock.json"
+      - run: npm ci
+      - name: Check claims sem fonte (FALSO-036/055/056)
+        run: node scripts/check-unsourced-claims.mjs

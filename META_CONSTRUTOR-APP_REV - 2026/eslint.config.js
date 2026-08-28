@@ -3,6 +3,7 @@ import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
+import metaConstrutor from "./scripts/eslint-plugin-no-unsourced-claims.mjs";
 
 export default tseslint.config(
   {
@@ -30,9 +31,14 @@ export default tseslint.config(
     plugins: {
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
+      "meta-construtor": metaConstrutor,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      // PREVENÇÃO FALSO-036/055/056: claims numéricas/social-proof sem fonte.
+      // SEMPRE "warn" — nunca "error" (o bloqueio acontece no CI via
+      // scripts/check-unsourced-claims.mjs, não no lint padrão).
+      "meta-construtor/no-unsourced-claims": "warn",
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },

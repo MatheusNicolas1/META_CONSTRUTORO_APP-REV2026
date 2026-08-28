@@ -10,6 +10,7 @@ import { seoPages } from '@/config/seo';
 import { supabase } from "@/integrations/supabase/client";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { getGoogleOAuthRedirectUrl } from "@/utils/authRedirect";
+import { track } from "@/integrations/analytics";
 
 
 
@@ -53,9 +54,12 @@ const Login = () => {
         return;
       }
 
+      track('auth.login_started', { method: 'password' });
+
       await signIn(emailOrPhone, password, redirectTo);
 
       // V7: Não armazenamos email em localStorage (segurança)
+      track('auth.login_succeeded', { method: 'password' });
 
       toast({
         title: "Login realizado com sucesso!",
@@ -65,6 +69,7 @@ const Login = () => {
       // Redirecionamento é tratado no AuthContext
 
     } catch (error: unknown) {
+      track('auth.login_failed', { method: 'password' });
       // Erro já é tratado no AuthContext com toast
       // Mas precisamos garantir que isLoading seja resetado
       if (error instanceof Error && error.message.includes('Failed to fetch')) {
@@ -81,6 +86,7 @@ const Login = () => {
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
+    track('auth.login_started', { method: 'google' });
 
     try {
       const { error } = await supabase.auth.signInWithOAuth({

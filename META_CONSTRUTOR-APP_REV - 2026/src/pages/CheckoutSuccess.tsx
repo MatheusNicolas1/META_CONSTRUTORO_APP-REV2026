@@ -7,6 +7,7 @@ import SEO from '@/components/SEO';
 import LandingNavigation from '@/components/landing/LandingNavigation';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { track } from '@/integrations/analytics';
 
 type VerificationStatus = 'checking' | 'confirmed' | 'pending' | 'error';
 
@@ -120,6 +121,7 @@ const CheckoutSuccess = () => {
           if (verifiedSubscription) {
             setSubscription(verifiedSubscription);
             setStatus('confirmed');
+            track('billing.checkout_completed', { plan: verifiedSubscription.planName, status: verifiedSubscription.status });
             return;
           }
 

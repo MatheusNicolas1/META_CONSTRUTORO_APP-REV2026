@@ -118,7 +118,10 @@ const Checkout = () => {
 
   const handleDetailsSubmit = async (data: CheckoutFormData) => {
     setIsLoading(true);
-    track('billing.checkout_submitted', { plan: planKey, billing: billingCycle, is_authenticated: isAuthenticated });
+    track('billing.checkout_started', { plan: planKey, billing: billingCycle, is_authenticated: isAuthenticated });
+    if (data.coupon_code) {
+      track('marketing.coupon_applied', { coupon_code: data.coupon_code, plan: planKey, billing: billingCycle });
+    }
     try {
       if (isAuthenticated && user) {
         await supabase.from('profiles').update({
@@ -176,6 +179,7 @@ const Checkout = () => {
       }
 
       // 1. Sign Up
+      track('auth.signup_started', { method: 'email_password', context: 'checkout' });
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
         password,
@@ -203,6 +207,8 @@ const Checkout = () => {
       if (!authData.session) {
         throw new Error("Conta criada. Confirme seu e-mail e faca login para continuar o pagamento.");
       }
+
+      track('auth.signup_completed', { method: 'email_password', context: 'checkout' });
 
       // 2. Free Plan
       if (planKey === 'free') {

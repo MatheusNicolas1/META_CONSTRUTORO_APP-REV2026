@@ -15,6 +15,7 @@ const CriarConta = () => {
   const { signUp, isLoading } = useSignUp();
 
   const handleSignUp = async (data: { name: string; email: string; phone: string; password: string; confirmPassword: string }) => {
+    track('auth.signup_started', { method: 'email_password' });
     const success = await signUp(data);
 
     if (success) {

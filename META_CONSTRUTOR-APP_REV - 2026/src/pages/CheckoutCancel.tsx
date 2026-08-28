@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { XCircle, ArrowLeft, RefreshCw, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,7 @@ import SEO from '@/components/SEO';
 import LandingNavigation from '@/components/landing/LandingNavigation';
 import { useAuth } from '@/components/auth/AuthContext';
 import { NavigationSafety } from '@/utils/navigationSafety';
+import { track } from '@/integrations/analytics';
 
 const CheckoutCancel = () => {
   const navigate = useNavigate();
@@ -26,6 +27,10 @@ const CheckoutCancel = () => {
   };
 
   const planName = planNames[planKey as keyof typeof planNames] || 'BÁSICO';
+
+  useEffect(() => {
+    track('billing.checkout_cancelled', { plan: planKey, billing: billingCycle });
+  }, [planKey, billingCycle]);
 
   const handleRetryCheckout = () => {
     navigate(`/checkout?plan=${encodeURIComponent(planKey)}&billing=${billingCycle}`);

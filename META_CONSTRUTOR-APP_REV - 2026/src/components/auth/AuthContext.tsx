@@ -258,6 +258,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (data.session) {
+        // MFA real (TOTP): se o usuario possui fator TOTP verificado, exige a
+        // segunda etapa antes de liberar o acesso. Sem fator cadastrado (ou com
+        // MFA indisponivel no projeto), o login segue o fluxo padrao.
+        try {
+          const { data: mfaFactors, error: mfaError } = await supabase.auth.mfa.listFactors();
+          const hasVerifiedTotp = !mfaError && (mfaFactors?.totp ?? []).some((factor) => factor.status === "verified");
+          if (hasVerifiedTotp) {
+            sessionStorage.setItem("mfa_pending_email", email);
+            navigate("/mfa", { replace: true });
+            return;
+          }
+        } catch {
+          // MFA indisponivel: segue o fluxo de login padrao sem bloquear o usuario.
+        }
+
         toast.success("Login realizado com sucesso!");
         const safeRedirect = redirectTo?.startsWith("/") && !redirectTo.startsWith("//")
           ? redirectTo

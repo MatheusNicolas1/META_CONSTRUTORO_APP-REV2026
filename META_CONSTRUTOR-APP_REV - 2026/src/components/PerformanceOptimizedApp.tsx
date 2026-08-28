@@ -534,7 +534,7 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/redefinir-senha" element={<PublicRoute><RedefinirSenha /></PublicRoute>} />
                       <Route path="/criar-conta" element={<PublicRoute><CriarConta /></PublicRoute>} />
                       <Route path="/auth/callback" element={<SafeSuspense><AuthCallback /></SafeSuspense>} />
-                      <Route path="/mfa" element={<PublicRoute><MFA /></PublicRoute>} />
+                      <Route path="/mfa" element={<PublicRoute allowAuthenticated><MFA /></PublicRoute>} />
                       <Route path="/renovar-sessao" element={<RenovarSessao />} />
                       <Route path="/sobre" element={<SafeSuspense fallback={null}><Sobre /></SafeSuspense>} />
                       <Route path="/contato" element={<SafeSuspense fallback={null}><Contato /></SafeSuspense>} />

@@ -7,12 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NavigationSafety } from '@/utils/navigationSafety';
+import { supabase } from "@/integrations/supabase/client";
 
 const MFA = () => {
   const navigate = useNavigate();
   const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!/^\d{6}$/.test(code)) {
@@ -20,7 +22,38 @@ const MFA = () => {
       return;
     }
 
-    toast.info("MFA de login ainda nao esta disponivel neste ambiente.");
+    setLoading(true);
+    try {
+      // MFA real via Supabase (TOTP). A verificacao so acontece se o usuario
+      // tiver um fator TOTP "verified" cadastrado; caso contrario o fluxo
+      // permanece honesto e indisponivel, sem sucesso falso.
+      const { data: factors, error: factorsError } = await supabase.auth.mfa.listFactors();
+      const totpFactor = factors?.totp?.find((factor) => factor.status === "verified");
+
+      if (factorsError || !totpFactor) {
+        toast.info("MFA de login ainda nao esta disponivel neste ambiente.");
+        return;
+      }
+
+      const { data: challenge, error: challengeError } = await supabase.auth.mfa.challenge({
+        factorId: totpFactor.id,
+      });
+      if (challengeError) throw challengeError;
+
+      const { error: verifyError } = await supabase.auth.mfa.verify({
+        factorId: totpFactor.id,
+        challengeId: challenge.id,
+        code,
+      });
+      if (verifyError) throw verifyError;
+
+      toast.success("Verificacao em duas etapas concluida.");
+      NavigationSafety.safeNavigate(navigate, '/app/dashboard');
+    } catch {
+      toast.error("Codigo invalido ou expirado. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -35,7 +68,7 @@ const MFA = () => {
           </div>
           <CardTitle className="text-2xl">Verificacao em duas etapas</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Este fluxo esta preparado na interface, mas a validacao real de MFA ainda nao esta ativa.
+            Informe o codigo de 6 digitos gerado pelo seu aplicativo autenticador.
           </p>
         </CardHeader>
         <CardContent>
@@ -51,7 +84,9 @@ const MFA = () => {
                 required
               />
             </div>
-            <Button type="submit" className="w-full">Verificar</Button>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Verificando..." : "Verificar"}
+            </Button>
             <Button variant="ghost" className="w-full" onClick={() => NavigationSafety.safeNavigate(navigate, '/login')}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Voltar ao login

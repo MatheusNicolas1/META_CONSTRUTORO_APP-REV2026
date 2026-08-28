@@ -129,7 +129,7 @@ DECLARE
 BEGIN
     -- Busca ou cria a agenda do dia para a org do RDO
     INSERT INTO public.rdo_agendas (org_id, data, criado_por_id)
-    VALUES (NEW.org_id, NEW.data, NEW.user_id)
+    VALUES (NEW.org_id, NEW.data, NEW.criado_por_id)
     ON CONFLICT (org_id, data) DO NOTHING;
 
     SELECT id INTO v_agenda_id

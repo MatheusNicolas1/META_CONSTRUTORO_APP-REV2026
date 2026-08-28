@@ -7424,7 +7424,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
           'Oracle Primavera P6: Planejamento enterprise, múltiplas obras simultâneas, EPC, Earned Value. Licença ~US$ 3.000/ano. Grandes construtoras e obras públicas.',
           'Trello: Kanban simples, colunas de atividade, arrastar e soltar. Grátis (Gratuito) / US$ 10/mês (Business). Pequenas obras, reformas, equipes enxutas.',
           'Asana: Gantt, timelines, automação de tarefas, integrações via API. US$ 10,99/mês por usuário. Médias construtoras com equipes multidisciplinares.',
-          'Meta Construtor: Cronograma integrado com RDO digital, medição automática, PCMAT e dashboard em tempo real. A partir de R$ 99/mês. Construtoras de todos os portes que buscam integração total.',
+          'Meta Construtor: Cronograma integrado com RDO digital, medição automática, PCMAT e dashboard em tempo real. A partir de R$ 129,90/mês. Construtoras de todos os portes que buscam integração total.',
           'Google Sheets / Excel: Planilha manual, sem automação. Grátis / incluso no Office. Obras muito pequenas ou início de planejamento, mas não escala.',
         ],
       },
@@ -7483,7 +7483,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
       {
         question: 'Qual a melhor ferramenta de cronograma de obra digital para pequenas construtoras?',
         answer:
-          'Para pequenas construtoras, Trello (grátis) ou Meta Construtor (a partir de R$ 99/mês) são as melhores opções. O Trello é simples e visual; o Meta Construtor já integra cronograma com RDO e medição.',
+          'Para pequenas construtoras, Trello (grátis) ou Meta Construtor (a partir de R$ 129,90/mês) são as melhores opções. O Trello é simples e visual; o Meta Construtor já integra cronograma com RDO e medição.',
       },
       {
         question: 'PERT/CPM ainda é usado na construção civil em 2026?',

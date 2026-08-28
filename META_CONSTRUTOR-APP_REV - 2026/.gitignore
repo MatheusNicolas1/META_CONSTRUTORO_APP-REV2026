@@ -69,6 +69,11 @@ codex-supabase-deploy-payment/
 MetaConstrutor/
 openai-whisper/
 
+# Research scrapes and agent caches
+.firecrawl/
+.hermes/
+codex-tmp/
+
 .env*.local
 
 # App Android

@@ -2073,7 +2073,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
   },
   {
     slug: 'almoxarifado-de-obra-organizacao',
-    path: 'almoxarifado-de-obra-organizacao',
+    path: '/blog/almoxarifado-de-obra-organizacao',
     title: 'Almoxarifado de Obra: como organizar, controlar estoque e reduzir perdas',
     seoTitle: 'Almoxarifado de Obra: Guia Completo de Organização e Controle de Estoque',
     description:
@@ -2170,7 +2170,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
   },
   {
     slug: 'cronograma-de-obra-caixa-economica',
-    path: 'cronograma-de-obra-caixa-economica',
+    path: '/blog/cronograma-de-obra-caixa-economica',
     title: 'Cronograma de Obra para Caixa Econômica: como elaborar passo a passo',
     seoTitle: 'Cronograma de Obra para Caixa Econômica: Guia Passo a Passo 2026',
     description:

@@ -197,11 +197,7 @@ const Blog = () => {
                       <Link
                         key={article.slug}
                         to={article.path}
-                        className={`group block border border-border bg-background p-5 transition-all hover:border-primary/40 hover:shadow-sm ${
-                          isPopular && !searchQuery
-                            ? 'border-l-4 border-l-amber-500'
-                            : ''
-                        }`}
+                        className="group block border border-border bg-background p-5 transition-colors hover:border-primary/40 hover:shadow-sm"
                       >
                         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                           <div className="min-w-0 flex-1">

@@ -74,6 +74,11 @@ openai-whisper/
 .hermes/
 codex-tmp/
 
+# Throwaway/debug scripts (não versionar)
+__*.py
+__*.mjs
+_nul
+
 .env*.local
 
 # App Android

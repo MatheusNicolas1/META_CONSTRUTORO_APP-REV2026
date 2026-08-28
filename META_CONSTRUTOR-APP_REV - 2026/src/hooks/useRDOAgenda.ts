@@ -3,6 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useRequireOrg } from '@/hooks/requireOrg';
 import type { RDOAgenda, ResumoNicho, ResumoGeral } from '@/types/rdo';
+import { agruparRDOsPorNicho, SLUG_SEM_NICHO } from '@/utils/rdoAgrupamento';
+import type { RDOAgrupavel, NichoAgrupavel } from '@/utils/rdoAgrupamento';
 
 interface UpdateAgendaData {
   id: string;
@@ -49,27 +51,35 @@ export const useRDOAgenda = () => {
           throw agendaError;
         }
 
-        // 2. Buscar RDOs daquele dia, com dados do nicho
+        // 2. Buscar nichos da organização (ordem de exibição)
+        const { data: nichos, error: nichosError } = await supabase
+          .from('rdo_nichos')
+          .select('id, slug, nome, cor, icone')
+          .eq('org_id', orgId)
+          .order('ordem', { ascending: true });
+
+        if (nichosError) throw nichosError;
+
+        // 3. Buscar RDOs daquele dia (inclui RDOs sem nicho)
         const { data: rdos, error: rdosError } = await supabase
           .from('rdos')
-          .select(`
-            *,
-            rdo_nichos!inner(id, nome, slug, cor, icone)
-          `)
+          .select('*')
           .eq('org_id', orgId)
           .eq('data', data)
-          .not('nicho_id', 'is', null)
           .order('created_at', { ascending: true });
 
         if (rdosError) throw rdosError;
 
-        // 3. Agrupar RDOs por nicho
+        // 4. Agrupar RDOs por nicho (utilidade pura testada)
+        const grupos = agruparRDOsPorNicho(
+          (rdos || []) as RDOAgrupavel[],
+          (nichos || []) as NichoAgrupavel[],
+        );
+
         const rdosPorNicho: Record<string, unknown[]> = {};
-        for (const rdo of rdos || []) {
-          const nicho = (rdo as Record<string, unknown>).rdo_nichos as Record<string, unknown> | null;
-          const chave = nicho?.slug as string || 'sem-nicho';
-          if (!rdosPorNicho[chave]) rdosPorNicho[chave] = [];
-          rdosPorNicho[chave].push(rdo);
+        for (const grupo of grupos) {
+          const chave = grupo.nicho?.slug ?? SLUG_SEM_NICHO;
+          rdosPorNicho[chave] = grupo.rdos as unknown[];
         }
 
         return {

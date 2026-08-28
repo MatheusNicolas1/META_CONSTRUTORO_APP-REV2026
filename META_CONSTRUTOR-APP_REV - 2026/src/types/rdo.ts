@@ -22,6 +22,7 @@ export interface RDO {
   // Campos de controle e aprovação
   status: RDOStatus;
   numero?: number;
+  nichoId?: string; // id do nicho (rdo_nichos) — agrupamento por dia/nicho
   criadoPorId: string;
   criadoPorNome: string;
   aprovadoPorId?: string;

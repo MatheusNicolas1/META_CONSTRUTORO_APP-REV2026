@@ -30,9 +30,11 @@ import {
     CalendarDays,
     Timer,
     ChevronRight,
+    Folder,
 } from "lucide-react";
 import { rdoSchema, RDOFormData } from "@/schemas/rdoSchema";
 import { RDOFormHeader } from "@/components/rdo/RDOFormHeader";
+import { RDONichoSelect } from "@/components/rdo/RDONichoSelect";
 import { RDOWorkPeriodSection } from "@/components/rdo/RDOWorkPeriodSection";
 import { RDOTeamSection } from "@/components/rdo/RDOTeamSection";
 import { RDOActivitiesSection } from "@/components/rdo/RDOActivitiesSection";
@@ -63,6 +65,7 @@ const RDONovoPage = () => {
             clima: "",
             equipeOciosa: false,
             tempoOcioso: 0,
+            nichoId: "",
             atividadesRealizadas: [],
             atividadesExtras: [],
             equipesPresentes: [],
@@ -79,6 +82,7 @@ const RDONovoPage = () => {
 
     const sections = [
         { label: "Informações Básicas", filled: !!(watched.obraId && watched.data && watched.clima) },
+        { label: "Nicho", filled: !!watched.nichoId },
         { label: "Período", filled: true },
         { label: "Equipes", filled: (watched.equipesPresentes?.length ?? 0) > 0 },
         { label: "Atividades", filled: (watched.atividadesRealizadas?.length ?? 0) > 0 },
@@ -120,6 +124,7 @@ const RDONovoPage = () => {
                 clima: data.clima,
                 equipeOciosa: data.equipeOciosa,
                 tempoOcioso: data.equipeOciosa ? data.tempoOcioso : undefined,
+                nichoId: data.nichoId || undefined,
                 atividadesRealizadas: data.atividadesRealizadas as any,
                 atividadesExtras: data.atividadesExtras as any,
                 equipesPresentes: data.equipesPresentes as any,
@@ -204,32 +209,42 @@ const RDONovoPage = () => {
                                 <SectionHeader n={1} label="Informações Básicas" icon={<CalendarDays className="h-4 w-4" />} filled={sections[0].filled} />
                                 <RDOFormHeader form={form} />
 
-                                {/* 2 — Período de Trabalho */}
-                                <SectionHeader n={2} label="Período de Trabalho" icon={<Timer className="h-4 w-4" />} filled={sections[1].filled} />
+                                {/* 2 — Nicho do RDO */}
+                                <SectionHeader n={2} label="Nicho do RDO" icon={<Folder className="h-4 w-4" />} filled={sections[1].filled} />
+                                <div className="rounded-xl border border-border bg-card p-4 space-y-2">
+                                    <label className="text-sm font-medium text-card-foreground">Nicho do RDO</label>
+                                    <RDONichoSelect
+                                        value={watched.nichoId}
+                                        onChange={(value) => form.setValue('nichoId', value, { shouldValidate: true })}
+                                    />
+                                </div>
+
+                                {/* 3 — Período de Trabalho */}
+                                <SectionHeader n={3} label="Período de Trabalho" icon={<Timer className="h-4 w-4" />} filled={sections[2].filled} />
                                 <RDOWorkPeriodSection form={form} />
 
-                                {/* 3 — Equipes Presentes */}
-                                <SectionHeader n={3} label="Equipes Presentes" icon={<Users className="h-4 w-4" />} filled={sections[2].filled} />
+                                {/* 4 — Equipes Presentes */}
+                                <SectionHeader n={4} label="Equipes Presentes" icon={<Users className="h-4 w-4" />} filled={sections[3].filled} />
                                 <RDOTeamSection form={form} />
 
-                                {/* 4 — Atividades Realizadas */}
-                                <SectionHeader n={4} label="Atividades Realizadas" icon={<FileText className="h-4 w-4" />} filled={sections[3].filled} />
+                                {/* 5 — Atividades Realizadas */}
+                                <SectionHeader n={5} label="Atividades Realizadas" icon={<FileText className="h-4 w-4" />} filled={sections[4].filled} />
                                 <RDOActivitiesSection form={form} />
 
-                                {/* 5 — Equipamentos */}
-                                <SectionHeader n={5} label="Equipamentos" icon={<Wrench className="h-4 w-4" />} filled={sections[4].filled} />
+                                {/* 6 — Equipamentos */}
+                                <SectionHeader n={6} label="Equipamentos" icon={<Wrench className="h-4 w-4" />} filled={sections[5].filled} />
                                 <RDOEquipmentSection form={form} />
 
-                                {/* 6 — Problemas & Ocorrências */}
-                                <SectionHeader n={6} label="Problemas & Ocorrências" icon={<AlertTriangle className="h-4 w-4" />} filled={sections[5].filled} />
+                                {/* 7 — Problemas & Ocorrências */}
+                                <SectionHeader n={7} label="Problemas & Ocorrências" icon={<AlertTriangle className="h-4 w-4" />} filled={sections[6].filled} />
                                 <RDOIssuesSection form={form} />
 
-                                {/* 7 — Observações */}
-                                <SectionHeader n={7} label="Observações Gerais" icon={<MessageSquare className="h-4 w-4" />} filled={sections[6].filled} />
+                                {/* 8 — Observações */}
+                                <SectionHeader n={8} label="Observações Gerais" icon={<MessageSquare className="h-4 w-4" />} filled={sections[7].filled} />
                                 <RDOObservationsSection form={form} />
 
-                                {/* 8 — Anexos */}
-                                <SectionHeader n={8} label="Anexos" icon={<Paperclip className="h-4 w-4" />} filled={sections[7].filled} />
+                                {/* 9 — Anexos */}
+                                <SectionHeader n={9} label="Anexos" icon={<Paperclip className="h-4 w-4" />} filled={sections[8].filled} />
                                 <RDOAttachmentsSection form={form} />
 
                                 {/* Botões mobile/tablet — visível abaixo de lg */}

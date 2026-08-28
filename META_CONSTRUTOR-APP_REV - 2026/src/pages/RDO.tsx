@@ -214,6 +214,7 @@ const RDOPage = () => {
     obraId: rdo.obra_id,
     obraNome: rdo.obras?.nome || 'Obra não encontrada',
     status: rdo.status,
+    nichoId: rdo.nicho_id,
     criadoPorId: rdo.criado_por_id,
     criadoPorNome: rdo.criador?.name || 'Usuário',
     aprovadoPorId: rdo.approved_by || rdo.aprovado_por_id,

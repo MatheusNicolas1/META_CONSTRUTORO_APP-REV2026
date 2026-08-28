@@ -181,6 +181,7 @@ export const useRDOs = () => {
         criado_por_id: user.id,
         org_id: orgId,
         status: 'DRAFT',
+        nicho_id: baseData.nichoId || null,
         tempo_ocioso: baseData.equipeOciosa ? baseData.tempoOcioso ?? 0 : null,
         detalhes: detalhes
       };
@@ -401,6 +402,7 @@ export const useRDOs = () => {
         updatePayload.tempo_ocioso = baseData.equipeOciosa ? baseData.tempoOcioso ?? 0 : null;
       }
       if (baseData.observacoes !== undefined) updatePayload.observacoes = baseData.observacoes;
+      if (baseData.nichoId !== undefined) updatePayload.nicho_id = baseData.nichoId || null;
 
       // Clean undefined
       Object.keys(updatePayload).forEach(key => updatePayload[key] === undefined && delete updatePayload[key]);

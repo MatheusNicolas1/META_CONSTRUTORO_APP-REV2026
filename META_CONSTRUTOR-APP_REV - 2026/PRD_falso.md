@@ -288,6 +288,8 @@ Este PRD pode ser considerado concluido quando:
 
 **Reaberto em 2026-07-12**: 1 novo achado (FALSO-055, Aberto, P1) em pages-gemini/ — rotas /home2 e /sobre2 com metricas hardcoded.
 
+**Fechado em 2026-07-31**: FALSO-055 e FALSO-056 corrigidos e deployados (commits `f7b85ad`/`d993098`); ver §10. Métricas hardcoded e pricing fictício removidos de pages-gemini/, páginas principais, blog e SEO, com verificação em produção.
+
 ## 9. Registro de execucao
 
 - 2026-05-26: Arquivo `PRD_falso.md` criado para guiar a auditoria e conversao de acoes/mockups ficticios em funcionalidades reais.

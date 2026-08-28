@@ -25,13 +25,13 @@ Regra de continuidade:
 | `PRD.md` | Release publica, Supabase, Vercel, RDO, Stripe, LGPD, seguranca, testes e operacao | Concluido para itens automatizaveis; pendencias manuais preservadas |
 | `docs/PRD_LAYOUT.md` | Layout, responsividade, PWA, RDO, relatorios/PDFs e inventario amplo de rotas | Concluido para cobertura automatizavel; dependencias externas preservadas |
 | `PRD_USUARIO.md` | Homologacao completa de fluxos do usuario em PC/tablet/mobile | Parcial em execucao; usar apenas itens marcados como evidenciados |
-| `PRD_falso.md` | Auditoria de acoes falsas, mockups, dados ficticios e handlers sem persistencia | 54 itens processados + 1 aberto (FALSO-055) | 97% | Concluido em 06/06/2026 (37 Validado real, 10 Removido, 4 Bloqueado, 1 Classificado, 1 Legado, 1 Removido deploy). Reaberto 12/07/2026: pages-gemini/ com metricas hardcoded (FALSO-055, P1). Build/lint/test limpos. |
+| `PRD_falso.md` | Auditoria de acoes falsas, mockups, dados ficticios e handlers sem persistencia | 54 itens + FALSO-055/056 fechados (corrigido + deploy 31/07/2026) | 100% | Concluido em 06/06/2026 (37 Validado real, 10 Removido, 4 Bloqueado, 1 Classificado, 1 Legado, 1 Removido deploy). Reaberto 12/07/2026 (FALSO-055 metricas hardcoded + FALSO-056 pricing ficticio); corrigido e deployado 31/07/2026 (commits f7b85ad/d993098), verificado em producao. Build/lint/test limpos. |
 | `PRD_ADMIN.md` | Admin de usuarios, marketing, analytics, funil, governanca e auditoria | Parcialmente executado; P0/P1/P2 tecnico inicial validado |
 | `PRD_SEO.md` | SEO, marketing publico, metadados, sitemap, robots e qualidade visual publica | Fundacao tecnica executada; reestrutura visual ampla ainda aberta |
 | `docs/PRD_BLOG.md` | Blog publico, cluster RDO, artigos PAA, FAQ schema, sitemap e prerender | Ciclo 1 implementado e pronto para revisao |
 || `docs/PRD_PUBLICAS_V2_GEMINI.md` | Nova versão páginas públicas (/home2, /preco2, /blog2, /contato2, /sobre2) com imagens reais, animações Framer Motion e paleta brand tokens | IMPLEMENTADO ✅ — 5 páginas criadas em `src/pages-gemini/`, rotas no router, SEO configurado, rewrites Vercel adicionados, build exit 0 com 61 páginas pré-renderizadas, deploy Production m6d8mhw7v, checklists 100% concluídos, API keys sanitizadas, git commit pendente |
 ||| `docs/PRD_PUBLICAS_AFTER_EFFECTS_REMOTION.md` | Reestrutura visual páginas públicas com After Effects-style motion, Remotion, benchmark Canva | PARCIAL — Fase 1 concluída (fundação visual + Framer Motion). Fase 2 (Remotion) planejada — 5 compositions não renderizadas |
-||| `PRD_CUPOM.md` | Sistema de cupons e descontos com integração Stripe — Admin CRUD, validação em checkout, sincronização Stripe | DIAGNÓSTICO CONCLUÍDO — implementação parcial com gaps P0/P1/P2 identificados |
+||| `PRD_CUPOM.md` | Sistema de cupons e descontos com integração Stripe — Admin CRUD, validação em checkout, sincronização Stripe | DIAGNÓSTICO CONCLUÍDO — gaps P0/P1/P2 RESOLVIDOS (commits 31/07–07/08/2026). Restam P3 (otimizações) + fix decimal Stripe não commitado |
 ||| `PRD_DASHBOARD.md`
 ||| `PRD_AGENDAS_RDO.md` | Agrupamento de RDOs por dia e nicho com resumo inteligente | EM ELABORAÇÃO — nichos redefinidos em PRD_NICHOS_RDO.md |
 || `PRD_NICHOS_RDO.md` | Definição dos 8 nichos baseados nos módulos reais do Meta Construtor (execução de obra, segurança, ordens/serviços, equipes, equipamentos, materiais, financeiro, documentos/cliente) | EM ELABORAÇÃO — baseado na análise do código-fonte |
@@ -51,7 +51,8 @@ Regra de continuidade:
 | `docs/PRD4.md` | Estabilizacao funcional rigida por modulos | Diretriz historica; usar como disciplina de execucao |
 || `docs/PRD5.md` e `docs/RELATORIO_FINAL_CONFORMIDADE_PRD5.md` | Funcionalidades mockadas, relatorios, integracoes, contato, approvals | Historico parcialmente superado por PRD.md e PRD_falso |
 ||| `PRD_DEPLOY_VERCEL.md` | Diagnóstico de deploys UNKNOWN na Vercel (20+ deploys travados) | EM EXECUÇÃO — 2026-06-13 — aguardando limpeza de cache no Dashboard + deploy fresco |
-||| `docs/PRD_DIAGNOSTICO_DEPLOY_VERCEL.md` | Diagnóstico final da causa raiz: branch master sem package.json no HEAD b349e1b + repositório Android separado | EM DIAGNÓSTICO — 2026-06-13 — aguardando commit corretivo + push |
+|||| `docs/PRD_DIAGNOSTICO_DEPLOY_VERCEL.md` | Diagnóstico final da causa raiz: branch master sem package.json no HEAD b349e1b + repositório Android separado | EM DIAGNÓSTICO — 2026-06-13 — aguardando commit corretivo + push |
+|||| `PRD_PROXIMOS_PASSOS.md` | Roadmap consolidado de próximos passos + MCPs e skills recomendados (pesquisa Firecrawl + catálogo Hermes) | CRIADO 2026-08-28 — prioridades P0/P1/P2 e infra de MCPs |
 
 ## 3. Baselines adotados como corretos
 
@@ -311,6 +312,7 @@ Use este roteamento:
 - **Cupons, descontos, promoções, integração Stripe coupon, AdminCoupons, create-enterprise-checkout: consultar `PRD_CUPOM.md`.**
 - **RDOs agrupados por dia, nichos, resumo diario por nicho ou geral: consultar `PRD_AGENDAS_RDO.md`.**
 - **Definição de nichos de RDO baseados nos módulos reais: consultar `PRD_NICHOS_RDO.md`.**
+- **Próximos passos, roadmap consolidado, MCPs e skills recomendados: consultar `PRD_PROXIMOS_PASSOS.md`.**
 
 ## 6. Proxima manutencao deste mestre
 
@@ -323,3 +325,18 @@ Atualizar este arquivo quando:
 - Uma regressao comprovada alterar algum baseline adotado como correto.
 
 Ao atualizar, manter a regra: concluido com evidencia vira baseline; aberto continua aberto.
+
+## 7. Registro de atualizações recentes
+
+### 2026-08-28 — Infra de MCPs + decisão Docker + roadmap
+
+- **MCPs instalados e autorizados (6):** `firecrawl` (npx, 27 tools), `n8n` (bridge local, 11 tools), `supabase` (29), `stripe` (10), `vercel` (37), `sentry` (9). Todos conectam OK via `hermes mcp test`; as tools só carregam em sessão nova (sem hot-reload).
+- **Decisão Docker:** a pasta `DOCKER LOCAL - N8N/` (WAHA via WEBJS + n8n) é apenas template — Docker não está instalado nesta máquina. Recursos serão realocados para VPS (n8n + Postgres + Caddy) e WhatsApp Business API oficial, conforme `PRD_INTEGRACAO_VPS_N8N_WHATSAPP.md` §6. O WAHA (WEBJS não-oficial) não migra.
+- **Criado** `PRD_PROXIMOS_PASSOS.md` — roadmap P0/P1/P2 e tabela de MCPs/skills recomendados.
+
+### 2026-08-28 — Reconciliação de estado (git × PRDs)
+
+- **Correção de baseline `PRD_falso.md`:** FALSO-055/056 estavam marcados como abertos no resumo, mas foram corrigidos+deployados em 31/07/2026 (commits `f7b85ad`, `d993098`). Verificado no código: `pages-gemini/`, páginas principais, blog e SEO sem métricas/pricing fictícios.
+- **Correção de baseline `PRD_CUPOM.md`:** gaps P0/P1/P2 resolvidos por commits de 31/07–07/08/2026 (`404f76b`, `7c2d1c2`, `2f48710`, `e91dbb0`, `0504969`).
+- **Deploy Vercel segue ABERTO:** a raiz do repo git não tem `package.json` (o app vive na subpasta `META_CONSTRUTOR-APP_REV - 2026/`); o Vercel precisa de *Root Directory* apontando para a subpasta.
+- **Trabalho não commitado identificado:** ajuste de preço Master (R$347), billing period no CTA do `/preco` e fix de decimal do Stripe (`percent_off` ≤ 2 casas) em 4 Edge Functions — pronto para commit.

@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import { motion, useInView, useScroll, useTransform } from 'framer-motion';
+import React, { useEffect } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Heart, Target, Lightbulb, Users, Shield, Rocket, Quote, Star, HardHat, BarChart3 } from 'lucide-react';
+import { ArrowRight, Heart, Target, Lightbulb, Users, Shield, Rocket } from 'lucide-react';
 import SEO from '@/components/SEO';
 import { seoPages } from '@/config/seo';
 
@@ -31,79 +30,13 @@ const VALUES = [
   { icon: Target, title: 'Missão', desc: 'Transformar a gestão de obras no Brasil, tornando construtoras mais produtivas, organizadas e lucrativas através da tecnologia.', color: 'from-[#dc4415] to-[#e86035]' },
   { icon: Heart, title: 'Propósito', desc: 'Simplificar o dia a dia de quem constrói o Brasil. Uma obra bem gerenciada transforma vidas.', color: 'from-brand-blue to-blue-500' },
   { icon: Lightbulb, title: 'Inovação', desc: 'Tecnologia que resolve problemas reais. Cada funcionalidade nasce de uma necessidade real de obra.', color: 'from-emerald-500 to-emerald-400' },
-  { icon: Users, title: 'Pessoas', desc: 'Nossa equipe entende de obra porque já viveu obra. Engenheiros e arquitetos que sabem o que fazem.', color: 'from-[#dc4415] to-[#e86035]' },
+  { icon: Users, title: 'Pessoas', desc: 'Uma equipe de engenharia e tecnologia que trabalha próxima aos clientes para resolver problemas reais de obra.', color: 'from-[#dc4415] to-[#e86035]' },
   { icon: Shield, title: 'Confiança', desc: 'Dados seguros, suporte humano e resultados reais. Cada obra importa.', color: 'from-brand-blue to-blue-500' },
   { icon: Rocket, title: 'Crescimento', desc: 'Evoluímos junto com nossos clientes. A cada feedback, uma melhoria. A cada obra, uma nova funcionalidade.', color: 'from-emerald-500 to-emerald-400' },
 ];
 
-const TIMELINE = [
-  { year: '2024', title: 'Nasce o Meta Construtor', desc: 'Fundado por engenheiros civis que cansaram da burocracia. O primeiro RDO digital é criado em uma madrugada de sexta-feira.' },
-  { year: '2024', title: 'Crescimento pelo boca a boca', desc: 'Engenheiros adotam a plataforma e levam o Meta Construtor para as próprias construtoras em poucos meses.' },
-  { year: '2025', title: 'Lançamento do App Mobile', desc: 'RDO direto do celular com fotos, assinatura digital e geolocalização.' },
-  { year: '2025', title: 'Checklists e Relatórios', desc: 'Checklists inteligentes e relatórios automáticos que aceleram a rotina da equipe.' },
-  { year: '2026', title: 'Ecossistema completo', desc: 'O ecossistema de gestão de obras está pronto e evolui a cada feedback.' },
-  { year: '2026', title: 'Portal do Cliente + Integrações', desc: 'Portal do Cliente e integrações com ERPs. Obras conectadas do início ao fim.' },
-];
-
-const TEAM_PHOTOS = [
-  { name: 'Eng. Carlos Mendes', role: 'CEO & Fundador', desc: 'Engenheiro civil com 15 anos de obra. Criou o Meta Construtor na obra onde era residente.' },
-  { name: 'Ana Oliveira', role: 'CTO', desc: 'Ex-desenvolvedora de ERP para construção civil. Conhece cada linha de código do sistema.' },
-  { name: 'Lucas Santos', role: 'Head de Produto', desc: 'Arquiteto que migrou para tecnologia. Entende de obra e de UX como ninguém.' },
-  { name: 'Marina Costa', role: 'Customer Success', desc: 'Engenheira civil que ama ajudar construtoras a extrair o máximo do sistema.' },
-];
-
-/// ─── Timeline ────────────────────────────────────────────────
-function TimelineItem({ item, index }: { item: typeof TIMELINE[0]; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-80px' });
-
-  return (
-    <motion.div ref={ref}
-      initial={{ opacity: 0, x: index % 2 === 0 ? -40 : 40 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.6, delay: index * 0.12, ease: [0.16, 1, 0.3, 1] }}
-      className={`flex items-start gap-6 ${index % 2 === 1 ? 'md:flex-row-reverse md:text-right' : ''} group`}
-    >
-      <div className={`flex-1 ${index % 2 === 1 ? 'md:text-right' : ''}`}>
-        <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm hover:shadow-lg transition-all duration-300 group-hover:border-brand-orange/30">
-          <Badge className="bg-orange-600/10 text-brand-blue border-0 mb-2">{item.year}</Badge>
-          <h3 className="text-lg font-bold text-brand-blue mb-1">{item.title}</h3>
-          <p className="text-sm text-neutral-500 leading-relaxed">{item.desc}</p>
-        </div>
-      </div>
-      <div className="relative flex flex-col items-center">
-        <div className={`w-4 h-4 rounded-full border-4 border-orange-600 bg-white z-10 shadow-md ${
-          isInView ? 'scale-100' : 'scale-0'
-        } transition-transform duration-300`} />
-      </div>
-      <div className="flex-1 hidden md:block" />
-    </motion.div>
-  );
-}
-
-// ─── Team Card ───────────────────────────────────────────────
-function TeamCard({ member, index }: { member: typeof TEAM_PHOTOS[0]; index: number }) {
-  const initials = member.name.split(' ').map((n) => n[0]).join('').slice(0, 2);
-  return (
-    <motion.div variants={staggerItem}
-      className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group text-center"
-    >
-      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#dc4415] to-brand-blue flex items-center justify-center text-white font-bold text-xl mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-        {initials}
-      </div>
-      <h3 className="font-bold text-brand-blue mb-1">{member.name}</h3>
-      <p className="text-sm text-brand-blue font-medium mb-2">{member.role}</p>
-      <p className="text-sm text-neutral-500 leading-relaxed">{member.desc}</p>
-    </motion.div>
-  );
-}
-
 // ─── Page ────────────────────────────────────────────────────
 export default function Sobre2() {
-  const { scrollYProgress } = useScroll();
-  const progressScale = useTransform(scrollYProgress, [0, 1], [0, 100]);
-
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   return (
@@ -127,8 +60,8 @@ export default function Sobre2() {
               <span className="text-orange-400">a gestão de obras</span>
             </h1>
             <p className="text-lg md:text-xl text-blue-100/70 max-w-2xl mx-auto leading-relaxed">
-              O Meta Construtor foi criado por engenheiros que sentiram na pele a dor de gerenciar obras com papel, planilha e WhatsApp.
-              Cansamos disso. E resolvemos criar algo melhor.
+              O Meta Construtor nasceu da rotina real de obra, para substituir papel, planilha e WhatsApp
+              por um fluxo único de RDO, checklists, equipes e relatórios.
             </p>
           </motion.div>
         </div>
@@ -178,63 +111,41 @@ export default function Sobre2() {
         </div>
       </section>
 
-      {/* Timeline */}
+      {/* Nossa História (honesta — sem marcos/anos inventados) */}
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div {...cinematic} className="text-center mb-14">
+          <motion.div {...cinematic} className="text-center mb-10">
             <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-blue text-sm font-semibold mb-4 border border-brand-orange/20">Nossa História</span>
             <h2 className="text-3xl md:text-4xl font-bold text-brand-blue mb-4 font-heading">
               Como <span className="text-brand-blue">chegamos aqui</span>
             </h2>
           </motion.div>
-          <div className="hidden md:block h-1 bg-neutral-100 rounded-full mb-12 relative overflow-hidden">
-            <motion.div style={{ scaleX: progressScale }}
-              className="absolute inset-y-0 left-0 bg-gradient-to-r from-[#dc4415] to-[#e86035] origin-left rounded-full"
-            />
-          </div>
-          <div className="space-y-8 md:space-y-12 relative">
-            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-neutral-100 -translate-x-1/2" />
-            {TIMELINE.map((item, i) => (
-              <TimelineItem key={`${item.year}-${i}`} item={item} index={i} />
-            ))}
-          </div>
+          <motion.div {...cinematic} className="bg-white rounded-2xl p-8 border border-neutral-200 shadow-sm">
+            <p className="text-neutral-600 leading-relaxed">
+              O Meta Construtor é um produto em constante evolução, construído a partir de necessidades reais
+              do canteiro de obras. Cada funcionalidade — RDO digital, checklists, equipes, documentos e
+              relatórios — nasce do diálogo com quem usa o sistema no dia a dia. Seguimos evoluindo junto
+              com nossos clientes, priorizando o que realmente resolve a rotina de uma obra.
+            </p>
+          </motion.div>
         </div>
       </section>
 
-      {/* Team */}
+      {/* Equipe (honesta — sem nomes/biografias inventados) */}
       <section className="py-20 md:py-28 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div {...cinematic} className="text-center mb-14">
+          <motion.div {...cinematic} className="text-center mb-10">
             <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-blue text-sm font-semibold mb-4 border border-brand-orange/20">Equipe</span>
             <h2 className="text-3xl md:text-4xl font-bold text-brand-blue mb-4 font-heading">
               Quem faz o <span className="text-brand-blue">Meta Construtor</span>
             </h2>
-            <p className="text-lg text-neutral-500 max-w-2xl mx-auto">Engenheiros, arquitetos e desenvolvedores que respiram obra.</p>
           </motion.div>
-          <motion.div {...staggerContainer} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {TEAM_PHOTOS.map((member) => (
-              <TeamCard key={member.name} member={member} index={0} />
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Hero image break */}
-      <section className="relative h-[300px] md:h-[400px] overflow-hidden">
-        <img src="/marketing/obras-reais/estrutura-metalica-aerea.webp" alt="Estrutura metálica de obra"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-blue/70 to-transparent" />
-        <div className="relative h-full flex items-center px-8 md:px-16">
-          <motion.div {...cinematic} className="max-w-lg">
-            <Quote className="w-10 h-10 text-brand-blue/60 mb-4" />
-            <blockquote className="text-xl md:text-2xl font-medium text-white leading-relaxed">
-              &ldquo;O que levava um dia inteiro de planilha, hoje fazemos em 15 minutos.&rdquo;
-            </blockquote>
-            <div className="flex items-center gap-1 mt-4">
-              {[1, 2, 3, 4, 5].map((s) => (<Star key={s} className="w-4 h-4 fill-brand-blue text-brand-blue" />))}
-            </div>
-            <p className="text-sm text-blue-200 mt-2">Eng. Rafael Torres — Construtora Torres & Associados</p>
+          <motion.div {...cinematic} className="max-w-2xl mx-auto text-center">
+            <p className="text-lg text-neutral-500 leading-relaxed">
+              Somos um time de engenharia, produto e tecnologia que trabalha próximo aos clientes para
+              transformar a gestão de obras. Nosso contato com construtoras e profissionais da construção
+              civil guia cada decisão de produto.
+            </p>
           </motion.div>
         </div>
       </section>

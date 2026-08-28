@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Check, ChevronDown, Star, BarChart3, ClipboardCheck, Users, FileText, HardHat, Shield, Clock, Quote, Play, Layers, Smartphone, Monitor, Tablet, X, Menu } from 'lucide-react';
+import { ArrowRight, Check, ChevronDown, BarChart3, ClipboardCheck, Users, FileText, HardHat, Shield, Clock, Quote, Play, Layers, Smartphone, Monitor, Tablet, X, Menu } from 'lucide-react';
 import SEO from '@/components/SEO';
 import { seoPages } from '@/config/seo';
 import { FloatingElements } from '@/components/public/FloatingElements';
@@ -401,7 +401,7 @@ export default function Home2() {
         </div>
       </section>
 
-      {/* ─── TESTIMONIAL ─── */}
+      {/* ─── PROPOSTA DE VALOR ─── */}
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div {...cinematic}>
@@ -410,25 +410,11 @@ export default function Home2() {
               <div className="relative bg-white rounded-3xl p-8 md:p-12 border border-neutral-100 shadow-xl">
                 <Quote className="w-10 h-10 text-brand-blue/30 mx-auto mb-6" />
                 <blockquote className="text-xl md:text-2xl font-medium text-brand-blue mb-6 leading-relaxed">
-                  &ldquo;O Meta Construtor mudou a forma como gerenciamos nossas obras.
-                  O que levava um dia inteiro de planilha, hoje fazemos em 15 minutos.&rdquo;
+                  &ldquo;RDO, checklists, equipes e relatórios em um só lugar — do canteiro ao escritório.&rdquo;
                 </blockquote>
-                <div className="flex items-center justify-center gap-1 mb-3">
-                  {[1,2,3,4,5].map((s) => (
-                    <Star key={s} className="w-5 h-5 fill-brand-blue text-brand-blue" />
-                  ))}
-                </div>
-                <cite className="not-italic">
-                  <span className="font-bold text-brand-blue">Eng. Rafael Torres</span>
-                  <span className="text-neutral-400 text-sm block">Construtora Torres & Associados</span>
-                </cite>
-                {/* Rating image */}
-                <div className="mt-6 flex justify-center">
-                  <img src="/marketing/prd-prints-2026-06-04-21-feedback-desktop.webp"
-                    alt="Feedback do cliente"
-                    className="w-48 rounded-xl shadow-md opacity-80"
-                  />
-                </div>
+                <p className="text-sm text-neutral-400">
+                  Gestão de obras digital, sem burocracia e sem papelada.
+                </p>
               </div>
             </div>
           </motion.div>

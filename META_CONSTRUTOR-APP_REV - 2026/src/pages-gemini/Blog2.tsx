@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Calendar, Clock, ArrowRight, MessageCircle } from 'lucide-react';
+import { Search, Calendar, Clock, ArrowRight } from 'lucide-react';
 import SEO from '@/components/SEO';
 import { seoPages } from '@/config/seo';
+import { loadBlogArticles } from '@/content/blogArticles';
+import type { BlogArticle } from '@/content/blogArticles';
 
 // ─── Variants ────────────────────────────────────────────────
 const cinematic = {
@@ -19,13 +21,6 @@ const staggerContainer = {
   viewport: { once: true },
 };
 
-const staggerItem = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
-  transition: { duration: 0.5, ease: 'easeOut' },
-};
-
 const scaleIn = {
   initial: { opacity: 0, scale: 0.9 },
   whileInView: { opacity: 1, scale: 1 },
@@ -33,81 +28,50 @@ const scaleIn = {
   transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
 };
 
-// ─── Data ────────────────────────────────────────────────────
-const POSTS = [
-  {
-    slug: 'rdo-digital-obra',
-    title: 'RDO Digital: Como fazer o Diário de Obras de forma eficiente',
-    excerpt: 'O RDO digital substitui o papel e transforma a gestão da sua obra. Veja como implementar na prática.',
-    image: '/marketing/prd-prints-2026-06-04-15-rdo-visualizacao-desktop.webp',
-    date: '10 Jun 2026', readTime: '5 min', category: 'Gestão de Obras',
-  },
-  {
-    slug: 'checklist-obra-ideal',
-    title: 'Checklist de Obra: O guia completo para não esquecer nada',
-    excerpt: 'Como criar checklists inteligentes que evitam retrabalho e aumentam a produtividade da equipe.',
-    image: '/marketing/prd-prints-2026-06-04-16-checklist-detalhe-desktop.webp',
-    date: '8 Jun 2026', readTime: '7 min', category: 'Produtividade',
-  },
-  {
-    slug: 'relatorios-automaticos-obra',
-    title: 'Relatórios Automáticos: Como economizar 10h por semana',
-    excerpt: 'Chega de planilhas manuais. Veja como gerar relatórios automáticos de obra em segundos.',
-    image: '/marketing/prd-prints-2026-06-04-12-relatorios-resumo-desktop.webp',
-    date: '5 Jun 2026', readTime: '6 min', category: 'Relatórios',
-  },
-  {
-    slug: 'gestao-financeira-obra',
-    title: 'Gestão Financeira de Obras: Controle de custos em tempo real',
-    excerpt: 'Descubra como acompanhar o fluxo de caixa da obra e evitar estouros de orçamento.',
-    image: '/marketing/prd-prints-2026-06-04-11-despesas-lista-desktop.webp',
-    date: '3 Jun 2026', readTime: '8 min', category: 'Financeiro',
-  },
-  {
-    slug: 'lgpd-construcao-civil',
-    title: 'LGPD na Construção Civil: O que sua construtora precisa saber',
-    excerpt: 'A LGPD também vale para obras. Saiba como adequar sua construtora à lei de proteção de dados.',
-    image: '/marketing/prd-prints-2026-06-04-18-configuracoes-desktop.webp',
-    date: '1 Jun 2026', readTime: '10 min', category: 'Jurídico',
-  },
-  {
-    slug: 'equipe-obra-conectada',
-    title: 'Equipe de Obra Conectada: Como melhorar a comunicação',
-    excerpt: 'Comunique-se melhor com sua equipe. Veja como o Meta Construtor resolve o caos do WhatsApp.',
-    image: '/marketing/obras-reais/equipe-cobertura-metalica.webp',
-    date: '29 Mai 2026', readTime: '6 min', category: 'Equipe',
-  },
-];
+// ─── Helpers ─────────────────────────────────────────────────
+function formatDate(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' });
+}
 
-const CATEGORIES = ['Todos', 'Gestão de Obras', 'Produtividade', 'Relatórios', 'Financeiro', 'Jurídico', 'Equipe'];
+function getThumb(article: BlogArticle): string | undefined {
+  return article.sections?.find((s) => s.image?.src)?.image?.src;
+}
 
 // ─── Blog Card ───────────────────────────────────────────────
-function BlogCard({ post, index }: { post: typeof POSTS[0]; index: number }) {
+function BlogCard({ post, index }: { post: BlogArticle; index: number }) {
+  const thumb = getThumb(post);
   return (
     <motion.article variants={scaleIn}
       className="group bg-white rounded-2xl overflow-hidden border border-neutral-200 shadow-sm hover:shadow-xl transition-all duration-500"
     >
-      <a href={`/blog/${post.slug}`} className="block">
+      <a href={post.path} className="block">
         <div className="relative overflow-hidden aspect-[16/9] bg-brand-blue">
-          <img src={post.image} alt={post.title} loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out opacity-85"
-          />
+          {thumb ? (
+            <img src={thumb} alt={post.title} loading="lazy"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out opacity-85"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand-blue to-[#162d4e]">
+              <span className="text-brand-orange/80 text-sm font-semibold uppercase tracking-wider px-4 text-center">{post.category}</span>
+            </div>
+          )}
           <div className="absolute top-3 left-3">
             <span className="inline-block px-2.5 py-1 bg-[#dc4415] text-white text-xs font-bold rounded-md">
               {post.category}
             </span>
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-blue/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
         <div className="p-5 md:p-6">
           <h3 className="text-lg md:text-xl font-bold text-brand-blue mb-2 font-heading group-hover:text-brand-blue transition-colors duration-200">
             {post.title}
           </h3>
-          <p className="text-sm text-neutral-500 mb-4 line-clamp-2 leading-relaxed">{post.excerpt}</p>
+          <p className="text-sm text-neutral-500 mb-4 line-clamp-2 leading-relaxed">{post.description}</p>
           <div className="flex items-center justify-between text-xs text-neutral-400">
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{post.date}</span>
-              <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{post.readTime}</span>
+              <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{formatDate(post.publishedAt)}</span>
+              <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{post.readingTime}</span>
             </div>
             <span className="flex items-center gap-1 text-brand-blue font-semibold group-hover:gap-2 transition-all duration-200">
               Ler <ArrowRight className="w-3 h-3" />
@@ -120,19 +84,25 @@ function BlogCard({ post, index }: { post: typeof POSTS[0]; index: number }) {
 }
 
 // ─── Featured ────────────────────────────────────────────────
-function FeaturedPost() {
-  const post = POSTS[0];
+function FeaturedPost({ post }: { post: BlogArticle }) {
+  const thumb = getThumb(post);
   return (
     <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-100px' }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="mb-12"
     >
-      <a href={`/blog/${post.slug}`} className="group block">
+      <a href={post.path} className="group block">
         <div className="grid lg:grid-cols-5 bg-white rounded-2xl overflow-hidden border border-neutral-200 shadow-lg hover:shadow-2xl transition-all duration-500">
           <div className="lg:col-span-3 relative overflow-hidden aspect-[16/10] lg:aspect-auto bg-brand-blue">
-            <img src={post.image} alt={post.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90"
-            />
+            {thumb ? (
+              <img src={thumb} alt={post.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90"
+              />
+            ) : (
+              <div className="w-full h-full min-h-[200px] flex items-center justify-center bg-gradient-to-br from-brand-blue to-[#162d4e]">
+                <span className="text-brand-orange/80 text-sm font-semibold uppercase tracking-wider">{post.category}</span>
+              </div>
+            )}
             <div className="absolute top-4 left-4">
               <span className="inline-block px-3 py-1.5 bg-[#dc4415] text-white text-xs font-bold rounded-md">Destaque</span>
             </div>
@@ -142,10 +112,10 @@ function FeaturedPost() {
             <h2 className="text-2xl md:text-3xl font-extrabold text-brand-blue mb-3 font-heading group-hover:text-brand-blue transition-colors">
               {post.title}
             </h2>
-            <p className="text-neutral-500 mb-6 leading-relaxed">{post.excerpt}</p>
+            <p className="text-neutral-500 mb-6 leading-relaxed">{post.description}</p>
             <div className="flex items-center gap-4 text-xs text-neutral-400 mb-6">
-              <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" />{post.date}</span>
-              <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{post.readTime}</span>
+              <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" />{formatDate(post.publishedAt)}</span>
+              <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{post.readingTime}</span>
             </div>
             <Button className="self-start bg-brand-blue hover:bg-blue-800 text-white px-6 py-5 rounded-xl group/btn">
               Ler Artigo <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -161,15 +131,37 @@ function FeaturedPost() {
 export default function Blog2() {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('Todos');
+  const [articles, setArticles] = useState<BlogArticle[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => { window.scrollTo(0, 0); }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    let mounted = true;
+    (async () => {
+      try {
+        const { 'pt-BR': loaded } = await loadBlogArticles('pt-BR');
+        const sorted = [...(loaded ?? [])].sort(
+          (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+        );
+        if (mounted) setArticles(sorted);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
 
-  const filtered = POSTS.filter((post) => {
-    const matchesSearch = post.title.toLowerCase().includes(search.toLowerCase()) ||
-      post.excerpt.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = activeCategory === 'Todos' || post.category === activeCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const categories = useMemo(() => ['Todos', ...Array.from(new Set(articles.map((a) => a.category)))], [articles]);
+
+  const filtered = useMemo(() => {
+    return articles.filter((post) => {
+      const matchesSearch =
+        post.title.toLowerCase().includes(search.toLowerCase()) ||
+        post.description.toLowerCase().includes(search.toLowerCase());
+      const matchesCategory = activeCategory === 'Todos' || post.category === activeCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [articles, search, activeCategory]);
 
   return (
     <div className="min-h-screen bg-white text-brand-blue overflow-x-hidden">
@@ -207,7 +199,7 @@ export default function Blog2() {
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
             className="flex flex-wrap gap-2 justify-center"
           >
-            {CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <button key={cat} onClick={() => setActiveCategory(cat)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${
                   activeCategory === cat
@@ -223,24 +215,38 @@ export default function Blog2() {
       {/* Posts Grid */}
       <section className="pb-20 md:pb-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimatePresence mode="wait">
-            {filtered.length === 0 ? (
-              <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
-                <Search className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-brand-blue mb-2">Nenhum artigo encontrado</h3>
-                <p className="text-neutral-400">Tente outros termos de busca ou categoria</p>
-              </motion.div>
-            ) : (
+          {loading ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-6 animate-pulse">
+                  <div className="mb-4 h-40 rounded-xl bg-neutral-100" />
+                  <div className="mb-2 h-5 w-3/4 rounded bg-neutral-100" />
+                  <div className="h-4 w-full rounded bg-neutral-100" />
+                </div>
+              ))}
+            </div>
+          ) : filtered.length === 0 ? (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
+              <Search className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-brand-blue mb-2">
+                {articles.length === 0 ? 'Nenhum artigo publicado ainda' : 'Nenhum artigo encontrado'}
+              </h3>
+              <p className="text-neutral-400">
+                {articles.length === 0 ? 'Em breve teremos conteúdo novo por aqui.' : 'Tente outros termos de busca ou categoria'}
+              </p>
+            </motion.div>
+          ) : (
+            <AnimatePresence mode="wait">
               <motion.div key="grid" variants={staggerContainer} className="space-y-0">
-                <FeaturedPost />
+                <FeaturedPost post={filtered[0]} />
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filtered.slice(1).map((post, i) => (
                     <BlogCard key={post.slug} post={post} index={i} />
                   ))}
                 </div>
               </motion.div>
-            )}
-          </AnimatePresence>
+            </AnimatePresence>
+          )}
         </div>
       </section>
 
@@ -273,7 +279,7 @@ export default function Blog2() {
           <motion.div {...cinematic}>
             <h2 className="text-3xl md:text-4xl font-extrabold mb-4 font-heading">Receba conteúdos exclusivos</h2>
             <p className="text-lg text-blue-200/70 mb-8 max-w-lg mx-auto">
-              Dicas de gestão de obras, novidades do Meta Construtor e ofertas especiais direto no seu e-mail.
+              Dicas de gestão de obras e novidades do Meta Construtor direto no seu e-mail.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
               <Input type="email" placeholder="Seu melhor e-mail"

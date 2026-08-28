@@ -79,8 +79,8 @@ const fallbackPlans: Plan[] = [
         slug: 'master',
         name: 'Master',
         description: 'Para operacoes com multiplas obras e gestores',
-        monthly_price_cents: 49990,
-        yearly_price_cents: 479904,
+        monthly_price_cents: 34700,
+        yearly_price_cents: 333120,
         features: [
             'Todos os recursos do Profissional',
             'Integracoes',

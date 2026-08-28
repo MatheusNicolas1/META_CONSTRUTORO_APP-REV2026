@@ -29,9 +29,9 @@ const staggerItem = {
 
 // ─── Contact Info ────────────────────────────────────────────
 const CONTACT_INFO = [
-  { icon: Phone, label: 'Telefone', value: '(31) 99876-5432', link: 'tel:+5531998765432' },
-  { icon: Mail, label: 'E-mail', value: 'contato@metaconstrutor.com.br', link: 'mailto:contato@metaconstrutor.com.br' },
-  { icon: MapPin, label: 'Endereço', value: 'Belo Horizonte, MG' },
+  { icon: Phone, label: 'Telefone', value: '(75) 9 9220-5734', link: 'tel:+5575992205734' },
+  { icon: Mail, label: 'E-mail', value: 'suporte@metaconstrutor.com', link: 'mailto:suporte@metaconstrutor.com' },
+  { icon: MapPin, label: 'Endereço', value: 'Salvador, BA — Brasil' },
   { icon: Clock, label: 'Horário', value: 'Seg-Sex, 8h às 18h' },
 ];
 
@@ -92,7 +92,7 @@ function SuccessMessage() {
         <CheckCircle className="w-8 h-8 text-emerald-600" />
       </motion.div>
       <h3 className="text-2xl font-bold text-brand-blue mb-2">Mensagem enviada!</h3>
-      <p className="text-neutral-500">Responderemos em até 24 horas úteis.</p>
+      <p className="text-neutral-500">Responderemos em até 4 horas úteis.</p>
     </motion.div>
   );
 }
@@ -102,15 +102,38 @@ export default function Contato2() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', company: '', message: '' });
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setSending(false);
-    setSent(true);
+    setError('');
+    try {
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          company: formData.company,
+          subject: 'Contato pelo site',
+          message: formData.message,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data?.error?.message || 'Erro ao enviar mensagem');
+      }
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro de rede. Tente novamente.');
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -159,6 +182,11 @@ export default function Contato2() {
                         <FloatingInput label="Nome da Construtora" value={formData.company} onChange={(v) => setFormData((p) => ({ ...p, company: v }))} />
                       </div>
                       <FloatingTextarea label="Como podemos ajudar?" value={formData.message} onChange={(v) => setFormData((p) => ({ ...p, message: v }))} />
+                      {error && (
+                        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
+                          {error}
+                        </div>
+                      )}
                       <Button type="submit" disabled={sending || sent}
                         className="w-full bg-[#dc4415] hover:bg-[#c43a10] text-white py-6 rounded-xl text-lg font-semibold shadow-lg shadow-[#dc4415]/25 hover:shadow-[#dc4415]/40 transition-all duration-300"
                       >
@@ -200,10 +228,12 @@ export default function Contato2() {
                   <h3 className="font-bold text-lg">Fale pelo WhatsApp</h3>
                 </div>
                 <p className="text-sm text-emerald-100 mb-4">
-                  Resposta rápida, geralmente em menos de 5 minutos em horário comercial.
+                  Resposta em minutos durante o horário comercial.
                 </p>
-                <Button className="w-full bg-white text-emerald-600 hover:bg-emerald-50 font-semibold py-5 rounded-xl">
-                  <MessageCircle className="mr-2 w-5 h-5" /> Chamar no WhatsApp
+                <Button asChild className="w-full bg-white text-emerald-600 hover:bg-emerald-50 font-semibold py-5 rounded-xl">
+                  <a href="https://wa.me/5575992205734" target="_blank" rel="noopener noreferrer">
+                    <MessageCircle className="mr-2 w-5 h-5" /> Chamar no WhatsApp
+                  </a>
                 </Button>
               </motion.div>
             </motion.div>

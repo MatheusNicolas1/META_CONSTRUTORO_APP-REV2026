@@ -219,6 +219,14 @@ export default function Preco() {
     return plan.priceMonthly;
   };
 
+  // Propaga o billing period no link/CTA do card.
+  // plan.to já tem query (?plan=basic), logo anexamos com '&'.
+  const getCheckoutUrl = (plan: PlanCard) => {
+    if (!plan.slug) return plan.to;
+    const billing = isYearly ? 'yearly' : 'monthly';
+    return `${plan.to}&billing=${billing}`;
+  };
+
   return (
     <PublicLayout>
       <SEO {...seoPages.preco} />
@@ -395,8 +403,8 @@ export default function Preco() {
                                   : 'bg-brand-orange hover:bg-brand-orange-hover shadow-lg shadow-brand-orange/25'
                             )}
                             asChild
-                          >
-                            <Link to={plan.to}>
+                            >
+                            <Link to={getCheckoutUrl(plan)}>
                               {plan.cta} <ArrowRight className="ml-1 w-4 h-4 inline" />
                             </Link>
                           </Button>

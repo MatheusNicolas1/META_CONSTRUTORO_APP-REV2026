@@ -272,7 +272,7 @@ serve(async (req) => {
         const formattedPhone = to.replace(/\D/g, '');
 
         // Determine if mediaUrl is a media_id (alphanumeric without protocol) or an external URL
-        const isMediaId = /^[a-zA-Z0-9_\-]+$/.test(mediaUrl) && !mediaUrl.includes('://');
+        const isMediaId = /^[a-zA-Z0-9_-]+$/.test(mediaUrl) && !mediaUrl.includes('://');
 
         const audioPayload: MediaPayload = {
           messaging_product: 'whatsapp',
@@ -346,7 +346,7 @@ serve(async (req) => {
         const formattedPhone = to.replace(/\D/g, '');
 
         // Determine if mediaUrl is a media_id (alphanumeric without protocol) or an external URL
-        const isMediaId = /^[a-zA-Z0-9_\-]+$/.test(mediaUrl) && !mediaUrl.includes('://');
+        const isMediaId = /^[a-zA-Z0-9_-]+$/.test(mediaUrl) && !mediaUrl.includes('://');
 
         // Build the media payload based on type
         const mediaPayload: MediaPayload = {

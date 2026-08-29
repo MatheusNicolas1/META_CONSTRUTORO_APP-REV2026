@@ -288,7 +288,9 @@ Este PRD pode ser considerado concluido quando:
 
 **Reaberto em 2026-07-12**: 1 novo achado (FALSO-055, Aberto, P1) em pages-gemini/ — rotas /home2 e /sobre2 com metricas hardcoded.
 
-**Fechado em 2026-07-31**: FALSO-055 e FALSO-056 corrigidos e deployados (commits `f7b85ad`/`d993098`); ver §10. Métricas hardcoded e pricing fictício removidos de pages-gemini/, páginas principais, blog e SEO, com verificação em produção.
+**Fechado em 2026-07-31**: FALSO-055 e FALSO-056 corrigidos e deployados (commits `f7b85ad`/`d993098`); ver §10. Métricas hardcoded e pricing fictício removidos.
+
+**Reaberto em 2026-08-28**: varredura revelou nova onda de conteúdo fictício em pages-gemini/ além do fix de 31/07 — depoimento "Eng. Rafael Torres" (Home2/Sobre2), equipe inventada (TEAM_PHOTOS), timeline fabricada (Sobre2), 6 posts de blog fake (Blog2, slugs 404), contato fake (telefone/e-mail/cidade) e `handleSubmit` com sucesso fake (Contato2). Corrigido em 08/28: depoimentos/equipe/timeline removidos; blog ligado a `loadBlogArticles` (dado real); contato ligado à Edge Function `send-contact`. Build exit 0. Pendente: commit + deploy.
 
 ## 9. Registro de execucao
 

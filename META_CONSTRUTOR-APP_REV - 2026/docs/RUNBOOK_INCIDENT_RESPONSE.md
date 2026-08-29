@@ -2,7 +2,7 @@
 
 Classificacao: interno/confidencial
 
-Ultima atualizacao: 2026-05-22
+Ultima atualizacao: 2026-08-29
 
 ## Objetivo
 

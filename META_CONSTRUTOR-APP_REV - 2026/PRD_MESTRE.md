@@ -33,8 +33,8 @@ Regra de continuidade:
 ||| `docs/PRD_PUBLICAS_AFTER_EFFECTS_REMOTION.md` | Reestrutura visual páginas públicas com After Effects-style motion, Remotion, benchmark Canva | PARCIAL — Fase 1 concluída (fundação visual + Framer Motion). Fase 2 (Remotion) planejada — 5 compositions não renderizadas |
 ||| `PRD_CUPOM.md` | Sistema de cupons e descontos com integração Stripe — Admin CRUD, validação em checkout, sincronização Stripe | DIAGNÓSTICO CONCLUÍDO — gaps P0/P1/P2 RESOLVIDOS (commits 31/07–07/08/2026). Restam P3 (otimizações) + fix decimal Stripe não commitado |
 ||| `PRD_DASHBOARD.md`
-||| `PRD_AGENDAS_RDO.md` | Agrupamento de RDOs por dia e nicho com resumo inteligente | EM ELABORAÇÃO — nichos redefinidos em PRD_NICHOS_RDO.md |
-|| `PRD_NICHOS_RDO.md` | Definição dos 8 nichos baseados nos módulos reais do Meta Construtor (execução de obra, segurança, ordens/serviços, equipes, equipamentos, materiais, financeiro, documentos/cliente) | EM ELABORAÇÃO — baseado na análise do código-fonte |
+||| `PRD_AGENDAS_RDO.md` | Agrupamento de RDOs por dia e nicho com resumo inteligente | IMPLEMENTADO ✅ 28/08 — backend (tabelas, trigger, seed, RPCs `resumo_diario_*`) + frontend (AgendaPage, cards, nicho select, admin) deployados; resumo via RPC Postgres (não EF) |
+|| `PRD_NICHOS_RDO.md` | Definição dos 8 nichos baseados nos módulos reais do Meta Construtor (execução de obra, segurança, ordens/serviços, equipes, equipamentos, materiais, financeiro, documentos/cliente) | IMPLEMENTADO ✅ 28/08 — seed dos 8 nichos default via `seed_default_nichos` |
 | `PRD_LIXEIRA.md` | Lixeira, soft delete, restauracao e expurgo | Planejado; nao tratar como feito |
 | `PRD_AUDIO_ELEVENLABS.md` | Mensagens de audio, resumos por voz, ElevenLabs TTS, Whisper/OpenAI STT, n8n e WhatsApp Business | Planejamento operacional; fonte primaria atual de audio |
 || `PRD_AUDIO_WHISPER_N8N.md` | Historico de planejamento audio/Whisper; refencia para contratos tecnico anteriores | Historico; consultar apenas para contexto ou contratos nao cobertos pelo PRD atual |
@@ -233,8 +233,8 @@ Origem principal: `PRD_LIXEIRA.md`.
 
 Estado mestre:
 
-- Planejado, aguardando execucao.
-- Nao existe baseline de implementacao concluida neste PRD.
+- Parcial: soft delete de obras implementado (commit `796eabb`, TASK-010) com confirmacao de exclusao e migration reconciliada (`reconcile_lixeira_items`).
+- Abertos: restauracao (undo), expurgo definitivo apos 30 dias e cobertura dos demais modulos operacionais.
 
 Direcao aprovada:
 
@@ -328,6 +328,14 @@ Ao atualizar, manter a regra: concluido com evidencia vira baseline; aberto cont
 
 ## 7. Registro de atualizações recentes
 
+### 2026-08-29 — Auditoria de QA + gates de lançamento (P01)
+
+- **QA do agente paralelo APROVADO:** lint 0 erros · 92/92 testes · build 120 rotas pré-renderizadas. 13/15 tasks DONE; spot-checks confirmaram entregáveis reais (MFA TOTP, lixeira soft delete, sitemap 93 rotas, regra ESLint `no-unsourced-claims`, instrumentação `analytics_events`).
+- **Reconciliação git × board:** commits do agente paralelo além do TASK-012 — RDO via RPC Postgres (`b2f54d5`), NumberTicker (`d6c09cd`/`70f1501`), preço R$99→R$129,90 (`38c72cc`).
+- **Blind spot P0 confirmado → TASK-017:** `scripts/prerender-public-routes.mjs` tem preços hardcoded na meta description de `/preco2` (risco de preço falso no Google). Fonte de verdade dos preços = `src/hooks/usePlans.ts` (12990/19990/34700 cents).
+- **Analytics → TASK-016:** infra existe (`src/integrations/ga4.ts`, `analytics.ts`, `opentelemetry.ts`); eventos-padrão PostHog/GA4 (`login_success`, `signup_completed`, `checkout_*`, `obra_created`, `rdo_*`) em verificação/completude.
+- **Gates P01 ainda abertos (dependentes do usuário):** pagamento Stripe ponta-a-ponta (cartão controlado), Google OAuth, reset de senha por e-mail, regra de alerta Sentry + runbook, deploy final `v1.1.0` tag.
+
 ### 2026-08-28 — Infra de MCPs + decisão Docker + roadmap
 
 - **MCPs instalados e autorizados (6):** `firecrawl` (npx, 27 tools), `n8n` (bridge local, 11 tools), `supabase` (29), `stripe` (10), `vercel` (37), `sentry` (9). Todos conectam OK via `hermes mcp test`; as tools só carregam em sessão nova (sem hot-reload).
@@ -340,3 +348,11 @@ Ao atualizar, manter a regra: concluido com evidencia vira baseline; aberto cont
 - **Correção de baseline `PRD_CUPOM.md`:** gaps P0/P1/P2 resolvidos por commits de 31/07–07/08/2026 (`404f76b`, `7c2d1c2`, `2f48710`, `e91dbb0`, `0504969`).
 - **Deploy Vercel segue ABERTO:** a raiz do repo git não tem `package.json` (o app vive na subpasta `META_CONSTRUTOR-APP_REV - 2026/`); o Vercel precisa de *Root Directory* apontando para a subpasta.
 - **Trabalho não commitado identificado:** ajuste de preço Master (R$347), billing period no CTA do `/preco` e fix de decimal do Stripe (`percent_off` ≤ 2 casas) em 4 Edge Functions — pronto para commit.
+
+### 2026-08-28 — Validação PRD_AGENDAS_RDO (Agenda/Diário de RDO)
+
+- **Backend confirmado no remoto** (via MCP Supabase): migrations `rdo_nichos_agendas`, `rdo_nichos_complement`, `rdo_resumo_diario_rpc` + fixes de 28/08 aplicadas; RPCs `resumo_diario_nicho`/`resumo_diario_geral`/`auto_assign_agenda`/`seed_default_nichos`, tabelas `rdo_nichos`/`rdo_agendas` e colunas `rdos.nicho_id`/`agenda_id` presentes.
+- **Divergência arquitetural registrada:** resumo via RPC Postgres (não Edge Function); `RDOResumoModal` virou `RDOResumoGeralCard`.
+- **Gates 28/08:** lint 0 erros · 92/92 testes · build OK (120 rotas pré-renderizadas).
+- **Pendente:** smoke funcional autenticado (criar RDO com nicho → diário agrupado → resumo) + regressão de bundle (chunks >1MB: `react-spline` 2MB, `physics` 1.98MB, `index` 1.27MB).
+- **Observado no git (não validado a fundo nesta rodada):** Lixeira soft-delete de obras (`796eabb`), MFA real TOTP (`7dc89ab`), instrumentação de analytics auth/signup/checkout/cupom (`9e794f0`), SEO sitemap 93 rotas (`e3e005a`).

@@ -1,8 +1,14 @@
 # Release checklist
 
-Ultima atualizacao: 2026-05-22
+Ultima atualizacao: 2026-08-29
 
 Use este checklist antes de divulgar uma nova versao publica do Meta Construtor.
+
+## Estado atual (2026-08-29)
+
+- Gates verdes: lint 0 erros · 92/92 testes · build 120 rotas · deploy ao vivo (5 rotas HTTP 200).
+- Concluido: analytics eventos-padrao (PostHog/GA4), fix meta/prerender (sem preco falso), filtros globais do Admin (13 componentes), MFA TOTP, lixeira soft delete, sitemap 93 rotas.
+- Pendente (acao manual — ver secao 6): pagamento Stripe, Google OAuth, reset de senha, troca/cancelamento de plano, alerta Sentry + runbook, deploy tag `v1.1.0`.
 
 ## 1. Codigo
 
@@ -11,7 +17,7 @@ Use este checklist antes de divulgar uma nova versao publica do Meta Construtor.
 - [ ] Rodar `npm run lint`.
 - [ ] Rodar `npm run test`.
 - [ ] Rodar `npm run build`.
-- [ ] Confirmar que o build nao mostra chunk acima de 500 kB.
+- [ ] Confirmar chunks: `index` ~1,27MB aceito para MVP (otimizacao em TASK-018); demais chunks ok.
 
 ## 2. Ambiente
 

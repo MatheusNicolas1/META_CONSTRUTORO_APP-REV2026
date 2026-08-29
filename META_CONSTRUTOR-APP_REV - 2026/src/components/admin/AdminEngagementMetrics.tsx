@@ -5,17 +5,24 @@ import { Activity, Clock, UserX, CheckCircle } from "lucide-react";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useRequireOrg } from "@/hooks/requireOrg";
+import { matchesAdminTextFilter, useAdminFilters } from "./AdminFilters";
 
 const AdminEngagementMetrics = () => {
   const { orgId, isLoading: orgLoading } = useRequireOrg();
+  const { filters, sinceDate } = useAdminFilters();
   const { data: menuData, isLoading: loadingMenu } = useQuery({
-    queryKey: ['admin-menu-engagement'],
+    queryKey: ['admin-menu-engagement', filters.period],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('user_activity')
         .select('event_name')
-        .like('event_name', 'view_%')
-        .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
+        .like('event_name', 'view_%');
+
+      if (sinceDate) {
+        query = query.gte('created_at', sinceDate);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
 
@@ -39,21 +46,38 @@ const AdminEngagementMetrics = () => {
   });
 
   const { data: creditConsumption, isLoading: loadingCredit } = useQuery({
-    queryKey: ['admin-credit-consumption'],
+    queryKey: ['admin-credit-consumption', filters.period],
     queryFn: async () => {
-      // Buscar usuários e seus créditos
-      const { data: credits, error } = await supabase
+      // Buscar usuários e seus créditos (respeitando o período global)
+      let creditsQuery = supabase
         .from('user_credits')
-        .select('credits_balance, created_at, user_id');
+        .select('credits_balance, created_at, user_id, plan_type');
+
+      if (sinceDate) {
+        creditsQuery = creditsQuery.gte('created_at', sinceDate);
+      }
+
+      const { data: creditsData, error } = await creditsQuery;
 
       if (error) throw error;
 
+      // Aplicar filtro de plano (lado do cliente)
+      const credits = (creditsData || []).filter((c) =>
+        matchesAdminTextFilter(c.plan_type, filters.plan)
+      );
+
       // Buscar RDOs para calcular tempo médio de consumo (filtrado por org)
-      const { data: rdos } = await supabase
+      let rdosQuery = supabase
         .from('rdos')
         .select('criado_por_id, created_at')
         .eq('org_id', orgId)
         .limit(100);
+
+      if (sinceDate) {
+        rdosQuery = rdosQuery.gte('created_at', sinceDate);
+      }
+
+      const { data: rdos } = await rdosQuery;
 
       // Calcular média de dias para usar primeiro crédito
       const avgDays = rdos && credits ?
@@ -80,13 +104,24 @@ const AdminEngagementMetrics = () => {
   });
 
   const { data: onboardingData, isLoading: loadingOnboarding } = useQuery({
-    queryKey: ['admin-onboarding'],
+    queryKey: ['admin-onboarding', filters.period],
     queryFn: async () => {
-      const { data: profiles, error } = await supabase
+      let profilesQuery = supabase
         .from('profiles')
-        .select('has_seen_onboarding');
+        .select('has_seen_onboarding, plan_type');
+
+      if (sinceDate) {
+        profilesQuery = profilesQuery.gte('created_at', sinceDate);
+      }
+
+      const { data, error } = await profilesQuery;
 
       if (error) throw error;
+
+      // Aplicar filtro de plano (lado do cliente)
+      const profiles = (data || []).filter((p) =>
+        matchesAdminTextFilter(p.plan_type, filters.plan)
+      );
 
       const completed = profiles?.filter(p => p.has_seen_onboarding).length || 0;
       const total = profiles?.length || 0;

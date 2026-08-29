@@ -21,6 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import AdminEventTimeline from "./AdminEventTimeline";
+import { matchesAdminArrayFilter, matchesAdminTextFilter, useAdminFilters } from "./AdminFilters";
 
 type OrgMemberRow = {
   id: string;
@@ -70,16 +71,34 @@ const formatNumber = (value: number) => new Intl.NumberFormat("pt-BR").format(va
 
 export default function AdminOrganizationsMetrics() {
   const [selectedOrg, setSelectedOrg] = useState<OrgRow | null>(null);
+  const { filters, sinceDate } = useAdminFilters();
 
   const { data: orgs = [], isLoading, error } = useQuery({
-    queryKey: ["admin-organizations-metrics"],
+    queryKey: ["admin-organizations-metrics", filters],
     queryFn: async (): Promise<OrgRow[]> => {
+      let orgsQuery = supabase
+        .from("orgs")
+        .select("id, name, slug, owner_user_id, created_at, updated_at")
+        .order("created_at", { ascending: false })
+        .limit(200);
+
+      if (sinceDate) {
+        orgsQuery = orgsQuery.gte("created_at", sinceDate);
+      }
+
+      let eventsQuery = supabase
+        .from("analytics_events")
+        .select("org_id, event, route, source, utm_campaign, created_at")
+        .not("org_id", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(500);
+
+      if (sinceDate) {
+        eventsQuery = eventsQuery.gte("created_at", sinceDate);
+      }
+
       const [orgsRes, membersRes, usageRes, subscriptionsRes, eventsRes] = await Promise.all([
-        supabase
-          .from("orgs")
-          .select("id, name, slug, owner_user_id, created_at, updated_at")
-          .order("created_at", { ascending: false })
-          .limit(200),
+        orgsQuery,
         supabase
           .from("org_members")
           .select("id, org_id, user_id, role, status, created_at, joined_at")
@@ -93,12 +112,7 @@ export default function AdminOrganizationsMetrics() {
           .select("org_id, status, billing_cycle, plan_id, current_period_end")
           .order("created_at", { ascending: false })
           .limit(500),
-        supabase
-          .from("analytics_events")
-          .select("org_id, event, route, source, created_at")
-          .not("org_id", "is", null)
-          .order("created_at", { ascending: false })
-          .limit(500),
+        eventsQuery,
       ]);
 
       if (orgsRes.error) throw orgsRes.error;
@@ -147,11 +161,11 @@ export default function AdminOrganizationsMetrics() {
       (eventsRes.data || []).forEach((event: any) => {
         if (!event.org_id) return;
         const current = eventsByOrg.get(event.org_id) || [];
-        if (current.length < 20) current.push(event);
+        current.push(event);
         eventsByOrg.set(event.org_id, current);
       });
 
-      return (orgsRes.data || []).map((org: any) => {
+      const rows = (orgsRes.data || []).map((org: any) => {
         const usage = usageByOrg.get(org.id) || {};
         const subscription = subscriptionsByOrg.get(org.id);
         const plan = subscription?.plan_id ? plansById.get(subscription.plan_id) : null;
@@ -172,8 +186,26 @@ export default function AdminOrganizationsMetrics() {
           subscriptionStatus: subscription?.status || "no_subscription",
           planName: plan?.name || plan?.slug || null,
           members: membersByOrg.get(org.id) || [],
-          recentEvents: eventsByOrg.get(org.id) || [],
+          recentEvents: (eventsByOrg.get(org.id) || []).slice(0, 20),
         };
+      });
+
+      // Aplicar filtros globais (lado do cliente)
+      return rows.filter((org) => {
+        const events = eventsByOrg.get(org.id) || [];
+        const matchesOrg =
+          matchesAdminTextFilter(org.name, filters.org) ||
+          matchesAdminTextFilter(org.slug, filters.org) ||
+          matchesAdminTextFilter(org.id, filters.org);
+
+        return (
+          matchesOrg &&
+          matchesAdminTextFilter(org.planName, filters.plan) &&
+          matchesAdminArrayFilter(org.members.map((member) => member.role), filters.role) &&
+          matchesAdminArrayFilter(events.map((event) => event.source), filters.source) &&
+          matchesAdminArrayFilter(events.map((event) => event.utm_campaign), filters.campaign) &&
+          matchesAdminArrayFilter(events.map((event) => event.route), filters.route)
+        );
       });
     },
   });

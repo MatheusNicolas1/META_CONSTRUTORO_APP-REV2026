@@ -5,22 +5,34 @@ import { Users, TrendingUp, UserPlus } from "lucide-react";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useRequireOrg } from "@/hooks/requireOrg";
+import { matchesAdminTextFilter, useAdminFilters } from "./AdminFilters";
 
 const AdminAcquisitionMetrics = () => {
   const { orgId, isLoading: orgLoading } = useRequireOrg();
+  const { filters, sinceDate } = useAdminFilters();
   const { data: newUsersData, isLoading: loadingNewUsers } = useQuery({
-    queryKey: ['admin-new-users-30d'],
+    queryKey: ['admin-new-users-30d', filters.period],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('profiles')
-        .select('created_at')
-        .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+        .select('created_at, plan_type')
         .order('created_at', { ascending: true });
+
+      if (sinceDate) {
+        query = query.gte('created_at', sinceDate);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
 
+      // Aplicar filtro de plano (lado do cliente)
+      const profiles = (data || []).filter((profile) =>
+        matchesAdminTextFilter(profile.plan_type, filters.plan)
+      );
+
       // Agrupar por dia
-      const dailyData = data.reduce((acc: any[], profile) => {
+      const dailyData = profiles.reduce((acc: any[], profile) => {
         const date = new Date(profile.created_at).toLocaleDateString('pt-BR');
         const existing = acc.find(item => item.date === date);
         if (existing) {
@@ -32,28 +44,40 @@ const AdminAcquisitionMetrics = () => {
       }, []);
 
       return {
-        total: data.length,
+        total: profiles.length,
         dailyData: dailyData.slice(-7) // Últimos 7 dias
       };
     }
   });
 
   const { data: conversionData, isLoading: loadingConversion } = useQuery({
-    queryKey: ['admin-rdo-conversion'],
+    queryKey: ['admin-rdo-conversion', filters.period, orgId],
     queryFn: async () => {
-      // Total de usuários
-      const { count: totalUsers, error: userError } = await supabase
+      // Total de usuários (respeitando o período global)
+      let profilesQuery = supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true });
+
+      if (sinceDate) {
+        profilesQuery = profilesQuery.gte('created_at', sinceDate);
+      }
+
+      const { count: totalUsers, error: userError } = await profilesQuery;
 
       if (userError) throw userError;
 
       // Usuários que criaram pelo menos 1 RDO na org ativa
-      const { data: rdoUsers, error: rdoError } = await supabase
+      let rdosQuery = supabase
         .from('rdos')
         .select('criado_por_id')
         .eq('org_id', orgId)
         .limit(1000);
+
+      if (sinceDate) {
+        rdosQuery = rdosQuery.gte('created_at', sinceDate);
+      }
+
+      const { data: rdoUsers, error: rdoError } = await rdosQuery;
 
       if (rdoError) throw rdoError;
 

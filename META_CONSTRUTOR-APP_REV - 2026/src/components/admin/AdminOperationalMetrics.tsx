@@ -5,18 +5,26 @@ import { Building2, TrendingUp, DollarSign, Calendar, FileText, Users, Wrench } 
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { Progress } from "@/components/ui/progress";
 import { useRequireOrg } from "@/hooks/requireOrg";
+import { useAdminFilters } from "./AdminFilters";
 
 const AdminOperationalMetrics = () => {
     const { orgId, isLoading: orgLoading } = useRequireOrg();
+    const { filters, sinceDate } = useAdminFilters();
 
     const { data: metrics, isLoading } = useQuery({
-        queryKey: ['admin-operational-metrics', orgId],
+        queryKey: ['admin-operational-metrics', orgId, filters.period],
         queryFn: async () => {
             // Operational usage is shown as activation signal, not as the primary Admin KPI.
-            const { data: obras, error: obrasError } = await supabase
+            let obrasQuery = supabase
                 .from('obras')
                 .select('*')
                 .eq('org_id', orgId);
+
+            if (sinceDate) {
+                obrasQuery = obrasQuery.gte('created_at', sinceDate);
+            }
+
+            const { data: obras, error: obrasError } = await obrasQuery;
 
             if (obrasError) throw obrasError;
 
@@ -48,11 +56,17 @@ const AdminOperationalMetrics = () => {
 
 
             // 2. Orçamento Executado (Despesas Aprovadas na org ativa)
-            const { data: expenses, error: expenseError } = await supabase
+            let expensesQuery = supabase
                 .from('expenses')
                 .select('amount')
                 .eq('org_id', orgId)
                 .eq('approval_status', 'Approved');
+
+            if (sinceDate) {
+                expensesQuery = expensesQuery.gte('created_at', sinceDate);
+            }
+
+            const { data: expenses, error: expenseError } = await expensesQuery;
 
             // If chart/table doesn't exist, handle gracefully
             const orcamentoExecutado = expenses
@@ -60,9 +74,19 @@ const AdminOperationalMetrics = () => {
                 : 0;
 
             // 3. Totais (RDOs, Colaboradores, Equipamentos)
-            const { count: totalRDOs } = await supabase.from('rdos').select('*', { count: 'exact', head: true }).eq('org_id', orgId);
-            const { count: totalColaboradores } = await supabase.from('org_members').select('*', { count: 'exact', head: true }).eq('org_id', orgId);
-            const { count: totalEquipamentos } = await supabase.from('equipamentos').select('*', { count: 'exact', head: true }).eq('org_id', orgId || ''); // Fixed possible null orgId
+            let rdosCountQuery = supabase.from('rdos').select('*', { count: 'exact', head: true }).eq('org_id', orgId);
+            let colaboradoresCountQuery = supabase.from('org_members').select('*', { count: 'exact', head: true }).eq('org_id', orgId);
+            let equipamentosCountQuery = supabase.from('equipamentos').select('*', { count: 'exact', head: true }).eq('org_id', orgId || ''); // Fixed possible null orgId
+
+            if (sinceDate) {
+                rdosCountQuery = rdosCountQuery.gte('created_at', sinceDate);
+                colaboradoresCountQuery = colaboradoresCountQuery.gte('created_at', sinceDate);
+                equipamentosCountQuery = equipamentosCountQuery.gte('created_at', sinceDate);
+            }
+
+            const { count: totalRDOs } = await rdosCountQuery;
+            const { count: totalColaboradores } = await colaboradoresCountQuery;
+            const { count: totalEquipamentos } = await equipamentosCountQuery;
 
             return {
                 totalObras,

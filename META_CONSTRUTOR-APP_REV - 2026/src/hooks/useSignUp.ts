@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { track } from '@/integrations/analytics';
 import { toast } from 'sonner';
 import { getAffiliateCodeFromCookie, processAffiliateReferral } from '@/utils/affiliateTracker';
 
@@ -107,6 +108,9 @@ export const useSignUp = (): UseSignUpReturn => {
 
       const cleanPhone = data.phone.replace(/\D/g, '');
 
+      // Analytics: início do cadastro (funnel signup_started -> signup_completed)
+      track('auth.signup_started', { method: 'email_password', context: 'criar_conta' });
+
       // Criar usuário no Supabase Auth
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
@@ -169,6 +173,9 @@ export const useSignUp = (): UseSignUpReturn => {
       if (profileError || !profile) {
         throw new Error(GENERIC_SIGNUP_ERROR);
       }
+
+      // Analytics: cadastro concluído (conta criada + perfil confirmado)
+      track('auth.signup_completed', { method: 'email_password', context: 'criar_conta' });
 
       // Login automatico apos cadastro.
       const { error: signInError } = await supabase.auth.signInWithPassword({

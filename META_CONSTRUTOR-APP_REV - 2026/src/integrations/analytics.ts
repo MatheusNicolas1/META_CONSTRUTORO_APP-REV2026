@@ -2,6 +2,7 @@ import posthog from 'posthog-js'
 import { v4 as uuidv4 } from 'uuid'
 import { supabase } from '@/integrations/supabase/client'
 import { sanitizeAnalyticsProperties } from '@/utils/analyticsPrivacy'
+import { trackEvent as trackGA4Event } from './ga4'
 
 const POSTHOG_KEY = import.meta.env.VITE_POSTHOG_KEY
 const POSTHOG_HOST = import.meta.env.VITE_POSTHOG_HOST || 'https://app.posthog.com'
@@ -164,6 +165,11 @@ export const track = (eventName: string, properties: Record<string, any> = {}) =
     if (POSTHOG_KEY) {
         posthog.capture(eventName, finalProps)
     }
+
+    // GA4: despacha o mesmo evento para o Google Analytics 4.
+    // NO-OP gracioso se VITE_GA_MEASUREMENT_ID não estiver definido
+    // (initGA não roda e `initialized` permanece false no ga4.ts).
+    trackGA4Event(eventName, finalProps)
 
     if (IS_DEV) {
         console.debug('[Analytics] Event tracked:', eventName, finalProps)

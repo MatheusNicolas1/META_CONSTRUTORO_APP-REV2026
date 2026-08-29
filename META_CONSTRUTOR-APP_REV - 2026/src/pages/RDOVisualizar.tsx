@@ -31,6 +31,7 @@ import { useRequireOrg } from "@/hooks/requireOrg";
 import { useRDOs } from "@/hooks/useRDOs";
 import { useUserPermissions } from "@/hooks/useUserPermissions";
 import { supabase } from "@/integrations/supabase/client";
+import { track } from "@/integrations/analytics";
 import { triggerSuccessFeedback } from "@/hooks/useSuccessFeedback";
 import {
   Dialog,
@@ -107,6 +108,8 @@ const RDOVisualizar = () => {
       const result = await response.json();
       if (!response.ok) throw new Error(result.error?.message || 'Erro ao aprovar');
 
+      track('product.rdo_approved', { rdo_id: rdoId, org_id: orgId, status_to: 'APPROVED' });
+
       triggerSuccessFeedback('RDO aprovado');
       toast.success(`RDO aprovado por ${result.aprovador?.nome || 'você'}`);
       setShowApproveDialog(false);
@@ -148,6 +151,8 @@ const RDOVisualizar = () => {
 
       const result = await response.json();
       if (!response.ok) throw new Error(result.error?.message || 'Erro ao rejeitar');
+
+      track('product.rdo_rejected', { rdo_id: rdoId, org_id: orgId, status_to: 'REJECTED' });
 
       triggerSuccessFeedback('RDO rejeitado');
       toast.success('RDO rejeitado');

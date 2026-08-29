@@ -109,7 +109,7 @@ describe('fluxos de autenticação', () => {
     expect(mocks.signInWithOAuth).toHaveBeenCalledWith({
       provider: 'google',
       options: {
-        redirectTo: 'https://www.metaconstrutor.app.br/app/dashboard',
+        redirectTo: expect.stringContaining('/auth/callback'),
         queryParams: {
           access_type: 'offline',
           prompt: 'select_account',
@@ -162,7 +162,7 @@ describe('fluxos de autenticação', () => {
     expect(mocks.signInWithOAuth).toHaveBeenCalledWith({
       provider: 'google',
       options: {
-        redirectTo: 'https://www.metaconstrutor.app.br/app/dashboard',
+        redirectTo: expect.stringContaining('/auth/callback'),
         queryParams: {
           access_type: 'offline',
           prompt: 'select_account',

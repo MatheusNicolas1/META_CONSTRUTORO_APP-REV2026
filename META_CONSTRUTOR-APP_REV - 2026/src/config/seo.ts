@@ -317,7 +317,7 @@ export const seoPages = {
   preco2: page(
     "/preco2",
     "Planos e Preços 2 | Meta Construtor",
-    "Conheça os planos do Meta Construtor: Grátis, Básico (R$129,90/mês), Profissional (R$199,90/mês), Master (R$347/mês) e Enterprise (sob consulta). Comece grátis hoje.",
+    "Conheça os planos do Meta Construtor para engenheiros, construtoras e escritórios. Comece grátis e evolua conforme sua obra cresce.",
     [
       softwareJsonLd,
       faqJsonLd([
@@ -327,7 +327,7 @@ export const seoPages = {
         },
         {
           question: "Quanto custa o plano Profissional?",
-          answer: "O plano Profissional custa R$199,90/mês (ou R$1.919,04 no anual) e inclui 5 obras ativas e usuários ilimitados. O plano Básico sai por R$129,90/mês com 3 obras e o Master por R$347/mês com 15 obras.",
+          answer: "Os planos variam conforme o número de obras ativas, usuários e recursos. Consulte a página de planos para conferir os valores atualizados ou comece pelo plano Grátis para testar a plataforma sem custo.",
         },
         {
           question: "Posso mudar de plano depois?",

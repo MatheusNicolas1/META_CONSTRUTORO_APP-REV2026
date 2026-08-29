@@ -44,7 +44,7 @@ BACKLOG → READY → IN_EXECUTION → IMPLEMENTED → VALIDATING → DONE
 | TASK-006 | Admin: filtros globais (infra + 13 componentes) | PRD_ADMIN | P1 | ✅ DONE (0d836d8) |
 | TASK-007 | Admin: CTAs/analytics | PRD_ADMIN | P1 | ✅ DONE (9e794f0) |
 | TASK-008 | MFA + homologação usuário | PRD_USUARIO | P1 | ✅ DONE (7dc89ab) |
-| TASK-009 | Dashboard Canva | PRD_DASHBOARD | P2 | ⬜ ABERTO |
+| TASK-009 | Dashboard Canva | PRD_DASHBOARD | P2 | ✅ DONE (5 ciclos, 2026-05-31) |
 | TASK-010 | Lixeira soft delete | PRD_LIXEIRA | P2 | ✅ DONE (796eabb) |
 | TASK-011 | SEO sitemap/prerender | PRD_SEO | P2 | ✅ DONE (e3e005a) |
 | TASK-012 | RDO agrupamento dia/nicho + resumo via RPC Postgres + NumberTicker | PRD_AGENDAS_RDO | P2 | ✅ DONE (3a0afc1..70f1501) |

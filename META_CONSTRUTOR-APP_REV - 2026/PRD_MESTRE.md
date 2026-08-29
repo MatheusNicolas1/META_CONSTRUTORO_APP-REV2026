@@ -212,8 +212,9 @@ Origem principal: `PRD_DASHBOARD.md`.
 
 Estado mestre:
 
-- Planejado, aguardando execucao.
-- Nao existe baseline de implementacao concluida neste PRD.
+- Concluido: redesign Canva-like implementado em 5 ciclos (2026-05-28 a 2026-05-31) e deployado em producao (alias `www.metaconstrutor.app.br`). Build/smoke 320-1920px aprovados; evidencia em `docs/evidence/prd-dashboard-ciclo-*.md`.
+- Estrutura: `OptimizedDashboard.tsx` (hero + busca inline + atalhos rapidos + grid de recentes + `ActivityCalendarModern` lazy), `AppSidebar.tsx` em trilho fixo + painel expandido, `Logo.tsx` marca tipografica (`Balgeri`), `GlobalSearch.tsx` inline com `Ctrl+K`.
+- Pendencia manual: revisao visual do usuario em `/app/dashboard` (aprovacao final).
 
 Direcao aprovada:
 

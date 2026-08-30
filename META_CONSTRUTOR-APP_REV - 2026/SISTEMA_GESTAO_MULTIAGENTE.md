@@ -48,7 +48,7 @@ BACKLOG → READY → IN_EXECUTION → IMPLEMENTED → VALIDATING → DONE
 | TASK-010 | Lixeira soft delete | PRD_LIXEIRA | P2 | ✅ DONE (796eabb) |
 | TASK-011 | SEO sitemap/prerender | PRD_SEO | P2 | ✅ DONE (e3e005a) |
 | TASK-012 | RDO agrupamento dia/nicho + resumo via RPC Postgres + NumberTicker | PRD_AGENDAS_RDO | P2 | ✅ DONE (3a0afc1..70f1501) |
-| TASK-013 | VPS + n8n + WhatsApp | PRD_INTEGRACAO_VPS_N8N_WHATSAPP | Bloqueante | 🔒 BLOQUEADO (usuário) |
+| TASK-013 | VPS + n8n + WhatsApp | PRD_INTEGRACAO_VPS_N8N_WHATSAPP | Bloqueante | ⏸️ PÓS-LANÇAMENTO (usuário adiou) |
 | TASK-014 | Fix lint no-useless-escape | PRD.md | P1 | ✅ DONE (cc3a91b) |
 | TASK-015 | Prevenção claims sem fonte | PRD_falso | P2 | ✅ DONE (6b98e97) |
 | TASK-016 | Analytics eventos-padrão PostHog/GA4 | PLANO_LANCAMENTO P01#5 | P0 | ✅ DONE (970e98e; login/logout em AuthContext aguarda commit paralelo) |

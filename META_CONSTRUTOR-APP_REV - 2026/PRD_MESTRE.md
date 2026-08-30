@@ -329,6 +329,12 @@ Ao atualizar, manter a regra: concluido com evidencia vira baseline; aberto cont
 
 ## 7. Registro de atualizações recentes
 
+### 2026-08-30 — Validação de cupons (pré-Stripe) → GO
+
+- **Veredito GO:** sistema de cupons auditado ponta-a-ponta (5 Edge Functions + migrations + `AdminCoupons` + `CheckoutForm`). `validateCoupon`, `ensureStripeCoupon` (percent_off ≤2 casas), `discounts` e `increment_coupon_usage` (1×, sem duplicação) confirmados em todos os fluxos.
+- **Testes:** 9 existentes + 15 novos (`src/utils/couponValidation.ts` + `__tests__/couponValidation.test.ts`) = 24/24. Commit `29875da`.
+- **2 bugs menores não-bloqueadores:** (1) `computePercentOff` usa `Math.floor` (trunca) em vez de `Math.round` — só afeta percentuais fracionários raros; (2) cupom fixo > preço do plano vira R$0 (comportamento documentado §5.4).
+
 ### 2026-08-29 — Auditoria de QA + gates de lançamento (P01)
 
 - **QA do agente paralelo APROVADO:** lint 0 erros · 92/92 testes · build 120 rotas pré-renderizadas. 13/15 tasks DONE; spot-checks confirmaram entregáveis reais (MFA TOTP, lixeira soft delete, sitemap 93 rotas, regra ESLint `no-unsourced-claims`, instrumentação `analytics_events`).

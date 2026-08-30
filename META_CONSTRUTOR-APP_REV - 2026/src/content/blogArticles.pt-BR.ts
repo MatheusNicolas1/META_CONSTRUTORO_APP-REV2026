@@ -2585,7 +2585,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
     takeaways: [
       'Apps gratuitos de gestão de obras oferecem funcionalidades reais como RDO digital e controle financeiro básico sem custo de assinatura.',
       'A maioria das soluções gratuitas tem limitações de armazenamento, número de obras ou usuários — conhecer esses limites evita frustração.',
-      'O Meta Construtor oferece plano gratuito com RDO digital ilimitado e medição básica, ideal para construtoras em início de digitalização.',
+      'O Meta Construtor oferece plano gratuito com RDO digital (até 7 relatórios mensais) e medição básica, ideal para construtoras em início de digitalização.',
       'Para construtoras com mais de 3 obras simultâneas, o plano gratuito pode ser insuficiente — vale considerar o upgrade para plano pago.',
     ],
     sections: [
@@ -2605,7 +2605,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
         body:
           'Para ajudar na escolha, organizamos uma tabela comparativa com as principais opções gratuitas disponíveis no Brasil em 2026. A comparação considera funcionalidades gratuitas reais (não apenas trial temporário), limites de uso e o modelo de negócio de cada plataforma.',
         items: [
-          'Meta Construtor (freemium): RDO digital ilimitado com fotos, medição básica, 1 obra ativa, relatórios em PDF. Upgrade: a partir de R$ 129,90/mês.',
+          'Meta Construtor (freemium): RDO digital (até 7 relatórios mensais) com fotos, medição básica, 1 obra ativa, relatórios em PDF. Upgrade: a partir de R$ 129,90/mês.',
           'Obrafit (gratuito limitado): diário de obra básico, fotos e chat, 3 usuários. Plano gratuito sem suporte técnico.',
           'Sienge Free (gratuito limitado): controle financeiro básico, entrada e saída de caixa, extratos. 1 usuário. Ideal para controle de fluxo de caixa de pequenas construtoras.',
           'Planus (trial estendido): 30 dias grátis completos, depois funcionalidades limitadas de medição e contrato. Foco em obras públicas.',
@@ -2620,7 +2620,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
         image: {
           src: 'https://images.unsplash.com/photo-1664575198308-395c785550ae?w=1200&q=80',
           alt: 'Aplicativo Meta Construtor sendo usado em smartphone e tablet mostrando funcionalidades',
-          caption: 'O Meta Construtor oferece RDO digital ilimitado no plano gratuito — sem limite de relatórios',
+          caption: 'O Meta Construtor oferece RDO digital (até 7 relatórios mensais) no plano gratuito',
           credit: 'Unsplash',
         },
       },
@@ -2681,7 +2681,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
       {
         question: 'Qual o melhor app gratuito para RDO digital?',
         answer:
-          'O Meta Construtor oferece o melhor RDO digital gratuito do mercado brasileiro, com preenchimento ilimitado de relatórios diários, fotos georreferenciadas, assinatura digital e exportação em PDF profissional sem custo. É a opção mais completa para quem precisa de RDO digital de qualidade sem pagar nada.',
+          'O Meta Construtor oferece o melhor RDO digital gratuito do mercado brasileiro, com preenchimento de relatórios diários (até 7 por mês), fotos georreferenciadas, assinatura digital e exportação em PDF profissional sem custo. É a opção mais completa para quem precisa de RDO digital de qualidade sem pagar nada.',
       },
       {
         question: 'App gratuito de gestão de obras funciona offline?',
@@ -2707,7 +2707,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
     cta: {
       title: 'Comece grátis com o Meta Construtor hoje mesmo',
       description:
-        'O Meta Construtor oferece o plano gratuito mais completo do mercado: RDO digital ilimitado com fotos, medição básica e relatórios em PDF profissionais. Cadastre-se em 3 minutos e comece a digitalizar a gestão da sua obra sem pagar nada.',
+        'O Meta Construtor oferece o plano gratuito mais completo do mercado: RDO digital (até 7 relatórios mensais) com fotos, medição básica e relatórios em PDF profissionais. Cadastre-se em 3 minutos e comece a digitalizar a gestão da sua obra sem pagar nada.',
       label: 'Experimentar grátis',
       href: '/preco?utm_source=blog&utm_medium=artigo&utm_campaign=app-gestao-de-obras-gratuito&utm_content=cta-final',
     },
@@ -5055,7 +5055,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
         title: 'Comparativo: melhores diários de obra online grátis de 2026',
         body: 'Para ajudar na escolha, comparamos as principais opções gratuitas disponíveis no mercado brasileiro em 2026. A análise considera funcionalidades essenciais como RDO digital, fotos, checklists, relatórios e limites de uso na versão gratuita.',
         items: [
-          'Meta Construtor (Grátis): RDO digital ilimitado por obra, checklists, fotos georreferenciadas, relatórios em PDF. Limite: 1 obra ativa. Ideal para construtoras que querem testar antes de contratar.',
+          'Meta Construtor (Grátis): RDO digital (até 7 relatórios mensais) por obra, checklists, fotos georreferenciadas, relatórios em PDF. Limite: 1 obra ativa. Ideal para construtoras que querem testar antes de contratar.',
           'Planilha Google Sheets: 100% grátis, acesso compartilhado, templates prontos. Limitação: sem fotos integradas, sem assinatura digital, sem relatórios automáticos. Ideal para obras muito pequenas com orçamento zero.',
           'Trello + Google Drive: Gerenciamento visual com cards para cada dia, fotos no Drive vinculado. Limitação: não é específico para obras, sem campos técnicos (clima, equipe, medição). Ideal para quem já usa Trello e quer uma adaptação rápida.',
           'Notion template de obra: Modelo colaborativo com banco de dados, checklists e documentação. Limitação: requer configuração, sem georreferenciamento, sem assinatura eletrônica. Ideal para obras com equipe jovem e familiaridade com tecnologia.',
@@ -5121,7 +5121,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
       },
       {
         title: 'O Meta Construtor como diário de obra online gratuito',
-        body: 'O Meta Construtor oferece um plano gratuito completo para quem quer começar com o pé direito sem investir nada. O plano free inclui RDO digital ilimitado para uma obra ativa, checklists inteligentes por serviço, fotos georreferenciadas com metadata (data, hora, GPS), geração de relatórios em PDF e suporte em português. A grande vantagem em relação a planilhas ou ferramentas genéricas é que o Meta Construtor foi desenvolvido especificamente para a construção civil brasileira, com terminologia técnica, checklists prontos baseados em NR-18 e integração com medição e faturamento. Isso significa que, quando você decidir migrar para o plano pago, todos os dados da sua obra já estarão organizados e compatíveis — sem perda de informações ou retrabalho.',
+        body: 'O Meta Construtor oferece um plano gratuito completo para quem quer começar com o pé direito sem investir nada. O plano free inclui RDO digital (até 7 relatórios mensais) para uma obra ativa, checklists inteligentes por serviço, fotos georreferenciadas com metadata (data, hora, GPS), geração de relatórios em PDF e suporte em português. A grande vantagem em relação a planilhas ou ferramentas genéricas é que o Meta Construtor foi desenvolvido especificamente para a construção civil brasileira, com terminologia técnica, checklists prontos baseados em NR-18 e integração com medição e faturamento. Isso significa que, quando você decidir migrar para o plano pago, todos os dados da sua obra já estarão organizados e compatíveis — sem perda de informações ou retrabalho.',
       },
     ],
     faq: [
@@ -6485,7 +6485,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
         title: 'Comparativo: os melhores apps grátis de diário de obra em 2026',
         body: 'Para ajudar na escolha, organizamos uma tabela comparativa com as principais opções gratuitas disponíveis em 2026. Cada app foi avaliado nos critérios essenciais para o registro de obras: funcionalidades do plano grátis, limites de fotos, número de obras ativas, exportação de relatórios e suporte a múltiplos usuários. Vale lembrar que os planos gratuitos mudam com frequência — o ideal é sempre verificar o site oficial antes de se decidir.',
         items: [
-          'Meta Construtor — Grátis: 7 dias trial completo, depois plano free com 1 obra ativa, RDO ilimitado, fotos sem limite, relatórios em PDF. Ideal para testar antes de contratar.',
+          'Meta Construtor — Grátis: plano free com 1 obra ativa, 1 usuário, RDO digital (até 7 relatórios mensais), fotos sem limite, relatórios em PDF. Ideal para testar antes de contratar.',
           'Projetou — Grátis: 1 obra ativa, registros diários ilimitados, até 10 fotos por dia, relatório básico em PDF. Limitação de fotos pode ser um problema em obras maiores.',
           'ConstruApp — Grátis: 2 obras ativas, 20 fotos por dia, checklist básico incluso, exportação em PDF e CSV. Interface simples, boa para quem está começando.',
           'Obra Fácil — Grátis: 1 obra, registros ilimitados, fotos ilimitadas, sem relatório exportável (só visualização no app). Bom para registrar, ruim para compartilhar.',
@@ -6568,7 +6568,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
     cta: {
       title: 'Experimente o Meta Construtor grátis por 7 dias',
       description:
-        'Que tal testar uma plataforma completa de gestão de obras — com RDO digital ilimitado, fotos sem restrição, relatórios automáticos e integração com medição e cronograma? Comece seu trial gratuito hoje e veja como o Meta Construtor pode transformar o registro da sua obra sem burocracia.',
+        'Que tal testar uma plataforma completa de gestão de obras — com RDO digital (até 7 relatórios mensais), fotos sem restrição, relatórios automáticos e integração com medição e cronograma? Comece pelo plano gratuito hoje e veja como o Meta Construtor pode transformar o registro da sua obra sem burocracia.',
       label: 'Começar grátis',
       href: '/preco?utm_source=blog&utm_medium=artigo&utm_campaign=diario-de-obra-app-gratis&utm_content=cta-final',
     },

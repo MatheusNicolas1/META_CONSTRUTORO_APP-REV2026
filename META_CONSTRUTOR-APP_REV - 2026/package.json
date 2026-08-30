@@ -60,8 +60,6 @@
     "@remotion/cli": "^4.0.473",
     "@remotion/player": "^4.0.473",
     "@sentry/react": "^8.0.0",
-    "@splinetool/react-spline": "^4.1.0",
-    "@splinetool/runtime": "^1.12.97",
     "@stripe/react-stripe-js": "^2.7.1",
     "@stripe/stripe-js": "^3.4.0",
     "@supabase/supabase-js": "^2.98.0",

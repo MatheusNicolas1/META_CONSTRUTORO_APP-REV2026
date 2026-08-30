@@ -56,6 +56,8 @@ BACKLOG → READY → IN_EXECUTION → IMPLEMENTED → VALIDATING → DONE
 | TASK-018 | Bundle: react-spline/physics já removidos; residual index 1,27MB (otimização) | PRD_AGENDAS_RDO pendência | P2 | ⬜ ABERTO (não-bloqueante) |
 | TASK-019 | FALSO-057: preços desatualizados em generate-v2-pages.mjs | PRD_falso | P2 | ✅ DONE (bcd04b4) |
 | TASK-020 | Google OAuth PKCE + "lembrar conta" | PLANO_LANCAMENTO P01#3 | P1 | 🔄 agente paralelo (5833172 + WIP) |
+| TASK-021 | Alerta Sentry real + runbook (P01#2) | PLANO_LANCAMENTO P01#2 | P0 | ✅ DONE (verif. 29/08 via MCP: 2 regras enabled + email + lastTriggered 10/06; runbook atualizado) |
+| TASK-022 | BUG-REG-001 useSignUp (3 testes) | Gate testes verdes (P01#7) | P0 | ✅ RESOLVIDO 30/08 (EXECUTIVA): causa raiz = commit 970e98e (analytics track→.insert sem mock), NÃO auth 5833172; fix só no teste; suite 107/107, lint 0 err, build OK |
 
 ## Regras de entrega
 

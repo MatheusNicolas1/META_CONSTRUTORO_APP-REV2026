@@ -9,6 +9,7 @@ const mocks = vi.hoisted(() => ({
   maybeSingle: vi.fn(),
   toastError: vi.fn(),
   toastSuccess: vi.fn(),
+  track: vi.fn(),
 }));
 
 vi.mock('@/integrations/supabase/client', () => ({
@@ -37,6 +38,12 @@ vi.mock('sonner', () => ({
   },
 }));
 
+// Analytics: isolar o teste do efeito colateral de persistência
+// (track() chama supabase.from('analytics_events').insert, fora do mock)
+vi.mock('@/integrations/analytics', () => ({
+  track: mocks.track,
+}));
+
 describe('useSignUp', () => {
   const validData = {
     name: 'Usuario Teste',
@@ -57,6 +64,7 @@ describe('useSignUp', () => {
     mocks.maybeSingle.mockReset().mockResolvedValue({ data: { id: 'user-1' }, error: null });
     mocks.toastError.mockReset();
     mocks.toastSuccess.mockReset();
+    mocks.track.mockReset();
   });
 
   it('cria conta usando o redirect autenticado correto', async () => {

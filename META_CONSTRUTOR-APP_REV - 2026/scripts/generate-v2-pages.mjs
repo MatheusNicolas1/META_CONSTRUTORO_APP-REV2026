@@ -193,7 +193,7 @@ Return ONLY the COMPLETE TypeScript/React component code wrapped in \`\`\`tsx ..
 1. **HERO** — Clean hero with animated gradient text: "Planos que cabem na sua obra". Subheading explaining value proposition. Minimal — just headline + subtitle + subtle background gradient animation.
 2. **TOGGLE MENSAL/ANUAL** — Toggle switch between Monthly and Annual billing. Annual has a badge "Economize 20%" with animated sparkle/pulse. Use Framer Motion layoutAnimation for smooth toggle.
 3. **PRICING CARDS** — 3 cards side by side (desktop): Grátis, Profissional (★ destaque), Enterprise.
-   - IMPORTANTE: NÃO hardcodar preços — buscar de `src/hooks/usePlans.ts` (monthly_price_cents). Fonte única de verdade.
+   - IMPORTANTE: NÃO hardcodar preços — buscar de \`src/hooks/usePlans.ts\` (monthly_price_cents). Fonte única de verdade.
    - Grátis (R$ 0/mês): Features básicas, 1 obra, 3 usuários
    - Profissional: Tudo do Grátis + obras ilimitadas, RDO digital, checklists, relatórios
    - Enterprise: Tudo do Pro + customizações, integrações, suporte prioritário, SLA

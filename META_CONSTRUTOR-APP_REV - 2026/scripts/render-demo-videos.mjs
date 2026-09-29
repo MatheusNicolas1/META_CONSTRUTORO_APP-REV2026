@@ -1,6 +1,6 @@
 // Renderiza os vídeos demonstrativos (src/remotion/clips.ts) em public/videos/<id>.mp4 + pôster .jpg.
 //
-// Uso: node scripts/render-demo-videos.mjs [id ...]
+// Uso: node scripts/render-demo-videos.mjs [--poster-only] [id ...]
 //   REMOTION_BROWSER=/caminho/chrome-headless-shell  (opcional; senão o Remotion baixa o próprio)
 //   INTER_FONT_DIR=/caminho/com/inter-latin-{400,600,800}-normal.woff2  (opcional;
 //     padrão node_modules/@fontsource/inter/files — sem a fonte, o vídeo usa a fonte do sistema)
@@ -12,7 +12,10 @@ import { tmpdir } from "node:os";
 const root = resolve(".");
 const clipsSource = readFileSync(resolve("src/remotion/clips.ts"), "utf8");
 const allIds = [...clipsSource.matchAll(/^  '([a-z0-9-]+)': \{/gm)].map((match) => match[1]);
-const ids = process.argv.slice(2).length ? process.argv.slice(2) : allIds;
+const args = process.argv.slice(2);
+const posterOnly = args.includes("--poster-only");
+const requested = args.filter((arg) => !arg.startsWith("--"));
+const ids = requested.length ? requested : allIds;
 
 // Public dir temporário: prints usados nos roteiros + fonte Inter.
 const publicDir = mkdtempSync(join(tmpdir(), "mc-remotion-"));
@@ -37,9 +40,9 @@ try {
   for (const id of ids) {
     const video = `public/videos/${id}.mp4`;
     const poster = `public/videos/${id}.jpg`;
-    remotion(["render", "src/remotion/index.ts", id, video, "--codec=h264", "--crf=30", "--pixel-format=yuv420p"]);
-    // Pôster: quadro com a primeira tela já nítida (depois do título, quando houver).
-    const posterFrame = id === "tour-produto" ? 95 : 40;
+    if (!posterOnly) remotion(["render", "src/remotion/index.ts", id, video, "--codec=h264", "--crf=30", "--pixel-format=yuv420p"]);
+    // Pôster: primeira tela já nítida (depois do título, quando houver) e antes de o zoom cortar o topo.
+    const posterFrame = id === "tour-produto" ? 70 : 40;
     remotion(["still", "src/remotion/index.ts", id, poster, `--frame=${posterFrame}`, "--image-format=jpeg", "--jpeg-quality=82"]);
     const kb = (file) => Math.round(statSync(resolve(file)).size / 1024);
     console.log(`${id}: ${kb(video)} KB (mp4) · ${kb(poster)} KB (pôster)`);

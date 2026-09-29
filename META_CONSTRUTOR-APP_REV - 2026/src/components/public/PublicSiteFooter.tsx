@@ -16,8 +16,13 @@ export default function PublicSiteFooter({ onPendingRoute, showStatus = false }:
       <div className="container mx-auto max-w-7xl px-4 py-14 sm:px-6 md:py-20">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
-            <Link to={routes.home.path} aria-label="Meta Construtor, página inicial" className="inline-flex">
-              <Logo size="md" className="text-neutral-200" />
+            {/* "META" usa azul-escuro fixo no Logo; clareado aqui para contraste no fundo escuro. */}
+            <Link
+              to={routes.home.path}
+              aria-label="Meta Construtor, página inicial"
+              className="inline-flex [&_span:first-child]:text-neutral-100"
+            >
+              <Logo size="md" />
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed">
               Plataforma de gestão de obras para construtoras brasileiras. RDO digital, checklists, equipes, documentos e

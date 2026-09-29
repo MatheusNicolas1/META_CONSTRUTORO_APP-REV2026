@@ -107,16 +107,16 @@ const routes = [
     priorityType: "Article",
     faqs: [
       {
-        question: "O que e um RDO?",
-        answer: "RDO e o Relatorio Diario de Obra, usado para registrar diariamente atividades, equipe, clima, materiais, ocorrencias, fotos e pendencias de uma obra.",
+        question: "O que é um RDO?",
+        answer: "RDO é o Relatório Diário de Obra, usado para registrar diariamente atividades, equipe, clima, materiais, ocorrências, fotos e pendências de uma obra.",
       },
       {
-        question: "RDO e obrigatorio?",
-        answer: "A obrigatoriedade depende do contrato, do tipo de obra e das exigencias tecnicas ou de gestao. Mesmo quando nao e exigido formalmente, o RDO e uma boa pratica para rastreabilidade.",
+        question: "RDO é obrigatório?",
+        answer: "A obrigatoriedade depende do contrato, do tipo de obra e das exigências técnicas ou de gestão. Mesmo quando não é exigido formalmente, o RDO é uma boa prática para rastreabilidade.",
       },
       {
-        question: "Qual a diferenca entre RDO e diario de obra?",
-        answer: "Na pratica, os termos costumam ser usados para registros parecidos. RDO destaca o relatorio diario; diario de obra pode ser usado de forma mais ampla para o historico continuo da obra.",
+        question: "Qual a diferença entre RDO e diário de obra?",
+        answer: "Na prática, os termos costumam ser usados para registros parecidos. RDO destaca o relatório diário; diário de obra pode ser usado de forma mais ampla para o histórico contínuo da obra.",
       },
     ],
   },
@@ -127,16 +127,16 @@ const routes = [
     priorityType: "Article",
     faqs: [
       {
-        question: "O que e RDOS?",
-        answer: "RDOS, geralmente escrito como RDOs, e o plural de RDO. No contexto de obras, significa varios Relatorios Diarios de Obra.",
+        question: "O que é RDOS?",
+        answer: "RDOS, geralmente escrito como RDOs, é o plural de RDO. No contexto de obras, significa vários Relatórios Diários de Obra.",
       },
       {
-        question: "RDOs e diferente de RDO?",
-        answer: "Nao no conceito principal. RDO e um relatorio; RDOs sao varios relatorios ou uma colecao de registros diarios.",
+        question: "RDOs é diferente de RDO?",
+        answer: "Não no conceito principal. RDO é um relatório; RDOs são vários relatórios ou uma coleção de registros diários.",
       },
       {
         question: "Como procurar RDOs antigos?",
-        answer: "O ideal e buscar por obra, data, responsavel, status, ocorrencia ou anexo. Em planilhas e pastas soltas, essa busca costuma ser mais lenta.",
+        answer: "O ideal é buscar por obra, data, responsável, status, ocorrência ou anexo. Em planilhas e pastas soltas, essa busca costuma ser mais lenta.",
       },
     ],
   },
@@ -148,15 +148,15 @@ const routes = [
     faqs: [
       {
         question: "O que significa RDO na polícia?",
-        answer: "No contexto policial, RDO costuma significar Registro Digital de Ocorrencia, ligado ao registro digital de boletins e ocorrencias.",
+        answer: "No contexto policial, RDO costuma significar Registro Digital de Ocorrência, ligado ao registro digital de boletins e ocorrências.",
       },
       {
-        question: "RDO da policia e o mesmo que RDO de obra?",
-        answer: "Nao. RDO da policia esta ligado a ocorrencia policial. RDO de obra e o Relatorio Diario de Obra usado na construcao civil.",
+        question: "RDO da polícia é o mesmo que RDO de obra?",
+        answer: "Não. RDO da polícia está ligado à ocorrência policial. RDO de obra é o Relatório Diário de Obra usado na construção civil.",
       },
       {
         question: "Onde consultar RDO policial?",
-        answer: "Para informacoes policiais, procure os canais oficiais da Policia Civil ou da Secretaria de Seguranca Publica do seu estado.",
+        answer: "Para informações policiais, procure os canais oficiais da Polícia Civil ou da Secretaria de Segurança Pública do seu estado.",
       },
     ],
   },
@@ -168,15 +168,15 @@ const routes = [
     faqs: [
       {
         question: "O que é um RDO de empresa?",
-        answer: "E um relatorio diario usado pela empresa para registrar rotina, atividades, equipe, ocorrencias, evidencias e pendencias de uma operacao ou obra.",
+        answer: "É um relatório diário usado pela empresa para registrar rotina, atividades, equipe, ocorrências, evidências e pendências de uma operação ou obra.",
       },
       {
         question: "Toda empresa precisa de RDO?",
-        answer: "Nem toda empresa usa esse nome, mas operacoes com campo, obra, equipe externa ou servicos recorrentes costumam se beneficiar de algum registro diario padronizado.",
+        answer: "Nem toda empresa usa esse nome, mas operações com campo, obra, equipe externa ou serviços recorrentes costumam se beneficiar de algum registro diário padronizado.",
       },
       {
         question: "RDO ajuda no controle de custo?",
-        answer: "Sim, quando registra equipe, equipamentos, retrabalho, paradas, materiais e ocorrencias que impactam prazo ou produtividade.",
+        answer: "Sim, quando registra equipe, equipamentos, retrabalho, paradas, materiais e ocorrências que impactam prazo ou produtividade.",
       },
     ],
   },

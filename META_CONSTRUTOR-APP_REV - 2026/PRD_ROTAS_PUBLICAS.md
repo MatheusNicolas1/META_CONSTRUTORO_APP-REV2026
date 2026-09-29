@@ -123,6 +123,12 @@ O conector Hugging Face desta sessão está com a execução de Spaces desligada
 - Auditoria Playwright da home em 1440/820/390 px: 0 sobreposições; itens fora da tela restantes são esperados (slides do carrossel, tabela de `/preco` com rolagem horizontal no celular).
 - `tsc` sem erros; ESLint sem erros (1 aviso react-refresh em `ProductClip.tsx`); `vitest` 107/107; `check-unsourced-claims` OK; `npm run build` OK (sitemap 106 rotas, 138 páginas pré-renderizadas).
 
+### Deploy oficial (aprovado pelo dono em 2026-09-29)
+
+- O domínio `www.metaconstrutor.app.br` fica no projeto `meta-construtor-app-rev-2026` (escopo `meta-construtors-projects`), fora do alcance do conector Vercel desta sessão; e o código em produção (commit `a2f4c0d`) só existe no master local do dono. Por isso o deploy roda no PC dele.
+- Script: `node scripts/deploy-producao.mjs` (na pasta do app, no master). Envia o master ao GitHub, junta a branch `claude/elegant-mayer-ok0ydp`, roda testes/claims/build, confere o projeto do domínio e guarda o deploy atual, faz uma prévia, pede `PUBLICAR`, publica com `vercel deploy --prod` e envia o master. Em conflito ou falha, para sem publicar e mostra como desfazer.
+- Rollback: `npx vercel rollback <dpl_... guardado pelo script>` ou Instant Rollback no painel.
+
 ### Pendente de decisão do dono
 
 - Confirmar: "resposta em até 4 horas úteis", "dados por 30 dias para exportação", emissão de nota fiscal, itens do Enterprise (SLA 99,9%, on-premise, SSO, white label) e o texto de teste de 14 dias em `CheckoutCancel.tsx`/`components/pricing/FaqSection.tsx`.

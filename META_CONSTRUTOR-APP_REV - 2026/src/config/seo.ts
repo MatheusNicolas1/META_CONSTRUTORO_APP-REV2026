@@ -295,6 +295,14 @@ export const seoPages = {
     "noindex,nofollow"
   ),
 
+  demoNavegacao: page(
+    "/demo/navegacao",
+    "Prévia de navegação | Meta Construtor",
+    "Prévia interna da nova arquitetura de navegação das páginas públicas.",
+    [],
+    "noindex,nofollow"
+  ),
+
   // ── V2 Pages ──
 
   home2: page(

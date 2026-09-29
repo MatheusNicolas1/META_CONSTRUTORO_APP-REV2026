@@ -326,6 +326,9 @@ const BlogArticle = lazy(() =>
   }))
 );
 
+// ── Prévias de homologação (noindex) ──
+const DemoNavegacao = lazy(() => import('@/pages/demo/DemoNavegacao'));
+
 // ── V2 Pages ──
 const Home2 = lazy(() =>
   import('@/pages-gemini/Home2').then(module => ({
@@ -533,6 +536,8 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/sobre" element={<SafeSuspense fallback={null}><Sobre /></SafeSuspense>} />
                       <Route path="/contato" element={<SafeSuspense fallback={null}><Contato /></SafeSuspense>} />
                       <Route path="/preco" element={<SafeSuspense fallback={null}><Preco /></SafeSuspense>} />
+                      {/* Prévias de homologação (noindex, fora do sitemap) */}
+                      <Route path="/demo/navegacao" element={<SafeSuspense fallback={null}><DemoNavegacao /></SafeSuspense>} />
                       {/* Rotas V2 */}
                       <Route path="/home2" element={<SafeSuspense fallback={null}><Home2 /></SafeSuspense>} />
                       <Route path="/preco2" element={<SafeSuspense fallback={null}><Preco2 /></SafeSuspense>} />

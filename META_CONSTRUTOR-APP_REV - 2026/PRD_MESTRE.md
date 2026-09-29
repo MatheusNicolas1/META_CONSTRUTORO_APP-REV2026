@@ -53,6 +53,7 @@ Regra de continuidade:
 ||| `PRD_DEPLOY_VERCEL.md` | Diagnóstico de deploys UNKNOWN na Vercel (20+ deploys travados) | EM EXECUÇÃO — 2026-06-13 — aguardando limpeza de cache no Dashboard + deploy fresco |
 |||| `docs/PRD_DIAGNOSTICO_DEPLOY_VERCEL.md` | Diagnóstico final da causa raiz: branch master sem package.json no HEAD b349e1b + repositório Android separado | EM DIAGNÓSTICO — 2026-06-13 — aguardando commit corretivo + push |
 |||| `PRD_PROXIMOS_PASSOS.md` | Roadmap consolidado de próximos passos + MCPs e skills recomendados (pesquisa Firecrawl + catálogo Hermes) | CRIADO 2026-08-28 — prioridades P0/P1/P2 e infra de MCPs |
+| `PRD_ROTAS_PUBLICAS.md` | Arquitetura de informação das páginas públicas (benchmark Canva): menu por intenção, `/funcionalidades/*`, `/solucoes/*`, `/modelos`, temas do blog e consolidação de rotas duplicadas | PROPOSTA EM HOMOLOGAÇÃO 2026-09-29 — prévia em `/demo/navegacao` (noindex); nenhuma rota publicada alterada; aguardando validação |
 
 ## 3. Baselines adotados como corretos
 
@@ -314,6 +315,7 @@ Use este roteamento:
 - **RDOs agrupados por dia, nichos, resumo diario por nicho ou geral: consultar `PRD_AGENDAS_RDO.md`.**
 - **Definição de nichos de RDO baseados nos módulos reais: consultar `PRD_NICHOS_RDO.md`.**
 - **Próximos passos, roadmap consolidado, MCPs e skills recomendados: consultar `PRD_PROXIMOS_PASSOS.md`.**
+- **Menu, rodapé, novas rotas públicas, temas do blog e consolidação de URLs: consultar `PRD_ROTAS_PUBLICAS.md` e `src/config/publicRoutes.ts`.**
 
 ## 6. Proxima manutencao deste mestre
 

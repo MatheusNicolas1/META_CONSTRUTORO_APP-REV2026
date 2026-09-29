@@ -1,6 +1,8 @@
 // Deploy oficial da rodada 2 das páginas públicas (branch claude/elegant-mayer-ok0ydp).
 //
-// Rodar no PC que tem o master de produção, dentro da pasta do app:
+// Rodar no PC que tem o master de produção, dentro da pasta do app, a partir da própria branch
+// (o script troca para o master sozinho):
+//   git fetch origin && git checkout claude/elegant-mayer-ok0ydp && git pull
 //   node scripts/deploy-producao.mjs [--rollback-id=dpl_...]
 //
 // Etapas (para na primeira falha, sem publicar nada pela metade):
@@ -35,8 +37,8 @@ const ask = async (question) => {
 };
 
 // 1. Pré-condições e backup do master no GitHub.
-if (read("git rev-parse --abbrev-ref HEAD") !== "master") fail("Mude para o master antes: git checkout master");
 if (read("git status --porcelain --untracked-files=no")) fail("Há alterações não commitadas. Faça commit ou stash antes.");
+run("git checkout master");
 const before = read("git rev-parse HEAD");
 const undo = `git reset --hard ${before}`;
 try {

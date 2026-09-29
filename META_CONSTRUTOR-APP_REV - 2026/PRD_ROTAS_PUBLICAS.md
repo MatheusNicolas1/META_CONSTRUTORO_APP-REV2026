@@ -126,7 +126,7 @@ O conector Hugging Face desta sessão está com a execução de Spaces desligada
 ### Deploy oficial (aprovado pelo dono em 2026-09-29)
 
 - O domínio `www.metaconstrutor.app.br` fica no projeto `meta-construtor-app-rev-2026` (escopo `meta-construtors-projects`), fora do alcance do conector Vercel desta sessão; e o código em produção (commit `a2f4c0d`) só existe no master local do dono. Por isso o deploy roda no PC dele.
-- Script: `node scripts/deploy-producao.mjs` (na pasta do app, no master). Envia o master ao GitHub, junta a branch `claude/elegant-mayer-ok0ydp`, roda testes/claims/build, confere o projeto do domínio e guarda o deploy atual, faz uma prévia, pede `PUBLICAR`, publica com `vercel deploy --prod` e envia o master. Em conflito ou falha, para sem publicar e mostra como desfazer.
+- Script: `node scripts/deploy-producao.mjs` (na pasta do app, a partir da branch; ele troca para o master). Envia o master ao GitHub, junta a branch `claude/elegant-mayer-ok0ydp`, roda testes/claims/build, confere o projeto do domínio e guarda o deploy atual, faz uma prévia, pede `PUBLICAR`, publica com `vercel deploy --prod` e envia o master. Em conflito ou falha, para sem publicar e mostra como desfazer.
 - Rollback: `npx vercel rollback <dpl_... guardado pelo script>` ou Instant Rollback no painel.
 
 ### Pendente de decisão do dono

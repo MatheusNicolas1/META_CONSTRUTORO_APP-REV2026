@@ -2,8 +2,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import SEO from "@/components/SEO";
 import type { SeoConfig } from "@/config/seo";
-import LandingNavigation from "@/components/landing/LandingNavigation";
-import FooterSection from "@/components/landing/FooterSection";
+import MarketingShell from "@/components/public/MarketingShell";
 
 interface LegalPageLayoutProps {
   seo: SeoConfig;
@@ -25,9 +24,9 @@ const LegalPageLayout = ({
   return (
     <>
       <SEO {...seo} />
-      <LandingNavigation />
+      <MarketingShell>
 
-      <main className="min-h-screen bg-background pt-28">
+      <main className="min-h-screen bg-background pt-16">
         <section className="border-b border-border bg-[#fbfaf7] px-4 py-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
             <nav className="mb-8 text-sm text-muted-foreground" aria-label="Breadcrumb">
@@ -56,7 +55,7 @@ const LegalPageLayout = ({
         </section>
       </main>
 
-      <FooterSection />
+      </MarketingShell>
     </>
   );
 };

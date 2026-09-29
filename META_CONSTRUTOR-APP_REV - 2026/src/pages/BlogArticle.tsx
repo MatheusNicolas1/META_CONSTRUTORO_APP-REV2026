@@ -6,8 +6,7 @@ import { NavigationSafety } from '@/utils/navigationSafety';
 import SEO from '@/components/SEO';
 import { loadBlogArticles } from '@/content/blogArticles';
 import { seoPages } from '@/config/seo';
-import LandingNavigation from '@/components/landing/LandingNavigation';
-import FooterSection from '@/components/landing/FooterSection';
+import MarketingShell from '@/components/public/MarketingShell';
 import { Button } from '@/components/ui/button';
 import { track } from '@/integrations/analytics';
 import type { BlogArticle } from '@/content/blogArticles';
@@ -62,15 +61,15 @@ const BlogArticle = () => {
   if (loading) {
     return (
       <div className="force-light-blog">
-        <LandingNavigation />
-        <main className="min-h-screen bg-background px-4 pb-20 pt-32 sm:px-6 lg:px-8">
+        <MarketingShell>
+        <main className="min-h-screen bg-background px-4 pb-20 pt-28 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
             <div className="h-8 w-48 animate-pulse rounded bg-muted" />
             <div className="mt-8 h-12 w-3/4 animate-pulse rounded bg-muted" />
             <div className="mt-4 h-6 w-full animate-pulse rounded bg-muted" />
           </div>
         </main>
-        <FooterSection />
+        </MarketingShell>
       </div>
     );
   }
@@ -79,8 +78,8 @@ const BlogArticle = () => {
     return (
       <div className="force-light-blog">
         <SEO {...seoPages.blog} robots="noindex,follow" />
-        <LandingNavigation />
-        <main className="min-h-screen bg-background px-4 pb-20 pt-32 sm:px-6 lg:px-8">
+        <MarketingShell>
+        <main className="min-h-screen bg-background px-4 pb-20 pt-28 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
             <button onClick={() => NavigationSafety.safeNavigate(navigate, '/blog')} className="inline-flex items-center gap-2 text-sm font-medium text-primary cursor-pointer">
               <ArrowLeft className="h-4 w-4" />
@@ -94,7 +93,7 @@ const BlogArticle = () => {
             </p>
           </div>
         </main>
-        <FooterSection />
+        </MarketingShell>
       </div>
     );
   }
@@ -122,9 +121,9 @@ const BlogArticle = () => {
   return (
     <div className="force-light-blog">
       <SEO {...seo} />
-      <LandingNavigation />
+      <MarketingShell>
 
-      <main className="min-h-screen bg-background pt-28">
+      <main className="min-h-screen bg-background pt-16">
         <article>
           <header className="border-b border-border bg-[#fbfaf7] px-4 py-12 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-4xl">
@@ -241,7 +240,7 @@ const BlogArticle = () => {
         </article>
       </main>
 
-      <FooterSection />
+      </MarketingShell>
     </div>
   );
 };

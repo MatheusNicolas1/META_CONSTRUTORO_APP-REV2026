@@ -9,15 +9,15 @@ export const blogArticlesPtBR: BlogArticle[] = [
   {
     slug: 'o-que-e-rdo',
     path: '/blog/o-que-e-rdo',
-    title: 'O que e um RDO? Entenda o relatorio diario de obra',
-    seoTitle: 'O que e um RDO? Relatorio diario de obra | Meta Construtor',
+    title: 'O que é um RDO? Entenda o relatório diário de obra',
+    seoTitle: 'O que é um RDO? Relatório diário de obra | Meta Construtor',
     description:
-      'Entenda o que e RDO na construcao civil, para que serve e quais campos registrar no relatorio diario de obra.',
+      'Entenda o que é RDO na construção civil, para que serve e quais campos registrar no relatório diário de obra.',
     category: 'RDO digital',
-    intent: 'Busca informacional para quem esta descobrindo a sigla RDO',
+    intent: 'Busca informacional para quem está descobrindo a sigla RDO',
     readingTime: '5 min',
     summary:
-      'RDO e a sigla mais usada para Relatorio Diario de Obra. Ele registra o que aconteceu no canteiro em um dia especifico, com atividades, equipe, clima, fotos, pendencias e ocorrencias.',
+      'RDO é a sigla mais usada para Relatório Diário de Obra. Ele registra o que aconteceu no canteiro em um dia específico, com atividades, equipe, clima, fotos, pendências e ocorrências.',
     publishedAt: '2026-06-06',
     updatedAt: '2026-06-06',
     keywords: ['o que e um rdo', 'rdo', 'relatorio diario de obra', 'rdo digital'],
@@ -93,15 +93,15 @@ export const blogArticlesPtBR: BlogArticle[] = [
   {
     slug: 'o-que-e-rdos',
     path: '/blog/o-que-e-rdos',
-    title: 'O que e RDOs? Entenda o plural da sigla RDO',
-    seoTitle: 'O que e RDOs? Plural de RDO explicado | Meta Construtor',
+    title: 'O que é RDOs? Entenda o plural da sigla RDO',
+    seoTitle: 'O que é RDOs? Plural de RDO explicado | Meta Construtor',
     description:
-      'RDOs e o plural de RDO. Entenda quando usar a sigla, como organizar varios relatorios diarios de obra e evitar confusao.',
+      'RDOs é o plural de RDO. Entenda quando usar a sigla, como organizar vários relatórios diários de obra e evitar confusão.',
     category: 'RDO digital',
-    intent: 'Busca de variacao e plural da sigla RDO',
+    intent: 'Busca de variação e plural da sigla RDO',
     readingTime: '4 min',
     summary:
-      'RDOs e apenas a forma plural de RDO. Em empresas de construcao, o termo aparece quando a equipe fala de varios relatorios diarios de obra, normalmente separados por data, obra ou frente de servico.',
+      'RDOs é apenas a forma plural de RDO. Em empresas de construção, o termo aparece quando a equipe fala de vários relatórios diários de obra, normalmente separados por data, obra ou frente de serviço.',
     publishedAt: '2026-06-06',
     updatedAt: '2026-06-06',
     keywords: ['o que e rdos', 'rdos', 'plural de rdo', 'relatorios diarios de obra'],
@@ -166,15 +166,15 @@ export const blogArticlesPtBR: BlogArticle[] = [
   {
     slug: 'rdo-na-policia',
     path: '/blog/rdo-na-policia',
-    title: 'O que significa RDO na policia?',
-    seoTitle: 'O que significa RDO na policia? | Meta Construtor',
+    title: 'O que significa RDO na polícia?',
+    seoTitle: 'O que significa RDO na polícia? | Meta Construtor',
     description:
-      'Na policia, RDO costuma significar Registro Digital de Ocorrencia. Entenda a diferenca para o RDO de obras.',
+      'Na polícia, RDO costuma significar Registro Digital de Ocorrência. Entenda a diferença para o RDO de obras.',
     category: 'Significados de RDO',
-    intent: 'Busca informacional ampla sobre a sigla RDO fora da construcao',
+    intent: 'Busca informacional ampla sobre a sigla RDO fora da construção',
     readingTime: '4 min',
     summary:
-      'A sigla RDO pode ter mais de um significado. No contexto policial, ela costuma aparecer como Registro Digital de Ocorrencia. Na construcao civil, o significado mais comum e Relatorio Diario de Obra.',
+      'A sigla RDO pode ter mais de um significado. No contexto policial, ela costuma aparecer como Registro Digital de Ocorrência. Na construção civil, o significado mais comum é Relatório Diário de Obra.',
     publishedAt: '2026-06-06',
     updatedAt: '2026-06-06',
     keywords: ['rdo na policia', 'registro digital de ocorrencia', 'rdo policia', 'rdo significado'],
@@ -217,7 +217,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
     ],
     faq: [
       {
-        question: 'O que significa RDO na policia?',
+        question: 'O que significa RDO na polícia?',
         answer:
           'No contexto policial, RDO costuma significar Registro Digital de Ocorrencia, ligado ao registro digital de boletins e ocorrencias.',
       },
@@ -243,15 +243,15 @@ export const blogArticlesPtBR: BlogArticle[] = [
   {
     slug: 'rdo-de-empresa',
     path: '/blog/rdo-de-empresa',
-    title: 'O que e um RDO de empresa?',
-    seoTitle: 'O que e um RDO de empresa? | Meta Construtor',
+    title: 'O que é um RDO de empresa?',
+    seoTitle: 'O que é um RDO de empresa? | Meta Construtor',
     description:
-      'Entenda o que e RDO de empresa, como ele registra a rotina operacional e por que construtoras usam esse controle.',
-    category: 'Gestao de obras',
+      'Entenda o que é RDO de empresa, como ele registra a rotina operacional e por que construtoras usam esse controle.',
+    category: 'Gestão de obras',
     intent: 'Busca de decisores que querem entender RDO como controle empresarial',
     readingTime: '5 min',
     summary:
-      'Um RDO de empresa e um registro diario usado para documentar operacoes, principalmente em construcao civil e servicos de campo. Ele transforma o que aconteceu no dia em historico consultavel para gestao.',
+      'Um RDO de empresa é um registro diário usado para documentar operações, principalmente em construção civil e serviços de campo. Ele transforma o que aconteceu no dia em histórico consultável para a gestão.',
     publishedAt: '2026-06-06',
     updatedAt: '2026-06-06',
     keywords: ['rdo de empresa', 'relatorio diario de obra empresa', 'controle diario de obra', 'gestao de obras'],
@@ -295,7 +295,7 @@ export const blogArticlesPtBR: BlogArticle[] = [
     ],
     faq: [
       {
-        question: 'O que e um RDO de empresa?',
+        question: 'O que é um RDO de empresa?',
         answer:
           'E um relatorio diario usado pela empresa para registrar rotina, atividades, equipe, ocorrencias, evidencias e pendencias de uma operacao ou obra.',
       },
@@ -321,15 +321,15 @@ export const blogArticlesPtBR: BlogArticle[] = [
   {
     slug: 'como-estruturar-rdo',
     path: '/blog/como-estruturar-rdo',
-    title: 'Como estruturar um RDO util para campo, engenharia e cliente',
-    seoTitle: 'Como estruturar RDO util | Meta Construtor',
+    title: 'Como estruturar um RDO útil para campo, engenharia e cliente',
+    seoTitle: 'Como estruturar um RDO útil | Meta Construtor',
     description:
-      'Veja como organizar RDO digital com clima, equipe, atividades, fotos, pendencias e aprovacao para reduzir retrabalho na obra.',
+      'Veja como organizar o RDO digital com clima, equipe, atividades, fotos, pendências e aprovação para reduzir retrabalho na obra.',
     category: 'RDO digital',
-    intent: 'Guia pratico para estruturar relatorios de obra',
+    intent: 'Guia prático para estruturar relatórios de obra',
     readingTime: '6 min',
     summary:
-      'Um RDO bom nao e apenas um formulario preenchido. Ele precisa explicar o dia da obra para quem executou, revisou, aprovou e vai consultar o historico depois.',
+      'Um RDO bom não é apenas um formulário preenchido. Ele precisa explicar o dia da obra para quem executou, revisou, aprovou e vai consultar o histórico depois.',
     publishedAt: '2026-06-02',
     updatedAt: '2026-06-06',
     keywords: ['como estruturar rdo', 'rdo digital', 'modelo de rdo', 'relatorio de obra'],
@@ -399,10 +399,10 @@ export const blogArticlesPtBR: BlogArticle[] = [
     description:
       'Entenda como organizar documentos de obra por rotina, responsabilidade e finalidade para facilitar consulta, auditoria e entrega.',
     category: 'Documentos',
-    intent: 'Apoio de conteudo para organizacao documental em obras',
+    intent: 'Apoio de conteúdo para organização documental em obras',
     readingTime: '5 min',
     summary:
-      'Documento solto em pasta compartilhada perde contexto. Documento ligado a obra, etapa e responsavel vira evidencia consultavel.',
+      'Documento solto em pasta compartilhada perde contexto. Documento ligado à obra, à etapa e ao responsável vira evidência consultável.',
     publishedAt: '2026-06-02',
     updatedAt: '2026-06-06',
     keywords: ['documentos por obra', 'documentos de obra', 'gestao documental obra', 'anexos de obra'],
@@ -467,15 +467,15 @@ export const blogArticlesPtBR: BlogArticle[] = [
   {
     slug: 'checklist-qualidade-obra',
     path: '/blog/checklist-qualidade-obra',
-    title: 'Quando usar checklist, ocorrencia, atividade ou anexo',
+    title: 'Quando usar checklist, ocorrência, atividade ou anexo',
     seoTitle: 'Checklist de qualidade na obra | Meta Construtor',
     description:
-      'Aprenda a separar checklist, ocorrencia, atividade e anexo na gestao de obras para melhorar qualidade, rastreabilidade e decisao.',
+      'Aprenda a separar checklist, ocorrência, atividade e anexo na gestão de obras para melhorar qualidade, rastreabilidade e decisão.',
     category: 'Checklists',
-    intent: 'Apoio de conteudo para padronizacao de controles de obra',
+    intent: 'Apoio de conteúdo para padronização de controles de obra',
     readingTime: '5 min',
     summary:
-      'Muitas equipes registram tudo no mesmo lugar. A rotina fica mais clara quando cada tipo de registro tem uma funcao.',
+      'Muitas equipes registram tudo no mesmo lugar. A rotina fica mais clara quando cada tipo de registro tem uma função.',
     publishedAt: '2026-06-02',
     updatedAt: '2026-06-06',
     keywords: ['checklist de qualidade obra', 'ocorrencia de obra', 'atividade de obra', 'anexo de obra'],
@@ -8891,12 +8891,12 @@ export const blogArticlesPtBR: BlogArticle[] = [
     title: 'Melhores Softwares para Construtoras em 2026: Guia Completo de Escolha',
     seoTitle: 'Melhores Softwares para Construtoras em 2026: Guia Completo | Meta Construtor',
     description:
-      'Guia completo com os melhores softwares para construtoras em 2026. Compare ERP, CRM, gestao de obras, RDO digital, BIM e planejamento. Escolha o sistema ideal para sua construtora.',
-    category: 'Gestao de obras',
-    intent: 'Busca comparativa de quem quer escolher um software de gestao para construtora em 2026',
+      'Guia completo com os melhores softwares para construtoras em 2026. Compare ERP, CRM, gestão de obras, RDO digital, BIM e planejamento. Escolha o sistema ideal para sua construtora.',
+    category: 'Gestão de obras',
+    intent: 'Busca comparativa de quem quer escolher um software de gestão para construtora em 2026',
     readingTime: '12 min',
     summary:
-      'Escolher o software ideal para sua construtora em 2026 e uma decisao estrategica que impacta produtividade, custos e compliance. Este guia compara as principais categorias - ERP, CRM, gestao de obras, RDO digital, planejamento BIM, controle financeiro e inteligencia artificial - com criterios objetivos, pros, contras e faixas de preco para ajudar engenheiros, gestores e empreendedores da construcao civil a tomar a melhor decisao.',
+      'Escolher o software ideal para sua construtora em 2026 é uma decisão estratégica que impacta produtividade, custos e compliance. Este guia compara as principais categorias (ERP, CRM, gestão de obras, RDO digital, planejamento BIM, controle financeiro e inteligência artificial) com critérios objetivos, prós, contras e faixas de preço para ajudar engenheiros, gestores e empreendedores da construção civil a tomar a melhor decisão.',
     publishedAt: '2026-06-14',
     updatedAt: '2026-06-14',
     keywords: ['software para construtora', 'gestao de obras software', 'melhor app para construtora 2026', 'ERP construcao civil', 'sistema para construtora pequena', 'gestao de obras online', 'software RDO digital', 'plataforma de obras'],

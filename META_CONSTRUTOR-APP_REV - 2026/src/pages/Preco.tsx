@@ -18,6 +18,7 @@ import {
   CarouselNext,
 } from '@/components/ui/carousel';
 import EnterpriseContactModal from '@/components/EnterpriseContactModal';
+import { precoFaq } from '@/content/publicFaqs';
 import { cn } from '@/lib/utils';
 
 const ANNUAL_DISCOUNT = 0.20;
@@ -149,21 +150,13 @@ const comparisons = [
   { feature: 'Relatórios', free: '—', basico: 'Básicos', profissional: 'Avançados', master: 'Avançados', enterprise: 'Customizados' },
   { feature: 'WhatsApp', free: '—', basico: '—', profissional: '✓', master: '✓', enterprise: '✓' },
   { feature: 'API + Webhooks', free: '—', basico: '—', profissional: '—', master: '✓', enterprise: '✓' },
-  { feature: 'ERP / SAP', free: '—', basico: '—', profissional: '—', master: '✓', enterprise: '✓' },
+  { feature: 'Integração com ERP', free: '—', basico: '—', profissional: '—', master: '✓', enterprise: '✓' },
   { feature: 'Controle de estoque', free: '—', basico: '—', profissional: '✓', master: '✓', enterprise: '✓' },
   { feature: 'Suporte', free: 'Email', basico: 'Email', profissional: 'Chat 24h', master: 'Prioritário (SLA 8h)', enterprise: 'Concierge' },
 ];
 
-const faqItems = [
-  { q: 'Posso trocar de plano depois?', a: 'Sim. Você pode fazer upgrade ou downgrade a qualquer momento. No upgrade, você paga apenas a diferença proporcional.' },
-  { q: 'Como funciona o cancelamento?', a: 'Você pode cancelar a qualquer momento pelo painel. Seus dados ficam disponíveis para exportação por 30 dias.' },
-  { q: 'Preciso de cartão para o plano grátis?', a: 'Não. O plano Grátis não pede cartão de crédito. Basta criar sua conta e começar a usar.' },
-  { q: 'Tem desconto no plano anual?', a: 'Sim! No plano anual você economiza 20% em relação ao valor mensal. Por exemplo, o plano Master sai de R$ 347,00/mês para R$ 277,60/mês — uma economia de R$ 832,80 por ano.' },
-  { q: 'Qual a diferença entre Profissional e Master?', a: 'O Master inclui tudo do Profissional, mais API personalizada, integração com ERP, suporte prioritário (SLA 8h) e treinamento dedicado.' },
-  { q: 'O que acontece se eu atingir o limite de obras?', a: 'Você recebe um aviso e pode fazer upgrade para o plano superior a qualquer momento, sem perder dados.' },
-  { q: 'O plano Grátis tem limite de RDOs?', a: 'Sim. O plano Grátis oferece 7 RDOs por mês. Ao atingir o limite, você pode fazer upgrade para um plano pago e continuar usando sem interrupção. Os créditos são resetados mensalmente.' },
-  { q: 'Vocês emitem nota fiscal?', a: 'Sim. Emitimos nota fiscal para todos os planos pagos.' },
-];
+// Texto do FAQ compartilhado com o JSON-LD FAQPage de /preco (src/config/seo.ts).
+const faqItems = precoFaq.map(({ question, answer }) => ({ q: question, a: answer }));
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40, filter: 'blur(4px)' },
@@ -488,7 +481,7 @@ export default function Preco() {
           <StaggerContainer staggerDelay={0.06} className="space-y-1">
             {faqItems.map((item, i) => (
               <StaggerItem key={i} className="border-b border-neutral-100 pb-4 md:pb-6">
-                <h4 className="text-base md:text-lg font-semibold text-neutral-900 mb-1 md:mb-2">{item.q}</h4>
+                <h3 className="text-base md:text-lg font-semibold text-neutral-900 mb-1 md:mb-2">{item.q}</h3>
                 <p className="text-sm md:text-base text-neutral-600 leading-relaxed">{item.a}</p>
               </StaggerItem>
             ))}

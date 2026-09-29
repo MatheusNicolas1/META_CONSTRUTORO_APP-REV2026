@@ -23,7 +23,8 @@ const allImages: CarouselItem[] = [
   { src: `${supabaseBucket}/rdo-novo-periodo.webp`, title: 'Período' },
   { src: `${supabaseBucket}/rdo-novo-equipes.webp`, title: 'Equipes' },
   { src: `${supabaseBucket}/rdo-novo-atividades.webp`, title: 'Atividades' },
-  { src: `${supabaseBucket}/rdo-novo-equipamentos.webp`, title: 'Equipamentos' },
+  // Só existe a versão .png deste print no bucket (a .webp nunca foi enviada).
+  { src: `${supabaseBucket}/rdo-novo-equipamentos.png`, title: 'Equipamentos' },
   { src: `${supabaseBucket}/rdo-novo-obs.webp`, title: 'Observações' },
 ];
 
@@ -80,7 +81,8 @@ export function MobilePrintsSection() {
           <p className="text-neutral-500 text-xs md:text-sm mb-4 px-2">Interface responsiva adaptada para celular, tablet e desktop</p>
           <div className="flex items-center justify-center gap-4 md:gap-6 text-xs md:text-sm text-neutral-500 flex-wrap">
             <span className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-brand-emerald" /> 100% responsivo</span>
-            <span className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-brand-emerald" /> Funciona offline</span>
+            {/* Sem fila offline de escrita (public/sw.js só faz cache de leitura): não anunciar "offline". */}
+            <span className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-brand-emerald" /> Instalável como app (PWA)</span>
             <span className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-brand-emerald" /> Fotos direto do celular</span>
           </div>
           <Button

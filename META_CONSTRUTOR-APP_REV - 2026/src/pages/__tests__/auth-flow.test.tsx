@@ -65,10 +65,6 @@ vi.mock('@/components/SEO', () => ({
   default: () => null,
 }));
 
-vi.mock('@/data/auth-testimonials', () => ({
-  authTestimonials: [],
-}));
-
 const renderPage = (ui: React.ReactElement) => {
   return render(<MemoryRouter>{ui}</MemoryRouter>);
 };

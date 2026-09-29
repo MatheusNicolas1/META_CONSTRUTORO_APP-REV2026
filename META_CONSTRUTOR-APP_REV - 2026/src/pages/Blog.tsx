@@ -5,8 +5,7 @@ import { ArrowRight, Search, ChevronLeft, ChevronRight, TrendingUp } from 'lucid
 import SEO from '@/components/SEO';
 import { seoPages } from '@/config/seo';
 import { loadBlogArticles, normalizeBlogLang } from '@/content/blogArticles';
-import LandingNavigation from '@/components/landing/LandingNavigation';
-import FooterSection from '@/components/landing/FooterSection';
+import MarketingShell from '@/components/public/MarketingShell';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ARTICLES_PER_PAGE, getPageFromSlug, getPaginationRange } from '@/utils/blogUtils';
@@ -116,9 +115,9 @@ const Blog = () => {
   return (
     <div className="force-light-blog">
       <SEO {...seoPages.blog} />
-      <LandingNavigation />
+      <MarketingShell>
 
-      <main className="min-h-screen bg-background pt-28">
+      <main className="min-h-screen bg-background pt-16">
         {/* Hero */}
         <section className="border-b border-border bg-[#fbfaf7] px-4 py-14 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-5xl">
@@ -291,7 +290,7 @@ const Blog = () => {
         </section>
       </main>
 
-      <FooterSection />
+      </MarketingShell>
     </div>
   );
 };

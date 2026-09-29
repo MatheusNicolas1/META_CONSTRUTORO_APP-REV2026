@@ -1,5 +1,4 @@
 import { SignInPage } from "@/components/ui/sign-in";
-import { authTestimonials } from "@/data/auth-testimonials";
 
 import { useAuth } from "@/components/auth/AuthContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -134,8 +133,7 @@ const Login = () => {
       <SignInPage
         title={<span className="font-light text-foreground tracking-tighter">Bem-vindo</span>}
         description="Acesse sua conta usando e-mail ou celular cadastrado"
-        heroImageSrc="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1200&h=800&fit=crop"
-        testimonials={authTestimonials}
+        heroImageSrc="/marketing/obras-reais/estrutura-metalica-aerea.webp"
         onSignIn={handleSignIn}
         onGoogleSignIn={handleGoogleSignIn}
         onResetPassword={handleResetPassword}

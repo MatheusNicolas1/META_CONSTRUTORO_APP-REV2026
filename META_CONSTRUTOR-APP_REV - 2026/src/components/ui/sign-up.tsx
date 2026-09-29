@@ -36,7 +36,8 @@ interface SignUpPageProps {
   description?: React.ReactNode;
   heroImageSrc?: string;
   testimonials?: Testimonial[];
-  onSignUp?: (data: SignUpFormData) => void;
+  /** Retorne `false` quando o cadastro falhar, para o botão mostrar o estado de erro. */
+  onSignUp?: (data: SignUpFormData) => void | boolean | Promise<void | boolean>;
   onGoogleSignIn?: () => void;
   onSignIn?: () => void;
 }

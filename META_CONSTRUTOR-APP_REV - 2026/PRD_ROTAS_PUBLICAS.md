@@ -81,7 +81,7 @@ A home (`/`) continua disputando "sistema de gestão de obras"; as páginas de f
 
 ## 7. Design e acessibilidade
 
-- Cores e tipografia existentes (`brand-orange`, neutros, Plus Jakarta Sans). Sem gradiente em texto, sem roxo/ciano, sem card dentro de card.
+- Cores e tipografia existentes (`brand-orange`, neutros, Inter — fonte que o site realmente carrega). Sem gradiente em texto, sem roxo/ciano, sem card dentro de card.
 - Texto laranja pequeno usa `orange-700` (#C2410C, contraste 5,18:1). O laranja da marca (#F97316) com texto branco tem 2,80:1 — abaixo do AA (4,5:1). Decisão pendente: manter o botão atual ou escurecer o fundo do CTA / usar texto escuro (6,40:1).
 - Menu: abre por clique ou passagem do mouse (com atraso de intenção), fecha com Esc (foco volta ao gatilho), clique fora ou troca de rota; `aria-expanded`/`aria-controls`; animação só de opacidade/deslocamento (180 ms) e desligada com `prefers-reduced-motion`.
 - Gaveta no celular/tablet (< 1024 px) com seções em acordeão e CTAs fixos no rodapé da gaveta, respeitando safe area.
@@ -98,3 +98,34 @@ A home (`/`) continua disputando "sistema de gestão de obras"; as páginas de f
 3. Tirar `/home2`…`/sobre2` do sitemap e aplicar 301 em `vercel.json`.
 4. Gerar sitemap e prerender a partir de `publicRoutes.ts`.
 5. Temas do blog e consolidação dos artigos duplicados com dados do Search Console.
+
+## 10. Execução — rodada 2 (2026-09-29, em homologação)
+
+Status: aplicado na branch `claude/elegant-mayer-ok0ydp`; **não publicado em produção**. Aguardando validação dos prints e da homologação (`meta-construtor-homologacao`).
+
+### Feito
+
+- **Cabeçalho e rodapé novos em todas as páginas públicas** via `MarketingShell` (`PublicMegaNav` + `PublicSiteFooter`): home, preço, blog, artigo, contato, legal, central de ajuda, documentação, API, status, atualizações e carreiras.
+- **Transição entre páginas** (`PageTransition`): opacidade + 8 px em 220 ms; não anima no primeiro carregamento e respeita `prefers-reduced-motion`.
+- **Confirmação/negação animadas** (`src/components/ui/animated-status.tsx`): botão com estados enviando (spinner), sucesso (check verde desenhado em SVG) e erro (X vermelho + leve tremida), anunciados por `aria-live`. Aplicado em `/contato` e no último passo de `/criar-conta`.
+- **Páginas novas** geradas de `src/content/marketingPages.ts`: 13 em `/funcionalidades/*`, 4 em `/solucoes/*` e `/modelos` (lista os guias/modelos existentes do blog). Cada uma com breadcrumb, FAQ com JSON-LD, artigos relacionados e CTA; entram no sitemap e no prerender automaticamente; rewrites no `vercel.json`.
+- **Vídeos demonstrativos** (6) em `public/videos/`: tour do produto na home e clipes de RDO, checklist, obras, documentos e relatórios nas páginas de funcionalidade. Feitos com Remotion a partir dos prints reais (`public/marketing/prd-prints-*`), marcados "Dados de demonstração"; `<video muted loop playsinline preload="none">` que só toca visível, com botão pausar e pôster JPG. Regerar: `node scripts/render-demo-videos.mjs [id]`.
+- **Imagens corrigidas:** print "Equipamentos" apontava para `.webp` inexistente no bucket (agora `.png`); legendas dos carrosséis saíram de cima do print (sobreposição) para baixo; telas de login/cadastro usam foto local em vez de URL externa.
+- **Informações corrigidas (PRD_falso):** removidos depoimentos fictícios de login/cadastro; "funciona offline" → "instalável como app (PWA)" (não há fila offline de RDO); FAQ sem promessa de importação de planilha; integração ERP descrita como API genérica (plano Master); cards da home alinhados ao que o sistema faz (sem "controle de versão" de documentos, sem card duplicado); suporte alinhado a `/preco`; títulos/descrições de 8 artigos antigos com acentuação corrigida.
+- **SEO:** `/home2`, `/preco2`, `/blog2`, `/contato2`, `/sobre2` saíram do sitemap e ganharam `noindex,follow`; FAQ da home e do preço vêm de `src/content/publicFaqs.ts` (mesmo texto na página e no JSON-LD); títulos H2/H3 em ordem.
+
+### Hugging Face
+
+O conector Hugging Face desta sessão está com a execução de Spaces desligada (`gradio=none`): só consulta parâmetros. Por isso vídeos e animações foram feitos com Remotion e código. Para gerar clipes com modelos do Hub (ex.: Wan 2.2 image-to-video), habilitar a execução de Spaces nas configurações do MCP do Hugging Face.
+
+### Evidências
+
+- Auditoria Playwright da home em 1440/820/390 px: 0 sobreposições; itens fora da tela restantes são esperados (slides do carrossel, tabela de `/preco` com rolagem horizontal no celular).
+- `tsc` sem erros; ESLint sem erros (1 aviso react-refresh em `ProductClip.tsx`); `vitest` 107/107; `check-unsourced-claims` OK; `npm run build` OK (sitemap 106 rotas, 138 páginas pré-renderizadas).
+
+### Pendente de decisão do dono
+
+- Confirmar: "resposta em até 4 horas úteis", "dados por 30 dias para exportação", emissão de nota fiscal, itens do Enterprise (SLA 99,9%, on-premise, SSO, white label) e o texto de teste de 14 dias em `CheckoutCancel.tsx`/`components/pricing/FaqSection.tsx`.
+- Contraste do botão laranja com texto branco (2,80:1) e o `AnimatedGradient` em texto (DESIGN.md).
+- `/modelos/rdo-excel` depende de gravar os leads no Supabase; 301 das páginas V2; artigos duplicados do blog (Search Console); texto completo dos 8 artigos antigos ainda sem acento.
+

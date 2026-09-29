@@ -114,7 +114,8 @@ function DesktopImageCard({ item }: { item: CarouselItem }) {
             decoding="async"
           />
         </div>
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white/95 via-white/60 to-transparent p-3">
+        {/* Legenda abaixo da imagem (antes ficava sobre o print e perdia leitura no celular). */}
+        <div className="border-t border-neutral-200/80 bg-white px-3 py-2.5">
           <h3 className="text-xs sm:text-sm font-bold text-neutral-900 truncate">
             {item.title}
           </h3>

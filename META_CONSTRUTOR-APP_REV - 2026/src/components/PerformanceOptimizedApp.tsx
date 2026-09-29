@@ -326,6 +326,11 @@ const BlogArticle = lazy(() =>
   }))
 );
 
+// ── Páginas públicas de funcionalidades, soluções e modelos (PRD_ROTAS_PUBLICAS) ──
+const FeaturePage = lazy(() => import('@/pages/marketing/FeaturePage'));
+const SolutionPage = lazy(() => import('@/pages/marketing/SolutionPage'));
+const ModelosPage = lazy(() => import('@/pages/marketing/ModelosPage'));
+
 // ── Prévias de homologação (noindex) ──
 const DemoNavegacao = lazy(() => import('@/pages/demo/DemoNavegacao'));
 
@@ -536,6 +541,10 @@ export const PerformanceOptimizedApp = memo(() => (
                       <Route path="/sobre" element={<SafeSuspense fallback={null}><Sobre /></SafeSuspense>} />
                       <Route path="/contato" element={<SafeSuspense fallback={null}><Contato /></SafeSuspense>} />
                       <Route path="/preco" element={<SafeSuspense fallback={null}><Preco /></SafeSuspense>} />
+                      {/* Funcionalidades, soluções e modelos */}
+                      <Route path="/funcionalidades/:slug" element={<SafeSuspense fallback={null}><FeaturePage /></SafeSuspense>} />
+                      <Route path="/solucoes/:slug" element={<SafeSuspense fallback={null}><SolutionPage /></SafeSuspense>} />
+                      <Route path="/modelos" element={<SafeSuspense fallback={null}><ModelosPage /></SafeSuspense>} />
                       {/* Prévias de homologação (noindex, fora do sitemap) */}
                       <Route path="/demo/navegacao" element={<SafeSuspense fallback={null}><DemoNavegacao /></SafeSuspense>} />
                       {/* Rotas V2 */}

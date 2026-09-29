@@ -4,9 +4,11 @@ import SEO from "@/components/SEO";
 import { seoPages } from '@/config/seo';
 import { Link } from 'react-router-dom';
 import PublicThemeEffect from '@/components/public/PublicThemeEffect';
-import { Check, ArrowRight, Zap, BarChart3, ClipboardCheck, Users, FileText, HardHat } from 'lucide-react';
+import { Check, ArrowRight, Zap, BarChart3, ClipboardCheck, ListChecks, Users, FileText, HardHat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import PublicNav from './PublicNav';
+import MarketingShell from '@/components/public/MarketingShell';
+import DemoVideo from '@/components/public/DemoVideo';
+import { homeFaq } from '@/content/publicFaqs';
 import { getOptimizedImageUrl } from '@/hooks/useOptimizedImage';
 import { DownloadButton } from '@/components/public/DownloadButton';
 
@@ -34,35 +36,40 @@ const features = [
     title: 'RDO Digital',
     desc: 'Registre diários de obra em segundos. Aprovação, fotos e clima em um só lugar.',
     image: `${MARKETING}/prd-prints-2026-06-04-15-rdo-visualizacao-desktop.webp`,
-    cta: 'Testar RDO',
+    cta: 'Conhecer o RDO digital',
+    to: '/funcionalidades/rdo-digital',
   },
   {
     icon: HardHat,
     title: 'Gestão de Obras',
-    desc: 'Acompanhe cada obra com cronograma, orçamento, equipes e documentos integrados.',
+    desc: 'Cadastre cada obra, distribua as atividades com responsável e prazo e acompanhe o andamento.',
     image: `${MARKETING}/prd-prints-2026-06-04-02-obras-lista-desktop.webp`,
-    cta: 'Ver obras',
+    cta: 'Ver controle de obras',
+    to: '/funcionalidades/controle-de-obras',
   },
   {
-    icon: FileText,
-    title: 'Documentos & Checklists',
-    desc: 'Checklists inteligentes, upload de documentos e controle de versão para sua equipe.',
+    icon: ListChecks,
+    title: 'Checklists de Qualidade',
+    desc: 'Monte o checklist a partir de um modelo, vincule à obra e registre cada item na inspeção.',
     image: `${MARKETING}/prd-prints-2026-06-04-06-checklist-lista-desktop.webp`,
     cta: 'Ver checklists',
+    to: '/funcionalidades/checklist-de-obra',
   },
   {
     icon: BarChart3,
-    title: 'Relatórios em Tempo Real',
-    desc: 'Dashboards, PDFs e exportações para tomar decisões com dados reais da obra.',
+    title: 'Relatórios de Obra',
+    desc: 'Relatórios montados com o que a equipe já registrou no RDO, nas atividades e nos checklists.',
     image: `${MARKETING}/prd-prints-2026-06-04-12-relatorios-resumo-desktop.webp`,
     cta: 'Ver relatórios',
+    to: '/funcionalidades/relatorios-de-obra',
   },
   {
     icon: Users,
-    title: 'Equipes & Colaboradores',
-    desc: 'Cadastre equipes, atribua responsáveis e acompanhe a produtividade de cada frente.',
+    title: 'Equipes e Equipamentos',
+    desc: 'Cadastre equipes, colaboradores e equipamentos uma vez e use esses dados no RDO de cada dia.',
     image: `${MARKETING}/prd-prints-2026-06-04-28-dashboard-resumo-final-desktop.webp`,
-    cta: 'Gerir equipes',
+    cta: 'Ver equipes e equipamentos',
+    to: '/funcionalidades/equipes-e-equipamentos',
   },
   {
     icon: FileText,
@@ -70,17 +77,12 @@ const features = [
     desc: 'Centralize projetos, ART, laudos e todos os documentos em um repositório seguro.',
     image: `${MARKETING}/prd-prints-2026-06-04-07-documentos-lista-desktop.webp`,
     cta: 'Ver documentos',
+    to: '/funcionalidades/documentos-de-obra',
   },
 ];
 
-const faqItems = [
-  { q: 'Preciso instalar algo?', a: 'Não. O Meta Construtor funciona 100% online. Basta acessar pelo navegador no computador, tablet ou celular.' },
-  { q: 'Meus dados estão seguros?', a: 'Sim. Usamos criptografia em trânsito e em repouso, autenticação segura e seguimos a LGPD. Seus dados são isolados por obra e organização.' },
-  { q: 'Funciona offline?', a: 'O app precisa de internet para sincronizar. Mas você pode preencher RDOs com fotos e elas são enviadas assim que a conexão voltar.' },
-  { q: 'Posso migrar meus dados?', a: 'Sim. Temos importação de planilhas e suporte para migração de sistemas legados. Fale com a gente para saber mais.' },
-  { q: 'Tem suporte em português?', a: 'Sim! Nosso time fala português e entende o dia a dia da construção civil brasileira.' },
-  { q: 'Como funciona o cancelamento?', a: 'Você pode cancelar a qualquer momento. Seus dados ficam disponíveis por 30 dias para exportação.' },
-];
+// Texto do FAQ compartilhado com o JSON-LD FAQPage da home (src/config/seo.ts).
+const faqItems = homeFaq.map(({ question, answer }) => ({ q: question, a: answer }));
 
 // ─── Motion Variants (memorizados fora do componente) ─────────
 const fadeInUp = {
@@ -154,9 +156,13 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
         </div>
         <h3 className="text-base sm:text-lg font-bold text-neutral-900 mb-2">{feature.title}</h3>
         <p className="text-neutral-600 text-xs sm:text-sm leading-relaxed mb-4">{feature.desc}</p>
-        <span className="text-brand-orange text-sm font-semibold inline-flex items-center gap-1 group-hover:gap-2 transition-all">
-          {feature.cta} <ArrowRight className="w-4 h-4" />
-        </span>
+        {/* Link "esticado": o card inteiro leva à página da funcionalidade. */}
+        <Link
+          to={feature.to}
+          className="text-orange-700 text-sm font-semibold inline-flex items-center gap-1 group-hover:gap-2 transition-all after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:rounded-2xl focus-visible:after:ring-2 focus-visible:after:ring-brand-orange"
+        >
+          {feature.cta} <ArrowRight className="w-4 h-4" aria-hidden="true" />
+        </Link>
       </div>
     </motion.div>
   );
@@ -177,7 +183,7 @@ function FAQItem({ item, index }: { item: typeof faqItems[0]; index: number }) {
       }}
       className="border-b border-neutral-100 pb-5 sm:pb-6"
     >
-      <h4 className="text-base sm:text-lg font-semibold text-neutral-900 mb-1 sm:mb-2">{item.q}</h4>
+      <h3 className="text-base sm:text-lg font-semibold text-neutral-900 mb-1 sm:mb-2">{item.q}</h3>
       <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">{item.a}</p>
     </motion.div>
   );
@@ -205,7 +211,7 @@ export default function Home() {
       <PublicThemeEffect />
       <SEO {...seoPages.home} />
 
-      <PublicNav />
+      <MarketingShell>
 
       {/* ═══════════════════════════════════════════════════════
           FLUXO DA PÁGINA (narrativa do visitante):
@@ -336,8 +342,8 @@ export default function Home() {
                 <div className="absolute -bottom-6 -right-4 lg:-right-8 w-32 lg:w-40">
                   <div className="rounded-2xl border-2 border-neutral-200 shadow-xl overflow-hidden bg-white">
                     <img
-                      src={`${MARKETING}/prd-prints-2026-06-04-13-integracoes-status-desktop.webp`}
-                      alt="Meta Construtor mobile"
+                      src={`${MARKETING}/prd-prints-2026-06-04-25-rdo-mobile.webp`}
+                      alt="RDO aberto no celular"
                       className="w-full"
                       loading="lazy"
                       decoding="async"
@@ -384,6 +390,29 @@ export default function Home() {
           ))}
         </div>
       </Section>
+
+      {/* ── 2B. VÍDEO DEMONSTRATIVO — telas reais (Remotion) ── */}
+      <section className="border-y border-neutral-100 bg-neutral-50">
+        <div className="container max-w-7xl mx-auto grid gap-10 px-4 py-12 sm:px-6 md:py-20 lg:grid-cols-12 lg:items-center">
+          <div className="lg:col-span-4">
+            <span className="text-orange-700 font-semibold text-xs sm:text-sm tracking-wide uppercase">Em uso</span>
+            <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-extrabold text-neutral-900">Veja o Meta Construtor em uso</h2>
+            <p className="mt-4 max-w-[55ch] text-neutral-600 sm:text-lg">
+              Da lista de obras ao relatório: RDO, checklist e documentos em telas reais do sistema, com dados de demonstração.
+            </p>
+            <Link to="/funcionalidades/rdo-digital" className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-orange-700 hover:gap-2 transition-all">
+              Conhecer o RDO digital <ArrowRight className="w-4 h-4" aria-hidden="true" />
+            </Link>
+          </div>
+          <div className="lg:col-span-8">
+            <DemoVideo
+              src="/videos/tour-produto.mp4"
+              poster="/videos/tour-produto.jpg"
+              label="Tour de 18 segundos pelo Meta Construtor com telas reais: obras, RDO, checklist, documentos e relatórios"
+            />
+          </div>
+        </div>
+      </section>
 
       {/* ── 3. DASHBOARD PRINTS — carrossel de visão executiva ── */}
       <div className="content-visibility-auto">
@@ -526,6 +555,7 @@ export default function Home() {
           </Button>
         </motion.div>
       </Section>
+      </MarketingShell>
     </div>
   );
 }

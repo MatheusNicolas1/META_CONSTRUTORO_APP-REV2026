@@ -522,6 +522,18 @@
       "destination": "/blog/obra-digital-transformacao/index.html"
     },
     {
+      "source": "/funcionalidades/:slug",
+      "destination": "/funcionalidades/:slug/index.html"
+    },
+    {
+      "source": "/solucoes/:slug",
+      "destination": "/solucoes/:slug/index.html"
+    },
+    {
+      "source": "/modelos",
+      "destination": "/modelos/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/"
     }

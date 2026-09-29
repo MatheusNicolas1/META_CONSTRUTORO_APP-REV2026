@@ -2,6 +2,7 @@ import { AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import SEO from '@/components/SEO';
 import { seoPages } from '@/config/seo';
 import { useMarketingSurface } from '@/hooks/useMarketingSurface';
+import MarketingShell from '@/components/public/MarketingShell';
 
 const services = [
   { name: 'Aplicacao web', status: 'Operacional', note: 'Validada por build e rotas publicas.', icon: CheckCircle },
@@ -17,6 +18,8 @@ const Status = () => {
   return (
     <>
       <SEO {...seoPages.status} />
+
+      <MarketingShell offsetHeader>
 
       <main className="min-h-screen bg-background p-2">
         <section className="border-b border-border bg-muted/30 px-4 py-16 sm:px-6 lg:px-8">
@@ -72,6 +75,8 @@ const Status = () => {
           </div>
         </section>
       </main>
+
+      </MarketingShell>
     </>
   );
 };

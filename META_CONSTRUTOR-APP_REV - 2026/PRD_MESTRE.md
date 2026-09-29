@@ -53,7 +53,7 @@ Regra de continuidade:
 ||| `PRD_DEPLOY_VERCEL.md` | Diagnóstico de deploys UNKNOWN na Vercel (20+ deploys travados) | EM EXECUÇÃO — 2026-06-13 — aguardando limpeza de cache no Dashboard + deploy fresco |
 |||| `docs/PRD_DIAGNOSTICO_DEPLOY_VERCEL.md` | Diagnóstico final da causa raiz: branch master sem package.json no HEAD b349e1b + repositório Android separado | EM DIAGNÓSTICO — 2026-06-13 — aguardando commit corretivo + push |
 |||| `PRD_PROXIMOS_PASSOS.md` | Roadmap consolidado de próximos passos + MCPs e skills recomendados (pesquisa Firecrawl + catálogo Hermes) | CRIADO 2026-08-28 — prioridades P0/P1/P2 e infra de MCPs |
-| `PRD_ROTAS_PUBLICAS.md` | Arquitetura de informação das páginas públicas (benchmark Canva): menu por intenção, `/funcionalidades/*`, `/solucoes/*`, `/modelos`, temas do blog e consolidação de rotas duplicadas | PROPOSTA EM HOMOLOGAÇÃO 2026-09-29 — prévia em `/demo/navegacao` (noindex); nenhuma rota publicada alterada; aguardando validação |
+| `PRD_ROTAS_PUBLICAS.md` | Arquitetura de informação das páginas públicas (benchmark Canva): menu por intenção, `/funcionalidades/*`, `/solucoes/*`, `/modelos`, temas do blog e consolidação de rotas duplicadas | EM HOMOLOGAÇÃO 2026-09-29 — rodada 2 aplicada na branch `claude/elegant-mayer-ok0ydp` (novo menu/rodapé, `/funcionalidades/*`, `/solucoes/*`, `/modelos`, vídeos demo, estados animados); produção inalterada até validação — ver §10 |
 
 ## 3. Baselines adotados como corretos
 
@@ -330,6 +330,12 @@ Atualizar este arquivo quando:
 Ao atualizar, manter a regra: concluido com evidencia vira baseline; aberto continua aberto.
 
 ## 7. Registro de atualizações recentes
+
+### 2026-09-29 — Páginas públicas: rodada 2 (homologação)
+
+- **Aplicado na branch `claude/elegant-mayer-ok0ydp`, sem deploy em produção:** menu/rodapé novos em todas as páginas públicas, transição entre páginas, botões com confirmação/negação animadas (contato e cadastro), 18 páginas novas (`/funcionalidades/*`, `/solucoes/*`, `/modelos`) e 6 vídeos demonstrativos feitos com Remotion sobre prints reais.
+- **Correções de imagem e informação:** print "Equipamentos" quebrado, legendas sobre os prints, depoimentos fictícios removidos, promessas sem suporte no código (offline, importação de planilha, controle de versão, conectores ERP específicos) corrigidas, V2 com `noindex`.
+- **Hugging Face:** execução de Spaces desligada no conector (`gradio=none`); vídeos e animações feitos por código. Detalhes e pendências em `PRD_ROTAS_PUBLICAS.md` §10.
 
 ### 2026-08-30 — Validação de cupons (pré-Stripe) → GO
 

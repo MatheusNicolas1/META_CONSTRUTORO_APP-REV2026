@@ -11,12 +11,8 @@ const coreRoutes = [
   ["/sobre", "monthly", "0.8"],
   ["/contato", "monthly", "0.8"],
   ["/blog", "weekly", "0.7"],
-  // V2 Pages
-  ["/home2", "weekly", "1.0"],
-  ["/preco2", "weekly", "0.9"],
-  ["/sobre2", "monthly", "0.8"],
-  ["/contato2", "monthly", "0.8"],
-  ["/blog2", "weekly", "0.7"],
+  // V2 (/home2, /preco2, /sobre2, /contato2, /blog2) fora do sitemap: duplicam as páginas
+  // principais e estão com noindex até a consolidação (PRD_ROTAS_PUBLICAS §5).
   // Conteúdo, suporte e autoridade
   ["/central-ajuda", "weekly", "0.7"],
   ["/documentacao", "monthly", "0.7"],
@@ -60,6 +56,21 @@ const uniqueArticles = blogArticles.filter((article) => {
   return true;
 });
 
+// Funcionalidades, soluções e modelos: lidos de src/content/marketingPages.ts (`path: '...'`).
+function readMarketingPaths() {
+  const contentPath = resolve("src/content/marketingPages.ts");
+  if (!existsSync(contentPath)) return [];
+  const source = readFileSync(contentPath, "utf8");
+  return [...source.matchAll(/^\s*path:\s*'(\/(?:funcionalidades|solucoes|modelos)[^']*)'/gm)].map((match) => match[1]);
+}
+
+const marketingRoutes = readMarketingPaths().map((path) => ({
+  path,
+  changefreq: "monthly",
+  priority: path.startsWith("/funcionalidades/") ? "0.8" : "0.7",
+  lastmod: "2026-09-29",
+}));
+
 const routes = [
   ...coreRoutes.map(([path, changefreq, priority]) => ({
     path,
@@ -67,6 +78,7 @@ const routes = [
     priority,
     lastmod: fallbackLastmod,
   })),
+  ...marketingRoutes,
   ...uniqueArticles.map((article) => ({
     path: article.path,
     changefreq: "monthly",

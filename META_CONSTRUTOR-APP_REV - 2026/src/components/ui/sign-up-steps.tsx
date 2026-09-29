@@ -5,6 +5,7 @@ import { parsePhoneNumber, isValidPhoneNumber } from 'libphonenumber-js';
 import { validatePasswordStrength, isPasswordValid } from '@/utils/passwordValidator';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { SubmitButton, type SubmitState } from '@/components/ui/animated-status';
 
 // --- TYPE DEFINITIONS ---
 
@@ -17,7 +18,8 @@ interface SignUpData {
 }
 
 interface SignUpStepsProps {
-  onComplete: (data: SignUpData) => void;
+  /** Retorne `false` (ou uma Promise que resolve `false`) quando o cadastro falhar. */
+  onComplete: (data: SignUpData) => void | boolean | Promise<void | boolean>;
 }
 
 // --- HELPER COMPONENTS ---
@@ -252,7 +254,8 @@ const PasswordStep = ({
   confirmPassword,
   setConfirmPassword,
   onComplete,
-  onBack
+  onBack,
+  submitState
 }: {
   password: string;
   setPassword: (value: string) => void;
@@ -260,6 +263,7 @@ const PasswordStep = ({
   setConfirmPassword: (value: string) => void;
   onComplete: () => void;
   onBack: () => void;
+  submitState: SubmitState;
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -278,7 +282,7 @@ const PasswordStep = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isPasswordStrong && doPasswordsMatch) {
+    if (isPasswordStrong && doPasswordsMatch && submitState !== 'loading' && submitState !== 'success') {
       onComplete();
     }
   };
@@ -410,17 +414,22 @@ const PasswordStep = ({
         <button
           type="button"
           onClick={onBack}
-          className="animate-fade-in flex-1 rounded-2xl border border-border py-4 font-medium text-foreground hover:bg-muted transition-colors"
+          disabled={submitState === 'loading' || submitState === 'success'}
+          className="animate-fade-in flex-1 rounded-2xl border border-border py-4 font-medium text-foreground hover:bg-muted transition-colors disabled:opacity-50"
         >
           Voltar
         </button>
-        <button
-          type="submit"
+        <SubmitButton
+          state={submitState}
           disabled={!isPasswordStrong || !doPasswordsMatch}
-          className="animate-fade-in flex-1 rounded-2xl bg-construction-orange py-4 font-medium text-white hover:bg-construction-orange/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Criar conta
-        </button>
+          className="animate-fade-in flex-1 rounded-2xl py-4 text-sm font-medium sm:text-base"
+          labels={{
+            idle: 'Criar conta',
+            loading: 'Criando conta…',
+            success: 'Conta criada',
+            error: 'Não foi possível criar',
+          }}
+        />
       </div>
     </form>
   );
@@ -459,8 +468,22 @@ export const SignUpSteps: React.FC<SignUpStepsProps> = ({ onComplete }) => {
 
   // handleDocumentNext removed
 
-  const handleComplete = () => {
-    onComplete(formData);
+  const [submitState, setSubmitState] = useState<SubmitState>('idle');
+
+  const handleComplete = async () => {
+    setSubmitState('loading');
+    try {
+      const result = await onComplete(formData);
+      if (result === false) {
+        setSubmitState('error');
+        window.setTimeout(() => setSubmitState('idle'), 2400);
+      } else {
+        setSubmitState('success');
+      }
+    } catch {
+      setSubmitState('error');
+      window.setTimeout(() => setSubmitState('idle'), 2400);
+    }
   };
 
   return (
@@ -496,6 +519,7 @@ export const SignUpSteps: React.FC<SignUpStepsProps> = ({ onComplete }) => {
           setConfirmPassword={(confirmPassword) => setFormData(prev => ({ ...prev, confirmPassword }))}
           onComplete={handleComplete}
           onBack={() => setCurrentStep(2)}
+          submitState={submitState}
         />
       )}
     </div>

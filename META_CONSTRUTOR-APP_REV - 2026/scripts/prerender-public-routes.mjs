@@ -7,30 +7,31 @@ const defaultImage = `${siteUrl}/marketing/obras-reais/estrutura-metalica-aerea.
 const routes = [
   {
     path: "/",
-    title: "Meta Construtor | Gestão de Obras para Engenheiros e Escritórios de Engenharia",
-    description: "Gerencia obras, RDOs, equipes, contratos e documentação em uma plataforma desenvolvida para engenheiros, construtoras e escritórios de estruturas metálicas.",
+    // Mesmo título e descrição de src/config/seo.ts (seoPages.home).
+    title: "Meta Construtor | Sistema de gestão de obras e RDO digital",
+    description: "Gerencie obras, RDOs, equipes, contratos e documentos em uma plataforma web, da construtora ao escritório de engenharia. Comece grátis.",
     priorityType: "SoftwareApplication",
   },
   {
     path: "/preco",
     title: "Planos e preços | Meta Construtor",
-    description: "Escolha o plano ideal para gerenciar obras, RDOs, equipes e documentos com o Meta Construtor.",
+    description: "Compare os planos do Meta Construtor para gerenciar obras, RDOs, equipes e documentos. Plano grátis sem cartão de crédito.",
   },
   {
     path: "/sobre",
     title: "Sobre o Meta Construtor | Plataforma brasileira para obras",
-    description: "Conheca a plataforma web brasileira para organizar obras, RDOs, checklists, documentos e rotinas de campo.",
+    description: "Conheça a plataforma web brasileira para organizar obras, RDOs, checklists, documentos e rotinas de campo.",
   },
   {
     path: "/contato",
     title: "Contato | Fale com o Meta Construtor",
-    description: "Fale com a equipe do Meta Construtor sobre suporte, demonstracao, planos, obras ou parcerias.",
+    description: "Fale com a equipe do Meta Construtor sobre suporte, demonstração, planos, obras ou parcerias.",
     priorityType: "ContactPage",
   },
   {
     path: "/blog",
-    title: "Blog Meta Construtor | Gestao de obras e RDO digital",
-    description: "Artigos sobre gestao de obras, RDO digital, produtividade e tecnologia para construtoras.",
+    title: "Blog Meta Construtor | Gestão de obras e RDO digital",
+    description: "Artigos sobre gestão de obras, RDO digital, produtividade e tecnologia para construtoras.",
     priorityType: "Blog",
   },
   {
@@ -71,38 +72,38 @@ const routes = [
   },
   {
     path: "/blog/page/2",
-    title: "Pagina 2 - Blog Meta Construtor | Gestao de obras",
-    description: "Mais artigos sobre gestao de obras, RDO digital e produtividade - pagina 2.",
+    title: "Página 2 - Blog Meta Construtor | Gestão de obras",
+    description: "Mais artigos sobre gestão de obras, RDO digital e produtividade: página 2.",
     priorityType: "Blog",
   },
   {
     path: "/blog/page/3",
-    title: "Pagina 3 - Blog Meta Construtor | Gestao de obras",
-    description: "Continue lendo sobre gestao de obras, RDO digital e tecnologia - pagina 3.",
+    title: "Página 3 - Blog Meta Construtor | Gestão de obras",
+    description: "Continue lendo sobre gestão de obras, RDO digital e tecnologia: página 3.",
     priorityType: "Blog",
   },
   {
     path: "/blog/page/4",
-    title: "Pagina 4 - Blog Meta Construtor | Gestao de obras",
-    description: "Mais conteudos sobre obras, RDO e constucao civil - pagina 4.",
+    title: "Página 4 - Blog Meta Construtor | Gestão de obras",
+    description: "Mais conteúdos sobre obras, RDO e construção civil: página 4.",
     priorityType: "Blog",
   },
   {
     path: "/blog/page/5",
-    title: "Pagina 5 - Blog Meta Construtor | Gestao de obras",
-    description: "Artigos sobre gestao de obras e RDO digital - pagina 5.",
+    title: "Página 5 - Blog Meta Construtor | Gestão de obras",
+    description: "Artigos sobre gestão de obras e RDO digital: página 5.",
     priorityType: "Blog",
   },
   {
     path: "/blog/page/6",
-    title: "Pagina 6 - Blog Meta Construtor | Gestao de obras",
-    description: "Ultimos artigos do blog do Meta Construtor - pagina 6.",
+    title: "Página 6 - Blog Meta Construtor | Gestão de obras",
+    description: "Últimos artigos do blog do Meta Construtor: página 6.",
     priorityType: "Blog",
   },
   {
     path: "/blog/o-que-e-rdo",
-    title: "O que e um RDO? Entenda o relatorio diario de obra",
-    description: "Entenda o que e RDO na construcao civil, para que serve e quais campos registrar no relatorio diario de obra.",
+    title: "O que é um RDO? Entenda o relatório diário de obra",
+    description: "Entenda o que é RDO na construção civil, para que serve e quais campos registrar no relatório diário de obra.",
     priorityType: "Article",
     faqs: [
       {
@@ -121,8 +122,8 @@ const routes = [
   },
   {
     path: "/blog/o-que-e-rdos",
-    title: "O que e RDOs? Entenda o plural da sigla RDO",
-    description: "RDOs e o plural de RDO. Entenda quando usar a sigla, como organizar varios relatorios diarios de obra e evitar confusao.",
+    title: "O que é RDOs? Entenda o plural da sigla RDO",
+    description: "RDOs é o plural de RDO. Entenda quando usar a sigla, como organizar vários relatórios diários de obra e evitar confusão.",
     priorityType: "Article",
     faqs: [
       {
@@ -141,12 +142,12 @@ const routes = [
   },
   {
     path: "/blog/rdo-na-policia",
-    title: "O que significa RDO na policia?",
-    description: "Na policia, RDO costuma significar Registro Digital de Ocorrencia. Entenda a diferenca para o RDO de obras.",
+    title: "O que significa RDO na polícia?",
+    description: "Na polícia, RDO costuma significar Registro Digital de Ocorrência. Entenda a diferença para o RDO de obras.",
     priorityType: "Article",
     faqs: [
       {
-        question: "O que significa RDO na policia?",
+        question: "O que significa RDO na polícia?",
         answer: "No contexto policial, RDO costuma significar Registro Digital de Ocorrencia, ligado ao registro digital de boletins e ocorrencias.",
       },
       {
@@ -161,12 +162,12 @@ const routes = [
   },
   {
     path: "/blog/rdo-de-empresa",
-    title: "O que e um RDO de empresa?",
-    description: "Entenda o que e RDO de empresa, como ele registra a rotina operacional e por que construtoras usam esse controle.",
+    title: "O que é um RDO de empresa?",
+    description: "Entenda o que é RDO de empresa, como ele registra a rotina operacional e por que construtoras usam esse controle.",
     priorityType: "Article",
     faqs: [
       {
-        question: "O que e um RDO de empresa?",
+        question: "O que é um RDO de empresa?",
         answer: "E um relatorio diario usado pela empresa para registrar rotina, atividades, equipe, ocorrencias, evidencias e pendencias de uma operacao ou obra.",
       },
       {
@@ -181,8 +182,8 @@ const routes = [
   },
   {
     path: "/blog/como-estruturar-rdo",
-    title: "Como estruturar um RDO util para campo, engenharia e cliente",
-    description: "Veja como organizar RDO digital com clima, equipe, atividades, fotos, pendencias e aprovacao para reduzir retrabalho na obra.",
+    title: "Como estruturar um RDO útil para campo, engenharia e cliente",
+    description: "Veja como organizar o RDO digital com clima, equipe, atividades, fotos, pendências e aprovação para reduzir retrabalho na obra.",
     priorityType: "Article",
   },
   {
@@ -193,8 +194,8 @@ const routes = [
   },
   {
     path: "/blog/checklist-qualidade-obra",
-    title: "Quando usar checklist, ocorrencia, atividade ou anexo",
-    description: "Aprenda a separar checklist, ocorrencia, atividade e anexo na gestao de obras para melhorar qualidade, rastreabilidade e decisao.",
+    title: "Quando usar checklist, ocorrência, atividade ou anexo",
+    description: "Aprenda a separar checklist, ocorrência, atividade e anexo na gestão de obras para melhorar qualidade, rastreabilidade e decisão.",
     priorityType: "Article",
   },
   {
@@ -609,54 +610,54 @@ const routes = [
   {
     path: "/central-ajuda",
     title: "Central de ajuda | Meta Construtor",
-    description: "Guias para organizar a primeira obra, entender RDO, documentos, usuarios e suporte no Meta Construtor.",
+    description: "Guias para organizar a primeira obra, entender RDO, documentos, usuários e suporte no Meta Construtor.",
   },
   {
     path: "/documentacao",
-    title: "Documentacao tecnica | Meta Construtor",
-    description: "Documentacao operacional com limites reais de API, webhooks, Edge Functions e integracoes do Meta Construtor.",
+    title: "Documentação técnica | Meta Construtor",
+    description: "Documentação operacional com limites reais de API, webhooks, Edge Functions e integrações do Meta Construtor.",
     priorityType: "TechArticle",
   },
   {
     path: "/api",
-    title: "API Meta Construtor | Integracoes para construtoras",
-    description: "Estado real de Edge Functions, permissoes, APIs e integracoes tecnicas do Meta Construtor.",
+    title: "API Meta Construtor | Integrações para construtoras",
+    description: "Estado real de Edge Functions, permissões, APIs e integrações técnicas do Meta Construtor.",
     priorityType: "TechArticle",
   },
   {
     path: "/status",
     title: "Status da plataforma | Meta Construtor",
-    description: "Status operacional do Meta Construtor sem metricas publicas ficticias.",
+    description: "Status operacional da plataforma Meta Construtor.",
   },
   {
     path: "/atualizacoes",
-    title: "Atualizacoes | Meta Construtor",
-    description: "Atualizacoes verificaveis do Meta Construtor sobre produto, integracoes, paginas publicas e backend validado.",
+    title: "Atualizações | Meta Construtor",
+    description: "Atualizações verificáveis do Meta Construtor sobre produto, integrações, páginas públicas e backend.",
   },
   {
     path: "/carreiras",
     title: "Carreiras | Meta Construtor",
-    description: "Conheca o contexto de carreira no Meta Construtor e envie interesse profissional pelos canais oficiais.",
+    description: "Conheça o contexto de carreira no Meta Construtor e envie interesse profissional pelos canais oficiais.",
   },
   {
     path: "/legal/privacidade",
-    title: "Politica de privacidade | Meta Construtor",
+    title: "Política de privacidade | Meta Construtor",
     description: "Saiba como o Meta Construtor coleta, usa, armazena e protege dados pessoais.",
   },
   {
     path: "/legal/termos",
     title: "Termos de uso | Meta Construtor",
-    description: "Consulte os termos e condicoes de uso da plataforma Meta Construtor.",
+    description: "Consulte os termos e condições de uso da plataforma Meta Construtor.",
   },
   {
     path: "/legal/cookies",
-    title: "Politica de cookies | Meta Construtor",
+    title: "Política de cookies | Meta Construtor",
     description: "Entenda como o Meta Construtor usa cookies e tecnologias similares.",
   },
   {
     path: "/legal/lgpd",
     title: "LGPD | Meta Construtor",
-    description: "Informacoes sobre conformidade com a Lei Geral de Protecao de Dados no Meta Construtor.",
+    description: "Informações sobre conformidade com a Lei Geral de Proteção de Dados no Meta Construtor.",
   },
   {
     path: '/blog/sustentabilidade-construcao-civil-esg',
@@ -900,6 +901,18 @@ const routes = [
   },
 ];
 
+// V2 fora do índice até a consolidação (PRD_ROTAS_PUBLICAS §5).
+const noindexPaths = new Set(["/home2", "/preco2", "/sobre2", "/contato2", "/blog2"]);
+
+// Funcionalidades, soluções e modelos: título e descrição lidos de src/content/marketingPages.ts.
+const marketingSource = readFileSync(resolve("src/content/marketingPages.ts"), "utf8");
+const marketingRoutes = [
+  ...marketingSource.matchAll(
+    /^\s*path:\s*'(\/(?:funcionalidades|solucoes|modelos)[^']*)',\s*\n\s*seoTitle:\s*'([^']+)',\s*\n\s*seoDescription:\s*'([^']+)'/gm
+  ),
+].map(([, path, title, description]) => ({ path, title, description }));
+routes.push(...marketingRoutes);
+
 const escapeHtml = (value) =>
   String(value)
     .replaceAll("&", "&amp;")
@@ -1013,7 +1026,7 @@ const seoBlock = (route) => {
 
   return `  <title>${escapeHtml(route.title)}</title>
   <meta name="description" content="${escapeHtml(route.description)}" />
-  <meta name="robots" content="index,follow" />
+  <meta name="robots" content="${noindexPaths.has(route.path) ? "noindex,follow" : "index,follow"}" />
   <link rel="canonical" href="${canonical}" />
   <meta property="og:site_name" content="Meta Construtor" />
   <meta property="og:title" content="${escapeHtml(route.title)}" />

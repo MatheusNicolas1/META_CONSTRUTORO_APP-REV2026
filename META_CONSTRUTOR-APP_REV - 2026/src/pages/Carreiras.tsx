@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import SEO from '@/components/SEO';
 import { seoPages } from '@/config/seo';
 import { useMarketingSurface } from '@/hooks/useMarketingSurface';
+import MarketingShell from '@/components/public/MarketingShell';
 
 const culturePoints = [
   {
@@ -33,6 +34,8 @@ const Carreiras = () => {
   return (
     <>
       <SEO {...seoPages.carreiras} />
+
+      <MarketingShell offsetHeader>
 
       <main className="min-h-screen bg-background p-2">
         <section className="border-b border-border bg-muted/30 px-4 py-20 sm:px-6 lg:px-8">
@@ -82,6 +85,8 @@ const Carreiras = () => {
           </section>
         </section>
       </main>
+
+      </MarketingShell>
     </>
   );
 };

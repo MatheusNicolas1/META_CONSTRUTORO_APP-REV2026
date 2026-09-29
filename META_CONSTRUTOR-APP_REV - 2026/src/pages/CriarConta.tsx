@@ -1,5 +1,4 @@
 import { SignUpPage } from "@/components/ui/sign-up";
-import { authTestimonials } from "@/data/auth-testimonials";
 
 import { useNavigate } from "react-router-dom";
 import SEO from "@/components/SEO";
@@ -20,9 +19,10 @@ const CriarConta = () => {
 
     if (success) {
       track('auth.signup_completed', { method: 'email_password' });
-      // Redirecionar para dashboard após sucesso
-      navigate("/app/dashboard");
+      // Pequena pausa para o check de confirmação aparecer no botão antes do dashboard.
+      window.setTimeout(() => navigate("/app/dashboard"), 700);
     }
+    return success;
   };
 
   const handleGoogleSignIn = async () => {
@@ -53,9 +53,9 @@ const CriarConta = () => {
   return (
     <>
       <SEO {...seoPages.criarConta} />
+      {/* Foto real de obra (acervo do projeto); sem depoimentos fictícios (PRD_falso). */}
       <SignUpPage
-        heroImageSrc="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1200&h=800&fit=crop"
-        testimonials={authTestimonials}
+        heroImageSrc="/marketing/obras-reais/estrutura-metalica-aerea.webp"
         onSignUp={handleSignUp}
         onGoogleSignIn={handleGoogleSignIn}
         onSignIn={handleSignIn}

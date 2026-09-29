@@ -1,4 +1,5 @@
 import { blogArticlesPtBR } from "@/content/blogArticles.pt-BR";
+import { homeFaq, precoFaq } from "@/content/publicFaqs";
 
 export type JsonLd = Record<string, unknown>;
 
@@ -118,6 +119,14 @@ const page = (
   };
 };
 
+/** SEO das páginas de funcionalidades, soluções e modelos (conteúdo em src/content/marketingPages.ts). */
+export const marketingPageSeo = (
+  path: string,
+  title: string,
+  description: string,
+  faqs: Array<{ question: string; answer: string }> = []
+): SeoConfig => page(path, title, description, faqs.length ? [faqJsonLd(faqs)] : []);
+
 const articlePage = (article: (typeof blogArticlesPtBR)[number]): SeoConfig => ({
   title: article.seoTitle,
   description: article.description,
@@ -164,114 +173,90 @@ export const seoBlogArticles = Object.fromEntries(
 ) as Record<string, SeoConfig>;
 
 export const seoPages = {
+  // FAQ do JSON-LD = perguntas visíveis na página (src/content/publicFaqs.ts).
   home: page(
     "/",
-    "Meta Construtor | Gestão de Obras para Construtoras e Engenharia Civil",
-    "Gerencie obras, RDOs, equipes, contratos e documentação em uma plataforma web completa — da construtora ao escritório de engenharia.",
-    [
-      faqJsonLd([
-        {
-          question: "O que e o Meta Construtor?",
-          answer:
-            "O Meta Construtor e uma plataforma web para gestao de obras, RDO digital, checklists, equipes, documentos e relatorios.",
-        },
-        {
-          question: "Para quem o Meta Construtor foi criado?",
-          answer:
-            "A plataforma foi criada para construtoras, engenheiros, gestores de obras e equipes que precisam organizar a operacao da obra em um unico lugar.",
-        },
-      ]),
-    ]
+    "Meta Construtor | Sistema de gestão de obras e RDO digital",
+    "Gerencie obras, RDOs, equipes, contratos e documentos em uma plataforma web, da construtora ao escritório de engenharia. Comece grátis.",
+    [organizationJsonLd, softwareJsonLd, faqJsonLd(homeFaq)]
   ),
   preco: page(
     "/preco",
-    "Planos e precos | Meta Construtor",
-    "Escolha o plano ideal para gerenciar obras, RDOs, equipes e documentos com o Meta Construtor.",
-    [
-      softwareJsonLd,
-      faqJsonLd([
-        {
-          question: "Existe plano gratuito?",
-          answer: "Sim. O Meta Construtor oferece um plano gratuito para comecar a organizar a gestao de obras.",
-        },
-        {
-          question: "Posso mudar de plano depois?",
-          answer: "Sim. Os planos foram pensados para acompanhar o crescimento da construtora.",
-        },
-      ]),
-    ]
+    "Planos e preços | Meta Construtor",
+    "Compare os planos do Meta Construtor para gerenciar obras, RDOs, equipes e documentos. Plano grátis sem cartão de crédito.",
+    [softwareJsonLd, faqJsonLd(precoFaq)]
   ),
   sobre: page(
     "/sobre",
     "Sobre o Meta Construtor | Plataforma brasileira para obras",
-    "Conheca a plataforma web brasileira para organizar obras, RDOs, checklists, documentos e rotinas de campo.",
+    "Conheça a plataforma web brasileira para organizar obras, RDOs, checklists, documentos e rotinas de campo.",
     [organizationJsonLd]
   ),
   contato: page(
     "/contato",
     "Contato | Fale com o Meta Construtor",
-    "Fale com a equipe do Meta Construtor sobre suporte, demonstracao, planos, obras ou parcerias.",
+    "Fale com a equipe do Meta Construtor sobre suporte, demonstração, planos, obras ou parcerias.",
     [organizationJsonLd, webPageJsonLd("Contato Meta Construtor", "/contato", "Canais oficiais para falar com o Meta Construtor.", "ContactPage")]
   ),
   blog: page(
     "/blog",
-    "Blog Meta Construtor | Gestao de obras e RDO digital",
-    "Artigos sobre gestao de obras, RDO digital, produtividade e tecnologia para construtoras.",
-    [webPageJsonLd("Blog Meta Construtor", "/blog", "Conteudos educativos sobre gestao de obras e tecnologia para construtoras.", "Blog")]
+    "Blog Meta Construtor | Gestão de obras e RDO digital",
+    "Artigos sobre gestão de obras, RDO digital, produtividade e tecnologia para construtoras.",
+    [webPageJsonLd("Blog Meta Construtor", "/blog", "Conteúdos educativos sobre gestão de obras e tecnologia para construtoras.", "Blog")]
   ),
   centralAjuda: page(
     "/central-ajuda",
     "Central de ajuda | Meta Construtor",
-    "Guias para organizar a primeira obra, entender RDO, documentos, usuarios e suporte no Meta Construtor.",
-    [faqJsonLd([{ question: "Onde encontro ajuda para usar a plataforma?", answer: "A central de ajuda reune guias, categorias e respostas sobre os principais fluxos do Meta Construtor." }])]
+    "Guias para organizar a primeira obra, entender RDO, documentos, usuários e suporte no Meta Construtor.",
+    [faqJsonLd([{ question: "Onde encontro ajuda para usar a plataforma?", answer: "A central de ajuda reúne guias, categorias e respostas sobre os principais fluxos do Meta Construtor." }])]
   ),
   documentacao: page(
     "/documentacao",
-    "Documentacao tecnica | Meta Construtor",
-    "Documentacao operacional com limites reais de API, webhooks, Edge Functions e integracoes do Meta Construtor.",
-    [webPageJsonLd("Documentacao tecnica Meta Construtor", "/documentacao", "Guias tecnicos para integracoes e API.", "TechArticle")]
+    "Documentação técnica | Meta Construtor",
+    "Documentação operacional com limites reais de API, webhooks, Edge Functions e integrações do Meta Construtor.",
+    [webPageJsonLd("Documentação técnica Meta Construtor", "/documentacao", "Guias técnicos para integrações e API.", "TechArticle")]
   ),
   api: page(
     "/api",
-    "API Meta Construtor | Integracoes para construtoras",
-    "Estado real de Edge Functions, permissoes, APIs e integracoes tecnicas do Meta Construtor.",
-    [webPageJsonLd("API Meta Construtor", "/api", "Pagina tecnica e comercial sobre integracoes do Meta Construtor.", "TechArticle")]
+    "API Meta Construtor | Integrações para construtoras",
+    "Estado real de Edge Functions, permissões, APIs e integrações técnicas do Meta Construtor.",
+    [webPageJsonLd("API Meta Construtor", "/api", "Página técnica e comercial sobre integrações do Meta Construtor.", "TechArticle")]
   ),
   status: page(
     "/status",
     "Status da plataforma | Meta Construtor",
-    "Status operacional do Meta Construtor sem metricas publicas ficticias."
+    "Status operacional da plataforma Meta Construtor."
   ),
   atualizacoes: page(
     "/atualizacoes",
-    "Atualizacoes | Meta Construtor",
-    "Atualizacoes verificaveis do Meta Construtor sobre produto, integracoes, paginas publicas e backend validado."
+    "Atualizações | Meta Construtor",
+    "Atualizações verificáveis do Meta Construtor sobre produto, integrações, páginas públicas e backend."
   ),
   carreiras: page(
     "/carreiras",
     "Carreiras | Meta Construtor",
-    "Conheca o contexto de carreira no Meta Construtor e envie interesse profissional pelos canais oficiais.",
+    "Conheça o contexto de carreira no Meta Construtor e envie interesse profissional pelos canais oficiais.",
     [organizationJsonLd]
   ),
   privacidade: page(
     "/legal/privacidade",
-    "Politica de privacidade | Meta Construtor",
+    "Política de privacidade | Meta Construtor",
     "Saiba como o Meta Construtor coleta, usa, armazena e protege dados pessoais."
   ),
   termos: page(
     "/legal/termos",
     "Termos de uso | Meta Construtor",
-    "Consulte os termos e condicoes de uso da plataforma Meta Construtor."
+    "Consulte os termos e condições de uso da plataforma Meta Construtor."
   ),
   cookies: page(
     "/legal/cookies",
-    "Politica de cookies | Meta Construtor",
+    "Política de cookies | Meta Construtor",
     "Entenda como o Meta Construtor usa cookies e tecnologias similares."
   ),
   lgpd: page(
     "/legal/lgpd",
     "LGPD | Meta Construtor",
-    "Informacoes sobre conformidade com a Lei Geral de Protecao de Dados no Meta Construtor."
+    "Informações sobre conformidade com a Lei Geral de Proteção de Dados no Meta Construtor."
   ),
   login: page(
     "/login",
@@ -303,7 +288,7 @@ export const seoPages = {
     "noindex,nofollow"
   ),
 
-  // ── V2 Pages ──
+  // ── V2 Pages ── (noindex: duplicam as páginas principais até a consolidação — PRD_ROTAS_PUBLICAS §5)
 
   home2: page(
     "/home2",
@@ -320,7 +305,8 @@ export const seoPages = {
           answer: "RDO digital completo, checklists inteligentes, relatórios automáticos, dashboard financeiro, gestão de equipes, documentos e contratos, portal do cliente e integrações com ERP.",
         },
       ]),
-    ]
+    ],
+    "noindex,follow"
   ),
   preco2: page(
     "/preco2",
@@ -342,25 +328,29 @@ export const seoPages = {
           answer: "Sim! Você pode fazer upgrade ou downgrade a qualquer momento. O valor é proporcional ao período já utilizado.",
         },
       ]),
-    ]
+    ],
+    "noindex,follow"
   ),
   sobre2: page(
     "/sobre2",
     "Sobre o Meta Construtor 2 | Quem somos e nossa história",
     "Conheça a história do Meta Construtor, nossos valores, missão e a equipe que está transformando a gestão de obras no Brasil.",
-    [organizationJsonLd]
+    [organizationJsonLd],
+    "noindex,follow"
   ),
   contato2: page(
     "/contato2",
     "Contato 2 | Fale com o Meta Construtor",
     "Entre em contato com a equipe do Meta Construtor 2. Tire dúvidas, peça um orçamento ou agende uma demonstração personalizada. WhatsApp, e-mail e formulário.",
-    [organizationJsonLd, webPageJsonLd("Contato Meta Construtor 2", "/contato2", "Canais oficiais para falar com o Meta Construtor 2.", "ContactPage")]
+    [organizationJsonLd, webPageJsonLd("Contato Meta Construtor 2", "/contato2", "Canais oficiais para falar com o Meta Construtor 2.", "ContactPage")],
+    "noindex,follow"
   ),
   blog2: page(
     "/blog2",
     "Blog Meta Construtor 2 | Conteúdo para sua obra",
     "Artigos sobre RDO digital, checklists de obra, relatórios automáticos, gestão financeira, LGPD na construção civil e muito mais. Conteúdo feito por quem entende de obra.",
-    [webPageJsonLd("Blog Meta Construtor 2", "/blog2", "Conteúdos educativos sobre gestão de obras.", "Blog")]
+    [webPageJsonLd("Blog Meta Construtor 2", "/blog2", "Conteúdos educativos sobre gestão de obras.", "Blog")],
+    "noindex,follow"
   ),
   captura: page(
     "/captura",
@@ -388,12 +378,6 @@ export const publicIndexablePages = [
   seoPages.sobre,
   seoPages.contato,
   seoPages.blog,
-  seoPages.home2,
-  seoPages.preco2,
-  seoPages.sobre2,
-  seoPages.contato2,
-  seoPages.blog2,
-  seoPages.captura,
   seoPages.centralAjuda,
   seoPages.documentacao,
   seoPages.api,

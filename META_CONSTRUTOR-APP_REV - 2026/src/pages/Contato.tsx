@@ -3,8 +3,9 @@ import { motion } from 'framer-motion';
 import SEO from "@/components/SEO";
 import { seoPages } from '@/config/seo';
 import { useNavigate } from 'react-router-dom';
-import { Mail, MessageCircle, MapPin, Send, CheckCircle, Phone } from 'lucide-react';
+import { Mail, MessageCircle, MapPin, Send, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AnimatedStatusIcon, SubmitButton, type SubmitState } from '@/components/ui/animated-status';
 import { PublicLayout } from '@/components/public/PublicLayout';
 import { AnimatedSection } from '@/components/public/AnimatedSection';
 import { AnimatedGradient } from '@/components/public/AnimatedGradient';
@@ -45,7 +46,8 @@ const contactChannels = [
 const faqItems = [
   { q: 'Quanto tempo para responder?', a: 'Respondemos em até 4 horas em dias úteis. No WhatsApp, a resposta costuma ser em minutos durante o horário comercial.' },
   { q: 'Posso agendar uma demonstração?', a: 'Claro! Envie uma mensagem pelo WhatsApp ou formulário pedindo uma demo. Entraremos em contato para agendar.' },
-  { q: 'Tem suporte técnico?', a: 'Sim. Todos os planos têm suporte. O plano Pro tem suporte prioritário via WhatsApp e o Enterprise tem suporte 24/7.' },
+  // Nível de suporte de cada plano: fonte única na tabela de /preco (evita promessas divergentes).
+  { q: 'Tem suporte técnico?', a: 'Sim. Todos os planos têm suporte. O canal e o prazo de atendimento de cada plano estão na página de planos.' },
 ];
 
 const fadeInUp = {
@@ -58,7 +60,10 @@ export default function Contato() {
   const [formData, setFormData] = useState({ name: '', email: '', company: '', phone: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
+
+  const submitState: SubmitState = sent ? 'success' : sending ? 'loading' : error ? 'error' : 'idle';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,7 +84,12 @@ export default function Contato() {
         throw new Error(data?.error?.message || 'Erro ao enviar');
       }
 
-      setSubmitted(true);
+      // Mostra a confirmação no botão antes de trocar para a tela de sucesso.
+      setSent(true);
+      window.setTimeout(() => {
+        setSent(false);
+        setSubmitted(true);
+      }, 900);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Erro de rede. Tente novamente.';
       setError(msg);
@@ -132,7 +142,7 @@ export default function Contato() {
                         <Icon className="w-5 h-5 text-brand-orange" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-neutral-900">{ch.title}</h4>
+                        <h3 className="font-semibold text-neutral-900">{ch.title}</h3>
                         {ch.action ? (
                           <a href={ch.action} className="text-brand-orange hover:underline font-medium text-sm">
                             {ch.value}
@@ -154,24 +164,25 @@ export default function Contato() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="lg:col-span-3 bg-neutral-50 rounded-2xl p-5 md:p-8 border border-neutral-100"
+              className="lg:col-span-3 flex flex-col bg-neutral-50 rounded-2xl p-5 md:p-8 border border-neutral-100"
             >
               {submitted ? (
-                <div className="text-center py-12">
-                  <CheckCircle className="w-16 h-16 text-brand-emerald mx-auto mb-4" />
-                  <h3 className="text-2xl font-extrabold text-neutral-900 mb-2">Mensagem enviada!</h3>
-                  <p className="text-neutral-600 mb-6">Recebemos seu contato e responderemos em ate 4 horas uteis.</p>
+                <div className="my-auto text-center py-12" role="status">
+                  <AnimatedStatusIcon status="success" className="w-16 h-16 text-emerald-600 mx-auto mb-4" />
+                  <h2 className="text-2xl font-extrabold text-neutral-900 mb-2">Mensagem enviada!</h2>
+                  <p className="text-neutral-600 mb-6">Recebemos seu contato e responderemos em até 4 horas úteis.</p>
                   <Button variant="outline" className="rounded-full" onClick={() => { setSubmitted(false); setFormData({ name: '', email: '', company: '', phone: '', subject: '', message: '' }); }}>
                     Enviar novamente
                   </Button>
                 </div>
               ) : (
                 <>
-                  <h3 className="text-xl font-bold text-neutral-900 mb-6">Solicitar Orcamento Online</h3>
+                  <h2 className="text-xl font-bold text-neutral-900 mb-6">Solicitar orçamento</h2>
 
                   {error && (
-                    <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 text-sm text-red-700">
-                      {error}
+                    <div role="alert" className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4 mb-6 text-sm text-red-700">
+                      <AnimatedStatusIcon status="error" className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+                      <span>{error}</span>
                     </div>
                   )}
 
@@ -244,19 +255,15 @@ export default function Contato() {
                         placeholder="Conte como podemos ajudar..."
                       />
                     </div>
-                    <Button type="submit" disabled={sending} className="w-full bg-brand-orange hover:bg-brand-orange-hover text-white rounded-xl py-6 text-base">
-                      {sending ? (
-                        <span className="flex items-center gap-2">
-                          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                          </svg>
-                          Enviando...
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-2"><Send className="w-4 h-4" /> Enviar Orcamento</span>
-                      )}
-                    </Button>
+                    <SubmitButton
+                      state={submitState}
+                      labels={{
+                        idle: <span className="flex items-center gap-2"><Send className="w-4 h-4" aria-hidden="true" /> Enviar mensagem</span>,
+                        loading: 'Enviando…',
+                        success: 'Mensagem enviada',
+                        error: 'Não foi possível enviar. Tentar de novo',
+                      }}
+                    />
                   </form>
                 </>
               )}
@@ -277,7 +284,7 @@ export default function Contato() {
           <StaggerContainer staggerDelay={0.06} className="space-y-1">
             {faqItems.map((item, i) => (
               <StaggerItem key={i} className="border-b border-neutral-200 pb-6">
-                <h4 className="text-lg font-semibold text-neutral-900 mb-2">{item.q}</h4>
+                <h3 className="text-lg font-semibold text-neutral-900 mb-2">{item.q}</h3>
                 <p className="text-neutral-600 leading-relaxed">{item.a}</p>
               </StaggerItem>
             ))}
